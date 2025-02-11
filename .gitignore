@@ -1,0 +1,87 @@
+# .gitignore for C# REST API Project
+
+# User-specific files
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer directories
+_installer/
+
+# User-specific files for Visual Studio for Mac
+.vscode/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Tye files
+.tye/
+
+# NPM/Yarn
+node_modules/
+
+# JetBrains Rider
+.idea/
+
+# Microsoft Visual Studio for Mac
+.vscode/
+
+# User-specific files for JetBrains Rider
+.idea/
+
+# VS for Mac configuration folder
+.vscode/
+
+# Tye files
+.tye/
+
+# Local DB files
+*.mdf
+*.ldf
+
+# IIS Express
+iisexpress/
+
+# Visual Studio for Mac
+.vscode/
+
+# ASP.NET Core generated files
+wwwroot/
+
+# Log files
+*.log
+
+# Database files
+*.sqlite
+*.db
+
+# Resharper files
+.idea/
+
+# User settings for Visual Studio Code
+.vscode/
+
+# Other
+.vs
+.vs2019
+.vs2017
+
+

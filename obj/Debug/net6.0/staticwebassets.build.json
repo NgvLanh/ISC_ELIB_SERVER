@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "X20mspQE7d+EQITabZZDQZSou4ZkxUs0TlYMTxdsOvU=",
+  "Source": "ISC_ELIB_SERVER",
+  "BasePath": "_content/ISC_ELIB_SERVER",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

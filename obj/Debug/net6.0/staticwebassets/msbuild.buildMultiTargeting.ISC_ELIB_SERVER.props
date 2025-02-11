@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ISC_ELIB_SERVER.props" />
+</Project>
