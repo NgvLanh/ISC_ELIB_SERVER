@@ -83,5 +83,5 @@ wwwroot/
 .vs
 .vs2019
 .vs2017
-
+.env
 
