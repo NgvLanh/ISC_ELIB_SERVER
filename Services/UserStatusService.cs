@@ -63,7 +63,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<UserStatusResponse> GetUserStatusByName(string name)
         {
-            var userStatus = _repository.GetUserStatuses().FirstOrDefault(us => us.Name == name);
+            var userStatus = _repository.GetUserStatuses().FirstOrDefault(us => us.Name?.ToLower() == name.ToLower());
             return userStatus != null
                 ? ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(userStatus))
                 : ApiResponse<UserStatusResponse>.NotFound($"Không tìm thấy trạng thái người dùng có tên: {name}");
@@ -71,7 +71,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<UserStatusResponse> CreateUserStatus(UserStatusRequest userStatusRequest)
         {
-            var existing = _repository.GetUserStatuses().FirstOrDefault(us => us.Name == userStatusRequest.Name);
+            var existing = _repository.GetUserStatuses().FirstOrDefault(us => us.Name?.ToLower() == userStatusRequest.Name.ToLower());
             if (existing != null)
             {
                 return ApiResponse<UserStatusResponse>.Conflict("Tên trạng thái đã tồn tại");
