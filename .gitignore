@@ -1,5 +1,3 @@
-# .gitignore for C# REST API Project
-
 # User-specific files
 .idea/
 .vscode/
@@ -21,9 +19,6 @@ ehthumbs.db
 # Windows Installer directories
 _installer/
 
-# User-specific files for Visual Studio for Mac
-.vscode/
-
 # .NET Core
 project.lock.json
 project.fragment.lock.json
@@ -44,9 +39,6 @@ node_modules/
 # Microsoft Visual Studio for Mac
 .vscode/
 
-# User-specific files for JetBrains Rider
-.idea/
-
 # VS for Mac configuration folder
 .vscode/
 
@@ -59,9 +51,6 @@ node_modules/
 
 # IIS Express
 iisexpress/
-
-# Visual Studio for Mac
-.vscode/
 
 # ASP.NET Core generated files
 wwwroot/
@@ -85,3 +74,6 @@ wwwroot/
 .vs2017
 .env
 
+# Build Folders
+.bin/
+.obj/

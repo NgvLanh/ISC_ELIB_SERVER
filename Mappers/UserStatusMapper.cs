@@ -5,9 +5,9 @@ using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Mappers
 {
-    public class MappingProfile : Profile
+    public class UserStatusMapper : Profile
     {
-        public MappingProfile()
+        public UserStatusMapper()
         {
             // us - res
             CreateMap<UserStatus, UserStatusResponse>();
