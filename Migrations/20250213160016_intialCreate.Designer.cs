@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISC_ELIB_SERVER.Migrations
 {
     [DbContext(typeof(isc_elibContext))]
-    [Migration("20250212133206_intialCreate")]
+    [Migration("20250213160016_intialCreate")]
     partial class intialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -343,7 +343,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("subject_quantity");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -1754,7 +1754,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("union_place");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -2419,7 +2420,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("address_full");
 
-                    b.Property<long>("ClassId")
+                    b.Property<long?>("ClassId")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("class_id");
@@ -2737,7 +2739,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Classes")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_classes_user_id");
 
                     b.Navigation("AcademicYear");

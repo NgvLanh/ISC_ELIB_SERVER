@@ -341,7 +341,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("subject_quantity");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -1752,7 +1752,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("union_place");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -2417,7 +2418,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("address_full");
 
-                    b.Property<long>("ClassId")
+                    b.Property<long?>("ClassId")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("class_id");
@@ -2735,7 +2737,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Classes")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_classes_user_id");
 
                     b.Navigation("AcademicYear");

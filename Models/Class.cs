@@ -23,7 +23,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public long GradeLevelId { get; set; }
         public long AcademicYearId { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public long ClassTypeId { get; set; }
 
         public virtual AcademicYear AcademicYear { get; set; } = null!;
