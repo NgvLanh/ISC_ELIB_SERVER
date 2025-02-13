@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISC_ELIB_SERVER.Migrations
 {
     [DbContext(typeof(isc_elibContext))]
-    [Migration("20250213160016_intialCreate")]
+    [Migration("20250213170722_intialCreate")]
     partial class intialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1202,12 +1202,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("training_model");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("UserId"));
 
                     b.Property<long>("WardId")
                         .ValueGeneratedOnAdd()
