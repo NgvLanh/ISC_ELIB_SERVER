@@ -537,7 +537,7 @@ namespace ISC_ELIB_SERVER.Migrations
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     grade_level_id = table.Column<long>(type: "bigint", nullable: false),
                     academic_year_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: true),
                     class_type_id = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
