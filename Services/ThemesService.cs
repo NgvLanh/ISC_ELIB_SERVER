@@ -30,6 +30,8 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetThemes().AsQueryable();
 
+            query = query.Where(us => us.Active == null || us.Active == false);
+
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
@@ -54,7 +56,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ThemesResponse> GetThemesById(long id)
         {
             var themes = _repository.GetThemesById(id);
-            return themes != null
+            return (themes != null && !(themes.Active ?? false))
                 ? ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(themes))
                 : ApiResponse<ThemesResponse>.NotFound($"Không tìm thấy chủ đề #{id}");
         }
@@ -67,7 +69,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ThemesResponse>.Conflict("Tên chủ đề đã tồn tại");
             }
 
-            var created = _repository.CreateThemes(new Theme() { Name = themesRequest.Name });
+            var created = _repository.CreateThemes(new Theme() { Name = themesRequest.Name, Active = false });
             return ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(created));
         }
 
@@ -87,16 +89,35 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingTheme.Name = themesRequest.Name;
+            existingTheme.Active = false;
             _repository.UpdateThemes(existingTheme);
             return ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(existingTheme));
         }
 
+        //public ApiResponse<Theme> DeleteThemes(long id)
+        //{
+        //    var success = _repository.DeleteThemes(id);
+        //    return success
+        //        ? ApiResponse<Theme>.Success()
+        //        : ApiResponse<Theme>.NotFound("Không tìm thấy chủ đề để xóa");
+        //}
         public ApiResponse<Theme> DeleteThemes(long id)
         {
-            var success = _repository.DeleteThemes(id);
-            return success
-                ? ApiResponse<Theme>.Success()
-                : ApiResponse<Theme>.NotFound("Không tìm thấy chủ đề để xóa");
+            var existingTheme = _repository.GetThemesById(id);
+            if (existingTheme == null)
+            {
+                return ApiResponse<Theme>.NotFound("Không tìm thấy chủ đề.");
+            }
+
+            if (existingTheme.Active == true)
+            {
+                return ApiResponse<Theme>.Conflict("chủ đề không tồn tại.");
+            }
+
+            existingTheme.Active = true;
+            _repository.UpdateThemes(existingTheme);
+
+            return ApiResponse<Theme>.Success();
         }
 
     }

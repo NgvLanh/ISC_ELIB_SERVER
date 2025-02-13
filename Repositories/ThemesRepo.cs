@@ -33,15 +33,22 @@ namespace ISC_ELIB_SERVER.Repositories
             return theme;
         }
 
-        public bool DeleteThemes(long id)
+        //public bool DeleteThemes(long id)
+        //{
+        //    var themes = GetThemesById(id);
+        //    if (themes != null)
+        //    {
+        //        _context.Themes.Remove(themes);
+        //        return _context.SaveChanges() > 0;
+        //    }
+        //    return false;
+        //}
+
+        public bool DeleteThemes(Theme theme)
         {
-            var themes = GetThemesById(id);
-            if (themes != null)
-            {
-                _context.Themes.Remove(themes);
-                return _context.SaveChanges() > 0;
-            }
-            return false;
+            _context.Themes.Update(theme);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

@@ -34,6 +34,10 @@ builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, IThemesService>();
+builder.Services.AddScoped<MajorRepo>();
+builder.Services.AddScoped<IMajorService, IMajorService>();
+
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

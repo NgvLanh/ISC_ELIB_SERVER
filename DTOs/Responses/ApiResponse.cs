@@ -42,5 +42,9 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
             return new ApiResponse<T>(1, message, default, default);
         }
 
+        internal static ApiResponse<bool> Error(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

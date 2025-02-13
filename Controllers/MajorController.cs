@@ -5,49 +5,49 @@ using Microsoft.AspNetCore.Mvc;
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/themes")]
-    public class ThemesController: ControllerBase
+    [Route("api/major")]
+    public class MajorController : ControllerBase
     {
-        private readonly IThemesService _service;
+        private readonly IMajorService _service;
 
-        public ThemesController(IThemesService service)
+        public MajorController(IMajorService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public IActionResult GetUserStatuses([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+        public IActionResult GetMajor([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetThemes(page, pageSize, search, sortColumn, sortOrder);
+            var response = _service.GetMajor(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetThemesById(long id)
+        public IActionResult GetMajorById(long id)
         {
-            var response = _service.GetThemesById(id);
+            var response = _service.GetMajorById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
         [HttpPost]
-        public IActionResult CreateThemes([FromBody] ThemesRequest themesRequest)
+        public IActionResult CreateMajor([FromBody] MajorRequest majorRequest)
         {
-            var response = _service.CreateThemes(themesRequest);
+            var response = _service.CreateMajor(majorRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateThemes(long id, [FromBody] ThemesRequest themesRequest)
+        public IActionResult UpdateMajor(long id, [FromBody] MajorRequest majorRequest)
         {
-            var response = _service.UpdateThemes(id ,themesRequest);
+            var response = _service.UpdateMajor(id, majorRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteThemes(long id)
+        public IActionResult DeleteMajor(long id)
         {
-            var response = _service.DeleteThemes(id);
+            var response = _service.DeleteMajor(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 

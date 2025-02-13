@@ -13,7 +13,7 @@ namespace ISC_ELIB_SERVER.Models
         public DateOnly? EndDate { get; set; }
         public string? Degree { get; set; }
         public string? TrainingForm { get; set; }
-        public bool? Deleted { get; set; }
+        public bool? Active { get; set; }
         public string? FileName { get; set; }
         public string? FilePath { get; set; }
     }
