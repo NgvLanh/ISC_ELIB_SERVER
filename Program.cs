@@ -37,6 +37,9 @@ builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+//TeacherInfo
+builder.Services.AddScoped<TeacherInfoRepo>();
+builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
