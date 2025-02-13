@@ -24,7 +24,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? UnionPlace { get; set; }
         public bool? PartyMember { get; set; }
         public DateTime? PartyDate { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public string? AddressFull { get; set; }
         public long ProvinceCode { get; set; }
         public long DistrictCode { get; set; }
