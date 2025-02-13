@@ -25,7 +25,7 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime? EstablishedDate { get; set; }
         public string? TrainingModel { get; set; }
         public string? WebsiteUrl { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public long EducationLevelId { get; set; }
 
         public virtual EducationLevel EducationLevel { get; set; } = null!;

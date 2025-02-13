@@ -1200,12 +1200,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("training_model");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("UserId"));
 
                     b.Property<long>("WardId")
                         .ValueGeneratedOnAdd()

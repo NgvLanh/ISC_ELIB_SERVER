@@ -283,7 +283,7 @@ namespace ISC_ELIB_SERVER.Migrations
                     established_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     training_model = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     website_url = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<long>(type: "bigint", nullable: true)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     education_level_id = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -825,7 +825,7 @@ namespace ISC_ELIB_SERVER.Migrations
                     union_place = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     party_member = table.Column<bool>(type: "boolean", nullable: true),
                     party_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: true),
                     address_full = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     province_code = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
