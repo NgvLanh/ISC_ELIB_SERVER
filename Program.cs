@@ -9,13 +9,21 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+  
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.MaxDepth = 64; // Đặt MaxDepth
+}); 
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<isc_elibContext>(options =>
@@ -56,6 +64,13 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         .Where(t => t.Name.EndsWith("Repo"))
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();
+    containerBuilder.RegisterType<QuestionQaRepo>().As<QuestionQaRepo>().InstancePerLifetimeScope();
+    containerBuilder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+    .Where(t => t.Name.EndsWith("Service"))
+    .AsImplementedInterfaces()
+    .InstancePerLifetimeScope();
+
+
 });
 
 builder.Services.AddEndpointsApiExplorer();
