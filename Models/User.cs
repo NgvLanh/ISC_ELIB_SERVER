@@ -43,7 +43,7 @@ namespace ISC_ELIB_SERVER.Models
         public long RoleId { get; set; }
         public long AcademicYearId { get; set; }
         public long UserStatusId { get; set; }
-        public long ClassId { get; set; }
+        public long? ClassId { get; set; }
         public long EntryType { get; set; }
         public string? AddressFull { get; set; }
         public long ProvinceCode { get; set; }

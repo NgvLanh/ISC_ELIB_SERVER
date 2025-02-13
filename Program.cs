@@ -33,6 +33,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
+//User
+builder.Services.AddScoped<UserRepo>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
