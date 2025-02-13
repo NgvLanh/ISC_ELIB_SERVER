@@ -32,6 +32,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<ThemesRepo>();
+builder.Services.AddScoped<IThemesService, IThemesService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
