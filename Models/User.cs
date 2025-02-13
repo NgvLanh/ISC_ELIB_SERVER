@@ -26,6 +26,7 @@ namespace ISC_ELIB_SERVER.Models
             Tests = new HashSet<Test>();
             TestsSubmissions = new HashSet<TestsSubmission>();
             TransferSchools = new HashSet<TransferSchool>();
+            TemporaryLeaves = new HashSet<TemporaryLeave>();
         }
 
         public long Id { get; set; }
@@ -75,5 +76,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Test> Tests { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
         public virtual ICollection<TransferSchool> TransferSchools { get; set; }
+        public virtual ICollection<TemporaryLeave> TemporaryLeaves { get; set; }
+
     }
 }

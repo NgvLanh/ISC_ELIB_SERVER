@@ -41,6 +41,35 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TeacherInfoRepo>();
 builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
+//Role
+builder.Services.AddScoped<RoleRepo>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+//Permisson
+builder.Services.AddScoped<PermissionRepo>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+//Role_Permission
+builder.Services.AddScoped<RolePermissionRepo>();
+builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+
+//Temporary
+builder.Services.AddScoped<TemporaryLeaveRepo>();
+builder.Services.AddScoped<ITemporaryLeaveService, TemporaryLeaveService>();
+
+//Change_Class
+builder.Services.AddScoped<ChangeClassRepo>();
+builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
+
+//Exemption
+builder.Services.AddScoped<ExemptionRepo>();
+builder.Services.AddScoped<IExemptionService, ExemptionService>();
+
+//Transfer_School
+builder.Services.AddScoped<TransferSchoolRepo>();
+builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>

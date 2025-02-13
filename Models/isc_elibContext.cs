@@ -246,6 +246,8 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("change_class");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.IsActive)
+                        .HasColumnName("is_active");
 
                 entity.Property(e => e.AttachmentName)
                     .HasMaxLength(255)
@@ -698,6 +700,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("exemption");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.IsActive)
+                        .HasColumnName("is_active");
+
 
                 entity.Property(e => e.ClassId)
                     .ValueGeneratedOnAdd()
@@ -820,6 +825,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasColumnName("name");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("is_active");
             });
 
             modelBuilder.Entity<QuestionImagesQa>(entity =>
@@ -986,6 +994,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasColumnName("name");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("is_active");
             });
 
             modelBuilder.Entity<RolePermission>(entity =>
@@ -1001,6 +1012,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.RoleId)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("role_id");
+
+                entity.Property(e => e.IsActive)
+                    .HasColumnName("is_active");
 
                 entity.HasOne(d => d.Permission)
                     .WithMany(p => p.RolePermissions)
@@ -1604,6 +1618,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("temporary_leave");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.IsActive)
+                .HasColumnName("is_active");
+
 
                 entity.Property(e => e.Attachment)
                     .HasMaxLength(255)
@@ -1630,6 +1647,13 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.TeacherId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_temporary_leave_teacher_id");
+
+                entity.HasOne(d => d.User)
+                      .WithMany(p => p.TemporaryLeaves)
+                      .HasForeignKey(d => d.LeadershipId)
+                      .OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("fk_temporary_leave_leader_id");
+
             });
 
             modelBuilder.Entity<Test>(entity =>
@@ -1964,6 +1988,8 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("transfer_school");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.IsActive)
+                        .HasColumnName("is_active");
 
                 entity.Property(e => e.AttachmentName)
                     .HasMaxLength(255)
