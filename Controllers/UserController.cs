@@ -24,7 +24,7 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<ICollection<UserResponse>>> GetUsers(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string search = "",
+            [FromQuery] string? search = "",
             [FromQuery] string sortColumn = "id",
             [FromQuery] string sortOrder = "asc")
         {
