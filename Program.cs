@@ -41,6 +41,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TeacherInfoRepo>();
 builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
+<<<<<<< HEAD
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -69,6 +70,11 @@ builder.Services.AddScoped<IExemptionService, ExemptionService>();
 builder.Services.AddScoped<TransferSchoolRepo>();
 builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
+=======
+//StudentInfo
+builder.Services.AddScoped<StudentInfoRepo>();
+builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
+>>>>>>> 825b727 (update CRUD StudentInfo)
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
