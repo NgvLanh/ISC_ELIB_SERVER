@@ -10,6 +10,7 @@ namespace ISC_ELIB_SERVER.Models
         public long ClassId { get; set; }
         public string? ExemptedObjects { get; set; }
         public string? FormExemption { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual Class Class { get; set; } = null!;
         public virtual User Student { get; set; } = null!;

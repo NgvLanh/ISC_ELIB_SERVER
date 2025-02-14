@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -14,7 +15,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? Name { get; set; }
         public bool? Status { get; set; }
         public string? Description { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<School> Schools { get; set; }
     }
 }
