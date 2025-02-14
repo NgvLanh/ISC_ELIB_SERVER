@@ -9,9 +9,9 @@ namespace ISC_ELIB_SERVER.Controllers
     [ApiController]
     public class ExamScheduleClassController : ControllerBase
     {
-        private readonly ExamScheduleClassService _service;
+        private readonly IExamScheduleClassService _service;
 
-        public ExamScheduleClassController(ExamScheduleClassService service)
+        public ExamScheduleClassController(IExamScheduleClassService service)
         {
             _service = service;
         }

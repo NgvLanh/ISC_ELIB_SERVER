@@ -6,7 +6,16 @@ using ISC_ELIB_SERVER.Repositories;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class ExamScheduleClassService
+    public interface IExamScheduleClassService
+    {
+        ApiResponse<PagedResult<ExamScheduleClassResponse>> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder);
+        ApiResponse<ExamScheduleClassResponse> GetById(long id);
+        ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request);
+        ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request);
+        ApiResponse<object> Delete(long id);
+
+    }
+    public class ExamScheduleClassService: IExamScheduleClassService
     {
         private readonly ExamScheduleClassRepo _repository;
         private readonly IMapper _mapper;

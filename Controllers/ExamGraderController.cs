@@ -8,9 +8,9 @@ namespace ISC_ELIB_SERVER.Controllers
     [Route("api/exam-graders")]
     public class ExamGraderController : ControllerBase
     {
-        private readonly ExamGraderService _service;
+        private readonly IExamGraderService _service;
 
-        public ExamGraderController(ExamGraderService service)
+        public ExamGraderController(IExamGraderService service)
         {
             _service = service;
         }

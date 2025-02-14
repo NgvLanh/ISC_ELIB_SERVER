@@ -42,7 +42,12 @@ builder.Services.AddScoped<SubjectGroupRepo>();
 builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<SubjectRepo>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
-
+builder.Services.AddScoped<ExamGraderRepo>();
+builder.Services.AddScoped<IExamGraderService, ExamGraderService>();
+builder.Services.AddScoped<ExamScheduleRepo>();
+builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
+builder.Services.AddScoped<ExamScheduleClassRepo>();
+builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
 // Add services and repositories Test attachment
 builder.Services.AddScoped<TestsAttachmentRepo>();
 builder.Services.AddScoped<ITestsAttachmentService, TestsAttachmentService>();

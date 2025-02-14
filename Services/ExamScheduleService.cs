@@ -7,7 +7,17 @@ using System.Collections.Generic;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class ExamScheduleService
+
+    public interface IExamScheduleService
+    {
+        ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending);
+        ApiResponse<ExamScheduleResponse> GetById(long id);
+        ApiResponse<ExamScheduleResponse> Create(ExamScheduleRequest request);
+        ApiResponse<ExamScheduleResponse> Update(long id, ExamScheduleRequest request);
+        ApiResponse<object> Delete(long id);
+
+    }
+    public class ExamScheduleService: IExamScheduleService
     {
         private readonly ExamScheduleRepo _repository;
         private readonly IMapper _mapper;

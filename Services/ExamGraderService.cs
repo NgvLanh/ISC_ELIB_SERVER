@@ -6,7 +6,17 @@ using ISC_ELIB_SERVER.Repositories;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class ExamGraderService
+
+    public interface IExamGraderService
+    {
+        ApiResponse<PagedResult<ExamGraderResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending);
+        ApiResponse<ExamGraderResponse> GetById(long id);
+        ApiResponse<ExamGraderResponse> Create(ExamGraderRequest request);
+        ApiResponse<ExamGraderResponse> Update(long id, ExamGraderRequest request);
+        ApiResponse<object> Delete(long id);
+        
+    }
+    public class ExamGraderService : IExamGraderService
     {
         private readonly ExamGraderRepo _repository;
         private readonly IMapper _mapper;
@@ -57,7 +67,7 @@ namespace ISC_ELIB_SERVER.Services
             var response = _mapper.Map<ExamGraderResponse>(entity);
             return ApiResponse<ExamGraderResponse>.Success(response);
         }
-
+        
         public ApiResponse<object> Delete(long id)
         {
             var result = _repository.Delete(id);
