@@ -36,6 +36,12 @@ builder.Services.AddScoped<TestRepo>();
 builder.Services.AddScoped<ITestService, TestService>();
 builder.Services.AddScoped<TestQuestionRepo>();
 builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
+builder.Services.AddScoped<SubjectTypeRepo>();
+builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
+builder.Services.AddScoped<SubjectGroupRepo>();
+builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
+builder.Services.AddScoped<SubjectRepo>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
