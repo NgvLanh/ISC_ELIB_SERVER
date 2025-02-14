@@ -27,6 +27,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? TrainingModel { get; set; }
         public string? WebsiteUrl { get; set; }
         public long? UserId { get; set; }
+      
         public long? EducationLevelId { get; set; }
 
         public bool Active { get; set; }

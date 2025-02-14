@@ -23,14 +23,14 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public long GradeLevelId { get; set; }
         public long AcademicYearId { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public long ClassTypeId { get; set; }
 
 
         public virtual AcademicYear AcademicYear { get; set; } = null!;
         public virtual ClassType ClassType { get; set; } = null!;
         public virtual GradeLevel GradeLevel { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual User? User { get; set; } = null!;
         public virtual ICollection<ChangeClass> ChangeClassNewClasses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClassOldClasses { get; set; }
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }

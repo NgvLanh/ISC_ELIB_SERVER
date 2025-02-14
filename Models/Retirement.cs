@@ -12,5 +12,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? Attachment { get; set; }
         public bool? Status { get; set; }
         public long LeadershipId { get; set; }
+        public bool? Active { get; set; }
+
     }
 }

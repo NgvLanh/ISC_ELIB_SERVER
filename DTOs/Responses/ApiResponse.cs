@@ -22,7 +22,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
             Errors = errors;
         }
 
-        public static ApiResponse<T> Success(T data = default)
+        public static ApiResponse<T> Success(T data = default, string v = null)
         {
             return new ApiResponse<T>(0, "Success", data, null);
         }
