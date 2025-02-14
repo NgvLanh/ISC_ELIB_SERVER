@@ -752,7 +752,7 @@ namespace ISC_ELIB_SERVER.Migrations
                     guardian_dob = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     guardian_address = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     guardian_role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {

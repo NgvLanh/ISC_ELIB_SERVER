@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ISC_ELIB_SERVER.Models;
 
-namespace ISC_ELIB_SERVER.Models
+namespace ISC_ELIB_SERVER.DTOs.Requests
 {
-    public partial class StudentInfo
+    public class StudentInfoRequest
     {
         public long Id { get; set; }
         public string? GuardianName { get; set; }

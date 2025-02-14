@@ -1397,7 +1397,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("guardian_role");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -1753,7 +1753,6 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnName("union_place");
 
                     b.Property<long?>("UserId")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -3060,7 +3059,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("StudentInfos")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_info_user_id");
 
                     b.Navigation("User");
@@ -3177,7 +3175,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("TeacherInfos")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_teacher_info_user_id");
 
                     b.Navigation("User");

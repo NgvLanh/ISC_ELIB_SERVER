@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ISC_ELIB_SERVER.Models;
 
-namespace ISC_ELIB_SERVER.Models
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class StudentInfo
+    public class StudentInfoResponses
     {
         public long Id { get; set; }
         public string? GuardianName { get; set; }
@@ -12,8 +11,8 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime? GuardianDob { get; set; }
         public string? GuardianAddress { get; set; }
         public string? GuardianRole { get; set; }
-        public long? UserId { get; set; }
+        public long UserId { get; set; }
 
-        public virtual User? User { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }
