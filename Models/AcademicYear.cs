@@ -13,11 +13,13 @@ namespace ISC_ELIB_SERVER.Models
             Semesters = new HashSet<Semester>();
             Users = new HashSet<User>();
         }
-
+        
         public long Id { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public long SchoolId { get; set; }
+        public long? SchoolId { get; set; }
+
+        public bool Active { get; set; }
 
         public virtual School School { get; set; } = null!;
         public virtual ICollection<Class> Classes { get; set; }

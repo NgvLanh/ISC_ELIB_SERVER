@@ -106,6 +106,11 @@ namespace ISC_ELIB_SERVER.Models
                     .ValueGeneratedOnAdd()
                     .HasColumnName("school_id");
 
+
+                entity.Property(e => e.Active)
+                    .HasDefaultValue(true)
+                    .HasColumnName("active");
+
                 entity.Property(e => e.StartTime)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("start_time");
@@ -227,6 +232,11 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.UserId)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("user_id");
+
+
+                entity.Property(e => e.Active)
+                    .HasDefaultValue(true)
+                    .HasColumnName("active");
 
                 entity.HasOne(d => d.School)
                     .WithMany(p => p.Campuses)
@@ -764,7 +774,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
@@ -1090,6 +1100,10 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.WebsiteUrl)
                     .HasMaxLength(100)
                     .HasColumnName("website_url");
+
+                entity.Property(e => e.Active)
+                    .HasDefaultValue(true)
+                    .HasColumnName("active");
 
                 entity.HasOne(d => d.EducationLevel)
                     .WithMany(p => p.Schools)
@@ -1887,6 +1901,8 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Active).HasColumnName("active");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
@@ -1950,7 +1966,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("degree");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
 
