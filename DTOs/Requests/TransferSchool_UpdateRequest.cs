@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Requests
 {
-    public partial class TransferSchool
+    public class TransferSchool_UpdateRequest
     {
-        public long Id { get; set; }
         public long StudentId { get; set; }
         public DateTime? TransferSchoolDate { get; set; }
         public string? TransferToSchool { get; set; }
@@ -16,6 +12,5 @@ namespace ISC_ELIB_SERVER.Models
         public long LeadershipId { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual User Student { get; set; } = null!;
     }
 }

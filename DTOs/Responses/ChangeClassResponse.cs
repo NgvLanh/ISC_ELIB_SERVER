@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class ChangeClass
+    public class ChangeClassResponse
     {
         public long Id { get; set; }
         public long StudentId { get; set; }
@@ -16,8 +13,5 @@ namespace ISC_ELIB_SERVER.Models
         public long LeadershipId { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual Class NewClass { get; set; } = null!;
-        public virtual Class OldClass { get; set; } = null!;
-        public virtual User Student { get; set; } = null!;
     }
 }

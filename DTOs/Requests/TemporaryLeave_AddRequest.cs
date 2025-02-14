@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Requests
 {
-    public partial class TemporaryLeave
+    public class TemporaryLeave_AddRequest
     {
-        public long Id { get; set; }
         public DateTime? Date { get; set; }
         public string? Note { get; set; }
         public string? Attachment { get; set; }
@@ -14,7 +10,5 @@ namespace ISC_ELIB_SERVER.Models
         public long LeadershipId { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual TeacherInfo Teacher { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
     }
 }

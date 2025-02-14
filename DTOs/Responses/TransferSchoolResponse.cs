@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class TransferSchool
+    public class TransferSchoolResponse
     {
         public long Id { get; set; }
         public long StudentId { get; set; }
@@ -16,6 +13,5 @@ namespace ISC_ELIB_SERVER.Models
         public long LeadershipId { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual User Student { get; set; } = null!;
     }
 }
