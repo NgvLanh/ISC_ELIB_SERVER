@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Lesson\\ISC\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj": {}
+    "C:\\Users\\Trinh\\Documents\\GitHub\\K01Y25_Nhom4_BT02\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj": {}
   },
   "projects": {
-    "D:\\Lesson\\ISC\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj": {
+    "C:\\Users\\Trinh\\Documents\\GitHub\\K01Y25_Nhom4_BT02\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Lesson\\ISC\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj",
+        "projectUniqueName": "C:\\Users\\Trinh\\Documents\\GitHub\\K01Y25_Nhom4_BT02\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj",
         "projectName": "ISC_ELIB_SERVER",
-        "projectPath": "D:\\Lesson\\ISC\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Lesson\\ISC\\ISC_ELIB_SERVER\\obj\\",
+        "projectPath": "C:\\Users\\Trinh\\Documents\\GitHub\\K01Y25_Nhom4_BT02\\ISC_ELIB_SERVER\\ISC_ELIB_SERVER.csproj",
+        "packagesPath": "C:\\Users\\Trinh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Trinh\\Documents\\GitHub\\K01Y25_Nhom4_BT02\\ISC_ELIB_SERVER\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Trinh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -96,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
