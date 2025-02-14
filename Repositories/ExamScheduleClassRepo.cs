@@ -30,8 +30,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
                 query = sortBy.ToLower() switch
                 {
-                    "name" => isDescending ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
-                    "date" => isDescending ? query.OrderByDescending(x => x.Date) : query.OrderBy(x => x.Date),
+                    "Id" => isDescending ? query.OrderByDescending(x => x.Id) : query.OrderBy(x => x.Id),
                     _ => query.OrderBy(x => x.Id) // Mặc định sắp xếp theo Id
                 };
             }
