@@ -59,12 +59,31 @@ builder.Services.AddScoped<UserStatusRepo>();
 
 //Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+
+builder.Services.AddScoped<TestRepo>();
+builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<TestQuestionRepo>();
+builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
+builder.Services.AddScoped<SubjectTypeRepo>();
+builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
+builder.Services.AddScoped<SubjectGroupRepo>();
+builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
+builder.Services.AddScoped<SubjectRepo>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ExamGraderRepo>();
+builder.Services.AddScoped<IExamGraderService, ExamGraderService>();
+builder.Services.AddScoped<ExamScheduleRepo>();
+builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
+builder.Services.AddScoped<ExamScheduleClassRepo>();
+builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
+
 builder.Services.AddScoped<AnswersQaRepo>();  
 builder.Services.AddScoped<IAnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
 builder.Services.AddScoped<IQuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
 builder.Services.AddScoped<IAnswerImagesQaService>();
+
 
 
 // Add services and repositories Test attachment
