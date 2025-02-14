@@ -5,8 +5,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class RetirementRepo
     {
-        private readonly isc_elibContext _context;
-        public RetirementRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public RetirementRepo(isc_dbContext context)
         {
             _context = context;
         }

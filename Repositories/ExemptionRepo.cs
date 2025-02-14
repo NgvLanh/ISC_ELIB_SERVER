@@ -4,20 +4,20 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class ExemptionRepo
     {
-        private readonly isc_elibContext _context;
-        public ExemptionRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public ExemptionRepo(isc_dbContext context)
         {
             _context = context;
         }
 
         public ICollection<Exemption> GetExemptions()
         {
-            return _context.Exemptions.Where(s => s.IsActive == true).ToList();
+            return _context.Exemptions.Where(s => s.Active == true).ToList();
         }
 
         public Exemption GetExemptionById(long id)
         {
-            return _context.Exemptions.FirstOrDefault(s => s.Id == id && s.IsActive == true);
+            return _context.Exemptions.FirstOrDefault(s => s.Id == id && s.Active == true);
         }
 
         public Exemption CreateExemption(Exemption Exemption)
@@ -41,7 +41,7 @@ namespace ISC_ELIB_SERVER.Repositories
             existingExemption.ClassId = Exemption.ClassId;
             existingExemption.ExemptedObjects = Exemption.ExemptedObjects;
             existingExemption.FormExemption = Exemption.FormExemption;
-            existingExemption.IsActive = Exemption.IsActive;
+            existingExemption.Active = Exemption.Active;
 
             // Lưu các thay đổi xuống CSDL
             _context.SaveChanges();
@@ -66,7 +66,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var Exemption = GetExemptionById(id);
             if (Exemption != null)
             {
-                Exemption.IsActive = false;
+                Exemption.Active = false;
                 _context.Exemptions.Update(Exemption);
                 return _context.SaveChanges() > 0;
             }

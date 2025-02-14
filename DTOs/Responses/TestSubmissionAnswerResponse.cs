@@ -2,10 +2,10 @@
 {
     public class TestSubmissionAnswerResponse
     {
-        public long Id { get; set; }
-        public long SubmissionId { get; set; }
-        public long QuestionId { get; set; }
-        public long SelectedAnswerId { get; set; }
+        public int Id { get; set; }
+        public int SubmissionId { get; set; }
+        public int QuestionId { get; set; }
+        public int SelectedAnswerId { get; set; }
         public string? AnswerText { get; set; }
         public bool? IsCorrect { get; set; }
     }

@@ -17,6 +17,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public DateTime? CreateAt { get; set; }
 
         [Required(ErrorMessage = "Mã người dùng không được để trống")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
     }
 }

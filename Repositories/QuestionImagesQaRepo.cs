@@ -5,9 +5,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class QuestionImagesQaRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public QuestionImagesQaRepo(isc_elibContext context)
+        public QuestionImagesQaRepo(isc_dbContext context)
         {
             _context = context;
         }

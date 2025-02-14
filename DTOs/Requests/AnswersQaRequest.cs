@@ -9,9 +9,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string Content { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "QuestionId là bắt buộc")]
-        public long QuestionId { get; set; }
+        public int QuestionId { get; set; }
 
         [Required(ErrorMessage = "UserId là bắt buộc")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
     }
 }

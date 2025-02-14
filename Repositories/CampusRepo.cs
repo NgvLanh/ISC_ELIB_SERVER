@@ -7,8 +7,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class CampusRepo
     {
-        private readonly isc_elibContext _context;
-        public CampusRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public CampusRepo(isc_dbContext context)
         {
             _context = context;
         }

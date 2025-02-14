@@ -26,7 +26,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public DateTime StartDate { get; set; }
 
         [DataType(DataType.DateTime, ErrorMessage = "Ngày kết thúc không hợp lệ.")]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Required(ErrorMessage = "Trạng thái công tác không được để trống.")]
         public bool IsCurrent { get; set; }

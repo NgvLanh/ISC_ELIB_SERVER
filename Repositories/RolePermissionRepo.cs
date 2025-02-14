@@ -5,8 +5,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class RolePermissionRepo
     {
-        private readonly isc_elibContext _context;
-        public RolePermissionRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public RolePermissionRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -39,7 +39,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
             existing.PermissionId = updated.PermissionId;
             existing.RoleId = updated.RoleId;
-            existing.IsActive = updated.IsActive;
+            existing.Active = updated.Active;
 
             _context.RolePermissions.Update(existing);
             _context.SaveChanges();

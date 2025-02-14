@@ -10,14 +10,15 @@ namespace ISC_ELIB_SERVER.Models
             DiscussionImages = new HashSet<DiscussionImage>();
         }
 
-        public long Id { get; set; }
-        public long TopicId { get; set; }
-        public long UserId { get; set; }
+        public int Id { get; set; }
+        public int? TopicId { get; set; }
+        public int? UserId { get; set; }
         public string? Content { get; set; }
         public DateTime? CreateAt { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Topic Topic { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual Topic? Topic { get; set; }
+        public virtual User? User { get; set; }
         public virtual ICollection<DiscussionImage> DiscussionImages { get; set; }
     }
 }

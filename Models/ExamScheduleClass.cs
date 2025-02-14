@@ -5,13 +5,14 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class ExamScheduleClass
     {
-        public long Id { get; set; }
-        public long ClassId { get; set; }
-        public long ExampleSchedule { get; set; }
-        public long SupervisoryTeacherId { get; set; }
+        public int Id { get; set; }
+        public int? ClassId { get; set; }
+        public int? ExampleSchedule { get; set; }
+        public int? SupervisoryTeacherId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Class Class { get; set; } = null!;
-        public virtual ExamSchedule ExampleScheduleNavigation { get; set; } = null!;
-        public virtual TeacherInfo SupervisoryTeacher { get; set; } = null!;
+        public virtual Class? Class { get; set; }
+        public virtual ExamSchedule? ExampleScheduleNavigation { get; set; }
+        public virtual TeacherInfo? SupervisoryTeacher { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Models
             Chats = new HashSet<Chat>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime? StartDate { get; set; }
@@ -21,11 +21,12 @@ namespace ISC_ELIB_SERVER.Models
         public string? ShareCodeUrl { get; set; }
         public string? Status { get; set; }
         public bool? IsExam { get; set; }
-        public long TeachingAssignmentId { get; set; }
-        public long ExamId { get; set; }
+        public int? TeachingAssignmentId { get; set; }
+        public int? ExamId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Exam Exam { get; set; } = null!;
-        public virtual TeachingAssignment TeachingAssignment { get; set; } = null!;
+        public virtual Exam? Exam { get; set; }
+        public virtual TeachingAssignment? TeachingAssignment { get; set; }
         public virtual ICollection<Chat> Chats { get; set; }
     }
 }

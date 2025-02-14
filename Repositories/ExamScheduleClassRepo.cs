@@ -6,9 +6,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class ExamScheduleClassRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ExamScheduleClassRepo(isc_elibContext context)
+        public ExamScheduleClassRepo(isc_dbContext context)
         {
             _context = context;
         }

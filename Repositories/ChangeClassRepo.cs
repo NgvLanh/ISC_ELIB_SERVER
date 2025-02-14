@@ -4,20 +4,20 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class ChangeClassRepo
     {
-        private readonly isc_elibContext _context;
-        public ChangeClassRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public ChangeClassRepo(isc_dbContext context)
         {
             _context = context;
         }
 
         public ICollection<ChangeClass> GetChangeClasses()
         {
-            return _context.ChangeClasses.Where(s => s.IsActive == true).ToList();
+            return _context.ChangeClasses.Where(s => s.Active == true).ToList();
         }
 
         public ChangeClass GetChangeClassById(long id)
         {
-            return _context.ChangeClasses.FirstOrDefault(s => s.Id == id && s.IsActive == true);
+            return _context.ChangeClasses.FirstOrDefault(s => s.Id == id && s.Active == true);
         }
 
         public ChangeClass CreateChangeClass(ChangeClass ChangeClass)
@@ -43,11 +43,11 @@ namespace ISC_ELIB_SERVER.Repositories
             existingChangeClass.OldClassId = ChangeClass.OldClassId;
             existingChangeClass.ChangeClassDate = ChangeClass.ChangeClassDate;
             existingChangeClass.NewClassId = ChangeClass.NewClassId;
-            existingChangeClass. Reason = ChangeClass.Reason;
-            existingChangeClass. AttachmentName = ChangeClass.AttachmentName;
-            existingChangeClass. AttachmentPath = ChangeClass.AttachmentPath;
+            existingChangeClass.Reason = ChangeClass.Reason;
+            existingChangeClass.AttachmentName = ChangeClass.AttachmentName;
+            existingChangeClass.AttachmentPath = ChangeClass.AttachmentPath;
             existingChangeClass.LeadershipId = ChangeClass.LeadershipId;
-            existingChangeClass.IsActive = ChangeClass.IsActive;
+            existingChangeClass.Active = ChangeClass.Active;
 
             // Lưu các thay đổi xuống CSDL
             _context.SaveChanges();
@@ -72,7 +72,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var ChangeClass = GetChangeClassById(id);
             if (ChangeClass != null)
             {
-                ChangeClass.IsActive = false;
+                ChangeClass.Active = false;
                 _context.ChangeClasses.Update(ChangeClass);
                 return _context.SaveChanges() > 0;
             }

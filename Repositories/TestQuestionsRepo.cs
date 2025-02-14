@@ -4,8 +4,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TestQuestionRepo
     {
-        private readonly isc_elibContext _context;
-        public TestQuestionRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TestQuestionRepo(isc_dbContext context)
         {
             _context = context;
         }

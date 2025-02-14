@@ -6,8 +6,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class PermissionRepo
     {
-        private readonly isc_elibContext _context;
-        public PermissionRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public PermissionRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -29,7 +29,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return permission;
         }
 
-        public Permission? UpdatePermission(long id ,PermissionRequest updated)
+        public Permission? UpdatePermission(long id, PermissionRequest updated)
         {
             var existing = GetPermissionById(id);
 
@@ -39,7 +39,7 @@ namespace ISC_ELIB_SERVER.Repositories
             }
 
             existing.Name = updated.Name;
-            existing.IsActive = updated.IsActive;
+            existing.Active = updated.Active;
 
             _context.Permissions.Update(existing);
             _context.SaveChanges();

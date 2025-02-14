@@ -22,12 +22,12 @@ var databaseUrl = Env.GetString("DATABASE_URL");
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-  
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.MaxDepth = 64; // Đặt MaxDepth
-}); 
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -37,7 +37,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddDbContext<isc_elibContext>(options =>
+builder.Services.AddDbContext<isc_dbContext>(options =>
 {
     options.UseNpgsql(databaseUrl);
 });
@@ -46,10 +46,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
-builder.Services.Configure<JsonOptions>(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-});
+
+// builder.Services.Configure<JsonOptions>(options =>
+// {
+//     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+// });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -77,7 +78,7 @@ builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
 builder.Services.AddScoped<ExamScheduleClassRepo>();
 builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
 
-builder.Services.AddScoped<AnswersQaRepo>();  
+builder.Services.AddScoped<AnswersQaRepo>();
 builder.Services.AddScoped<IAnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
 builder.Services.AddScoped<IQuestionImagesQaService>();
@@ -179,10 +180,10 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.Register(c =>
     {
-        var optionsBuilder = new DbContextOptionsBuilder<isc_elibContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<isc_dbContext>();
         optionsBuilder.UseNpgsql(databaseUrl);
 
-        return new isc_elibContext(optionsBuilder.Options);
+        return new isc_dbContext(optionsBuilder.Options);
     })
     .AsSelf()
     .InstancePerLifetimeScope();

@@ -2,7 +2,7 @@
 {
     public class UserResponse
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? FullName { get; set; }
         public DateTime? Dob { get; set; }
@@ -13,15 +13,15 @@
         public string? Nation { get; set; }
         public string? Religion { get; set; }
         public DateTime? EnrollmentDate { get; set; }
-        public long RoleId { get; set; }
-        public long AcademicYearId { get; set; }
-        public long UserStatusId { get; set; }
-        public long ClassId { get; set; }
-        public long EntryType { get; set; }
+        public int RoleId { get; set; }
+        public int AcademicYearId { get; set; }
+        public int UserStatusId { get; set; }
+        public int ClassId { get; set; }
+        public int EntryType { get; set; }
         public string? AddressFull { get; set; }
-        public long ProvinceCode { get; set; }
-        public long DistrictCode { get; set; }
-        public long WardCode { get; set; }
+        public int ProvinceCode { get; set; }
+        public int DistrictCode { get; set; }
+        public int WardCode { get; set; }
         public string? Street { get; set; }
     }
 }

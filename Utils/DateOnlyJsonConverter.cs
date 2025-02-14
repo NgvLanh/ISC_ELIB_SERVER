@@ -16,36 +16,37 @@
 //        writer.WriteStringValue(value.ToString(DateFormat));
 //    }
 //}
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
-public class DateOnlyJsonConverter : JsonConverter<DateOnly?>
-{
-    private const string DateFormat = "yyyy-MM-dd";
+// using System.Text.Json.Serialization;
+// using System.Text.Json;
 
-    public override DateOnly? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        if (reader.TokenType == JsonTokenType.String)
-        {
-            var dateString = reader.GetString();
-            if (string.IsNullOrWhiteSpace(dateString))
-                return null; // Nếu chuỗi rỗng "", trả về null
+// public class DateOnlyJsonConverter : JsonConverter<DateTime>
+// {
+//     private const string DateFormat = "yyyy-MM-dd";
 
-            if (DateOnly.TryParse(dateString, out var date))
-                return date;
+//     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+//     {
+//         if (reader.TokenType == JsonTokenType.String)
+//         {
+//             var dateString = reader.GetString();
+//             if (string.IsNullOrWhiteSpace(dateString))
+//                 return null; // Nếu chuỗi rỗng "", trả về null
 
-            throw new JsonException($"Ngày không hợp lệ: {dateString}");
-        }
+//             if (DateOnly.TryParse(dateString, out var date))
+//                 return date;
 
-        return null;
-    }
+//             throw new JsonException($"Ngày không hợp lệ: {dateString}");
+//         }
 
-    public override void Write(Utf8JsonWriter writer, DateOnly? value, JsonSerializerOptions options)
-    {
-        if (value.HasValue)
-            writer.WriteStringValue(value.Value.ToString(DateFormat));
-        else
-            writer.WriteNullValue(); // Ghi `null` nếu giá trị là `null`
-    }
-}
+//         return null;
+//     }
+
+//     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+//     {
+//         if (value.HasValue)
+//             writer.WriteStringValue(value.Value.ToString(DateFormat));
+//         else
+//             writer.WriteNullValue(); // Ghi `null` nếu giá trị là `null`
+//     }
+// }
 

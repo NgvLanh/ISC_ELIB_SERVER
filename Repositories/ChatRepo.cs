@@ -5,9 +5,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class ChatRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ChatRepo(isc_elibContext context)
+        public ChatRepo(isc_dbContext context)
         {
             _context = context;
         }

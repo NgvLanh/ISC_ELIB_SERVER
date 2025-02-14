@@ -4,8 +4,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TrainingProgramsRepo
     {
-        private readonly isc_elibContext _context;
-        public TrainingProgramsRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TrainingProgramsRepo(isc_dbContext context)
         {
             _context = context;
         }

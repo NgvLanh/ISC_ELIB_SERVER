@@ -5,7 +5,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     public class RetirementRequest
     {
         [Required(ErrorMessage = "TeacherId là bắt buộc.")]
-        public long TeacherId { get; set; }
+        public int TeacherId { get; set; }
 
         [Required(ErrorMessage = "Ngày không được để trống.")]
         [DataType(DataType.DateTime, ErrorMessage = "Ngày không hợp lệ.")]
@@ -19,8 +19,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool? Status { get; set; }
 
         [Required(ErrorMessage = "LeadershipId là bắt buộc.")]
-        public long LeadershipId { get; set; }
+        public int LeadershipId { get; set; }
 
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
     }
 }

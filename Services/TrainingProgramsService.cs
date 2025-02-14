@@ -44,7 +44,8 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TrainingProgramsResponse>.Conflict("Chủ đề không tồn tại");
             }
 
-            var created = _repository.CreateTrainingProgram(new TrainingProgram() { 
+            var created = _repository.CreateTrainingProgram(new TrainingProgram()
+            {
                 Name = trainingProgramsRequest.Name,
                 MajorId = trainingProgramsRequest.MajorId,
                 SchoolFacilitiesId = trainingProgramsRequest.SchoolFacilitiesId,
@@ -54,7 +55,8 @@ namespace ISC_ELIB_SERVER.Services
                 Active = false,
                 FileName = trainingProgramsRequest.FileName,
                 FilePath = trainingProgramsRequest.FilePath,
-                Degree = trainingProgramsRequest.Degree});
+                Degree = trainingProgramsRequest.Degree
+            });
             return ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(created));
         }
 
@@ -107,7 +109,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
         {
             var trainingProgram = _repository.GetTrainingProgramById(id);
-            return (trainingProgram != null && !(trainingProgram.Active ?? false))
+            return (trainingProgram != null && !(trainingProgram.Active == false))
                 ? ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(trainingProgram))
                 : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
         }

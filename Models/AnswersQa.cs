@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+
 namespace ISC_ELIB_SERVER.Models
 {
     public partial class AnswersQa
@@ -11,13 +10,14 @@ namespace ISC_ELIB_SERVER.Models
             AnswerImagesQas = new HashSet<AnswerImagesQa>();
         }
 
-        public long Id { get; set; }
-        public long QuestionId { get; set; }
-        public long UserId { get; set; }
+        public int Id { get; set; }
+        public int? QuestionId { get; set; }
+        public int? UserId { get; set; }
         public string? Content { get; set; }
         public DateTime? CreateAt { get; set; }
-        [JsonIgnore]
-        public virtual QuestionQa Question { get; set; } = null!;
+        public bool Active { get; set; }
+
+        public virtual QuestionQa? Question { get; set; }
         public virtual ICollection<AnswerImagesQa> AnswerImagesQas { get; set; }
     }
 }
