@@ -39,7 +39,16 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
+
+//Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<AnswersQaRepo>();  
+builder.Services.AddScoped<IAnswersQaService>();
+builder.Services.AddScoped<QuestionImagesQaRepo>();
+builder.Services.AddScoped<IQuestionImagesQaService>();
+builder.Services.AddScoped<AnswerImagesQaRepo>();
+builder.Services.AddScoped<IAnswerImagesQaService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
