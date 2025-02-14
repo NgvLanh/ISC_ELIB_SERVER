@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -16,6 +17,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? QtyScoreSemester1 { get; set; }
         public int? QtyScoreSemester2 { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<StudentScore> StudentScores { get; set; }
     }
 }
