@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\ISC_ELIB_SERVER.props" />
-</Project>
