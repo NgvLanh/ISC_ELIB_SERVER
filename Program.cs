@@ -32,6 +32,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<SubjectTypeRepo>();
+builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
+builder.Services.AddScoped<SubjectGroupRepo>();
+builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
+builder.Services.AddScoped<SubjectRepo>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
