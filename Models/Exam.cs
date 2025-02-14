@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -15,7 +16,9 @@ namespace ISC_ELIB_SERVER.Models
         public string? Name { get; set; }
         public DateTime? ExamDate { get; set; }
         public int? DurationMinutes { get; set; }
-        public string? Status { get; set; }
+
+        [Column("status")]
+        public ExamStatus Status { get; set; }
         public string? File { get; set; }
         public long SemesterId { get; set; }
         public long AcademicYearId { get; set; }
