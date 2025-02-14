@@ -43,6 +43,21 @@ builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<SubjectRepo>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 
+// Add services and repositories Test attachment
+builder.Services.AddScoped<TestsAttachmentRepo>();
+builder.Services.AddScoped<ITestsAttachmentService, TestsAttachmentService>();
+
+// Add services and repositories Test Submission Answer
+builder.Services.AddScoped<TestSubmissionAnswerRepo>();
+builder.Services.AddScoped<ITestSubmissionAnswerService, TestSubmissionAnswerService>();
+
+// Add services and repositories Test attachment
+builder.Services.AddScoped<ExamRepo>();
+builder.Services.AddScoped<IExamService, ExamService>();
+
+// Add services and repositories Test Answer
+builder.Services.AddScoped<TestAnswerRepo>();
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
