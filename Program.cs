@@ -27,6 +27,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -36,6 +40,8 @@ builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, IThemesService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, IMajorService>();
+builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
 
 
 

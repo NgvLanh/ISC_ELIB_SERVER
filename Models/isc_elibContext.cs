@@ -1930,7 +1930,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("degree");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
 
