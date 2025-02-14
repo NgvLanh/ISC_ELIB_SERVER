@@ -4,7 +4,6 @@ using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
-using Sprache;
 
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -45,7 +44,7 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateUserStatus(long id, [FromBody] UserStatus userStatus)
         {
-            
+
             return Ok(ApiResponse<object>.Success("Chưa làm"));
         }
 
