@@ -12,7 +12,32 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public IEnumerable<ExamSchedule> GetAll() => _context.ExamSchedules.AsNoTracking().ToList();
+        public PagedResult<ExamSchedule> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
+        {
+            var query = _context.ExamSchedules.AsNoTracking();
+
+            // 🔍 Tìm kiếm theo `Name` (hoặc có thể thay đổi)
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(e => e.Name.Contains(search));
+            }
+
+            // 🔄 Sắp xếp động
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                query = isDescending
+                    ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                    : query.OrderBy(e => EF.Property<object>(e, sortBy));
+            }
+
+            // 📌 Tổng số bản ghi
+            var totalCount = query.Count();
+
+            // ⏳ Phân trang
+            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PagedResult<ExamSchedule>(items, totalCount, page, pageSize);
+        }
 
         public ExamSchedule? GetById(long id) => _context.ExamSchedules.Find(id);
 

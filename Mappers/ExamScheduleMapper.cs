@@ -1,6 +1,16 @@
-﻿namespace ISC_ELIB_SERVER.Mappers
+﻿using AutoMapper;
+using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+
+namespace ISC_ELIB_SERVER.Mappers
 {
-    public class ExamScheduleMapper
+    public class ExamScheduleMapper : Profile
     {
+        public ExamScheduleMapper()
+        {
+            CreateMap<ExamSchedule, ExamScheduleResponse>();
+            CreateMap<ExamScheduleRequest, ExamSchedule>();
+        }
     }
 }

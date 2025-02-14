@@ -16,9 +16,14 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 10,
+     [FromQuery] string? search = null,
+     [FromQuery] string? sortBy = "Id",
+     [FromQuery] bool isDescending = false)
         {
-            var response = _service.GetAll();
+            var response = _service.GetAll(page, pageSize, search, sortBy, isDescending);
             return Ok(response);
         }
 

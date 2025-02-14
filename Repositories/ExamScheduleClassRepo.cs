@@ -13,9 +13,33 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public IEnumerable<ExamScheduleClass> GetAll()
+        public PagedResult<ExamScheduleClass> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder)
         {
-            return _context.ExamScheduleClasses.ToList();
+            var query = _context.ExamScheduleClasses.AsQueryable();
+
+            // 🔍 Tìm kiếm theo tên lịch thi
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x => x.Class.Name.Contains(searchTerm));
+            }
+
+            // 🔄 Sắp xếp dữ liệu
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                bool isDescending = sortOrder?.ToLower() == "desc";
+
+                query = sortBy.ToLower() switch
+                {
+                    "name" => isDescending ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
+                    "date" => isDescending ? query.OrderByDescending(x => x.Date) : query.OrderBy(x => x.Date),
+                    _ => query.OrderBy(x => x.Id) // Mặc định sắp xếp theo Id
+                };
+            }
+
+            int totalItems = query.Count(); // Tổng số bản ghi
+            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PagedResult<ExamScheduleClass>(items, totalItems, page, pageSize);
         }
 
         public ExamScheduleClass? GetById(long id)

@@ -18,11 +18,13 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<ExamScheduleResponse>> GetAll()
+        public ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
         {
-            var entities = _repository.GetAll();
-            var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities);
-            return ApiResponse<ICollection<ExamScheduleResponse>>.Success(responses);
+            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending);
+            var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities.Items);
+
+            var result = new PagedResult<ExamScheduleResponse>(responses, entities.TotalItems, page, pageSize);
+            return ApiResponse<PagedResult<ExamScheduleResponse>>.Success(result);
         }
 
         public ApiResponse<ExamScheduleResponse> GetById(long id)

@@ -17,9 +17,14 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ApiResponse<ICollection<ExamScheduleClassResponse>>> GetAll()
+        public ActionResult<ApiResponse<PagedResult<ExamScheduleClassResponse>>> GetAll(
+      [FromQuery] int page = 1,
+      [FromQuery] int pageSize = 10,
+      [FromQuery] string? searchTerm = null,
+      [FromQuery] string? sortBy = null,
+      [FromQuery] string? sortOrder = "asc")
         {
-            return Ok(_service.GetAll());
+            return Ok(_service.GetAll(page, pageSize, searchTerm, sortBy, sortOrder));
         }
 
         [HttpGet("{id}")]

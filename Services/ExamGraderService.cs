@@ -17,11 +17,15 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<ExamGraderResponse>> GetAll()
+        public ApiResponse<PagedResult<ExamGraderResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
         {
-            var entities = _repository.GetAll();
-            var responses = _mapper.Map<ICollection<ExamGraderResponse>>(entities);
-            return ApiResponse<ICollection<ExamGraderResponse>>.Success(responses);
+            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending);
+
+            var responses = _mapper.Map<ICollection<ExamGraderResponse>>(entities.Items);
+            var result = new PagedResult<ExamGraderResponse>(responses, entities.TotalItems, page, pageSize);
+
+
+            return ApiResponse<PagedResult<ExamGraderResponse>>.Success(result);
         }
 
         public ApiResponse<ExamGraderResponse> GetById(long id)
