@@ -13,7 +13,7 @@ namespace ISC_ELIB_SERVER.Models
         public long SenderId { get; set; }
         public long UserId { get; set; }
 
-        public virtual User Sender { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual User? Sender { get; set; }
+        public virtual User? User { get; set; }
     }
 }
