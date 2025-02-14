@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ISC_ELIB_SERVER.Models
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class WorkProcess
+    public class WorkProcessResponse
     {
         public long Id { get; set; }
         public long TeacherId { get; set; }

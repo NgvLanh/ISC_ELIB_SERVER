@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class Retirement
+    public class ResignationResponse
     {
         public long Id { get; set; }
-        public long TeacherId { get; set; }
         public DateTime? Date { get; set; }
         public string? Note { get; set; }
         public string? Attachment { get; set; }
         public bool? Status { get; set; }
+        public long TeacherId { get; set; }
         public long LeadershipId { get; set; }
         public bool? Active { get; set; }
-
     }
 }

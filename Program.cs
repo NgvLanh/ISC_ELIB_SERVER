@@ -30,6 +30,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+//Đăng ký Repository và Service
+
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
@@ -73,6 +75,18 @@ builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 // Student_Info
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
+
+//WorkProcessRepo
+builder.Services.AddScoped<WorkProcessRepo>();
+builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
+
+//RetirementReppo
+builder.Services.AddScoped<RetirementRepo>();
+builder.Services.AddScoped<IRetirementService, RetirementService>();
+
+//Resignation
+builder.Services.AddScoped<ResignationRepo>();
+builder.Services.AddScoped<IResignationService, ResignationService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
