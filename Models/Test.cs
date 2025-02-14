@@ -22,12 +22,21 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public string? ClassIds { get; set; }
         public bool? FileSubmit { get; set; }
-        public long SemesterId { get; set; }
-        public long SubjectId { get; set; }
-        public long UserId { get; set; }
+        //public long SemesterId { get; set; }
+        //public long SubjectId { get; set; }
+        //public long UserId { get; set; }
 
-        public virtual Subject Subject { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        //Dùng tạm vì db thiếu data
+        public long? SemesterId { get; set; }
+        public long? SubjectId { get; set; }
+        public long? UserId { get; set; }
+
+        //public virtual Subject Subject { get; set; } = null!;
+        //public virtual User User { get; set; } = null!;
+
+        //Dùng tạm vì db thiếu data
+        public virtual Subject? Subject { get; set; } 
+        public virtual User? User { get; set; } 
         public virtual ICollection<TestFile> TestFiles { get; set; }
         public virtual ICollection<TestQuestion> TestQuestions { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }

@@ -9,12 +9,16 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
+
+using AutoMapper;
+
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
+
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -24,6 +28,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.MaxDepth = 64; // Đặt MaxDepth
 }); 
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<isc_elibContext>(options =>
@@ -35,19 +46,44 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//Đăng ký Repository và Service
 
 builder.Services.AddScoped<UserStatusRepo>();
 
 //Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+
+builder.Services.AddScoped<TestRepo>();
+builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<TestQuestionRepo>();
+builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
+builder.Services.AddScoped<SubjectTypeRepo>();
+builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
+builder.Services.AddScoped<SubjectGroupRepo>();
+builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
+builder.Services.AddScoped<SubjectRepo>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ExamGraderRepo>();
+builder.Services.AddScoped<IExamGraderService, ExamGraderService>();
+builder.Services.AddScoped<ExamScheduleRepo>();
+builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
+builder.Services.AddScoped<ExamScheduleClassRepo>();
+builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
+
 builder.Services.AddScoped<AnswersQaRepo>();  
 builder.Services.AddScoped<IAnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
 builder.Services.AddScoped<IQuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
 builder.Services.AddScoped<IAnswerImagesQaService>();
+
 
 
 // Add services and repositories Test attachment
@@ -64,6 +100,78 @@ builder.Services.AddScoped<IExamService, ExamService>();
 
 // Add services and repositories Test Answer
 builder.Services.AddScoped<TestAnswerRepo>();
+
+builder.Services.AddScoped<ThemesRepo>();
+builder.Services.AddScoped<IThemesService, IThemesService>();
+builder.Services.AddScoped<MajorRepo>();
+builder.Services.AddScoped<IMajorService, IMajorService>();
+builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+
+//
+builder.Services.AddScoped<AcademicYearRepo>();
+builder.Services.AddScoped<IAcademicYearService, AcademicYearService>();
+//
+builder.Services.AddScoped<CampusRepo>();
+builder.Services.AddScoped<ICampusService, CampusService>();
+//
+builder.Services.AddScoped<SchoolRepo>();
+builder.Services.AddScoped<ISchoolService, SchoolService>();
+
+
+//User
+builder.Services.AddScoped<UserRepo>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+//TeacherInfo
+builder.Services.AddScoped<TeacherInfoRepo>();
+builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
+
+//Role
+builder.Services.AddScoped<RoleRepo>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+//Permisson
+builder.Services.AddScoped<PermissionRepo>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+//Role_Permission
+builder.Services.AddScoped<RolePermissionRepo>();
+builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+
+//Temporary
+builder.Services.AddScoped<TemporaryLeaveRepo>();
+builder.Services.AddScoped<ITemporaryLeaveService, TemporaryLeaveService>();
+
+//Change_Class
+builder.Services.AddScoped<ChangeClassRepo>();
+builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
+
+//Exemption
+builder.Services.AddScoped<ExemptionRepo>();
+builder.Services.AddScoped<IExemptionService, ExemptionService>();
+
+//Transfer_School
+builder.Services.AddScoped<TransferSchoolRepo>();
+builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
+
+
+// Student_Info
+builder.Services.AddScoped<StudentInfoRepo>();
+builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
+
+//WorkProcessRepo
+builder.Services.AddScoped<WorkProcessRepo>();
+builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
+
+//RetirementReppo
+builder.Services.AddScoped<RetirementRepo>();
+builder.Services.AddScoped<IRetirementService, RetirementService>();
+
+//Resignation
+builder.Services.AddScoped<ResignationRepo>();
+builder.Services.AddScoped<IResignationService, ResignationService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

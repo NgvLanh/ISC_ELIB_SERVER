@@ -12,7 +12,9 @@ namespace ISC_ELIB_SERVER.Models
         public bool? Status { get; set; }
         public long TeacherId { get; set; }
         public long LeadershipId { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual TeacherInfo Teacher { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }
