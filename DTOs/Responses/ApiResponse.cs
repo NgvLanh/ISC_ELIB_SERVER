@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
@@ -8,11 +9,12 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int Code { get; }
         public string Message { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public T? Data { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string[]>? Errors { get; }
+
 
         public ApiResponse(int code, string message, T? data, Dictionary<string, string[]>? errors)
         {
