@@ -928,7 +928,6 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("date");
 
                 entity.Property(e => e.LeadershipId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("leadership_id");
 
                 entity.Property(e => e.Note).HasColumnName("note");
@@ -936,7 +935,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.TeacherId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("teacher_id");
 
                 entity.HasOne(d => d.Teacher)
@@ -961,15 +959,15 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("date");
 
                 entity.Property(e => e.LeadershipId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("leadership_id");
 
                 entity.Property(e => e.Note).HasColumnName("note");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 
+                entity.Property(e => e.Active).HasColumnName("active");
+
                 entity.Property(e => e.TeacherId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("teacher_id");
             });
 
@@ -2149,7 +2147,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
 
@@ -2166,11 +2164,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.StartDate).HasColumnName("start_date");
 
                 entity.Property(e => e.SubjectGroupsId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("subject_groups_id");
 
                 entity.Property(e => e.TeacherId)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("teacher_id");
             });
 
