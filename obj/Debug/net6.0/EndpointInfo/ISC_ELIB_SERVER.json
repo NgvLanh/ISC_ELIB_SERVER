@@ -5,6 +5,606 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/exam": {
+      "get": {
+        "tags": [
+          "Exam"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Exam"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "AcademicYearId",
+                  "ClassTypeId",
+                  "GradeLevelId",
+                  "Name",
+                  "SemesterId",
+                  "Status",
+                  "SubjectId"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "maxLength": 255,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "DurationMinutes": {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Status": {
+                    "$ref": "#/components/schemas/ExamStatus"
+                  },
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "SemesterId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "AcademicYearId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "GradeLevelId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "ClassTypeId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "SubjectId": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "DurationMinutes": {
+                  "style": "form"
+                },
+                "Status": {
+                  "style": "form"
+                },
+                "File": {
+                  "style": "form"
+                },
+                "SemesterId": {
+                  "style": "form"
+                },
+                "AcademicYearId": {
+                  "style": "form"
+                },
+                "GradeLevelId": {
+                  "style": "form"
+                },
+                "ClassTypeId": {
+                  "style": "form"
+                },
+                "SubjectId": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/exam/{id}": {
+      "get": {
+        "tags": [
+          "Exam"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Exam"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "AcademicYearId",
+                  "ClassTypeId",
+                  "GradeLevelId",
+                  "Name",
+                  "SemesterId",
+                  "Status",
+                  "SubjectId"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "maxLength": 255,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "DurationMinutes": {
+                    "maximum": 300,
+                    "minimum": 1,
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Status": {
+                    "$ref": "#/components/schemas/ExamStatus"
+                  },
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "SemesterId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "AcademicYearId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "GradeLevelId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "ClassTypeId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "SubjectId": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "DurationMinutes": {
+                  "style": "form"
+                },
+                "Status": {
+                  "style": "form"
+                },
+                "File": {
+                  "style": "form"
+                },
+                "SemesterId": {
+                  "style": "form"
+                },
+                "AcademicYearId": {
+                  "style": "form"
+                },
+                "GradeLevelId": {
+                  "style": "form"
+                },
+                "ClassTypeId": {
+                  "style": "form"
+                },
+                "SubjectId": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/exam/{name}": {
+      "get": {
+        "tags": [
+          "Exam"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/tests-attachments": {
+      "get": {
+        "tags": [
+          "TestsAttachment"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TestsAttachment"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/tests-attachments/{id}": {
+      "put": {
+        "tags": [
+          "TestsAttachment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestsAttachmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "TestsAttachment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TestsAttachment"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/test-submission-answer": {
+      "get": {
+        "tags": [
+          "TestSubmissionAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TestSubmissionAnswer"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/test-submission-answer/{id}": {
+      "get": {
+        "tags": [
+          "TestSubmissionAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TestSubmissionAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestSubmissionAnswerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TestSubmissionAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/user-statuses": {
       "get": {
         "tags": [
@@ -723,8 +1323,7 @@
             "nullable": true
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/ExamStatus"
           },
           "file": {
             "type": "string",
@@ -906,6 +1505,15 @@
           }
         },
         "additionalProperties": false
+      },
+      "ExamStatus": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "Exemption": {
         "type": "object",
@@ -2222,6 +2830,33 @@
         },
         "additionalProperties": false
       },
+      "TestSubmissionAnswerRequest": {
+        "required": [
+          "questionId",
+          "selectedAnswerId",
+          "submissionId"
+        ],
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "questionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "selectedAnswerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "answerText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TestSubmissionsAnswer": {
         "type": "object",
         "properties": {
@@ -2278,6 +2913,20 @@
           },
           "submission": {
             "$ref": "#/components/schemas/TestsSubmission"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestsAttachmentRequest": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileUrl": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
