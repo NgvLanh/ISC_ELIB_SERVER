@@ -37,6 +37,11 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
             return new ApiResponse<T>(1, message, default, default);
         }
 
+        public static ApiResponse<T> BadRequest(string message = "Bad request")
+        {
+            return new ApiResponse<T>(1, message, default, default);
+        }
+
         public static ApiResponse<T> Conflict(string message = "Conflict")
         {
             return new ApiResponse<T>(1, message, default, default);
