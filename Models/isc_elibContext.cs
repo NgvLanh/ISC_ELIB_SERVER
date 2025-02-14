@@ -769,7 +769,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
@@ -1879,6 +1879,8 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Active).HasColumnName("active");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
@@ -1942,7 +1944,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("degree");
 
-                entity.Property(e => e.Deleted).HasColumnName("deleted");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
 

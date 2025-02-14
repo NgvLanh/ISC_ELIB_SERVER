@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6013b966def0b6afe6ced8ca110b3ac3848b6229")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5bdf2e2885d5e0d7ab019f88f2fc8d5509fff81")]
 [assembly: System.Reflection.AssemblyProductAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

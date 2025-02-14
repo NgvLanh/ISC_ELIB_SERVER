@@ -8,10 +8,10 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int Code { get; }
         public string Message { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public T? Data { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, string[]>? Errors { get; }
 
         public ApiResponse(int code, string message, T? data, Dictionary<string, string[]>? errors)

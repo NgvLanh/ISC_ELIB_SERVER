@@ -20,7 +20,7 @@ var databaseUrl = Env.GetString("DATABASE_URL");
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-}); 
+});
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -33,11 +33,22 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<ThemesRepo>();
+builder.Services.AddScoped<IThemesService, IThemesService>();
+builder.Services.AddScoped<MajorRepo>();
+builder.Services.AddScoped<IMajorService, IMajorService>();
+builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+
 //
 builder.Services.AddScoped<AcademicYearRepo>();
 builder.Services.AddScoped<IAcademicYearService, AcademicYearService>();
