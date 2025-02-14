@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class Exemption
+    public class ExemptionResponse
     {
         public long Id { get; set; }
         public long StudentId { get; set; }
@@ -12,7 +9,5 @@ namespace ISC_ELIB_SERVER.Models
         public string? FormExemption { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual Class Class { get; set; } = null!;
-        public virtual User Student { get; set; } = null!;
     }
 }
