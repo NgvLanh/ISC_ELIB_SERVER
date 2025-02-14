@@ -14,6 +14,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? AttachmentName { get; set; }
         public string? AttachmentPath { get; set; }
         public long LeadershipId { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual Class NewClass { get; set; } = null!;
         public virtual Class OldClass { get; set; } = null!;
