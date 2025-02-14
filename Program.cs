@@ -9,13 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
+using AutoMapper;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<isc_elibContext>(options =>
@@ -27,11 +33,32 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<ThemesRepo>();
+builder.Services.AddScoped<IThemesService, IThemesService>();
+builder.Services.AddScoped<MajorRepo>();
+builder.Services.AddScoped<IMajorService, IMajorService>();
+builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+
+//
+builder.Services.AddScoped<AcademicYearRepo>();
+builder.Services.AddScoped<IAcademicYearService, AcademicYearService>();
+//
+builder.Services.AddScoped<CampusRepo>();
+builder.Services.AddScoped<ICampusService, CampusService>();
+//
+builder.Services.AddScoped<SchoolRepo>();
+builder.Services.AddScoped<ISchoolService, SchoolService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

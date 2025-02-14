@@ -75,5 +75,5 @@ wwwroot/
 .env
 
 # Build Folders
-.bin/
-.obj/
+.bin
+.obj
