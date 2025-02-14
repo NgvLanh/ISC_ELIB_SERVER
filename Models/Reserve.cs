@@ -16,6 +16,6 @@ namespace ISC_ELIB_SERVER.Models
         public long SemestersId { get; set; }
         public long LeadershipId { get; set; }
 
-        public virtual User Student { get; set; } = null!;
+        public virtual User? Student { get; set; }
     }
 }
