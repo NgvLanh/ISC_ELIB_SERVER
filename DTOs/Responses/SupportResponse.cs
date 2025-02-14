@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class Support
+    public class SupportResponse
     {
         public long Id { get; set; }
         public string? Title { get; set; }
@@ -11,7 +8,5 @@ namespace ISC_ELIB_SERVER.Models
         public string? Type { get; set; }
         public DateTime? CreateAt { get; set; }
         public long UserId { get; set; }
-
-        public virtual User? User { get; set; }
     }
 }

@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
+
 using AutoMapper;
+
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,10 +19,21 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
+
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+  
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.MaxDepth = 64; // Đặt MaxDepth
+}); 
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -43,7 +56,32 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Đăng ký Repository và Service
 
 builder.Services.AddScoped<UserStatusRepo>();
+
+//Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<AnswersQaRepo>();  
+builder.Services.AddScoped<IAnswersQaService>();
+builder.Services.AddScoped<QuestionImagesQaRepo>();
+builder.Services.AddScoped<IQuestionImagesQaService>();
+builder.Services.AddScoped<AnswerImagesQaRepo>();
+builder.Services.AddScoped<IAnswerImagesQaService>();
+
+
+// Add services and repositories Test attachment
+builder.Services.AddScoped<TestsAttachmentRepo>();
+builder.Services.AddScoped<ITestsAttachmentService, TestsAttachmentService>();
+
+// Add services and repositories Test Submission Answer
+builder.Services.AddScoped<TestSubmissionAnswerRepo>();
+builder.Services.AddScoped<ITestSubmissionAnswerService, TestSubmissionAnswerService>();
+
+// Add services and repositories Test attachment
+builder.Services.AddScoped<ExamRepo>();
+builder.Services.AddScoped<IExamService, ExamService>();
+
+// Add services and repositories Test Answer
+builder.Services.AddScoped<TestAnswerRepo>();
+
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, IThemesService>();
 builder.Services.AddScoped<MajorRepo>();
@@ -115,6 +153,7 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
@@ -138,6 +177,13 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
         .Where(t => t.Name.EndsWith("Repo"))
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();
+    containerBuilder.RegisterType<QuestionQaRepo>().As<QuestionQaRepo>().InstancePerLifetimeScope();
+    containerBuilder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+    .Where(t => t.Name.EndsWith("Service"))
+    .AsImplementedInterfaces()
+    .InstancePerLifetimeScope();
+
+
 });
 
 builder.Services.AddEndpointsApiExplorer();
