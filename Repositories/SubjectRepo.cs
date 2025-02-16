@@ -4,9 +4,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class SubjectRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public SubjectRepo(isc_elibContext context)
+        public SubjectRepo(isc_dbContext context)
         {
             _context = context;
         }

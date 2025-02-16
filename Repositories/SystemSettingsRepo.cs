@@ -18,9 +18,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
     public class SystemSettingsRepo : ISystemSettingsRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public SystemSettingsRepo(isc_elibContext context)
+        public SystemSettingsRepo(isc_dbContext context)
         {
             _context = context;
         }

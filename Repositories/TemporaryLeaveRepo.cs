@@ -4,20 +4,20 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TemporaryLeaveRepo
     {
-        private readonly isc_elibContext _context;
-        public TemporaryLeaveRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TemporaryLeaveRepo(isc_dbContext context)
         {
             _context = context;
         }
 
         public ICollection<TemporaryLeave> GetTemporaryLeaves()
         {
-            return _context.TemporaryLeaves.Where(d => d.IsActive == true).ToList();
+            return _context.TemporaryLeaves.Where(d => d.Active == true).ToList();
         }
 
         public TemporaryLeave GetTemporaryLeaveById(long id)
         {
-            return _context.TemporaryLeaves.FirstOrDefault(s => s.Id == id && s.IsActive == true);
+            return _context.TemporaryLeaves.FirstOrDefault(s => s.Id == id && s.Active == true);
         }
 
         public TemporaryLeave CreateTemporaryLeave(TemporaryLeave TemporaryLeave)
@@ -45,7 +45,7 @@ namespace ISC_ELIB_SERVER.Repositories
             existingTemporaryLeave.Status = temporaryLeave.Status;
             existingTemporaryLeave.TeacherId = temporaryLeave.TeacherId;
             existingTemporaryLeave.LeadershipId = temporaryLeave.LeadershipId;
-            existingTemporaryLeave.IsActive = temporaryLeave.IsActive;
+            existingTemporaryLeave.Active = temporaryLeave.Active;
             // Lưu các thay đổi xuống CSDL
             _context.SaveChanges();
 
@@ -69,7 +69,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var temporaryLeave = GetTemporaryLeaveById(id);
             if (temporaryLeave != null)
             {
-                temporaryLeave.IsActive = false;
+                temporaryLeave.Active = false;
                 _context.TemporaryLeaves.Update(temporaryLeave);
                 return _context.SaveChanges() > 0;
             }

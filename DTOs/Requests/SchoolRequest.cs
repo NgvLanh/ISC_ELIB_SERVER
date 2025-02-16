@@ -13,14 +13,14 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(255, ErrorMessage = "Tên trường tối đa 255 ký tự")]
         public string? Name { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "Tỉnh/Thành phố không hợp lệ")]
-        public long ProvinceId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Tỉnh/Thành phố không hợp lệ")]
+        public int ProvinceId { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "Quận/Huyện không hợp lệ")]
-        public long DistrictId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Quận/Huyện không hợp lệ")]
+        public int DistrictId { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "Phường/Xã không hợp lệ")]
-        public long WardId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Phường/Xã không hợp lệ")]
+        public int WardId { get; set; }
 
         public bool? HeadOffice { get; set; }
 
@@ -41,10 +41,10 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Url(ErrorMessage = "URL website không hợp lệ")]
         public string? WebsiteUrl { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "Người dùng không hợp lệ")]
-        public long? UserId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Người dùng không hợp lệ")]
+        public int? UserId { get; set; }
 
-        [Range(1, long.MaxValue, ErrorMessage = "Cấp giáo dục không hợp lệ")]
-        public long? EducationLevelId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Cấp giáo dục không hợp lệ")]
+        public int? EducationLevelId { get; set; }
     }
 }

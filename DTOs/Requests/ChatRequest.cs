@@ -8,9 +8,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string Content { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "UserId không được để trống")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = "SessionId không được để trống")]
-        public long SessionId { get; set; }
+        public int SessionId { get; set; }
     }
 }

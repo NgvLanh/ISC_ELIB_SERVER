@@ -13,9 +13,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
     public class ClassTypeRepo : IClassTypeRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ClassTypeRepo(isc_elibContext context)
+        public ClassTypeRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -40,15 +40,15 @@ namespace ISC_ELIB_SERVER.Repositories
         public ClassType? UpdateClassType(ClassType classType)
         {
             var existingClassType = _context.ClassTypes.Find(classType.Id);
-            
+
             if (existingClassType == null)
             {
                 return null;
             }
-            
+
             existingClassType.Name = classType.Name;
             existingClassType.Description = classType.Description;
-            
+
             _context.SaveChanges();
             return existingClassType;
         }

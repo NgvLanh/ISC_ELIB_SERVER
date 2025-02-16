@@ -11,7 +11,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public DateTime EndTime { get; set; }
 
         [Required(ErrorMessage = "Trường học không được để trống")]
-        [Range(1, long.MaxValue, ErrorMessage = "ID trường học không hợp lệ")]
-        public long? SchoolId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "ID trường học không hợp lệ")]
+        public int? SchoolId { get; set; }
     }
 }

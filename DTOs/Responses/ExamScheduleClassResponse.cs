@@ -2,9 +2,9 @@
 {
     public class ExamScheduleClassResponse
     {
-        public long Id { get; set; }
-        public long ClassId { get; set; }
-        public long ExamScheduleId { get; set; }
-        public long SupervisoryTeacherId { get; set; }
+        public int Id { get; set; }
+        public int ClassId { get; set; }
+        public int ExamScheduleId { get; set; }
+        public int SupervisoryTeacherId { get; set; }
     }
 }

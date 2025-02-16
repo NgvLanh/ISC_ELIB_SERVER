@@ -21,9 +21,9 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly RetirementRepo _repository;
         private readonly IMapper _mapper;
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public RetirementService(RetirementRepo repository, IMapper mapper, isc_elibContext context)
+        public RetirementService(RetirementRepo repository, IMapper mapper, isc_dbContext context)
         {
             _repository = repository;
             _mapper = mapper;

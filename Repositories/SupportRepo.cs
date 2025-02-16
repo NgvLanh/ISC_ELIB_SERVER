@@ -6,9 +6,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class SupportRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public SupportRepo(isc_elibContext context)
+        public SupportRepo(isc_dbContext context)
         {
             _context = context;
         }

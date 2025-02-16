@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -11,11 +10,12 @@ namespace ISC_ELIB_SERVER.Models
             Schools = new HashSet<School>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public bool? Status { get; set; }
         public string? Description { get; set; }
-        [JsonIgnore]
+        public bool Active { get; set; }
+
         public virtual ICollection<School> Schools { get; set; }
     }
 }

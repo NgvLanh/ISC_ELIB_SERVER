@@ -26,10 +26,9 @@ namespace ISC_ELIB_SERVER.Models
             Tests = new HashSet<Test>();
             TestsSubmissions = new HashSet<TestsSubmission>();
             TransferSchools = new HashSet<TransferSchool>();
-            TemporaryLeaves = new HashSet<TemporaryLeave>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? Password { get; set; }
         public string? FullName { get; set; }
@@ -41,22 +40,23 @@ namespace ISC_ELIB_SERVER.Models
         public string? Nation { get; set; }
         public string? Religion { get; set; }
         public DateTime? EnrollmentDate { get; set; }
-        public long? RoleId { get; set; }
-        public long? AcademicYearId { get; set; }
-        public long? UserStatusId { get; set; }
-        public long? ClassId { get; set; }
-        public long? EntryType { get; set; }
+        public int? RoleId { get; set; }
+        public int? AcademicYearId { get; set; }
+        public int? UserStatusId { get; set; }
+        public int? ClassId { get; set; }
+        public int? EntryType { get; set; }
         public string? AddressFull { get; set; }
-        public long? ProvinceCode { get; set; }
-        public long? DistrictCode { get; set; }
-        public long? WardCode { get; set; }
+        public int? ProvinceCode { get; set; }
+        public int? DistrictCode { get; set; }
+        public int? WardCode { get; set; }
         public string? Street { get; set; }
+        public bool Active { get; set; }
 
-        public virtual AcademicYear AcademicYear { get; set; } = null!;
-        public virtual Class Class { get; set; } = null!;
-        public virtual EntryType EntryTypeNavigation { get; set; } = null!;
-        public virtual Role Role { get; set; } = null!;
-        public virtual UserStatus UserStatus { get; set; } = null!;
+        public virtual AcademicYear? AcademicYear { get; set; }
+        public virtual Class? Class { get; set; }
+        public virtual EntryType? EntryTypeNavigation { get; set; }
+        public virtual Role? Role { get; set; }
+        public virtual UserStatus? UserStatus { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Campus> Campuses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClasses { get; set; }
@@ -76,7 +76,5 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Test> Tests { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
         public virtual ICollection<TransferSchool> TransferSchools { get; set; }
-        public virtual ICollection<TemporaryLeave> TemporaryLeaves { get; set; }
-
     }
 }

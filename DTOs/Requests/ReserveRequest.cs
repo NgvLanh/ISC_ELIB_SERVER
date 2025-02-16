@@ -5,7 +5,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     public class ReserveRequest
     {
         [Required(ErrorMessage = "Mã sinh viên không được để trống")]
-        public long StudentId { get; set; }
+        public int StudentId { get; set; }
 
         [Required(ErrorMessage = "Ngày đặt không được để trống")]
         public DateTime ReserveDate { get; set; }
@@ -24,12 +24,12 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string Semester { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mã lớp không được để trống")]
-        public long ClassId { get; set; }
+        public int ClassId { get; set; }
 
         [Required(ErrorMessage = "Mã học kỳ không được để trống")]
-        public long SemesterId { get; set; } // Corrected property name
+        public int SemesterId { get; set; } // Corrected property name
 
         [Required(ErrorMessage = "Mã lãnh đạo không được để trống")]
-        public long LeadershipId { get; set; }
+        public int LeadershipId { get; set; }
     }
 }

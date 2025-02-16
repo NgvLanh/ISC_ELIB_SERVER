@@ -2,8 +2,8 @@
 {
     public class QuestionImagesQaResponse
     {
-        public long Id { get; set; }
-        public long QuestionId { get; set; }
+        public int Id { get; set; }
+        public int QuestionId { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
     }
 }

@@ -20,9 +20,9 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly ResignationRepo _repository;
         private readonly IMapper _mapper;
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ResignationService(ResignationRepo repository, IMapper mapper, isc_elibContext context)
+        public ResignationService(ResignationRepo repository, IMapper mapper, isc_dbContext context)
         {
             _repository = repository;
             _mapper = mapper;

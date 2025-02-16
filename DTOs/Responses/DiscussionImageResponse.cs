@@ -2,8 +2,8 @@
 {
     public class DiscussionImageResponse
     {
-        public long Id { get; set; }
-        public long DiscussionId { get; set; }
+        public int Id { get; set; }
+        public int DiscussionId { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
 
     }

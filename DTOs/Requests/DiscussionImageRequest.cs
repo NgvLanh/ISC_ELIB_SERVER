@@ -5,7 +5,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     public class DiscussionImageRequest
     {
         [Required]
-        public long DiscussionId { get; set; }
+        public int DiscussionId { get; set; }
 
         [Required]
         [Url]

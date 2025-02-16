@@ -5,8 +5,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class RoleRepo
     {
-        private readonly isc_elibContext _context;
-        public RoleRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public RoleRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -30,7 +30,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public Role? UpdateRole(long id, RoleRequest updatedRole)
         {
-            var existingRole = GetRoleById(id); 
+            var existingRole = GetRoleById(id);
 
             if (existingRole == null)
             {
@@ -39,7 +39,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
             existingRole.Name = updatedRole.Name;
             existingRole.Description = updatedRole.Description;
-            existingRole.IsActive = updatedRole.IsActive;
+            existingRole.Active = updatedRole.Active;
 
             _context.Roles.Update(existingRole);
             _context.SaveChanges();

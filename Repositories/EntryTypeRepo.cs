@@ -1,14 +1,14 @@
 ﻿namespace ISC_ELIB_SERVER.Repositories
 {
     using global::ISC_ELIB_SERVER.Models;
-  
+
     namespace ISC_ELIB_SERVER.Repositories
     {
         public class EntryTypeRepo
         {
-            private readonly isc_elibContext _context;
+            private readonly isc_dbContext _context;
 
-            public EntryTypeRepo(isc_elibContext context)
+            public EntryTypeRepo(isc_dbContext context)
             {
                 _context = context;
             }

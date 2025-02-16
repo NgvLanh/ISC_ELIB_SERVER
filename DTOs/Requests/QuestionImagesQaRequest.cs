@@ -5,7 +5,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     public class QuestionImagesQaRequest
     {
         [Required(ErrorMessage = "QuestionId là bắt buộc")]
-        public long QuestionId { get; set; }
+        public int QuestionId { get; set; }
 
         [Required(ErrorMessage = "ImageUrl là bắt buộc")]
         [Url(ErrorMessage = "Định dạng URL không hợp lệ")]
