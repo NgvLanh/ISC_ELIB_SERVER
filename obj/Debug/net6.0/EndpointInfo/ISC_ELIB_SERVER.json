@@ -2339,8 +2339,7 @@
           },
           "userId": {
             "type": "integer",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "user": {
             "$ref": "#/components/schemas/User"
@@ -2830,8 +2829,7 @@
           },
           "userId": {
             "type": "integer",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "addressFull": {
             "type": "string",

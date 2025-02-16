@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+07a84437c07cf8cba5121ee2ecd7587a472905ca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+825b727812313eb8feb5e6273f93d24aa6e644b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ISC_ELIB_SERVER")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

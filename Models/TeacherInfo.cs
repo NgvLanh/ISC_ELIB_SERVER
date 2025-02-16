@@ -24,13 +24,13 @@ namespace ISC_ELIB_SERVER.Models
         public string? UnionPlace { get; set; }
         public bool? PartyMember { get; set; }
         public DateTime? PartyDate { get; set; }
-        public long? UserId { get; set; }
+        public long UserId { get; set; }
         public string? AddressFull { get; set; }
         public long ProvinceCode { get; set; }
         public long DistrictCode { get; set; }
         public long WardCode { get; set; }
 
-        public virtual User? User { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }
         public virtual ICollection<GradeLevel> GradeLevels { get; set; }
         public virtual ICollection<Resignation> Resignations { get; set; }
