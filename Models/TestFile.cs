@@ -5,10 +5,11 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class TestFile
     {
-        public long Id { get; set; }
-        public long TestId { get; set; }
+        public int Id { get; set; }
+        public int? TestId { get; set; }
         public string? FileUrl { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Test Test { get; set; } = null!;
+        public virtual Test? Test { get; set; }
     }
 }

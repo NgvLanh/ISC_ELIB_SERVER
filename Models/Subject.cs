@@ -15,16 +15,17 @@ namespace ISC_ELIB_SERVER.Models
             Tests = new HashSet<Test>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
         public int? HoursSemester1 { get; set; }
         public int? HoursSemester2 { get; set; }
-        public long SubjectGroupId { get; set; }
-        public long SubjectTypeId { get; set; }
+        public int? SubjectGroupId { get; set; }
+        public int? SubjectTypeId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual SubjectGroup SubjectGroup { get; set; } = null!;
-        public virtual SubjectType SubjectType { get; set; } = null!;
+        public virtual SubjectGroup? SubjectGroup { get; set; }
+        public virtual SubjectType? SubjectType { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
         public virtual ICollection<Exam> Exams { get; set; }
         public virtual ICollection<QuestionQa> QuestionQas { get; set; }

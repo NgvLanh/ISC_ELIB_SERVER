@@ -10,11 +10,12 @@ namespace ISC_ELIB_SERVER.Models
             Subjects = new HashSet<Subject>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
-        public long TeacherId { get; set; }
+        public int? TeacherId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual TeacherInfo Teacher { get; set; } = null!;
+        public virtual TeacherInfo? Teacher { get; set; }
         public virtual ICollection<Subject> Subjects { get; set; }
     }
 }

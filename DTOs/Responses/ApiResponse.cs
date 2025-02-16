@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
@@ -8,21 +9,22 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int Code { get; }
         public string Message { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public T? Data { get; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, string[]>? Errors { get; }
 
-        public ApiResponse(int code, string messsage, T? data, Dictionary<string, string[]>? errors)
+
+        public ApiResponse(int code, string message, T? data, Dictionary<string, string[]>? errors)
         {
             Code = code;
-            Message = messsage;
+            Message = message;
             Data = data;
             Errors = errors;
         }
 
-        public static ApiResponse<T> Success(T data = default)
+        public static ApiResponse<T> Success(T data = default, string v = null)
         {
             return new ApiResponse<T>(0, "Success", data, null);
         }
@@ -37,10 +39,14 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
             return new ApiResponse<T>(1, message, default, default);
         }
 
-        public static ApiResponse<T> Conflict(string message = "Conflict")
+        public static ApiResponse<T> BadRequest(string message = "Bad request")
         {
             return new ApiResponse<T>(1, message, default, default);
         }
 
+        public static ApiResponse<T> Conflict(string message = "Conflict")
+        {
+            return new ApiResponse<T>(1, message, default, default);
+        }
     }
 }

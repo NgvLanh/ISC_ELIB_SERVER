@@ -19,19 +19,25 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public IFormFile? File { get; set; }
 
         [Required(ErrorMessage = "SemesterId không được để trống")]
-        public long SemesterId { get; set; }
+        public int SemesterId { get; set; }
 
         [Required(ErrorMessage = "AcademicYearId không được để trống")]
-        public long AcademicYearId { get; set; }
+        public int AcademicYearId { get; set; }
 
         [Required(ErrorMessage = "GradeLevelId không được để trống")]
-        public long GradeLevelId { get; set; }
+        public int GradeLevelId { get; set; }
 
         [Required(ErrorMessage = "ClassTypeId không được để trống")]
-        public long ClassTypeId { get; set; }
+        public int ClassTypeId { get; set; }
 
         [Required(ErrorMessage = "SubjectId không được để trống")]
-        public long SubjectId { get; set; }
+        public int SubjectId { get; set; }
     }
 
+    public enum ExamStatus
+    {
+        NotStarted,
+        InProgress,
+        Completed
+    }
 }

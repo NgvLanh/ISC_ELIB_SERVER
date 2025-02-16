@@ -15,21 +15,22 @@ namespace ISC_ELIB_SERVER.Models
             Users = new HashSet<User>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
         public int? StudentQuantity { get; set; }
         public int? SubjectQuantity { get; set; }
         public string? Description { get; set; }
-        public long GradeLevelId { get; set; }
-        public long AcademicYearId { get; set; }
-        public long UserId { get; set; }
-        public long ClassTypeId { get; set; }
+        public int? GradeLevelId { get; set; }
+        public int? AcademicYearId { get; set; }
+        public int? UserId { get; set; }
+        public int? ClassTypeId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual AcademicYear AcademicYear { get; set; } = null!;
-        public virtual ClassType ClassType { get; set; } = null!;
-        public virtual GradeLevel GradeLevel { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual AcademicYear? AcademicYear { get; set; }
+        public virtual ClassType? ClassType { get; set; }
+        public virtual GradeLevel? GradeLevel { get; set; }
+        public virtual User? User { get; set; }
         public virtual ICollection<ChangeClass> ChangeClassNewClasses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClassOldClasses { get; set; }
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }

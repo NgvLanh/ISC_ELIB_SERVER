@@ -12,12 +12,13 @@ namespace ISC_ELIB_SERVER.Models
             StudentScores = new HashSet<StudentScore>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public long AcademicYearId { get; set; }
+        public int? AcademicYearId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual AcademicYear AcademicYear { get; set; } = null!;
+        public virtual AcademicYear? AcademicYear { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
         public virtual ICollection<Exam> Exams { get; set; }
         public virtual ICollection<StudentScore> StudentScores { get; set; }

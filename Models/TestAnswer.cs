@@ -10,12 +10,13 @@ namespace ISC_ELIB_SERVER.Models
             TestSubmissionsAnswers = new HashSet<TestSubmissionsAnswer>();
         }
 
-        public long Id { get; set; }
-        public long QuestionId { get; set; }
+        public int Id { get; set; }
+        public int? QuestionId { get; set; }
         public string? AnswerText { get; set; }
         public bool? IsCorrect { get; set; }
+        public bool Active { get; set; }
 
-        public virtual TestQuestion Question { get; set; } = null!;
+        public virtual TestQuestion? Question { get; set; }
         public virtual ICollection<TestSubmissionsAnswer> TestSubmissionsAnswers { get; set; }
     }
 }

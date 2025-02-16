@@ -5,10 +5,11 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class DiscussionImage
     {
-        public long Id { get; set; }
-        public long DiscussionId { get; set; }
+        public int Id { get; set; }
+        public int? DiscussionId { get; set; }
         public string? ImageUrl { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Discussion Discussion { get; set; } = null!;
+        public virtual Discussion? Discussion { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Models
             Sessions = new HashSet<Session>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public DateTime? ExamDate { get; set; }
         public int? DurationMinutes { get; set; }
@@ -20,17 +20,18 @@ namespace ISC_ELIB_SERVER.Models
         [Column("status")]
         public ExamStatus Status { get; set; }
         public string? File { get; set; }
-        public long SemesterId { get; set; }
-        public long AcademicYearId { get; set; }
-        public long GradeLevelId { get; set; }
-        public long ClassTypeId { get; set; }
-        public long SubjectId { get; set; }
+        public int? SemesterId { get; set; }
+        public int? AcademicYearId { get; set; }
+        public int? GradeLevelId { get; set; }
+        public int? ClassTypeId { get; set; }
+        public int? SubjectId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual AcademicYear AcademicYear { get; set; } = null!;
-        public virtual ClassType ClassType { get; set; } = null!;
-        public virtual GradeLevel GradeLevel { get; set; } = null!;
-        public virtual Semester Semester { get; set; } = null!;
-        public virtual Subject Subject { get; set; } = null!;
+        public virtual AcademicYear? AcademicYear { get; set; }
+        public virtual ClassType? ClassType { get; set; }
+        public virtual GradeLevel? GradeLevel { get; set; }
+        public virtual Semester? Semester { get; set; }
+        public virtual Subject? Subject { get; set; }
         public virtual ICollection<ExamGrader> ExamGraders { get; set; }
         public virtual ICollection<Session> Sessions { get; set; }
     }
