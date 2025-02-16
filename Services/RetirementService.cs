@@ -1,0 +1,108 @@
+﻿using AutoMapper;
+using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Repositories;
+
+namespace ISC_ELIB_SERVER.Services
+{
+    public interface IRetirementService
+    {
+        ApiResponse<ICollection<RetirementResponse>> GetRetirement(int page, int pageSize, string search, string sortColumn, string sortOrder);
+
+        ApiResponse<ICollection<RetirementResponse>> GetRetirementNoPaging();
+        ApiResponse<RetirementResponse> GetRetirementById(long id);
+        ApiResponse<RetirementResponse> CreateRetirement(RetirementRequest Retirement_AddRequest);
+        ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest Retirement_UpdateRequest);
+        ApiResponse<Retirement> DeleteRetirement(long id);
+    }
+
+    public class RetirementService : IRetirementService
+    {
+        private readonly RetirementRepo _repository;
+        private readonly IMapper _mapper;
+        private readonly isc_dbContext _context;
+
+        public RetirementService(RetirementRepo repository, IMapper mapper, isc_dbContext context)
+        {
+            _repository = repository;
+            _mapper = mapper;
+            _context = context;
+        }
+
+        public ApiResponse<RetirementResponse> CreateRetirement(RetirementRequest Retirement_AddRequest)
+        {
+            if (Retirement_AddRequest.Date.HasValue)
+            {
+                // Chuyển sang DateTime có Kind Unspecified
+                Retirement_AddRequest.Date = DateTime.SpecifyKind(Retirement_AddRequest.Date.Value, DateTimeKind.Unspecified);
+            }
+            var retirement = _mapper.Map<Retirement>(Retirement_AddRequest);
+            var created = _repository.CreateRetirement(retirement);
+            return ApiResponse<RetirementResponse>.Success(_mapper.Map<RetirementResponse>(created));
+        }
+
+        public ApiResponse<Retirement> DeleteRetirement(long id)
+        {
+            var success = _repository.DeleteRetirement(id);
+            return success
+                ? ApiResponse<Retirement>.Success()
+                : ApiResponse<Retirement>.NotFound("Không tìm thấy dữ liệu để xóa");
+        }
+
+        public ApiResponse<ICollection<RetirementResponse>> GetRetirement(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        {
+            var query = _repository.GetRetirement().AsQueryable();
+
+
+            query = sortColumn switch
+            {
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                _ => query.OrderBy(us => us.Id)
+            };
+
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var response = _mapper.Map<ICollection<RetirementResponse>>(result);
+
+            return result.Any()
+                ? ApiResponse<ICollection<RetirementResponse>>.Success(response)
+                : ApiResponse<ICollection<RetirementResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public ApiResponse<ICollection<RetirementResponse>> GetRetirementNoPaging()
+        {
+            var exsting = _repository.GetRetirement();
+            var response = _mapper.Map<ICollection<RetirementResponse>>(exsting);
+            return exsting.Any()
+                ? ApiResponse<ICollection<RetirementResponse>>.Success(response)
+                : ApiResponse<ICollection<RetirementResponse>>.NotFound("Không có dữ liệu");
+        }
+
+
+        public ApiResponse<RetirementResponse> GetRetirementById(long id)
+        {
+            var Retirement = _repository.GetRetirementById(id);
+            return Retirement != null
+                ? ApiResponse<RetirementResponse>.Success(_mapper.Map<RetirementResponse>(Retirement))
+                : ApiResponse<RetirementResponse>.NotFound($"Không tìm thấy trạng thái nghỉ hưu  #{id}");
+        }
+
+        public ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest RetirementRequest)
+        {
+            if (RetirementRequest.Date.HasValue)
+            {
+                // Chuyển sang DateTime có Kind Unspecified
+                RetirementRequest.Date = DateTime.SpecifyKind(RetirementRequest.Date.Value, DateTimeKind.Unspecified);
+            }
+            var Retirement = _mapper.Map<Retirement>(RetirementRequest);
+            var updated = _repository.UpdateRetirement(id, RetirementRequest);
+            return updated != null
+                ? ApiResponse<Retirement>.Success(updated)
+                : ApiResponse<Retirement>.NotFound("Không tìm thấy trạng thái nghỉ hưu để cập nhật");
+        }
+
+
+    }
+
+}

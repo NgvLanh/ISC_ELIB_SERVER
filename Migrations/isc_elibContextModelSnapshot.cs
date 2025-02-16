@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ISC_ELIB_SERVER.Migrations
 {
-    [DbContext(typeof(isc_elibContext))]
-    partial class isc_elibContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(isc_dbContext))]
+    partial class isc_dbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -2276,7 +2276,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("deleted");
 
-                    b.Property<DateOnly?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
@@ -2309,7 +2309,7 @@ namespace ISC_ELIB_SERVER.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SchoolFacilitiesId"));
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 
@@ -2563,7 +2563,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("deleted");
 
-                    b.Property<DateOnly?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
@@ -2581,7 +2581,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("position");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 

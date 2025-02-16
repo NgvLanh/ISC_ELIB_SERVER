@@ -11,8 +11,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ISC_ELIB_SERVER.Migrations
 {
+<<<<<<< HEAD:Migrations/20250214075324_intialCreate.Designer.cs
     [DbContext(typeof(isc_elibContext))]
     [Migration("20250214075324_intialCreate")]
+=======
+    [DbContext(typeof(isc_dbContext))]
+    [Migration("20250213170722_intialCreate")]
+>>>>>>> dev:Migrations/20250213170722_intialCreate.Designer.cs
     partial class intialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2278,7 +2283,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("deleted");
 
-                    b.Property<DateOnly?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
@@ -2311,7 +2316,7 @@ namespace ISC_ELIB_SERVER.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SchoolFacilitiesId"));
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 
@@ -2565,7 +2570,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("deleted");
 
-                    b.Property<DateOnly?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
@@ -2583,7 +2588,7 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("position");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 

@@ -7,10 +7,17 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class StudentInfoRepo
     {
+<<<<<<< HEAD
         private readonly isc_elibContext _context;
 
         // Constructor nhận context
         public StudentInfoRepo(isc_elibContext context)
+=======
+        private readonly isc_dbContext _context;
+
+        // Constructor nhận context
+        public StudentInfoRepo(isc_dbContext context)
+>>>>>>> dev
         {
             _context = context;
         }

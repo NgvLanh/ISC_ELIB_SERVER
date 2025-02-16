@@ -10,8 +10,9 @@ namespace ISC_ELIB_SERVER.Models
             Achievements = new HashSet<Achievement>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
+        public bool Active { get; set; }
 
         public virtual ICollection<Achievement> Achievements { get; set; }
     }

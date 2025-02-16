@@ -12,12 +12,13 @@ namespace ISC_ELIB_SERVER.Models
             Exams = new HashSet<Exam>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
-        public long TeacherId { get; set; }
+        public int? TeacherId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual TeacherInfo Teacher { get; set; } = null!;
+        public virtual TeacherInfo? Teacher { get; set; }
         public virtual ICollection<Class> Classes { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
         public virtual ICollection<Exam> Exams { get; set; }
