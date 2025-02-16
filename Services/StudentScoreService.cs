@@ -2,21 +2,13 @@
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IStudentScoreService
-    {
-        ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<StudentScoreResponse> GetStudentScoreById(long id);
-        ApiResponse<StudentScoreResponse> CreateStudentScore(StudentScoreRequest studentScoreRequest);
-        ApiResponse<StudentScoreResponse> UpdateStudentScore(long id, StudentScoreRequest studentScoreRequest);
-        ApiResponse<StudentScore> DeleteStudentScore(long id);
-    }
-
     public class StudentScoreService : IStudentScoreService
     {
         private readonly IStudentScoreRepo _repository;
