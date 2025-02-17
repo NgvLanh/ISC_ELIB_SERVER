@@ -58,7 +58,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 
-//Khai bao task cua Nam :>>
+
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
 builder.Services.AddScoped<TestRepo>();
@@ -79,12 +79,12 @@ builder.Services.AddScoped<ExamScheduleClassRepo>();
 builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
 
 builder.Services.AddScoped<AnswersQaRepo>();
-builder.Services.AddScoped<IAnswersQaService>();
+builder.Services.AddScoped<IAnswersQaService, AnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
-builder.Services.AddScoped<IQuestionImagesQaService>();
+builder.Services.AddScoped<IQuestionImagesQaService, QuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
-builder.Services.AddScoped<IAnswerImagesQaService>();
-
+builder.Services.AddScoped<IAnswerImagesQaService, AnswerImagesQaService>();
+builder.Services.AddScoped<IQuestionQaService, QuestionQaService>();
 
 
 // Add services and repositories Test attachment
