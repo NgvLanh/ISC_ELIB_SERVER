@@ -9,16 +9,7 @@ using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IStudentInfoService
-    {
-        ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfos(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<StudentInfoResponses> GetStudentInfoById(long id);
-        ApiResponse<StudentInfoResponses> CreateStudentInfo(StudentInfoRequest studentInfoRequest);
-        ApiResponse<StudentInfoResponses> UpdateStudentInfo(StudentInfoRequest studentInfoRequest);
-        ApiResponse<StudentInfoResponses> DeleteStudentInfo(long id);
-    }
-
-    public class StudentInfoService : IStudentInfoService
+    public class StudentInfoService : Interfaces.IStudentInfoService
     {
         private readonly StudentInfoRepo _repository;
         private readonly IMapper _mapper;
