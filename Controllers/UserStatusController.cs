@@ -42,16 +42,17 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUserStatus(long id, [FromBody] UserStatus userStatus)
+        public IActionResult UpdateUserStatus(long id, [FromBody] UserStatusRequest userStatusRequest)
         {
-
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.UpdateUserStatus(id, userStatusRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUserStatus(long id)
         {
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.DeleteUserStatus(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
     }

@@ -41,13 +41,15 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateEntryType(long id, [FromBody] EntryTypeRequest entryTypeRequest)
         {
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.UpdateEntryType(id, entryTypeRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteEntryType(long id)
         {
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.DeleteEntryType(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }
 }

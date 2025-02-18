@@ -12,10 +12,9 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<UserStatusResponse> GetUserStatusById(long id);
         ApiResponse<UserStatusResponse> GetUserStatusByName(string name);
         ApiResponse<UserStatusResponse> CreateUserStatus(UserStatusRequest userStatusRequest);
-        ApiResponse<UserStatus> UpdateUserStatus(UserStatus userStatus);
-        ApiResponse<UserStatus> DeleteUserStatus(long id);
+        ApiResponse<UserStatusResponse> UpdateUserStatus(long id, UserStatusRequest userStatusRequest);
+        ApiResponse<bool> DeleteUserStatus(long id);
     }
-
 
     public class UserStatusService : IUserStatusService
     {
@@ -45,7 +44,6 @@ namespace ISC_ELIB_SERVER.Services
             };
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
             var response = _mapper.Map<ICollection<UserStatusResponse>>(result);
 
             return result.Any()
@@ -77,25 +75,36 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<UserStatusResponse>.Conflict("Tên trạng thái đã tồn tại");
             }
 
-            var created = _repository.CreateUserStatus(new UserStatus() { Name = userStatusRequest.Name });
+            var created = _repository.CreateUserStatus(new UserStatus { Name = userStatusRequest.Name });
             return ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(created));
         }
 
-        public ApiResponse<UserStatus> UpdateUserStatus(UserStatus userStatus)
+        public ApiResponse<UserStatusResponse> UpdateUserStatus(long id, UserStatusRequest userStatusRequest)
         {
-            var updated = _repository.UpdateUserStatus(userStatus);
-            return updated != null
-                ? ApiResponse<UserStatus>.Success(updated)
-                : ApiResponse<UserStatus>.NotFound("Không tìm thấy trạng thái người dùng để cập nhật");
+            var existing = _repository.GetUserStatusById(id);
+            if (existing == null)
+            {
+                return ApiResponse<UserStatusResponse>.NotFound("Không tìm thấy trạng thái người dùng để cập nhật");
+            }
+
+            existing.Name = userStatusRequest.Name;
+            var updated = _repository.UpdateUserStatus(existing);
+
+            return ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(updated));
         }
 
-        public ApiResponse<UserStatus> DeleteUserStatus(long id)
+        public ApiResponse<bool> DeleteUserStatus(long id)
         {
+            var existing = _repository.GetUserStatusById(id);
+            if (existing == null)
+            {
+                return ApiResponse<bool>.NotFound("Không tìm thấy trạng thái người dùng để xóa");
+            }
+
             var success = _repository.DeleteUserStatus(id);
             return success
-                ? ApiResponse<UserStatus>.Success()
-                : ApiResponse<UserStatus>.NotFound("Không tìm thấy trạng thái người dùng để xóa");
+                ? ApiResponse<bool>.Success(true, "Xóa thành công")
+                : ApiResponse<bool>.NotFound("Không thể xóa trạng thái người dùng");
         }
     }
-
 }
