@@ -68,7 +68,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<MajorResponse> UpdateMajor(long id, MajorRequest majorRequest)
         {
             var existingMajor = _repository.GetMajorById(id);
-            if (existingMajor == null)
+            if (existingMajor == null || existingMajor.Active == true)
             {
                 return ApiResponse<MajorResponse>.NotFound("Không tìm thấy chuyên ngành.");
             }
@@ -79,6 +79,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<MajorResponse>.Conflict("Tên chuyên ngành đã tồn tại");
             }
+
 
             existingMajor.Name = majorRequest.Name;
             existingMajor.Description = majorRequest.Description;
@@ -101,7 +102,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingMajor.Active = true;
-            _repository.UpdateMajor(existingMajor);
+            _repository.DeleteMajor(existingMajor);
 
             return ApiResponse<Major>.Success();
         }

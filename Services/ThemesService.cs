@@ -69,7 +69,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ThemesResponse> UpdateThemes(long id, ThemesRequest themesRequest)
         {
             var existingTheme = _repository.GetThemesById(id);
-            if (existingTheme == null)
+            if (existingTheme == null || existingTheme.Active == true)
             {
                 return ApiResponse<ThemesResponse>.NotFound("Không tìm thấy chủ đề.");
             }
@@ -101,7 +101,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingTheme.Active = true;
-            _repository.UpdateThemes(existingTheme);
+            _repository.DeleteThemes(existingTheme);
 
             return ApiResponse<Theme>.Success();
         }
