@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,7 +108,7 @@ builder.Services.AddScoped<IThemesService, IThemesService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, IMajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
 builder.Services.AddScoped<AcademicYearRepo>();

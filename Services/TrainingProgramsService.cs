@@ -5,19 +5,11 @@ using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using System.Xml.Linq;
 using System;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ITrainingProgramsService
-    {
-        ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id);
-        ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest);
-        ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest);
-        ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id);
-    }
-
-    public class TrainingProgramsService : ITrainingProgramsService
+    public class TrainingProgramsService : ITrainingProgramService
     {
         private readonly TrainingProgramsRepo _repository;
         private readonly MajorRepo _Majorrepository;
@@ -109,7 +101,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
         {
             var trainingProgram = _repository.GetTrainingProgramById(id);
-            return (trainingProgram != null && !(trainingProgram.Active == false))
+            return (trainingProgram != null && (trainingProgram.Active == false))
                 ? ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(trainingProgram))
                 : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
         }
