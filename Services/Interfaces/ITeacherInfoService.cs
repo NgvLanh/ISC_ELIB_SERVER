@@ -6,10 +6,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ITeacherInfoService
     {
         ApiResponse<ICollection<TeacherInfoResponses>> GetTeacherInfos(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<TeacherInfoResponses> GetTeacherInfoById(long id);
+        ApiResponse<TeacherInfoResponses> GetTeacherInfoById(int id);
         ApiResponse<TeacherInfoResponses> GetTeacherInfoByCode(string code);
         ApiResponse<TeacherInfoResponses> CreateTeacherInfo(TeacherInfoRequest teacherInfoRequest);
-        ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(TeacherInfoRequest teacherInfoRequest);
-        ApiResponse<TeacherInfoResponses> DeleteTeacherInfo(long id);
+        ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(int id, TeacherInfoRequest teacherInfoRequest);
+        ApiResponse<TeacherInfoResponses> DeleteTeacherInfo(int id);
     }
 }
