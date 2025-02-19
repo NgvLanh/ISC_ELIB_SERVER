@@ -29,14 +29,15 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.SaveChanges();
             return testsAttachment;
         }
-        public void DeleteTestsAttachment(long id)
+        public bool DeleteTestsAttachment(long id)
         {
             var testsAttachment = _context.TestsAttachments.FirstOrDefault(s => s.Id == id);
             if (testsAttachment != null)
             {
-                _context.TestsAttachments.Remove(testsAttachment);
-                _context.SaveChanges();
+                testsAttachment.Active = !testsAttachment.Active;
+                return _context.SaveChanges() > 0;
             }
+            return false;
         }
     }
 }

@@ -42,7 +42,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var exam = GetExamById(id);
             if (exam != null)
             {
-                _context.Exams.Remove(exam);
+                exam.Active = !exam.Active;
                 return _context.SaveChanges() > 0;
             }
             return false;
