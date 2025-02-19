@@ -129,6 +129,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TeacherInfoRepo>();
 builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
+
+//StudentInfo
+builder.Services.AddScoped<StudentInfoRepo>();
+builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
+
+=======
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -149,8 +155,7 @@ builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 
 
 
-
-
+>>>>>>> dev
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
