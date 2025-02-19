@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -128,12 +129,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TeacherInfoRepo>();
 builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
-<<<<<<< HEAD
+
 //StudentInfo
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
-=======
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -179,8 +179,6 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
-
->>>>>>> dev
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>

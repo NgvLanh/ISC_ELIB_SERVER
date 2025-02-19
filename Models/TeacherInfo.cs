@@ -25,22 +25,15 @@ namespace ISC_ELIB_SERVER.Models
         public string? UnionPlace { get; set; }
         public bool? PartyMember { get; set; }
         public DateTime? PartyDate { get; set; }
-<<<<<<< HEAD
-        public long UserId { get; set; }
-=======
         public int? UserId { get; set; }
->>>>>>> dev
+
         public string? AddressFull { get; set; }
         public int? ProvinceCode { get; set; }
         public int? DistrictCode { get; set; }
         public int? WardCode { get; set; }
         public bool Active { get; set; }
-
-<<<<<<< HEAD
-        public virtual User User { get; set; } = null!;
-=======
         public virtual User? User { get; set; }
->>>>>>> dev
+
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }
         public virtual ICollection<GradeLevel> GradeLevels { get; set; }
         public virtual ICollection<Resignation> Resignations { get; set; }

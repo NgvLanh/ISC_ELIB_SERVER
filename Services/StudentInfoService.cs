@@ -3,13 +3,14 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class StudentInfoService : Interfaces.IStudentInfoService
+    public class StudentInfoService : IStudentInfoService
     {
         private readonly StudentInfoRepo _repository;
         private readonly IMapper _mapper;

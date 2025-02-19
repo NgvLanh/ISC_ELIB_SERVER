@@ -11,13 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ISC_ELIB_SERVER.Migrations
 {
-<<<<<<< HEAD:Migrations/20250214075324_intialCreate.Designer.cs
-    [DbContext(typeof(isc_elibContext))]
-    [Migration("20250214075324_intialCreate")]
-=======
     [DbContext(typeof(isc_dbContext))]
     [Migration("20250213170722_intialCreate")]
->>>>>>> dev:Migrations/20250213170722_intialCreate.Designer.cs
     partial class intialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

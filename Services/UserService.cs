@@ -3,10 +3,11 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class UserService : Interfaces.IUserService
+    public class UserService : IUserService
     {
         private readonly UserRepo _repository;
         private readonly IMapper _mapper;
