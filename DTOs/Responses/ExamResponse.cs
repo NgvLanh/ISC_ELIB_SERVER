@@ -2,7 +2,7 @@
 {
     public class ExamResponse
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public DateTime? ExamDate { get; set; }
         public int? DurationMinutes { get; set; }
@@ -11,10 +11,10 @@
         public string Status { get; set; } = default!;
 
         public string? File { get; set; }
-        public long SemesterId { get; set; }
-        public long AcademicYearId { get; set; }
-        public long GradeLevelId { get; set; }
-        public long ClassTypeId { get; set; }
-        public long SubjectId { get; set; }
+        public int SemesterId { get; set; }
+        public int AcademicYearId { get; set; }
+        public int GradeLevelId { get; set; }
+        public int ClassTypeId { get; set; }
+        public int SubjectId { get; set; }
     }
 }

@@ -5,14 +5,14 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class WorkProcess
     {
-        public long Id { get; set; }
-        public long TeacherId { get; set; }
+        public int Id { get; set; }
+        public int? TeacherId { get; set; }
         public string? Organization { get; set; }
-        public long SubjectGroupsId { get; set; }
+        public int? SubjectGroupsId { get; set; }
         public string? Position { get; set; }
-        public DateOnly? StartDate { get; set; }
-        public DateOnly? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public bool? IsCurrent { get; set; }
-        public bool? Deleted { get; set; }
+        public bool Active { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class DiscussionResponse
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Content { get; set; }
         public DateTime? CreateAt { get; set; }
         public string UserName { get; set; } = string.Empty;

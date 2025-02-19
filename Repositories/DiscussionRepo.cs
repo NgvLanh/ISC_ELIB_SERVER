@@ -5,17 +5,17 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class DiscussionRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public DiscussionRepo(isc_elibContext context)
+        public DiscussionRepo(isc_dbContext context)
         {
             _context = context;
 
         }
 
-        public ICollection<Discussion> GetDiscussions() 
-        { 
-            return _context.Discussions.ToList(); 
+        public ICollection<Discussion> GetDiscussions()
+        {
+            return _context.Discussions.ToList();
         }
 
         public Discussion GetDiscussionById(long id)

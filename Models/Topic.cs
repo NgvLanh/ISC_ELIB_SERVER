@@ -12,11 +12,12 @@ namespace ISC_ELIB_SERVER.Models
             TopicsFiles = new HashSet<TopicsFile>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime? EndDate { get; set; }
         public string? File { get; set; }
+        public bool Active { get; set; }
 
         public virtual ICollection<Discussion> Discussions { get; set; }
         public virtual ICollection<TeachingAssignment> TeachingAssignments { get; set; }

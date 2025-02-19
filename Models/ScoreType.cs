@@ -10,11 +10,12 @@ namespace ISC_ELIB_SERVER.Models
             StudentScores = new HashSet<StudentScore>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public int? Weight { get; set; }
         public int? QtyScoreSemester1 { get; set; }
         public int? QtyScoreSemester2 { get; set; }
+        public bool Active { get; set; }
 
         public virtual ICollection<StudentScore> StudentScores { get; set; }
     }

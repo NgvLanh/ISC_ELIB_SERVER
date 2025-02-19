@@ -5,14 +5,15 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class Achievement
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Content { get; set; }
         public DateTime? DateAwarded { get; set; }
         public string? File { get; set; }
-        public long UserId { get; set; }
-        public long TypeId { get; set; }
+        public int? UserId { get; set; }
+        public int? TypeId { get; set; }
+        public bool Active { get; set; }
 
-        public virtual Type Type { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual Type? Type { get; set; }
+        public virtual User? User { get; set; }
     }
 }
