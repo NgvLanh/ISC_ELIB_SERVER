@@ -7,15 +7,6 @@ using ISC_ELIB_SERVER.Utils;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ISchoolService
-    {
-        ApiResponse<ICollection<SchoolResponse>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
-        ApiResponse<SchoolResponse> GetSchoolById(long id);
-        ApiResponse<SchoolResponse> CreateSchool(SchoolRequest schoolRequest);
-        ApiResponse<SchoolResponse> UpdateSchool(long id, SchoolRequest schoolRequest);
-        ApiResponse<object> DeleteSchool(long id);
-    }
-
     public class SchoolService : ISchoolService
     {
         private readonly SchoolRepo _repository;

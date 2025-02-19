@@ -6,14 +6,6 @@ using AutoMapper;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IAcademicYearService
-    {
-        ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(int? page, int? pageSize, string? sortColumn, string? sortOrder);
-        ApiResponse<AcademicYearResponse> GetAcademicYearById(long id);
-        ApiResponse<AcademicYearResponse> CreateAcademicYear(AcademicYearRequest academicYearRequest);
-        ApiResponse<AcademicYearResponse> UpdateAcademicYear(long id, AcademicYearRequest academicYearRequest);
-        ApiResponse<object> DeleteAcademicYear(long id);
-    }
 
     public class AcademicYearService : IAcademicYearService
     {
