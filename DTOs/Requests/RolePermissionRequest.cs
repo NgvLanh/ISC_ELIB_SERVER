@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [RegularExpression(@"^\d+$", ErrorMessage = "RoleId phải là số nguyên")]
         public int RoleId { get; set; }
 
-        [Required(ErrorMessage = "Active không được để trống")]
+        [Required(ErrorMessage = "Trạng thái không được để trống")]
         public bool Active { get; set; } = true;
     }
 }

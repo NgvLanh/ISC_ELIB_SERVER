@@ -3,7 +3,6 @@ using System;
 using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,10 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ISC_ELIB_SERVER.Migrations
 {
     [DbContext(typeof(isc_dbContext))]
-    [Migration("20250213170722_intialCreate")]
-    partial class intialCreate
+    partial class isc_dbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,20 +24,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.AcademicYear", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("end_time");
 
-                    b.Property<long>("SchoolId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("integer")
                         .HasColumnName("school_id");
 
                     b.Property<DateTime?>("StartTime")
@@ -55,12 +58,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Achievement", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasMaxLength(255)
@@ -76,14 +85,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("file");
 
-                    b.Property<long>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TypeId")
+                        .HasColumnType("integer")
                         .HasColumnName("type_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -97,16 +104,21 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.AnswerImagesQa", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AnswerId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("AnswerId")
+                        .HasColumnType("integer")
                         .HasColumnName("answer_id");
 
                     b.Property<string>("ImageUrl")
@@ -122,12 +134,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.AnswersQa", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasColumnType("text")
@@ -137,17 +155,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<long>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("integer")
                         .HasColumnName("question_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.HasKey("Id");
 
@@ -158,12 +172,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Campus", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Address")
                         .HasMaxLength(255)
@@ -180,14 +200,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(13)")
                         .HasColumnName("phone_number");
 
-                    b.Property<long>("SchoolId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SchoolId")
+                        .HasColumnType("integer")
                         .HasColumnName("school_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -201,12 +219,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ChangeClass", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AttachmentName")
                         .HasMaxLength(255)
@@ -222,30 +246,24 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("change_class_date");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
-
-                    b.Property<long>("NewClassId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("NewClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("new_class_id");
 
-                    b.Property<long>("OldClassId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("OldClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("old_class_id");
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
                         .HasColumnName("reason");
 
-                    b.Property<long>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer")
                         .HasColumnName("student_id");
 
                     b.HasKey("Id");
@@ -261,12 +279,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Chat", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasMaxLength(255)
@@ -277,17 +301,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("sent_at");
 
-                    b.Property<long>("SessionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("integer")
                         .HasColumnName("session_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.HasKey("Id");
 
@@ -298,21 +318,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Class", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AcademicYearId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("AcademicYearId")
+                        .HasColumnType("integer")
                         .HasColumnName("academic_year_id");
 
-                    b.Property<long>("ClassTypeId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("ClassTypeId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_type_id");
 
                     b.Property<string>("Code")
@@ -325,9 +349,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("description");
 
-                    b.Property<long>("GradeLevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("GradeLevelId")
+                        .HasColumnType("integer")
                         .HasColumnName("grade_level_id");
 
                     b.Property<string>("Name")
@@ -343,9 +366,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("subject_quantity");
 
-                    b.Property<long?>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -363,12 +385,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ClassType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -391,12 +419,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Discussion", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasColumnType("text")
@@ -406,14 +440,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<long>("TopicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("integer")
                         .HasColumnName("topic_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -427,16 +459,21 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.DiscussionImage", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("DiscussionId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("DiscussionId")
+                        .HasColumnType("integer")
                         .HasColumnName("discussion_id");
 
                     b.Property<string>("ImageUrl")
@@ -452,12 +489,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.EducationLevel", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -480,12 +523,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.EntryType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -499,21 +548,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Exam", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AcademicYearId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("AcademicYearId")
+                        .HasColumnType("integer")
                         .HasColumnName("academic_year_id");
 
-                    b.Property<long>("ClassTypeId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("ClassTypeId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_type_id");
 
                     b.Property<int?>("DurationMinutes")
@@ -529,9 +582,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("file");
 
-                    b.Property<long>("GradeLevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("GradeLevelId")
+                        .HasColumnType("integer")
                         .HasColumnName("grade_level_id");
 
                     b.Property<string>("Name")
@@ -539,9 +591,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
-                    b.Property<long>("SemesterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SemesterId")
+                        .HasColumnType("integer")
                         .HasColumnName("semester_id");
 
                     b.Property<string>("Status")
@@ -549,9 +600,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("status");
 
-                    b.Property<long>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_id");
 
                     b.HasKey("Id");
@@ -571,26 +621,30 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ExamGrader", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("ClassIds")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("class_ids");
 
-                    b.Property<long>("ExamId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ExamId")
+                        .HasColumnType("integer")
                         .HasColumnName("exam_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -604,17 +658,22 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ExamSchedule", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AcademicYearId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("AcademicYearId")
+                        .HasColumnType("integer")
                         .HasColumnName("academic_year_id");
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime?>("ExamDay")
                         .HasColumnType("timestamp without time zone")
@@ -624,9 +683,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("form");
 
-                    b.Property<long>("GradeLevelsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("GradeLevelsId")
+                        .HasColumnType("integer")
                         .HasColumnName("grade_levels_id");
 
                     b.Property<string>("Name")
@@ -634,9 +692,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<long>("SemesterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SemesterId")
+                        .HasColumnType("integer")
                         .HasColumnName("semester_id");
 
                     b.Property<string>("Status")
@@ -644,9 +701,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("status");
 
-                    b.Property<long>("Subject")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("Subject")
+                        .HasColumnType("integer")
                         .HasColumnName("subject");
 
                     b.Property<string>("Type")
@@ -669,26 +725,29 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ExamScheduleClass", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("ClassId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_id");
 
-                    b.Property<long>("ExampleSchedule")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ExampleSchedule")
+                        .HasColumnType("integer")
                         .HasColumnName("example_schedule");
 
-                    b.Property<long>("SupervisoryTeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SupervisoryTeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("supervisory_teacher_id");
 
                     b.HasKey("Id");
@@ -704,16 +763,21 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Exemption", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("ClassId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_id");
 
                     b.Property<string>("ExemptedObjects")
@@ -726,9 +790,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("form_exemption");
 
-                    b.Property<long>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer")
                         .HasColumnName("student_id");
 
                     b.HasKey("Id");
@@ -742,12 +805,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.GradeLevel", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Code")
                         .HasMaxLength(50)
@@ -759,9 +828,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
                     b.HasKey("Id");
@@ -773,16 +841,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Major", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Deleted")
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasColumnName("deleted");
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -800,12 +870,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Notification", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasMaxLength(255)
@@ -816,9 +892,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<long>("SenderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SenderId")
+                        .HasColumnType("integer")
                         .HasColumnName("sender_id");
 
                     b.Property<string>("Title")
@@ -831,9 +906,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("type");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -847,12 +921,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Permission", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -866,20 +946,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.QuestionImagesQa", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text")
                         .HasColumnName("image_url");
 
-                    b.Property<long>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("integer")
                         .HasColumnName("question_id");
 
                     b.HasKey("Id");
@@ -891,12 +976,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.QuestionQa", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasColumnType("text")
@@ -906,17 +997,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<long>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
 
                     b.HasKey("Id");
 
@@ -927,30 +1014,30 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Reserve", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("ClassId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("class_id");
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ClassId"));
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer")
+                        .HasColumnName("class_id");
 
                     b.Property<string>("File")
                         .HasColumnType("text")
                         .HasColumnName("file");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
@@ -970,16 +1057,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("semester");
 
-                    b.Property<long>("SemestersId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SemestersId")
+                        .HasColumnType("integer")
                         .HasColumnName("semesters_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SemestersId"));
-
-                    b.Property<long>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer")
                         .HasColumnName("student_id");
 
                     b.HasKey("Id");
@@ -991,12 +1074,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Resignation", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Attachment")
                         .HasMaxLength(255)
@@ -1007,12 +1096,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
 
                     b.Property<string>("Note")
                         .HasColumnType("text")
@@ -1022,9 +1108,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("status");
 
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
                     b.HasKey("Id");
@@ -1036,12 +1121,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Retirement", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Attachment")
                         .HasMaxLength(255)
@@ -1052,12 +1143,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
 
                     b.Property<string>("Note")
                         .HasColumnType("text")
@@ -1067,12 +1155,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("status");
 
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TeacherId"));
 
                     b.HasKey("Id");
 
@@ -1081,12 +1166,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Role", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -1105,21 +1196,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.RolePermission", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("PermissionId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("PermissionId")
+                        .HasColumnType("integer")
                         .HasColumnName("permission_id");
 
-                    b.Property<long>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("integer")
                         .HasColumnName("role_id");
 
                     b.HasKey("Id");
@@ -1133,28 +1228,30 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.School", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Code")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("code");
 
-                    b.Property<long>("DistrictId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("integer")
                         .HasColumnName("district_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("DistrictId"));
-
-                    b.Property<long>("EducationLevelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("EducationLevelId")
+                        .HasColumnType("integer")
                         .HasColumnName("education_level_id");
 
                     b.Property<string>("Email")
@@ -1185,12 +1282,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(13)")
                         .HasColumnName("phone_number");
 
-                    b.Property<long>("ProvinceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("integer")
                         .HasColumnName("province_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProvinceId"));
 
                     b.Property<string>("SchoolType")
                         .HasMaxLength(50)
@@ -1202,19 +1296,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("training_model");
 
-                    b.Property<long?>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("UserId"));
-
-                    b.Property<long>("WardId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("WardId")
+                        .HasColumnType("integer")
                         .HasColumnName("ward_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("WardId"));
 
                     b.Property<string>("WebsiteUrl")
                         .HasMaxLength(100)
@@ -1230,12 +1318,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.ScoreType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -1261,17 +1355,22 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Semester", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AcademicYearId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("AcademicYearId")
+                        .HasColumnType("integer")
                         .HasColumnName("academic_year_id");
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("timestamp without time zone")
@@ -1290,12 +1389,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Session", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<bool?>("AutoOpen")
                         .HasColumnType("boolean")
@@ -1314,9 +1419,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("end_date");
 
-                    b.Property<long>("ExamId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ExamId")
+                        .HasColumnType("integer")
                         .HasColumnName("exam_id");
 
                     b.Property<bool?>("IsExam")
@@ -1347,9 +1451,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("status");
 
-                    b.Property<long>("TeachingAssignmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeachingAssignmentId")
+                        .HasColumnType("integer")
                         .HasColumnName("teaching_assignment_id");
 
                     b.HasKey("Id");
@@ -1363,12 +1466,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.StudentInfo", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("GuardianAddress")
                         .HasMaxLength(100)
@@ -1399,9 +1508,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("guardian_role");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1413,35 +1521,37 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.StudentScore", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<double?>("Score")
                         .HasColumnType("double precision")
                         .HasColumnName("score");
 
-                    b.Property<long>("ScoreTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ScoreTypeId")
+                        .HasColumnType("integer")
                         .HasColumnName("score_type_id");
 
-                    b.Property<long>("SemesterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SemesterId")
+                        .HasColumnType("integer")
                         .HasColumnName("semester_id");
 
-                    b.Property<long>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1459,12 +1569,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Subject", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Code")
                         .HasMaxLength(50)
@@ -1484,14 +1600,12 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<long>("SubjectGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectGroupId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_group_id");
 
-                    b.Property<long>("SubjectTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectTypeId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_type_id");
 
                     b.HasKey("Id");
@@ -1505,21 +1619,26 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.SubjectGroup", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
                     b.HasKey("Id");
@@ -1531,12 +1650,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.SubjectType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -1559,12 +1684,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Support", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Content")
                         .HasMaxLength(255)
@@ -1585,9 +1716,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("type");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1599,25 +1729,29 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.SystemSetting", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<bool?>("Captcha")
                         .HasColumnType("boolean")
                         .HasColumnName("captcha");
 
-                    b.Property<long>("ThemeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ThemeId")
+                        .HasColumnType("integer")
                         .HasColumnName("theme_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1631,19 +1765,22 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeacherFamily", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("DistrictCode")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("district_code");
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("DistrictCode"));
+                    b.Property<int>("DistrictCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("district_code");
 
                     b.Property<string>("GuardianAddressDetail")
                         .HasMaxLength(255)
@@ -1665,24 +1802,17 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(13)")
                         .HasColumnName("guardian_phone");
 
-                    b.Property<long>("ProvinceCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int>("ProvinceCode")
+                        .HasColumnType("integer")
                         .HasColumnName("province_code");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProvinceCode"));
-
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
-                    b.Property<long>("WardCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int>("WardCode")
+                        .HasColumnType("integer")
                         .HasColumnName("ward_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("WardCode"));
 
                     b.HasKey("Id");
 
@@ -1693,12 +1823,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeacherInfo", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AddressFull")
                         .HasMaxLength(50)
@@ -1710,12 +1846,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(15)")
                         .HasColumnName("cccd");
 
-                    b.Property<long>("DistrictCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("DistrictCode")
+                        .HasColumnType("integer")
                         .HasColumnName("district_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("DistrictCode"));
 
                     b.Property<DateTime?>("IssuedDate")
                         .HasColumnType("timestamp without time zone")
@@ -1734,12 +1867,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("party_member");
 
-                    b.Property<long>("ProvinceCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ProvinceCode")
+                        .HasColumnType("integer")
                         .HasColumnName("province_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProvinceCode"));
 
                     b.Property<DateTime?>("UnionDate")
                         .HasColumnType("timestamp without time zone")
@@ -1754,18 +1884,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("union_place");
 
-                    b.Property<long?>("UserId")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
-                    b.Property<long>("WardCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("WardCode")
+                        .HasColumnType("integer")
                         .HasColumnName("ward_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("WardCode"));
 
                     b.HasKey("Id");
 
@@ -1776,19 +1901,13 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeacherTrainingProgram", b =>
                 {
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TeacherId"));
-
-                    b.Property<long>("TrainingProgramId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int>("TrainingProgramId")
+                        .HasColumnType("integer")
                         .HasColumnName("training_program_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TrainingProgramId"));
 
                     b.HasKey("TeacherId", "TrainingProgramId")
                         .HasName("teacher_training_program_pkey");
@@ -1798,16 +1917,21 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeachingAssignment", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("ClassId")
+                    b.Property<bool>("Active")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_id");
 
                     b.Property<string>("Description")
@@ -1823,19 +1947,16 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("start_date");
 
-                    b.Property<long>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_id");
 
-                    b.Property<long>("TopicsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TopicsId")
+                        .HasColumnType("integer")
                         .HasColumnName("topics_id");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1853,12 +1974,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TemporaryLeave", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Attachment")
                         .HasMaxLength(255)
@@ -1869,12 +1996,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
 
                     b.Property<string>("Note")
                         .HasColumnType("text")
@@ -1884,9 +2008,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("status");
 
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
 
                     b.HasKey("Id");
@@ -1898,12 +2021,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Test", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("ClassIds")
                         .HasMaxLength(255)
@@ -1937,20 +2066,16 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
-                    b.Property<long>("SemesterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SemesterId")
+                        .HasColumnType("integer")
                         .HasColumnName("semester_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SemesterId"));
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("start_time");
 
-                    b.Property<long>("SubjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_id");
 
                     b.Property<string>("Type")
@@ -1958,9 +2083,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("type");
 
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -1974,12 +2098,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestAnswer", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AnswerText")
                         .HasColumnType("text")
@@ -1989,9 +2119,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_correct");
 
-                    b.Property<long>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("integer")
                         .HasColumnName("question_id");
 
                     b.HasKey("Id");
@@ -2003,20 +2132,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestFile", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("FileUrl")
                         .HasColumnType("text")
                         .HasColumnName("file_url");
 
-                    b.Property<long>("TestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TestId")
+                        .HasColumnType("integer")
                         .HasColumnName("test_id");
 
                     b.HasKey("Id");
@@ -2028,12 +2162,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestQuestion", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("QuestionText")
                         .HasColumnType("text")
@@ -2044,9 +2184,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("question_type");
 
-                    b.Property<long>("TestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TestId")
+                        .HasColumnType("integer")
                         .HasColumnName("test_id");
 
                     b.HasKey("Id");
@@ -2058,20 +2197,25 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestsAttachment", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("FileUrl")
                         .HasColumnType("text")
                         .HasColumnName("file_url");
 
-                    b.Property<long>("SubmissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubmissionId")
+                        .HasColumnType("integer")
                         .HasColumnName("submission_id");
 
                     b.HasKey("Id");
@@ -2083,12 +2227,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestsSubmission", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<int?>("CorrectAnswers")
                         .HasColumnType("integer")
@@ -2102,18 +2252,16 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("score");
 
-                    b.Property<long>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer")
                         .HasColumnName("student_id");
 
                     b.Property<DateTime?>("SubmittedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("submitted_at");
 
-                    b.Property<long>("TestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TestId")
+                        .HasColumnType("integer")
                         .HasColumnName("test_id");
 
                     b.Property<int?>("TotalQuestion")
@@ -2135,12 +2283,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TestSubmissionsAnswer", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AnswerText")
                         .HasColumnType("text")
@@ -2150,19 +2304,16 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_correct");
 
-                    b.Property<long>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("integer")
                         .HasColumnName("question_id");
 
-                    b.Property<long>("SelectedAnswerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SelectedAnswerId")
+                        .HasColumnType("integer")
                         .HasColumnName("selected_answer_id");
 
-                    b.Property<long>("SubmissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubmissionId")
+                        .HasColumnType("integer")
                         .HasColumnName("submission_id");
 
                     b.HasKey("Id");
@@ -2178,12 +2329,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Theme", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -2197,12 +2354,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Topic", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -2230,12 +2393,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TopicsFile", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime?>("CreateAt")
                         .HasColumnType("timestamp without time zone")
@@ -2249,9 +2418,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("text")
                         .HasColumnName("file_url");
 
-                    b.Property<long>("TopicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("integer")
                         .HasColumnName("topic_id");
 
                     b.HasKey("Id");
@@ -2263,24 +2431,26 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TrainingProgram", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Degree")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("degree");
 
-                    b.Property<bool?>("Deleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("deleted");
-
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("date")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_date");
 
                     b.Property<string>("FileName")
@@ -2293,27 +2463,21 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(250)")
                         .HasColumnName("file_path");
 
-                    b.Property<long>("MajorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("MajorId")
+                        .HasColumnType("integer")
                         .HasColumnName("major_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("MajorId"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
-                    b.Property<long>("SchoolFacilitiesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SchoolFacilitiesId")
+                        .HasColumnType("integer")
                         .HasColumnName("school_facilities_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SchoolFacilitiesId"));
-
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("date")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("start_date");
 
                     b.Property<string>("TrainingForm")
@@ -2328,12 +2492,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TransferSchool", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AttachmentName")
                         .HasMaxLength(255)
@@ -2345,12 +2515,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("attachment_path");
 
-                    b.Property<long>("LeadershipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("LeadershipId")
+                        .HasColumnType("integer")
                         .HasColumnName("leadership_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("LeadershipId"));
 
                     b.Property<string>("Reason")
                         .HasColumnType("text")
@@ -2361,9 +2528,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("school_address");
 
-                    b.Property<long>("StudentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("integer")
                         .HasColumnName("student_id");
 
                     b.Property<DateTime?>("TransferSchoolDate")
@@ -2384,12 +2550,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.Type", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -2403,27 +2575,30 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("AcademicYearId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("AcademicYearId")
+                        .HasColumnType("integer")
                         .HasColumnName("academic_year_id");
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("AddressFull")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("address_full");
 
-                    b.Property<long?>("ClassId")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("integer")
                         .HasColumnName("class_id");
 
                     b.Property<string>("Code")
@@ -2431,12 +2606,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("code");
 
-                    b.Property<long>("DistrictCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("DistrictCode")
+                        .HasColumnType("integer")
                         .HasColumnName("district_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("DistrictCode"));
 
                     b.Property<DateTime?>("Dob")
                         .HasColumnType("timestamp without time zone")
@@ -2451,9 +2623,8 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("enrollment_date");
 
-                    b.Property<long>("EntryType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("EntryType")
+                        .HasColumnType("integer")
                         .HasColumnName("entry_type");
 
                     b.Property<string>("FullName")
@@ -2485,21 +2656,17 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("place_birth");
 
-                    b.Property<long>("ProvinceCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("ProvinceCode")
+                        .HasColumnType("integer")
                         .HasColumnName("province_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ProvinceCode"));
 
                     b.Property<string>("Religion")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("religion");
 
-                    b.Property<long>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("integer")
                         .HasColumnName("role_id");
 
                     b.Property<string>("Street")
@@ -2507,17 +2674,13 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("street");
 
-                    b.Property<long>("UserStatusId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("UserStatusId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_status_id");
 
-                    b.Property<long>("WardCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("WardCode")
+                        .HasColumnType("integer")
                         .HasColumnName("ward_code");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("WardCode"));
 
                     b.HasKey("Id");
 
@@ -2536,12 +2699,18 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.UserStatus", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
@@ -2555,19 +2724,21 @@ namespace ISC_ELIB_SERVER.Migrations
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.WorkProcess", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Deleted")
+                    b.Property<bool>("Active")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasColumnName("deleted");
+                        .HasColumnName("active")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("date")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_date");
 
                     b.Property<bool?>("IsCurrent")
@@ -2585,22 +2756,16 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnName("position");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("date")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("start_date");
 
-                    b.Property<long>("SubjectGroupsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("SubjectGroupsId")
+                        .HasColumnType("integer")
                         .HasColumnName("subject_groups_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SubjectGroupsId"));
-
-                    b.Property<long>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("integer")
                         .HasColumnName("teacher_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TeacherId"));
 
                     b.HasKey("Id");
 
@@ -2612,7 +2777,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.School", "School")
                         .WithMany("AcademicYears")
                         .HasForeignKey("SchoolId")
-                        .IsRequired()
                         .HasConstraintName("fk_academic_years_school_id");
 
                     b.Navigation("School");
@@ -2623,13 +2787,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Type", "Type")
                         .WithMany("Achievements")
                         .HasForeignKey("TypeId")
-                        .IsRequired()
                         .HasConstraintName("fk_achievement_type_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Achievements")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_achievement_user_id");
 
                     b.Navigation("Type");
@@ -2642,7 +2804,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AnswersQa", "Answer")
                         .WithMany("AnswerImagesQas")
                         .HasForeignKey("AnswerId")
-                        .IsRequired()
                         .HasConstraintName("fk_answer_images_qa_answer_id");
 
                     b.Navigation("Answer");
@@ -2653,7 +2814,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.QuestionQa", "Question")
                         .WithMany("AnswersQas")
                         .HasForeignKey("QuestionId")
-                        .IsRequired()
                         .HasConstraintName("fk_answers_qa_question_id");
 
                     b.Navigation("Question");
@@ -2664,13 +2824,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.School", "School")
                         .WithMany("Campuses")
                         .HasForeignKey("SchoolId")
-                        .IsRequired()
                         .HasConstraintName("fk_campuses_school_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Campuses")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_campuses_user_id");
 
                     b.Navigation("School");
@@ -2683,19 +2841,16 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "NewClass")
                         .WithMany("ChangeClassNewClasses")
                         .HasForeignKey("NewClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_change_class_new_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "OldClass")
                         .WithMany("ChangeClassOldClasses")
                         .HasForeignKey("OldClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_change_class_old_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Student")
                         .WithMany("ChangeClasses")
                         .HasForeignKey("StudentId")
-                        .IsRequired()
                         .HasConstraintName("fk_change_class_student_id");
 
                     b.Navigation("NewClass");
@@ -2710,7 +2865,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Session", "Session")
                         .WithMany("Chats")
                         .HasForeignKey("SessionId")
-                        .IsRequired()
                         .HasConstraintName("fk_chats_session_id");
 
                     b.Navigation("Session");
@@ -2721,19 +2875,16 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AcademicYear", "AcademicYear")
                         .WithMany("Classes")
                         .HasForeignKey("AcademicYearId")
-                        .IsRequired()
                         .HasConstraintName("fk_classes_academic_year_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.ClassType", "ClassType")
                         .WithMany("Classes")
                         .HasForeignKey("ClassTypeId")
-                        .IsRequired()
                         .HasConstraintName("fk_classes_class_type_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.GradeLevel", "GradeLevel")
                         .WithMany("Classes")
                         .HasForeignKey("GradeLevelId")
-                        .IsRequired()
                         .HasConstraintName("fk_classes_grade_level_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
@@ -2755,13 +2906,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Topic", "Topic")
                         .WithMany("Discussions")
                         .HasForeignKey("TopicId")
-                        .IsRequired()
                         .HasConstraintName("fk_discussions_topic_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Discussions")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_discussions_user_id");
 
                     b.Navigation("Topic");
@@ -2774,7 +2923,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Discussion", "Discussion")
                         .WithMany("DiscussionImages")
                         .HasForeignKey("DiscussionId")
-                        .IsRequired()
                         .HasConstraintName("fk_discussion_images_discussion_id");
 
                     b.Navigation("Discussion");
@@ -2785,31 +2933,26 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AcademicYear", "AcademicYear")
                         .WithMany("Exams")
                         .HasForeignKey("AcademicYearId")
-                        .IsRequired()
                         .HasConstraintName("fk_exams_academic_year_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.ClassType", "ClassType")
                         .WithMany("Exams")
                         .HasForeignKey("ClassTypeId")
-                        .IsRequired()
                         .HasConstraintName("fk_exams_class_type_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.GradeLevel", "GradeLevel")
                         .WithMany("Exams")
                         .HasForeignKey("GradeLevelId")
-                        .IsRequired()
                         .HasConstraintName("fk_exams_grade_level_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Semester", "Semester")
                         .WithMany("Exams")
                         .HasForeignKey("SemesterId")
-                        .IsRequired()
                         .HasConstraintName("fk_exams_semester_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "Subject")
                         .WithMany("Exams")
                         .HasForeignKey("SubjectId")
-                        .IsRequired()
                         .HasConstraintName("fk_exams_subject_id");
 
                     b.Navigation("AcademicYear");
@@ -2828,13 +2971,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Exam", "Exam")
                         .WithMany("ExamGraders")
                         .HasForeignKey("ExamId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_graders_exam_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("ExamGraders")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_graders_user_id");
 
                     b.Navigation("Exam");
@@ -2847,25 +2988,21 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AcademicYear", "AcademicYear")
                         .WithMany("ExamSchedules")
                         .HasForeignKey("AcademicYearId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_academic_year_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.GradeLevel", "GradeLevels")
                         .WithMany("ExamSchedules")
                         .HasForeignKey("GradeLevelsId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_grade_levels_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Semester", "Semester")
                         .WithMany("ExamSchedules")
                         .HasForeignKey("SemesterId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_semester_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "SubjectNavigation")
                         .WithMany("ExamSchedules")
                         .HasForeignKey("Subject")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_subject");
 
                     b.Navigation("AcademicYear");
@@ -2882,19 +3019,16 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "Class")
                         .WithMany("ExamScheduleClasses")
                         .HasForeignKey("ClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_class_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.ExamSchedule", "ExampleScheduleNavigation")
                         .WithMany("ExamScheduleClasses")
                         .HasForeignKey("ExampleSchedule")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_class_example_schedule");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "SupervisoryTeacher")
                         .WithMany("ExamScheduleClasses")
                         .HasForeignKey("SupervisoryTeacherId")
-                        .IsRequired()
                         .HasConstraintName("fk_exam_schedule_class_supervisory_teacher_id");
 
                     b.Navigation("Class");
@@ -2909,13 +3043,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "Class")
                         .WithMany("Exemptions")
                         .HasForeignKey("ClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_exemption_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Student")
                         .WithMany("Exemptions")
                         .HasForeignKey("StudentId")
-                        .IsRequired()
                         .HasConstraintName("fk_exemption_student_id");
 
                     b.Navigation("Class");
@@ -2928,7 +3060,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
                         .WithMany("GradeLevels")
                         .HasForeignKey("TeacherId")
-                        .IsRequired()
                         .HasConstraintName("fk_grade_levels_teacher_id");
 
                     b.Navigation("Teacher");
@@ -2939,13 +3070,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Sender")
                         .WithMany("NotificationSenders")
                         .HasForeignKey("SenderId")
-                        .IsRequired()
                         .HasConstraintName("fk_notifications_sender_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("NotificationUsers")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_notifications_user_id");
 
                     b.Navigation("Sender");
@@ -2958,7 +3087,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.QuestionQa", "Question")
                         .WithMany("QuestionImagesQas")
                         .HasForeignKey("QuestionId")
-                        .IsRequired()
                         .HasConstraintName("fk_question_images_qa_question_id");
 
                     b.Navigation("Question");
@@ -2969,7 +3097,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "Subject")
                         .WithMany("QuestionQas")
                         .HasForeignKey("SubjectId")
-                        .IsRequired()
                         .HasConstraintName("fk_question_qa_subject_id");
 
                     b.Navigation("Subject");
@@ -2980,7 +3107,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Student")
                         .WithMany("Reserves")
                         .HasForeignKey("StudentId")
-                        .IsRequired()
                         .HasConstraintName("fk_reserve_student_id");
 
                     b.Navigation("Student");
@@ -2991,7 +3117,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
                         .WithMany("Resignations")
                         .HasForeignKey("TeacherId")
-                        .IsRequired()
                         .HasConstraintName("fk_resignation_teacher_id");
 
                     b.Navigation("Teacher");
@@ -3002,13 +3127,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
-                        .IsRequired()
                         .HasConstraintName("fk_role_permission_permission_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
-                        .IsRequired()
                         .HasConstraintName("fk_role_permission_role_id");
 
                     b.Navigation("Permission");
@@ -3021,7 +3144,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.EducationLevel", "EducationLevel")
                         .WithMany("Schools")
                         .HasForeignKey("EducationLevelId")
-                        .IsRequired()
                         .HasConstraintName("fk_schools_education_level_id");
 
                     b.Navigation("EducationLevel");
@@ -3032,7 +3154,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AcademicYear", "AcademicYear")
                         .WithMany("Semesters")
                         .HasForeignKey("AcademicYearId")
-                        .IsRequired()
                         .HasConstraintName("fk_semesters_academic_year_id");
 
                     b.Navigation("AcademicYear");
@@ -3043,13 +3164,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Exam", "Exam")
                         .WithMany("Sessions")
                         .HasForeignKey("ExamId")
-                        .IsRequired()
                         .HasConstraintName("fk_sessions_exam_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.TeachingAssignment", "TeachingAssignment")
                         .WithMany("Sessions")
                         .HasForeignKey("TeachingAssignmentId")
-                        .IsRequired()
                         .HasConstraintName("fk_sessions_teaching_assignment_id");
 
                     b.Navigation("Exam");
@@ -3062,7 +3181,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("StudentInfos")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_info_user_id");
 
                     b.Navigation("User");
@@ -3073,25 +3191,21 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.ScoreType", "ScoreType")
                         .WithMany("StudentScores")
                         .HasForeignKey("ScoreTypeId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_scores_score_type_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Semester", "Semester")
                         .WithMany("StudentScores")
                         .HasForeignKey("SemesterId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_scores_semester_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "Subject")
                         .WithMany("StudentScores")
                         .HasForeignKey("SubjectId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_scores_subject_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("StudentScores")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_student_scores_user_id");
 
                     b.Navigation("ScoreType");
@@ -3108,13 +3222,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.SubjectGroup", "SubjectGroup")
                         .WithMany("Subjects")
                         .HasForeignKey("SubjectGroupId")
-                        .IsRequired()
                         .HasConstraintName("fk_subjects_subject_group_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.SubjectType", "SubjectType")
                         .WithMany("Subjects")
                         .HasForeignKey("SubjectTypeId")
-                        .IsRequired()
                         .HasConstraintName("fk_subjects_subject_type_id");
 
                     b.Navigation("SubjectGroup");
@@ -3127,7 +3239,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
                         .WithMany("SubjectGroups")
                         .HasForeignKey("TeacherId")
-                        .IsRequired()
                         .HasConstraintName("fk_subject_groups_teacher_id");
 
                     b.Navigation("Teacher");
@@ -3138,7 +3249,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Supports")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_supports_user_id");
 
                     b.Navigation("User");
@@ -3149,13 +3259,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Theme", "Theme")
                         .WithMany("SystemSettings")
                         .HasForeignKey("ThemeId")
-                        .IsRequired()
                         .HasConstraintName("fk_system_settings_theme_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("SystemSettings")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_system_settings_user_id");
 
                     b.Navigation("Theme");
@@ -3168,6 +3276,7 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
                         .WithMany("TeacherFamilies")
                         .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_teacher_family_teacher_id");
 
@@ -3179,10 +3288,20 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("TeacherInfos")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_teacher_info_user_id");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeacherTrainingProgram", b =>
+                {
+                    b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
+                        .WithMany("TeacherTrainingPrograms")
+                        .HasForeignKey("TeacherId")
+                        .IsRequired()
+                        .HasConstraintName("fk_teacher_training_program_teacher_info");
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("ISC_ELIB_SERVER.Models.TeachingAssignment", b =>
@@ -3190,25 +3309,21 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "Class")
                         .WithMany("TeachingAssignments")
                         .HasForeignKey("ClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_teaching_assignments_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "Subject")
                         .WithMany("TeachingAssignments")
                         .HasForeignKey("SubjectId")
-                        .IsRequired()
                         .HasConstraintName("fk_teaching_assignments_subject_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Topic", "Topics")
                         .WithMany("TeachingAssignments")
                         .HasForeignKey("TopicsId")
-                        .IsRequired()
                         .HasConstraintName("fk_teaching_assignments_topics_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("TeachingAssignments")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_teaching_assignments_user_id");
 
                     b.Navigation("Class");
@@ -3225,7 +3340,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TeacherInfo", "Teacher")
                         .WithMany("TemporaryLeaves")
                         .HasForeignKey("TeacherId")
-                        .IsRequired()
                         .HasConstraintName("fk_temporary_leave_teacher_id");
 
                     b.Navigation("Teacher");
@@ -3236,13 +3350,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Subject", "Subject")
                         .WithMany("Tests")
                         .HasForeignKey("SubjectId")
-                        .IsRequired()
                         .HasConstraintName("fk_tests_subject_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Tests")
                         .HasForeignKey("UserId")
-                        .IsRequired()
                         .HasConstraintName("fk_tests_user_id");
 
                     b.Navigation("Subject");
@@ -3255,7 +3367,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TestQuestion", "Question")
                         .WithMany("TestAnswers")
                         .HasForeignKey("QuestionId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_answers_question_id");
 
                     b.Navigation("Question");
@@ -3266,7 +3377,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Test", "Test")
                         .WithMany("TestFiles")
                         .HasForeignKey("TestId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_file_test_id");
 
                     b.Navigation("Test");
@@ -3277,7 +3387,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Test", "Test")
                         .WithMany("TestQuestions")
                         .HasForeignKey("TestId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_questions_test_id");
 
                     b.Navigation("Test");
@@ -3288,7 +3397,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TestsSubmission", "Submission")
                         .WithMany("TestsAttachments")
                         .HasForeignKey("SubmissionId")
-                        .IsRequired()
                         .HasConstraintName("fk_tests_attachment_submission_id");
 
                     b.Navigation("Submission");
@@ -3299,13 +3407,11 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Student")
                         .WithMany("TestsSubmissions")
                         .HasForeignKey("StudentId")
-                        .IsRequired()
                         .HasConstraintName("fk_tests_submissions_student_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Test", "Test")
                         .WithMany("TestsSubmissions")
                         .HasForeignKey("TestId")
-                        .IsRequired()
                         .HasConstraintName("fk_tests_submissions_test_id");
 
                     b.Navigation("Student");
@@ -3318,19 +3424,16 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.TestQuestion", "Question")
                         .WithMany("TestSubmissionsAnswers")
                         .HasForeignKey("QuestionId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_submissions_answers_question_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.TestAnswer", "SelectedAnswer")
                         .WithMany("TestSubmissionsAnswers")
                         .HasForeignKey("SelectedAnswerId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_submissions_answers_selected_answer_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.TestsSubmission", "Submission")
                         .WithMany("TestSubmissionsAnswers")
                         .HasForeignKey("SubmissionId")
-                        .IsRequired()
                         .HasConstraintName("fk_test_submissions_answers_submission_id");
 
                     b.Navigation("Question");
@@ -3345,7 +3448,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.Topic", "Topic")
                         .WithMany("TopicsFiles")
                         .HasForeignKey("TopicId")
-                        .IsRequired()
                         .HasConstraintName("fk_topics_file_topic_id");
 
                     b.Navigation("Topic");
@@ -3356,7 +3458,6 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "Student")
                         .WithMany("TransferSchools")
                         .HasForeignKey("StudentId")
-                        .IsRequired()
                         .HasConstraintName("fk_transfer_school_student_id");
 
                     b.Navigation("Student");
@@ -3367,31 +3468,26 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.AcademicYear", "AcademicYear")
                         .WithMany("Users")
                         .HasForeignKey("AcademicYearId")
-                        .IsRequired()
                         .HasConstraintName("fk_users_academic_year_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Class", "Class")
                         .WithMany("Users")
                         .HasForeignKey("ClassId")
-                        .IsRequired()
                         .HasConstraintName("fk_users_class_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.EntryType", "EntryTypeNavigation")
                         .WithMany("Users")
                         .HasForeignKey("EntryType")
-                        .IsRequired()
                         .HasConstraintName("fk_users_entry_type");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .IsRequired()
                         .HasConstraintName("fk_users_role_id");
 
                     b.HasOne("ISC_ELIB_SERVER.Models.UserStatus", "UserStatus")
                         .WithMany("Users")
                         .HasForeignKey("UserStatusId")
-                        .IsRequired()
                         .HasConstraintName("fk_users_user_status_id");
 
                     b.Navigation("AcademicYear");
@@ -3562,6 +3658,8 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.Navigation("SubjectGroups");
 
                     b.Navigation("TeacherFamilies");
+
+                    b.Navigation("TeacherTrainingPrograms");
 
                     b.Navigation("TemporaryLeaves");
                 });
