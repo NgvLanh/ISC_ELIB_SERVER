@@ -48,7 +48,7 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<StudentInfoResponses>>.NotFound("Không có dữ liệu StudentInfo");
         }
 
-        public ApiResponse<StudentInfoResponses> GetStudentInfoById(long id)
+        public ApiResponse<StudentInfoResponses> GetStudentInfoById(int id)
         {
             var studentInfo = _repository.GetStudentInfoById(id);
             return studentInfo != null
@@ -65,9 +65,9 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentInfoResponses>.Success(createdStudentInfo, "Tạo StudentInfo thành công");
         }
 
-        public ApiResponse<StudentInfoResponses> UpdateStudentInfo(StudentInfoRequest studentInfoRequest)
+        public ApiResponse<StudentInfoResponses> UpdateStudentInfo(int id, StudentInfoRequest studentInfoRequest)
         {
-            var studentInfo = _repository.GetStudentInfoById(studentInfoRequest.Id);
+            var studentInfo = _repository.GetStudentInfoById(id);
             if (studentInfo == null)
             {
                 return ApiResponse<StudentInfoResponses>.NotFound("Không tìm thấy StudentInfo để cập nhật");
@@ -80,7 +80,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentInfoResponses>.Success(updatedStudentInfo, "Cập nhật StudentInfo thành công");
         }
 
-        public ApiResponse<StudentInfoResponses> DeleteStudentInfo(long id)
+        public ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id)
         {
             var studentInfo = _repository.GetStudentInfoById(id);
             if (studentInfo == null)

@@ -4,7 +4,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class StudentInfoRequest
     {
-        public long Id { get; set; }
         public string? GuardianName { get; set; }
         public string? GuardianPhone { get; set; }
         public string? GuardianJob { get; set; }

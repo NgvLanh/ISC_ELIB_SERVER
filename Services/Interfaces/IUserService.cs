@@ -7,10 +7,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface IUserService
     {
         ApiResponse<ICollection<UserResponse>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<UserResponse> GetUserById(long id);
+        ApiResponse<UserResponse> GetUserById(int id);
         ApiResponse<UserResponse> GetUserByCode(string code);
         ApiResponse<UserResponse> CreateUser(UserRequest userRequest);
-        ApiResponse<UserResponse> UpdateUser(UserRequest userRequest);
-        ApiResponse<User> DeleteUser(long id);
+        ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest);
+        ApiResponse<User> DeleteUser(int id);
     }
 }

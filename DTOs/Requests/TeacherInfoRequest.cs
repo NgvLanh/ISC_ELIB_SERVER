@@ -2,7 +2,6 @@
 {
     public class TeacherInfoRequest
     {
-        public int Id { get; set; }
         public string? Cccd { get; set; }
         public DateTime? IssuedDate { get; set; }
         public string? IssuedPlace { get; set; }
