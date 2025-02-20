@@ -4,14 +4,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class UserStatusRepo
     {
-<<<<<<< HEAD
-        private readonly isc_elibContext _context;
 
-        public UserStatusRepo(isc_elibContext context)
-=======
         private readonly isc_dbContext _context;
         public UserStatusRepo(isc_dbContext context)
->>>>>>> dev-2
         {
             _context = context;
         }
