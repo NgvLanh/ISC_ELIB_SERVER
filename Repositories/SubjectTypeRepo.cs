@@ -40,7 +40,8 @@ namespace ISC_ELIB_SERVER.Repositories
             var subjectType = GetSubjectTypeById(id);
             if (subjectType != null)
             {
-                _context.SubjectTypes.Remove(subjectType);
+                subjectType.Active = false;
+                _context.SubjectTypes.Update(subjectType);
                 return _context.SaveChanges() > 0;
             }
             return false;
