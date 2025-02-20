@@ -174,6 +174,18 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
+//Semester
+builder.Services.AddScoped<SemesterRepo>();
+builder.Services.AddScoped<ISemesterService, SemesterService>();
+
+//GradeLevel
+builder.Services.AddScoped<GradeLevelRepo>();
+builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+
+//EducationLevel
+builder.Services.AddScoped<EducationLevelRepo>();
+builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
