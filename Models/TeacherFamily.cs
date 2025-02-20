@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -11,9 +10,10 @@ namespace ISC_ELIB_SERVER.Models
         public string? GuardianPhone { get; set; }
         public string? GuardianAddressDetail { get; set; }
         public string? GuardianAddressFull { get; set; }
-        public long ProvinceCode { get; set; }
-        public long DistrictCode { get; set; }
-        public long WardCode { get; set; }
+        public long? ProvinceCode { get; set; }
+        public long? DistrictCode { get; set; }
+        public long? WardCode { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public virtual TeacherInfo Teacher { get; set; } = null!;
     }
