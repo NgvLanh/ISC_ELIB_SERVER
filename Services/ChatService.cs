@@ -1,20 +1,11 @@
 ﻿using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.IServices;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IChatService
-    {
-        ApiResponse<ICollection<ChatResponse>> GetChatsBySessionId(long sessionId);
-        ApiResponse<ChatResponse> GetChatById(long id);
-        ApiResponse<ChatResponse> CreateChat(ChatRequest chatRequest);
-        ApiResponse<ChatResponse> UpdateChat(long id, ChatUpdateRequest chatRequest);
-        ApiResponse<object> DeleteChat(long id);
-    }
-
     public class ChatService : IChatService
     {
         private readonly ChatRepo _repository;

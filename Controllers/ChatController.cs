@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         // Lấy danh sách tin nhắn theo SessionId
-        [HttpGet("session/{sessionId}")]
+        [HttpGet("session/{sessionid}")]
         public IActionResult GetChatsBySessionId(long sessionId)
         {
             var response = _service.GetChatsBySessionId(sessionId);

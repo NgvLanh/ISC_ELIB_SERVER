@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         // Lấy danh sách ảnh theo DiscussionId
-        [HttpGet("discussion/{discussionId}")]
+        [HttpGet("discussion/{discussionid}")]
         public IActionResult GetDiscussionImagesByDiscussionId(long discussionId)
         {
             var response = _service.GetDiscussionImagesByDiscussionId(discussionId);
