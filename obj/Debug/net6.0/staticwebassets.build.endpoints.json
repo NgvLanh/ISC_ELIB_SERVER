@@ -1,0 +1,252 @@
+{
+  "Version": 1,
+  "ManifestType": "Build",
+  "Endpoints": [
+    {
+      "Route": "uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.awn14e8gl2.docx",
+      "AssetFile": "uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:10:36 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "awn14e8gl2"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.docx"
+        }
+      ]
+    },
+    {
+      "Route": "uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.docx",
+      "AssetFile": "uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:10:36 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.awn14e8gl2.docx",
+      "AssetFile": "uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:12:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "awn14e8gl2"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx"
+        }
+      ]
+    },
+    {
+      "Route": "uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx",
+      "AssetFile": "uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:12:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.awn14e8gl2.docx",
+      "AssetFile": "uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:14:06 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "awn14e8gl2"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx"
+        }
+      ]
+    },
+    {
+      "Route": "uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx",
+      "AssetFile": "uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45441"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 14 Feb 2025 02:14:06 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A="
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\0f389c47-a587-480e-b0de-b45266523a17_cv.docx'))">
+      <SourceType>Package</SourceType>
+      <SourceId>ISC_ELIB_SERVER</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/ISC_ELIB_SERVER</BasePath>
+      <RelativePath>uploads/exams/0f389c47-a587-480e-b0de-b45266523a17_cv.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>awn14e8gl2</Fingerprint>
+      <Integrity>xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\0f389c47-a587-480e-b0de-b45266523a17_cv.docx'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx'))">
+      <SourceType>Package</SourceType>
+      <SourceId>ISC_ELIB_SERVER</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/ISC_ELIB_SERVER</BasePath>
+      <RelativePath>uploads/exams/516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>awn14e8gl2</Fingerprint>
+      <Integrity>xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\516bf2b9-8869-4cba-8edf-59284b0b24d8_cv.docx'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx'))">
+      <SourceType>Package</SourceType>
+      <SourceId>ISC_ELIB_SERVER</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/ISC_ELIB_SERVER</BasePath>
+      <RelativePath>uploads/exams/92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>awn14e8gl2</Fingerprint>
+      <Integrity>xtSJzWfJabGivgPKgn18uRLdlJH34LUFbmUJ3HJ0s+A=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\exams\92a14d3f-69f0-437c-a6d1-00ea108b7d53_cv.docx'))</OriginalItemSpec>
+    </StaticWebAsset>
+  </ItemGroup>
+</Project>

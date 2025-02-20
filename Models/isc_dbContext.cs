@@ -510,8 +510,7 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.SemesterId).HasColumnName("semester_id");
 
                 entity.Property(e => e.Status)
-                    .HasMaxLength(50)
-                    .HasColumnName("status");
+                    .HasConversion<string>();
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
