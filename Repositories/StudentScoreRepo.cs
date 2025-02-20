@@ -13,9 +13,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
     public class StudentScoreRepo : IStudentScoreRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public StudentScoreRepo(isc_elibContext context)
+        public StudentScoreRepo(isc_dbContext context)
         {
             _context = context;
         }

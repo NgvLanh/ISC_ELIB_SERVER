@@ -2,11 +2,11 @@
 {
     public class Exemption_UpdateRequest
     {
-        public long StudentId { get; set; }
-        public long ClassId { get; set; }
+        public int StudentId { get; set; }
+        public int ClassId { get; set; }
         public string? ExemptedObjects { get; set; }
         public string? FormExemption { get; set; }
-        public bool? IsActive { get; set; }
+        public bool Active { get; set; }
 
     }
 }

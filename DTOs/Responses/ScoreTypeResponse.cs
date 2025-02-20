@@ -4,7 +4,7 @@
     {
         public class ScoreTypeResponse
         {
-            public long Id { get; set; }
+            public int Id { get; set; }
             public string? Name { get; set; }
             public int? Weight { get; set; }
             public int? QtyScoreSemester1 { get; set; }

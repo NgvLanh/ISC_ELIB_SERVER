@@ -5,9 +5,9 @@ using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Mappers
 {
-    public class MojorMapper : Profile
+    public class MajorMapper : Profile
     {
-        public MojorMapper() {
+        public MajorMapper() {
             // us - res
             CreateMap<Major, MajorResponse>();
             // res - us

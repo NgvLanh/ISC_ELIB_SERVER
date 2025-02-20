@@ -17,12 +17,12 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool? Status { get; set; }
 
         [Required(ErrorMessage = "TeacherId là bắt buộc.")]
-        public long TeacherId { get; set; }
+        public int TeacherId { get; set; }
 
         [Required(ErrorMessage = "LeadershipId là bắt buộc.")]
-        public long LeadershipId { get; set; }
+        public int LeadershipId { get; set; }
 
-        public bool? Active { get; set; }
+        public bool Active { get; set; }
 
     }
 }

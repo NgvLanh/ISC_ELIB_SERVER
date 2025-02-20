@@ -6,15 +6,6 @@ using AutoMapper;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ICampusService
-    {
-        ApiResponse<ICollection<CampusResponse>> GetCampuses(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
-        ApiResponse<CampusResponse> GetCampusById(long id);
-        ApiResponse<CampusResponse> CreateCampus(CampusRequest campusRequest);
-        ApiResponse<CampusResponse> UpdateCampus(long id, CampusRequest campusRequest);
-        ApiResponse<bool> DeleteCampus(long id);
-    }
-
     public class CampusService : ICampusService
     {
         private readonly CampusRepo _repository;

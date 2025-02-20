@@ -4,8 +4,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TrainingProgramsRepo
     {
-        private readonly isc_elibContext _context;
-        public TrainingProgramsRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TrainingProgramsRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -36,6 +36,15 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteTrainingProgram(TrainingProgram trainingProgram)
         {
+            if (trainingProgram.StartDate.Kind != DateTimeKind.Utc)
+            {
+                trainingProgram.StartDate = trainingProgram.StartDate.ToUniversalTime();
+            }
+            if (trainingProgram.EndDate.Kind != DateTimeKind.Utc)
+            {
+                trainingProgram.EndDate = trainingProgram.EndDate.ToUniversalTime();
+            }
+
             _context.TrainingPrograms.Update(trainingProgram);
             _context.SaveChanges();
             return true;

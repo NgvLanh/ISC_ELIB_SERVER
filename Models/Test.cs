@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Models
             TestsSubmissions = new HashSet<TestsSubmission>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         public string? Type { get; set; }
         public int? DurationTime { get; set; }
@@ -22,21 +22,13 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public string? ClassIds { get; set; }
         public bool? FileSubmit { get; set; }
-        //public long SemesterId { get; set; }
-        //public long SubjectId { get; set; }
-        //public long UserId { get; set; }
+        public int? SemesterId { get; set; }
+        public int? SubjectId { get; set; }
+        public int? UserId { get; set; }
+        public bool Active { get; set; }
 
-        //Dùng tạm vì db thiếu data
-        public long? SemesterId { get; set; }
-        public long? SubjectId { get; set; }
-        public long? UserId { get; set; }
-
-        //public virtual Subject Subject { get; set; } = null!;
-        //public virtual User User { get; set; } = null!;
-
-        //Dùng tạm vì db thiếu data
-        public virtual Subject? Subject { get; set; } 
-        public virtual User? User { get; set; } 
+        public virtual Subject? Subject { get; set; }
+        public virtual User? User { get; set; }
         public virtual ICollection<TestFile> TestFiles { get; set; }
         public virtual ICollection<TestQuestion> TestQuestions { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }

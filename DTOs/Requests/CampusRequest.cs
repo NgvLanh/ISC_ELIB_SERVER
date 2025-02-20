@@ -18,11 +18,11 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string? PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Mã trường không được để trống.")]
-        [Range(1, long.MaxValue, ErrorMessage = "Mã trường phải là số dương.")]
-        public long? SchoolId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Mã trường phải là số dương.")]
+        public int? SchoolId { get; set; }
 
         [Required(ErrorMessage = "Mã người dùng không được để trống.")]
-        [Range(1, long.MaxValue, ErrorMessage = "Mã người dùng phải là số dương.")]
-        public long? UserId { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Mã người dùng phải là số dương.")]
+        public int? UserId { get; set; }
     }
 }

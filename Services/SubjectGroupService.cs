@@ -19,8 +19,8 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly SubjectGroupRepo _subjectGroupRepo;
         private readonly IMapper _mapper;
-        private readonly isc_elibContext _context;
-        public SubjectGroupService (SubjectGroupRepo subjectGroupRepo, IMapper mapper, isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public SubjectGroupService(SubjectGroupRepo subjectGroupRepo, IMapper mapper, isc_dbContext context)
         {
             _subjectGroupRepo = subjectGroupRepo;
             _mapper = mapper;
@@ -68,7 +68,8 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<SubjectGroupResponse>.Conflict("Tên tổ - bộ môn đã tồn tại");
             }
             var teacher = _context.TeacherInfos.ToList().FirstOrDefault(x => x.Id == request.TeacherId);
-            if (teacher == null) { 
+            if (teacher == null)
+            {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
             }
             var create = _subjectGroupRepo.CreateSubjectGroup(_mapper.Map<SubjectGroup>(request));

@@ -6,14 +6,6 @@ using AutoMapper;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IAcademicYearService
-    {
-        ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(int? page, int? pageSize, string? sortColumn, string? sortOrder);
-        ApiResponse<AcademicYearResponse> GetAcademicYearById(long id);
-        ApiResponse<AcademicYearResponse> CreateAcademicYear(AcademicYearRequest academicYearRequest);
-        ApiResponse<AcademicYearResponse> UpdateAcademicYear(long id, AcademicYearRequest academicYearRequest);
-        ApiResponse<bool> DeleteAcademicYear(long id);
-    }
 
     public class AcademicYearService : IAcademicYearService
     {
@@ -68,7 +60,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 StartTime = DateTime.SpecifyKind(academicYearRequest.StartTime, DateTimeKind.Unspecified),
                 EndTime = DateTime.SpecifyKind(academicYearRequest.EndTime, DateTimeKind.Unspecified),
-                SchoolId =  academicYearRequest.SchoolId
+                SchoolId = academicYearRequest.SchoolId
             };
             try
             {
@@ -112,10 +104,10 @@ namespace ISC_ELIB_SERVER.Services
 
         }
 
-        public ApiResponse<bool> DeleteAcademicYear(long id)
+        public ApiResponse<object> DeleteAcademicYear(long id)
         {
             var success = _repository.DeleteAcademicYear(id);
-            return success ? ApiResponse<bool>.Success() : ApiResponse<bool>.NotFound($"Không tìm thấy năm #{id} học để xóa");
+            return success ? ApiResponse<object>.Success() : ApiResponse<object>.NotFound($"Không tìm thấy năm #{id} học để xóa");
         }
     }
 

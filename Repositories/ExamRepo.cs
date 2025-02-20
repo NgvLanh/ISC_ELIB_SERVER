@@ -4,9 +4,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class ExamRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ExamRepo(isc_elibContext context)
+        public ExamRepo(isc_dbContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<Exam> GetExamByName(string name)
         {
             return _context.Exams
-                .Where(e => e.Name.Contains(name)) 
+                .Where(e => e.Name.Contains(name))
                 .ToList();
         }
         public Exam CreateExam(Exam exam)

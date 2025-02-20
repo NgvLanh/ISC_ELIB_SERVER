@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,12 +23,12 @@ var databaseUrl = Env.GetString("DATABASE_URL");
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-  
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.MaxDepth = 64; // Đặt MaxDepth
-}); 
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -37,7 +38,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddDbContext<isc_elibContext>(options =>
+builder.Services.AddDbContext<isc_dbContext>(options =>
 {
     options.UseNpgsql(databaseUrl);
 });
@@ -46,10 +47,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = CustomValidationResponse.GenerateResponse;
 });
-builder.Services.Configure<JsonOptions>(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-});
+
+// builder.Services.Configure<JsonOptions>(options =>
+// {
+//     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+// });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -77,7 +79,7 @@ builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
 builder.Services.AddScoped<ExamScheduleClassRepo>();
 builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
 
-builder.Services.AddScoped<AnswersQaRepo>();  
+builder.Services.AddScoped<AnswersQaRepo>();
 builder.Services.AddScoped<IAnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
 builder.Services.AddScoped<IQuestionImagesQaService>();
@@ -106,7 +108,7 @@ builder.Services.AddScoped<IThemesService, IThemesService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, IMajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
 builder.Services.AddScoped<AcademicYearRepo>();
@@ -172,6 +174,18 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
+//Semester
+builder.Services.AddScoped<SemesterRepo>();
+builder.Services.AddScoped<ISemesterService, SemesterService>();
+
+//GradeLevel
+builder.Services.AddScoped<GradeLevelRepo>();
+builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+
+//EducationLevel
+builder.Services.AddScoped<EducationLevelRepo>();
+builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -179,10 +193,10 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.Register(c =>
     {
-        var optionsBuilder = new DbContextOptionsBuilder<isc_elibContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<isc_dbContext>();
         optionsBuilder.UseNpgsql(databaseUrl);
 
-        return new isc_elibContext(optionsBuilder.Options);
+        return new isc_dbContext(optionsBuilder.Options);
     })
     .AsSelf()
     .InstancePerLifetimeScope();

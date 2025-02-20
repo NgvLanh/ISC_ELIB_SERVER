@@ -2,9 +2,9 @@
 {
     public class ExamGraderResponse
     {
-        public long Id { get; set; }
-        public long ExamId { get; set; }
-        public long UserId { get; set; }
+        public int Id { get; set; }
+        public int ExamId { get; set; }
+        public int UserId { get; set; }
         public string? ClassIds { get; set; }
     }
 }

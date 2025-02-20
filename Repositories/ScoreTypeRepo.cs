@@ -13,9 +13,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
     public class ScoreTypeRepo : IScoreTypeRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public ScoreTypeRepo(isc_elibContext context)
+        public ScoreTypeRepo(isc_dbContext context)
         {
             _context = context;
         }

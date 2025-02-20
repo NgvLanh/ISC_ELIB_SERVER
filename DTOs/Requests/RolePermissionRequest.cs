@@ -6,13 +6,13 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     {
         [Required(ErrorMessage = "PermissionId không được để trống")]
         [RegularExpression(@"^\d+$", ErrorMessage = "PermissionId phải là số nguyên")]
-        public long PermissionId { get; set; }
+        public int PermissionId { get; set; }
 
         [Required(ErrorMessage = "RoleId không được để trống")]
         [RegularExpression(@"^\d+$", ErrorMessage = "RoleId phải là số nguyên")]
-        public long RoleId { get; set; }
+        public int RoleId { get; set; }
 
-        [Required(ErrorMessage = "IsActive không được để trống")]
-        public bool IsActive { get; set; } = true;
+        [Required(ErrorMessage = "Active không được để trống")]
+        public bool Active { get; set; } = true;
     }
 }

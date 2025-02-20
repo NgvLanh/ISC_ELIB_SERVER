@@ -4,8 +4,8 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class MajorRepo
     {
-        private readonly isc_elibContext _context;
-        public MajorRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public MajorRepo(isc_dbContext context)
         {
             _context = context;
         }

@@ -4,20 +4,20 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TransferSchoolRepo
     {
-        private readonly isc_elibContext _context;
-        public TransferSchoolRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TransferSchoolRepo(isc_dbContext context)
         {
             _context = context;
         }
 
         public ICollection<TransferSchool> GetTransferSchools()
         {
-            return _context.TransferSchools.Where(d => d.IsActive == true).ToList();
+            return _context.TransferSchools.Where(d => d.Active == true).ToList();
         }
 
         public TransferSchool GetTransferSchoolById(long id)
         {
-            return _context.TransferSchools.FirstOrDefault(s => s.Id == id && s.IsActive == true);
+            return _context.TransferSchools.FirstOrDefault(s => s.Id == id && s.Active == true);
         }
 
         public TransferSchool CreateTransferSchool(TransferSchool TransferSchool)
@@ -47,7 +47,7 @@ namespace ISC_ELIB_SERVER.Repositories
             existingTransferSchool.AttachmentName = TransferSchool.AttachmentName;
             existingTransferSchool.AttachmentPath = TransferSchool.AttachmentPath;
             existingTransferSchool.LeadershipId = TransferSchool.LeadershipId;
-            existingTransferSchool.IsActive = TransferSchool.IsActive;
+            existingTransferSchool.Active = TransferSchool.Active;
 
             // Lưu các thay đổi xuống CSDL
             _context.SaveChanges();
@@ -72,7 +72,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var TransferSchool = GetTransferSchoolById(id);
             if (TransferSchool != null)
             {
-                TransferSchool.IsActive = false;
+                TransferSchool.Active = false;
                 _context.TransferSchools.Update(TransferSchool);
                 return _context.SaveChanges() > 0;
             }

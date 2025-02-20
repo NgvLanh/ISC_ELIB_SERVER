@@ -6,9 +6,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class NotificationRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public NotificationRepo(isc_elibContext context)
+        public NotificationRepo(isc_dbContext context)
         {
             _context = context;
         }

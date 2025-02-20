@@ -8,7 +8,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(1000, ErrorMessage = "Nội dung câu hỏi không được vượt quá 1000 ký tự")]
         public string Content { get; set; } = string.Empty;
 
-        public long UserId { get; set; }
-        public long SubjectId { get; set; }
+        public int UserId { get; set; }
+        public int SubjectId { get; set; }
     }
 }

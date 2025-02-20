@@ -21,9 +21,9 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly WorkProcessRepo _repository;
         private readonly IMapper _mapper;
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public WorkProcessService(WorkProcessRepo repository, IMapper mapper, isc_elibContext context)
+        public WorkProcessService(WorkProcessRepo repository, IMapper mapper, isc_dbContext context)
         {
             _repository = repository;
             _mapper = mapper;
@@ -93,7 +93,7 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<WorkProcess>.NotFound("Không tìm thấy trạng thái quá trình công tác để cập nhật");
         }
 
-        
+
     }
-    
+
 }

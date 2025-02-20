@@ -4,7 +4,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class ClassTypeResponse
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
         [JsonIgnoreCondition(JsonIgnoreCondition.WhenWritingNull)]
         public bool? Status { get; set; }

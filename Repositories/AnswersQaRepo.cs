@@ -5,9 +5,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class AnswersQaRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public AnswersQaRepo(isc_elibContext context)
+        public AnswersQaRepo(isc_dbContext context)
         {
             _context = context;
         }

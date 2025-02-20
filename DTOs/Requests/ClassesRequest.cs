@@ -22,16 +22,16 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Cấp lớp không được để trống")]
-        public long GradeLevelId { get; set; }
+        public int GradeLevelId { get; set; }
 
         [Required(ErrorMessage = "Năm học không được để trống")]
-        public long AcademicYearId { get; set; }
+        public int AcademicYearId { get; set; }
 
         [Required(ErrorMessage = "Người dùng không được để trống")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = "Loại lớp không được để trống")]
-        public long ClassTypeId { get; set; }
+        public int ClassTypeId { get; set; }
 
     }
 }

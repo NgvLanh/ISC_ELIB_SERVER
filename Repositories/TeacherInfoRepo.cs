@@ -7,10 +7,10 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TeacherInfoRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
         // Constructor nhận context
-        public TeacherInfoRepo(isc_elibContext context)
+        public TeacherInfoRepo(isc_dbContext context)
         {
             _context = context;
         }

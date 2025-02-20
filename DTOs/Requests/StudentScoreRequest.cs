@@ -11,15 +11,15 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public double? Score { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn loại điểm!")]
-        public long ScoreTypeId { get; set; }
+        public int ScoreTypeId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn môn học!")]
-        public long SubjectId { get; set; }
+        public int SubjectId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn học sinh!")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn học kỳ!")]
-        public long SemesterId { get; set; }
+        public int SemesterId { get; set; }
     }
 }

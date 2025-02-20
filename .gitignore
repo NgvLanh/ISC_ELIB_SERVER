@@ -1,38 +1,3 @@
-# User-specific files
-.idea/
-.vscode/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows Installer directories
-_installer/
-
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# ASP.NET Scaffolding
-ScaffoldingReadMe.txt
-
-# Tye files
-.tye/
-
-# NPM/Yarn
-node_modules/
-
 # JetBrains Rider
 .idea/
 
@@ -70,10 +35,8 @@ wwwroot/
 
 # Other
 .vs
-.vs2019
-.vs2017
 .env
 
 # Build Folders
-.bin
-.obj
+/bin
+/obj
