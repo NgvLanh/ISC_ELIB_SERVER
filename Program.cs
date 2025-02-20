@@ -140,38 +140,14 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<RolePermissionRepo>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 
-//Temporary
-builder.Services.AddScoped<TemporaryLeaveRepo>();
-builder.Services.AddScoped<ITemporaryLeaveService, TemporaryLeaveService>();
-
-//Change_Class
-builder.Services.AddScoped<ChangeClassRepo>();
-builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
-
-//Exemption
-builder.Services.AddScoped<ExemptionRepo>();
-builder.Services.AddScoped<IExemptionService, ExemptionService>();
-
-//Transfer_School
-builder.Services.AddScoped<TransferSchoolRepo>();
-builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
 
-// Student_Info
-builder.Services.AddScoped<StudentInfoRepo>();
-builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
-//WorkProcessRepo
-builder.Services.AddScoped<WorkProcessRepo>();
-builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
 
-//RetirementReppo
-builder.Services.AddScoped<RetirementRepo>();
-builder.Services.AddScoped<IRetirementService, RetirementService>();
 
-//Resignation
-builder.Services.AddScoped<ResignationRepo>();
-builder.Services.AddScoped<IResignationService, ResignationService>();
+
+
+
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
