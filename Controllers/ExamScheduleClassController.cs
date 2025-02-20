@@ -1,11 +1,12 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Services;
+﻿using ISC_ELIB_SERVER.Dto.Request;
+using ISC_ELIB_SERVER.Requests;
+using ISC_ELIB_SERVER.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/exam-schedule-classes")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ExamScheduleClassController : ControllerBase
     {
@@ -17,45 +18,35 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ApiResponse<PagedResult<ExamScheduleClassResponse>>> GetAll(
-      [FromQuery] int page = 1,
-      [FromQuery] int pageSize = 10,
-      [FromQuery] string? searchTerm = null,
-      [FromQuery] string? sortBy = null,
-      [FromQuery] string? sortOrder = "asc")
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_service.GetAll(page, pageSize, searchTerm, sortBy, sortOrder));
+            return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> GetById(long id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var response = _service.GetById(id);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var result = await _service.GetByIdAsync(id);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpPost]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> Create([FromBody] ExamScheduleClassRequest request)
+        public async Task<IActionResult> Create([FromBody] ExamScheduleClassRequest request)
         {
-            var response = _service.Create(request);
-            return CreatedAtAction(nameof(GetById), new { id = response.Data?.Id }, response);
+            return Ok(await _service.AddAsync(request));
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> Update(long id, [FromBody] ExamScheduleClassRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] ExamScheduleClassRequest request)
         {
-            var response = _service.Update(id, request);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var result = await _service.UpdateAsync(id, request);
+            return result != null ? Ok(result) : NotFound();
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<object>> Delete(long id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var response = _service.Delete(id);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            return await _service.DeleteAsync(id) ? Ok() : NotFound();
         }
     }
 }

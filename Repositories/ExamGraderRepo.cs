@@ -1,73 +1,47 @@
 ﻿using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ISC_ELIB_SERVER.Repositories
+public class ExamGraderRepository
 {
-    public class ExamGraderRepo
+    private readonly isc_dbContext _context;
+
+    public ExamGraderRepository(isc_dbContext context)
     {
-        private readonly isc_dbContext _context;
+        _context = context;
+    }
 
-        public ExamGraderRepo(isc_dbContext context)
-        {
-            _context = context;
-        }
+    public async Task<List<ExamGrader>> GetAllExamGradersAsync()
+    {
+        return await _context.ExamGraders.ToListAsync();
+    }
 
-        public PagedResult<ExamGrader> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
-        {
-            var query = _context.ExamGraders.AsQueryable();
+    public async Task<ExamGrader?> GetExamGraderByIdAsync(int id)
+    {
+        return await _context.ExamGraders.FindAsync(id);
+    }
 
-            // 🔍 Tìm kiếm theo `UserId` hoặc `ExamId`
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(e =>
-                    e.UserId.ToString().Contains(search) ||
-                    e.ExamId.ToString().Contains(search));
-            }
+    public async Task CreateExamGraderAsync(ExamGrader examGrader)
+    {
+        await _context.ExamGraders.AddAsync(examGrader);
+        await _context.SaveChangesAsync();
+    }
 
-            // 🔄 Sắp xếp động
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                query = isDescending
-                    ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
-                    : query.OrderBy(e => EF.Property<object>(e, sortBy));
-            }
+    public async Task UpdateExamGraderAsync(ExamGrader examGrader)
+    {
+        _context.ExamGraders.Update(examGrader);
+        await _context.SaveChangesAsync();
+    }
 
-            // 📌 Tổng số bản ghi
-            var totalCount = query.Count();
+    public async Task<bool> DeleteExamGraderAsync(int id)
+    {
+        var examGrader = await _context.ExamGraders.FindAsync(id);
+        if (examGrader == null) return false;
 
-            // ⏳ Phân trang
-            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return new PagedResult<ExamGrader>(items, totalCount, page, pageSize);
-        }
-        public ExamGrader? GetById(long id)
-        {
-            return _context.ExamGraders.FirstOrDefault(e => e.Id == id);
-        }
-
-        public ExamGrader Create(ExamGrader examGrader)
-        {
-            _context.ExamGraders.Add(examGrader);
-            _context.SaveChanges();
-            return examGrader;
-        }
-
-        public ExamGrader? Update(ExamGrader examGrader)
-        {
-            _context.ExamGraders.Update(examGrader);
-            _context.SaveChanges();
-            return examGrader;
-        }
-
-        public bool Delete(long id)
-        {
-            var entity = GetById(id);
-            if (entity != null)
-            {
-                _context.ExamGraders.Remove(entity);
-                return _context.SaveChanges() > 0;
-            }
-            return false;
-        }
+        _context.ExamGraders.Remove(examGrader);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

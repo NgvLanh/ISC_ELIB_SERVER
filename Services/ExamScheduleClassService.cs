@@ -1,77 +1,62 @@
-﻿using AutoMapper;
-using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
+﻿using ISC_ELIB_SERVER.Dto.Request;
+using ISC_ELIB_SERVER.Dto.Response;
+using ISC_ELIB_SERVER.Mapper;
+using ISC_ELIB_SERVER.Mappers;
 using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Repository;
+using ISC_ELIB_SERVER.Requests;
+using ISC_ELIB_SERVER.Responses;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ISC_ELIB_SERVER.Services
+namespace ISC_ELIB_SERVER.Service
 {
-    public interface IExamScheduleClassService
+    public class ExamScheduleClassService : IExamScheduleClassService
     {
-        ApiResponse<PagedResult<ExamScheduleClassResponse>> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder);
-        ApiResponse<ExamScheduleClassResponse> GetById(long id);
-        ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request);
-        ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request);
-        ApiResponse<object> Delete(long id);
+        private readonly ExamScheduleClassRepository _repository;
 
-    }
-    public class ExamScheduleClassService: IExamScheduleClassService
-    {
-        private readonly ExamScheduleClassRepo _repository;
-        private readonly IMapper _mapper;
-
-        public ExamScheduleClassService(ExamScheduleClassRepo repository, IMapper mapper)
+        public ExamScheduleClassService(ExamScheduleClassRepository repository)
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
-        public ApiResponse<PagedResult<ExamScheduleClassResponse>> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder)
+        public async Task<IEnumerable<ExamScheduleClassResponse>> GetAllAsync()
         {
-            var entities = _repository.GetAll(page, pageSize, searchTerm, sortBy, sortOrder);
-
-            var responses = _mapper.Map<ICollection<ExamScheduleClassResponse>>(entities.Items);
-            var result = new PagedResult<ExamScheduleClassResponse>(responses, entities.TotalItems, page, pageSize);
-
-            return ApiResponse<PagedResult<ExamScheduleClassResponse>>.Success(result);
+            var entities = await _repository.GetAllAsync();
+            return entities.Select(ExamScheduleClassMapper.ToResponse);
         }
 
-        public ApiResponse<ExamScheduleClassResponse> GetById(long id)
+        public async Task<ExamScheduleClassResponse?> GetByIdAsync(int id)
         {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamScheduleClassResponse>.NotFound("ExamScheduleClass không tồn tại");
-
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
-            return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            var entity = await _repository.GetByIdAsync(id);
+            return entity == null ? null : ExamScheduleClassMapper.ToResponse(entity);
         }
 
-        public ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request)
+        public async Task<ExamScheduleClassResponse> AddAsync(ExamScheduleClassRequest request)
         {
-            var entity = _mapper.Map<ExamScheduleClass>(request);
-            _repository.Create(entity);
-
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
-            return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            var entity = ExamScheduleClassMapper.ToEntity(request);
+            var result = await _repository.AddAsync(entity);
+            return ExamScheduleClassMapper.ToResponse(result);
         }
 
-        public ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request)
+        public async Task<ExamScheduleClassResponse?> UpdateAsync(int id, ExamScheduleClassRequest request)
         {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamScheduleClassResponse>.NotFound("ExamScheduleClass không tồn tại");
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null) return null;
 
-            _mapper.Map(request, entity);
-            _repository.Update(entity);
+            entity.ClassId = request.ClassId;
+            entity.ExamScheduleId = request.ExamScheduleId;
+            entity.SupervisoryTeacherId = request.SupervisoryTeacherId;
+            entity.Active = request.Active;
 
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
-            return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            var result = await _repository.UpdateAsync(entity);
+            return ExamScheduleClassMapper.ToResponse(result);
         }
 
-        public ApiResponse<object> Delete(long id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var result = _repository.Delete(id);
-            return result
-                ? ApiResponse<object>.Success("Xóa thành công")
-                : ApiResponse<object>.NotFound("ExamScheduleClass không tồn tại");
+            return await _repository.DeleteAsync(id);
         }
     }
 }

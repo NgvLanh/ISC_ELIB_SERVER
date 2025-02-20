@@ -1,79 +1,52 @@
 ﻿using AutoMapper;
-using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ISC_ELIB_SERVER.Services
+public class ExamGraderService : IExamGraderService
 {
+    private readonly ExamGraderRepository _repository;
+    private readonly IMapper _mapper;
 
-    public interface IExamGraderService
+    public ExamGraderService(ExamGraderRepository repository, IMapper mapper)
     {
-        ApiResponse<PagedResult<ExamGraderResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending);
-        ApiResponse<ExamGraderResponse> GetById(long id);
-        ApiResponse<ExamGraderResponse> Create(ExamGraderRequest request);
-        ApiResponse<ExamGraderResponse> Update(long id, ExamGraderRequest request);
-        ApiResponse<object> Delete(long id);
-        
+        _repository = repository;
+        _mapper = mapper;
     }
-    public class ExamGraderService : IExamGraderService
+
+    public async Task<List<ExamGraderResponse>> GetAllExamGradersAsync()
     {
-        private readonly ExamGraderRepo _repository;
-        private readonly IMapper _mapper;
+        var examGraders = await _repository.GetAllExamGradersAsync();
+        return _mapper.Map<List<ExamGraderResponse>>(examGraders);
+    }
 
-        public ExamGraderService(ExamGraderRepo repository, IMapper mapper)
-        {
-            _repository = repository;
-            _mapper = mapper;
-        }
+    public async Task<ExamGraderResponse?> GetExamGraderByIdAsync(int id)
+    {
+        var examGrader = await _repository.GetExamGraderByIdAsync(id);
+        return examGrader != null ? _mapper.Map<ExamGraderResponse>(examGrader) : null;
+    }
 
-        public ApiResponse<PagedResult<ExamGraderResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
-        {
-            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending);
+    public async Task<ExamGraderResponse> CreateExamGraderAsync(ExamGraderRequest request)
+    {
+        var examGrader = _mapper.Map<ExamGrader>(request);
+        await _repository.CreateExamGraderAsync(examGrader);
+        return _mapper.Map<ExamGraderResponse>(examGrader);
+    }
 
-            var responses = _mapper.Map<ICollection<ExamGraderResponse>>(entities.Items);
-            var result = new PagedResult<ExamGraderResponse>(responses, entities.TotalItems, page, pageSize);
+    public async Task<ExamGraderResponse?> UpdateExamGraderAsync(int id, ExamGraderRequest request)
+    {
+        var existingExamGrader = await _repository.GetExamGraderByIdAsync(id);
+        if (existingExamGrader == null) return null;
 
+        _mapper.Map(request, existingExamGrader);
+        await _repository.UpdateExamGraderAsync(existingExamGrader);
 
-            return ApiResponse<PagedResult<ExamGraderResponse>>.Success(result);
-        }
+        return _mapper.Map<ExamGraderResponse>(existingExamGrader);
+    }
 
-        public ApiResponse<ExamGraderResponse> GetById(long id)
-        {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamGraderResponse>.NotFound("ExamGrader không tồn tại");
-
-            var response = _mapper.Map<ExamGraderResponse>(entity);
-            return ApiResponse<ExamGraderResponse>.Success(response);
-        }
-
-        public ApiResponse<ExamGraderResponse> Create(ExamGraderRequest request)
-        {
-            var entity = _mapper.Map<ExamGrader>(request);
-            _repository.Create(entity);
-
-            var response = _mapper.Map<ExamGraderResponse>(entity);
-            return ApiResponse<ExamGraderResponse>.Success(response);
-        }
-
-        public ApiResponse<ExamGraderResponse> Update(long id, ExamGraderRequest request)
-        {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamGraderResponse>.NotFound("ExamGrader không tồn tại");
-
-            _mapper.Map(request, entity);
-            _repository.Update(entity);
-
-            var response = _mapper.Map<ExamGraderResponse>(entity);
-            return ApiResponse<ExamGraderResponse>.Success(response);
-        }
-        
-        public ApiResponse<object> Delete(long id)
-        {
-            var result = _repository.Delete(id);
-            return result
-                ? ApiResponse<object>.Success()
-                : ApiResponse<object>.NotFound("ExamGrader không tồn tại");
-        }
+    public async Task<bool> DeleteExamGraderAsync(int id)
+    {
+        return await _repository.DeleteExamGraderAsync(id);
     }
 }

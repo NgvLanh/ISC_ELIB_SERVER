@@ -1,66 +1,43 @@
-﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
+﻿
+using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
-    public class ExamScheduleRepo
+    public class ExamScheduleRepository
     {
         private readonly isc_dbContext _context;
 
-        public ExamScheduleRepo(isc_dbContext context)
+        public ExamScheduleRepository(isc_dbContext context)
         {
             _context = context;
         }
 
-        public PagedResult<ExamSchedule> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
+        public async Task<IEnumerable<ExamSchedule>> GetAllAsync()
         {
-            var query = _context.ExamSchedules.AsNoTracking();
-
-            // 🔍 Tìm kiếm theo `Name` (hoặc có thể thay đổi)
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(e => e.Name.Contains(search));
-            }
-
-            // 🔄 Sắp xếp động
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                query = isDescending
-                    ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
-                    : query.OrderBy(e => EF.Property<object>(e, sortBy));
-            }
-
-            // 📌 Tổng số bản ghi
-            var totalCount = query.Count();
-
-            // ⏳ Phân trang
-            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return new PagedResult<ExamSchedule>(items, totalCount, page, pageSize);
+            return await _context.ExamSchedules.ToListAsync();
         }
 
-        public ExamSchedule? GetById(long id) => _context.ExamSchedules.Find(id);
-
-        public void Create(ExamSchedule examSchedule)
+        public async Task<ExamSchedule?> GetByIdAsync(int id)
         {
-            _context.ExamSchedules.Add(examSchedule);
-            _context.SaveChanges();
+            return await _context.ExamSchedules.FindAsync(id);
         }
 
-        public void Update(ExamSchedule examSchedule)
+        public async Task AddAsync(ExamSchedule examSchedule)
+        {
+            await _context.ExamSchedules.AddAsync(examSchedule);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(ExamSchedule examSchedule)
         {
             _context.ExamSchedules.Update(examSchedule);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public bool Delete(long id)
+        public async Task DeleteAsync(ExamSchedule examSchedule)
         {
-            var entity = _context.ExamSchedules.Find(id);
-            if (entity == null) return false;
-
-            _context.ExamSchedules.Remove(entity);
-            _context.SaveChanges();
-            return true;
+            _context.ExamSchedules.Remove(examSchedule);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,15 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ISC_ELIB_SERVER.DTOs.Requests
+﻿public class ExamGraderRequest
 {
-    public class ExamGraderRequest
-    {
-        [Required]
-        public int ExamId { get; set; }
-
-        [Required]
-        public int UserId { get; set; }
-
-        public string? ClassIds { get; set; }
-    }
+    public int? ExamId { get; set; }
+    public int? UserId { get; set; }
+    public string? ClassIds { get; set; }
+    public bool Active { get; set; }
 }
