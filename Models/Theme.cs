@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Models
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         public virtual ICollection<SystemSetting> SystemSettings { get; set; }
     }

@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,7 +108,7 @@ builder.Services.AddScoped<IThemesService, IThemesService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, IMajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
 builder.Services.AddScoped<AcademicYearRepo>();
@@ -172,6 +173,18 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 //Resignation
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
+
+//Semester
+builder.Services.AddScoped<SemesterRepo>();
+builder.Services.AddScoped<ISemesterService, SemesterService>();
+
+//GradeLevel
+builder.Services.AddScoped<GradeLevelRepo>();
+builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+
+//EducationLevel
+builder.Services.AddScoped<EducationLevelRepo>();
+builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
