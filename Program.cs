@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,10 +62,17 @@ builder.Services.AddScoped<UserStatusRepo>();
 //Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
+//Tests
 builder.Services.AddScoped<TestRepo>();
 builder.Services.AddScoped<ITestService, TestService>();
+
+//Test-Question
 builder.Services.AddScoped<TestQuestionRepo>();
 builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
+//Test-submisstion
+builder.Services.AddScoped<TestsSubmissionRepo>();
+builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
+
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();

@@ -3,18 +3,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ITestQuestionService
-    {
-        ApiResponse<ICollection<TestQuestionResponse>> GetTestQuestiones(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<TestQuestionResponse> GetTestQuestionById(long id);
-        //ApiResponse<TestQuestionResponse> GetTestQuestionByName(string name);
-        ApiResponse<TestQuestionResponse> CreateTestQuestion(TestQuestionRequest TestQuestionRequest);
-        ApiResponse<TestQuestion> UpdateTestQuestion(long id, TestQuestionRequest TestQuestion);
-        ApiResponse<TestQuestion> DeleteTestQuestion(long id);
-    }
 
 
     public class TestQuestionService : ITestQuestionService
@@ -80,14 +72,14 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<TestQuestionResponse>.Success(_mapper.Map<TestQuestionResponse>(created));
         }
 
-        public ApiResponse<TestQuestion> UpdateTestQuestion(long id, TestQuestionRequest TestQuestionRequest)
+        public ApiResponse<TestQuestionResponse> UpdateTestQuestion(long id, TestQuestionRequest TestQuestionRequest)
         {
 
             // Tìm bản ghi cần cập nhật trong database
             var existingTestQuestion = _repository.GetTestQuestionById(id);
             if (existingTestQuestion == null)
             {
-                return ApiResponse<TestQuestion>.NotFound($"Không tìm thấy thông tin với Id = {id}");
+                return ApiResponse<TestQuestionResponse>.NotFound($"Không tìm thấy thông tin với Id = {id}");
             }
 
             // Ánh xạ dữ liệu từ request sang entity, chỉ cập nhật các trường cần thiết
@@ -95,7 +87,7 @@ namespace ISC_ELIB_SERVER.Services
 
             // Thực hiện cập nhật bản ghi
             var updated = _repository.UpdateTestQuestion(existingTestQuestion);
-            return ApiResponse<TestQuestion>.Success(updated);
+            return ApiResponse<TestQuestionResponse>.Success(_mapper.Map<TestQuestionResponse>(updated));
         }
 
         public ApiResponse<TestQuestion> DeleteTestQuestion(long id)
