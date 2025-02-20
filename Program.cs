@@ -13,6 +13,7 @@ using System.Reflection;
 using AutoMapper;
 
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
