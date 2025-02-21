@@ -3,18 +3,10 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ITestSubmissionAnswerService
-    {
-        ApiResponse<ICollection<TestSubmissionAnswerResponse>> GetTestSubmissionAnswers(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<TestSubmissionAnswerResponse> GetTestSubmissionAnswerById(int id);
-        ApiResponse<TestSubmissionAnswerResponse> CreateTestSubmissionAnswer(TestSubmissionAnswerRequest testSubmissionAnswerRequest);
-        ApiResponse<TestSubmissionAnswerResponse> UpdateTestSubmissionAnswer(int id, TestSubmissionAnswerRequest testSubmissionAnswerRequest);
-        ApiResponse<TestSubmissionAnswerResponse> DeleteTestSubmissionAnswer(int id);
-    }
-
     public class TestSubmissionAnswerService : ITestSubmissionAnswerService
     {
         private readonly TestSubmissionAnswerRepo _repository;

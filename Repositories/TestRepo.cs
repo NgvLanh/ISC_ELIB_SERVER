@@ -12,8 +12,12 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<Test> GetTests()
         {
-            return _context.Tests.ToList();
+
+
+                return _context.Tests.ToList();
+           
         }
+
 
         public Test GetTestById(long id)
         {

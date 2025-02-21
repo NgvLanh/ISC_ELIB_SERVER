@@ -20,7 +20,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? WrongAnswers { get; set; }
         public double? Score { get; set; }
         public bool? Graded { get; set; }
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         public virtual User? Student { get; set; }
         public virtual Test? Test { get; set; }

@@ -1,0 +1,16 @@
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+
+namespace ISC_ELIB_SERVER.Services.Interfaces
+{
+    public interface ITestService
+    {
+        ApiResponse<ICollection<TestResponse>> GetTestes(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<TestResponse> GetTestById(long id);
+        ApiResponse<TestResponse> GetTestByName(string name);
+        ApiResponse<TestResponse> CreateTest(TestRequest TestRequest);
+        ApiResponse<Test> UpdateTest(long id, TestRequest Test);
+        ApiResponse<Test> DeleteTest(long id);
+    }
+}
