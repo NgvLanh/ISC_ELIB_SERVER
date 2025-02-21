@@ -1,10 +1,7 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -42,17 +39,17 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUserStatus(long id, [FromBody] UserStatus userStatus)
+        public IActionResult UpdateUserStatus(long id, [FromBody] UserStatusRequest userStatusRequest)
         {
-
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.UpdateUserStatus(id, userStatusRequest);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUserStatus(long id)
         {
-            return Ok(ApiResponse<object>.Success("Chưa làm"));
+            var response = _service.DeleteUserStatus(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-
     }
 }

@@ -7,7 +7,6 @@
         public int ClassId { get; set; }
         public string? ExemptedObjects { get; set; }
         public string? FormExemption { get; set; }
-        public bool Active { get; set; }
 
     }
 }

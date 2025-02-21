@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> GetUserById(long id)
+        public ActionResult<ApiResponse<UserResponse>> GetUserById(int id)
         {
             return Ok(_userService.GetUserById(id));
         }
@@ -43,9 +44,8 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<UserResponse>> CreateUser([FromBody] UserRequest userRequest)
         {
             if (userRequest == null)
-                return BadRequest("Invalid user data.");
+                return BadRequest("Dữ liệu người dùng không hợp lệ.");
 
-            // Convert DateTime fields to Unspecified kind before saving
             userRequest.Dob = DateTimeUtils.ConvertToUnspecified(userRequest.Dob);
             userRequest.EnrollmentDate = DateTimeUtils.ConvertToUnspecified(userRequest.EnrollmentDate);
 
@@ -54,21 +54,22 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> UpdateUser(long id, [FromBody] UserRequest userRequest)
+        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserRequest userRequest)
         {
-            if (userRequest == null || id != userRequest.Id)
-                return BadRequest("User ID mismatch.");
+            if (userRequest == null)
+                return BadRequest("Dữ liệu không hợp lệ.");
 
-            // Convert DateTime fields to Unspecified kind before updating
+            // Chuyển đổi DateTime thành Unspecified trước khi cập nhật
             userRequest.Dob = DateTimeUtils.ConvertToUnspecified(userRequest.Dob);
             userRequest.EnrollmentDate = DateTimeUtils.ConvertToUnspecified(userRequest.EnrollmentDate);
 
-            return Ok(_userService.UpdateUser(userRequest));
+            // Gửi ID và request đến service
+            return Ok(_userService.UpdateUser(id, userRequest));
         }
 
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<User>> DeleteUser(long id)
+        public ActionResult<ApiResponse<User>> DeleteUser(int id)
         {
             return Ok(_userService.DeleteUser(id));
         }

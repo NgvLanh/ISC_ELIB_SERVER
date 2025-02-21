@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/teacherinfos/{id}
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<TeacherInfoResponses>> GetTeacherInfoById(long id)
+        public ActionResult<ApiResponse<TeacherInfoResponses>> GetTeacherInfoById(int id)
         {
             return Ok(_teacherInfoService.GetTeacherInfoById(id));
         }
@@ -50,7 +51,7 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<TeacherInfoResponses>> CreateTeacherInfo([FromBody] TeacherInfoRequest teacherInfoRequest)
         {
             if (teacherInfoRequest == null)
-                return BadRequest("Invalid teacher info data.");
+                return BadRequest("Dữ liệu thông tin giáo viên không hợp lệ.");
 
             // Nếu cần, chuyển đổi các trường DateTime về kiểu Unspecified trước khi lưu
             teacherInfoRequest.IssuedDate = DateTimeUtils.ConvertToUnspecified(teacherInfoRequest.IssuedDate);
@@ -62,22 +63,23 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // PUT: api/teacherinfos/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<TeacherInfoResponses>> UpdateTeacherInfo(long id, [FromBody] TeacherInfoRequest teacherInfoRequest)
+        public ActionResult<ApiResponse<TeacherInfoResponses>> UpdateTeacherInfo(int id, [FromBody] TeacherInfoRequest teacherInfoRequest)
         {
-            if (teacherInfoRequest == null || id != teacherInfoRequest.Id)
-                return BadRequest("TeacherInfo ID mismatch.");
+            if (teacherInfoRequest == null)
+                return BadRequest("Dữ liệu không hợp lệ.");
 
             // Chuyển đổi các trường DateTime nếu cần
             teacherInfoRequest.IssuedDate = DateTimeUtils.ConvertToUnspecified(teacherInfoRequest.IssuedDate);
             teacherInfoRequest.UnionDate = DateTimeUtils.ConvertToUnspecified(teacherInfoRequest.UnionDate);
             teacherInfoRequest.PartyDate = DateTimeUtils.ConvertToUnspecified(teacherInfoRequest.PartyDate);
 
-            return Ok(_teacherInfoService.UpdateTeacherInfo(teacherInfoRequest));
+            // Truyền ID vào service để cập nhật đúng giáo viên
+            return Ok(_teacherInfoService.UpdateTeacherInfo(id, teacherInfoRequest));
         }
 
         // DELETE: api/teacherinfos/{id}
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<TeacherInfoResponses>> DeleteTeacherInfo(long id)
+        public ActionResult<ApiResponse<TeacherInfoResponses>> DeleteTeacherInfo(int id)
         {
             return Ok(_teacherInfoService.DeleteTeacherInfo(id));
         }
