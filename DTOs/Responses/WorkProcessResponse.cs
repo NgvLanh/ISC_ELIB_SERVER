@@ -12,6 +12,5 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool? IsCurrent { get; set; }
-        public bool Active { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
+    [Table("question_qa")]
     public partial class QuestionQa
     {
         public QuestionQa()

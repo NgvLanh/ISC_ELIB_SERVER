@@ -1,0 +1,8 @@
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.csproj.AssemblyReference.cache
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.AssemblyInfoInputs.cache
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.AssemblyInfo.cs
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.csproj.CoreCompileInputs.cache
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\win-x64\ISC_ELIB_SERVER.sourcelink.json
