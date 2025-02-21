@@ -1,47 +1,66 @@
-﻿using ISC_ELIB_SERVER.Models;
+﻿using ISC_ELIB_SERVER.Data;
+using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class ExamGraderRepository
+namespace ISC_ELIB_SERVER.Repositories
 {
-    private readonly isc_dbContext _context;
-
-    public ExamGraderRepository(isc_dbContext context)
+    public class ExamGraderRepository
     {
-        _context = context;
-    }
+        private readonly isc_dbContext _context;
 
-    public async Task<List<ExamGrader>> GetAllExamGradersAsync()
-    {
-        return await _context.ExamGraders.ToListAsync();
-    }
+        public ExamGraderRepository(isc_dbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<ExamGrader?> GetExamGraderByIdAsync(int id)
-    {
-        return await _context.ExamGraders.FindAsync(id);
-    }
+        public async Task<List<ExamGrader>> GetAllAsync(int page, int pageSize, string? sortBy, bool isDescending, int? examId, int? userId)
+        {
+            var query = _context.ExamGraders.AsQueryable();
 
-    public async Task CreateExamGraderAsync(ExamGrader examGrader)
-    {
-        await _context.ExamGraders.AddAsync(examGrader);
-        await _context.SaveChangesAsync();
-    }
+            if (examId.HasValue)
+                query = query.Where(x => x.ExamId == examId);
 
-    public async Task UpdateExamGraderAsync(ExamGrader examGrader)
-    {
-        _context.ExamGraders.Update(examGrader);
-        await _context.SaveChangesAsync();
-    }
+            if (userId.HasValue)
+                query = query.Where(x => x.UserId == userId);
 
-    public async Task<bool> DeleteExamGraderAsync(int id)
-    {
-        var examGrader = await _context.ExamGraders.FindAsync(id);
-        if (examGrader == null) return false;
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                query = isDescending ? query.OrderByDescending(x => EF.Property<object>(x, sortBy))
+                                     : query.OrderBy(x => EF.Property<object>(x, sortBy));
+            }
 
-        _context.ExamGraders.Remove(examGrader);
-        await _context.SaveChangesAsync();
-        return true;
+            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<ExamGrader?> GetByIdAsync(int id)
+        {
+            return await _context.ExamGraders.FindAsync(id);
+        }
+
+        public async Task AddAsync(ExamGrader examGrader)
+        {
+            _context.ExamGraders.Add(examGrader);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(ExamGrader examGrader)
+        {
+            _context.ExamGraders.Update(examGrader);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var examGrader = await _context.ExamGraders.FindAsync(id);
+            if (examGrader != null)
+            {
+                _context.ExamGraders.Remove(examGrader);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

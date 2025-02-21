@@ -1,54 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Service;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/exam-graders")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ExamGraderController : ControllerBase
     {
-        private readonly IExamGraderService _examGraderService;
+        private readonly IExamGraderService _service;
 
-        public ExamGraderController(IExamGraderService examGraderService)
+        public ExamGraderController(IExamGraderService service)
         {
-            _examGraderService = examGraderService;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllExamGraders()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+                                                [FromQuery] string? sortBy = null, [FromQuery] bool isDescending = false,
+                                                [FromQuery] int? examId = null, [FromQuery] int? userId = null)
         {
-            var examGraders = await _examGraderService.GetAllExamGradersAsync();
-            return Ok(examGraders);
+            var result = await _service.GetAllAsync(page, pageSize, sortBy, isDescending, examId, userId);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetExamGraderById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var examGrader = await _examGraderService.GetExamGraderByIdAsync(id);
-            if (examGrader == null) return NotFound();
-            return Ok(examGrader);
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound("ExamGrader không tồn tại");
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateExamGrader([FromBody] ExamGraderRequest request)
+        public async Task<IActionResult> Create([FromBody] ExamGraderRequest request)
         {
-            var examGrader = await _examGraderService.CreateExamGraderAsync(request);
-            return CreatedAtAction(nameof(GetExamGraderById), new { id = examGrader.Id }, examGrader);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            await _service.AddAsync(request);
+            return Ok("ExamGrader đã được thêm thành công");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExamGrader(int id, [FromBody] ExamGraderRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] ExamGraderRequest request)
         {
-            var updatedExamGrader = await _examGraderService.UpdateExamGraderAsync(id, request);
-            if (updatedExamGrader == null) return NotFound();
-            return Ok(updatedExamGrader);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            await _service.UpdateAsync(id, request);
+            return Ok("ExamGrader đã được cập nhật thành công");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExamGrader(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await _examGraderService.DeleteExamGraderAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            await _service.DeleteAsync(id);
+            return Ok("ExamGrader đã được xóa thành công");
         }
     }
 }

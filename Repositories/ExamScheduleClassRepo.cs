@@ -1,52 +1,73 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
-namespace ISC_ELIB_SERVER.Repository
+namespace ISC_ELIB_SERVER.Repositories
 {
-    public class ExamScheduleClassRepository
+    public class ExamScheduleClassRepo
     {
         private readonly isc_dbContext _context;
 
-        public ExamScheduleClassRepository(isc_dbContext context)
+        public ExamScheduleClassRepo(isc_dbContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<ExamScheduleClass>> GetAllAsync()
+        public ICollection<ExamScheduleClass> GetExamScheduleClasses()
         {
-            return await _context.ExamScheduleClasses.ToListAsync();
+            return _context.ExamScheduleClasses.ToList();
         }
 
-        public async Task<ExamScheduleClass?> GetByIdAsync(int id)
+        public ExamScheduleClass GetExamScheduleClassById(int id)
         {
-            return await _context.ExamScheduleClasses.FindAsync(id);
+            return _context.ExamScheduleClasses.FirstOrDefault(esc => esc.Id == id);
         }
 
-        public async Task<ExamScheduleClass> AddAsync(ExamScheduleClass examScheduleClass)
+        public ICollection<ExamScheduleClass> GetExamScheduleClassesByFilter(int? classId, int? exampleSchedule, int? supervisoryTeacherId)
+        {
+            var query = _context.ExamScheduleClasses.AsQueryable();
+
+            if (classId.HasValue)
+                query = query.Where(esc => esc.ClassId == classId);
+
+            if (exampleSchedule.HasValue)
+                query = query.Where(esc => esc.ExampleSchedule == exampleSchedule);
+
+            if (supervisoryTeacherId.HasValue)
+                query = query.Where(esc => esc.SupervisoryTeacherId == supervisoryTeacherId);
+
+            return query.ToList();
+        }
+
+        public ExamScheduleClass CreateExamScheduleClass(ExamScheduleClass examScheduleClass)
         {
             _context.ExamScheduleClasses.Add(examScheduleClass);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return examScheduleClass;
         }
 
-        public async Task<ExamScheduleClass> UpdateAsync(ExamScheduleClass examScheduleClass)
+        public ExamScheduleClass UpdateExamScheduleClass(ExamScheduleClass examScheduleClass)
         {
             _context.ExamScheduleClasses.Update(examScheduleClass);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return examScheduleClass;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public bool DeleteExamScheduleClass(int id)
         {
-            var entity = await _context.ExamScheduleClasses.FindAsync(id);
-            if (entity == null) return false;
+            var examScheduleClass = GetExamScheduleClassById(id);
+            if (examScheduleClass != null)
+            {
+                // Xoá mềm: thay đổi Active
+                examScheduleClass.Active = !examScheduleClass.Active;
+                return _context.SaveChanges() > 0;
+            }
+            return false;
+        }
 
-            _context.ExamScheduleClasses.Remove(entity);
-            await _context.SaveChangesAsync();
-            return true;
+        public void Detach<T>(T entity) where T : class
+        {
+            _context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
         }
     }
 }

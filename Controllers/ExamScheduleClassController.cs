@@ -1,14 +1,13 @@
-﻿using ISC_ELIB_SERVER.Dto.Request;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Requests;
-using ISC_ELIB_SERVER.Service;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exam-schedule-classes")]
     [ApiController]
-    public class ExamScheduleClassController : ControllerBase
+    public class ExamScheduleClassController : Controller
     {
         private readonly IExamScheduleClassService _service;
 
@@ -18,35 +17,65 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAllExamScheduleClasses(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int? classId = null,
+            [FromQuery] int? exampleSchedule = null,
+            [FromQuery] int? supervisoryTeacherId = null,
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc"
+        )
         {
-            return Ok(await _service.GetAllAsync());
+            var response = _service.GetExamScheduleClasses(page, pageSize, classId, exampleSchedule, supervisoryTeacherId, sortColumn, sortOrder);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public IActionResult GetExamScheduleClassById(int id)
         {
-            var result = await _service.GetByIdAsync(id);
-            return result != null ? Ok(result) : NotFound();
+            var response = _service.GetExamScheduleClassById(id);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
+        }
+
+        [HttpGet("filter")]
+        public IActionResult GetExamScheduleClassByFilter(
+            [FromQuery] int? classId = null,
+            [FromQuery] int? exampleSchedule = null,
+            [FromQuery] int? supervisoryTeacherId = null
+        )
+        {
+            var response = _service.GetExamScheduleClassByFilter(classId, exampleSchedule, supervisoryTeacherId);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ExamScheduleClassRequest request)
+        public IActionResult CreateExamScheduleClass([FromBody] ExamScheduleClassRequest request)
         {
-            return Ok(await _service.AddAsync(request));
+            var response = _service.CreateExamScheduleClass(request);
+            if (response.Code == 0)
+                return CreatedAtAction(nameof(GetExamScheduleClassById), new { id = response.Data.Id }, response);
+            return BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ExamScheduleClassRequest request)
+        public IActionResult UpdateExamScheduleClass(int id, [FromBody] ExamScheduleClassRequest request)
         {
-            var result = await _service.UpdateAsync(id, request);
-            return result != null ? Ok(result) : NotFound();
+            var response = _service.UpdateExamScheduleClass(id, request);
+            if (response.Code == 0)
+                return Ok(response);
+            return BadRequest(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut("{id}/toggle-active")]
+        public IActionResult DeleteExamScheduleClass(int id)
         {
-            return await _service.DeleteAsync(id) ? Ok() : NotFound();
+            var response = _service.DeleteExamScheduleClass(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }
 }

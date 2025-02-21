@@ -8,6 +8,5 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int? ExamId { get; set; }
         public int? UserId { get; set; }
         public string? ClassIds { get; set; }
-        public bool Active { get; set; }
     }
 }

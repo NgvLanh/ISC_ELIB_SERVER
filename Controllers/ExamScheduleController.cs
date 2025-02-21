@@ -1,66 +1,82 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
-[ApiController]
-public class ExamScheduleController : ControllerBase
+namespace ISC_ELIB_SERVER.Controllers
 {
-    private readonly IExamScheduleService _examScheduleService;
-
-    public ExamScheduleController(IExamScheduleService examScheduleService)
+    [Route("api/exam-schedules")]
+    [ApiController]
+    public class ExamScheduleController : Controller
     {
-        _examScheduleService = examScheduleService;
-    }
+        private readonly IExamScheduleService _service;
 
-    [HttpGet]
-    public IActionResult GetAllExamSchedules()
-    {
-        var schedules = _examScheduleService.GetExamSchedules();
-        return Ok(schedules);
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetExamScheduleById(int id)
-    {
-        var schedule = _examScheduleService.GetExamScheduleById(id);
-        if (schedule == null)
+        public ExamScheduleController(IExamScheduleService service)
         {
-            return NotFound();
-        }
-        return Ok(schedule);
-    }
-
-    [HttpPost]
-    public IActionResult CreateExamSchedule([FromBody] ExamScheduleRequest request)
-    {
-        _examScheduleService.CreateExamSchedule(request);
-        return Ok(new { message = "Exam schedule created successfully." });
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateExamSchedule(int id, [FromBody] ExamScheduleRequest request)
-    {
-        var existingSchedule = _examScheduleService.GetExamScheduleById(id);
-        if (existingSchedule == null)
-        {
-            return NotFound();
+            _service = service;
         }
 
-        _examScheduleService.UpdateExamSchedule(id, request);
-        return Ok(new { message = "Exam schedule updated successfully." });
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult DeleteExamSchedule(int id)
-    {
-        var existingSchedule = _examScheduleService.GetExamScheduleById(id);
-        if (existingSchedule == null)
+        [HttpGet]
+        public IActionResult GetAllExamSchedules(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "",
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc"
+        )
         {
-            return NotFound();
+            var response = _service.GetExamSchedules(page, pageSize, search, sortColumn, sortOrder);
+            return Ok(response);
         }
 
-        _examScheduleService.DeleteExamSchedule(id);
-        return Ok(new { message = "Exam schedule deleted successfully." });
+        [HttpGet("{id}")]
+        public IActionResult GetExamScheduleById(int id)
+        {
+            var response = _service.GetExamScheduleById(id);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
+        }
+
+        [HttpGet("name/{name}")]
+        public IActionResult GetExamScheduleByName(string name)
+        {
+            var response = _service.GetExamScheduleByName(name);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
+        }
+
+        [HttpPost]
+        public IActionResult CreateExamSchedule([FromBody] ExamScheduleRequest request)
+        {
+            var response = _service.CreateExamSchedule(request);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateExamSchedule(int id, [FromBody] ExamScheduleRequest request)
+        {
+            var response = _service.UpdateExamSchedule(id, request);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPut("{id}/toggle-active")]
+        public IActionResult DeleteExamSchedule(int id)
+        {
+            var response = _service.DeleteExamSchedule(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
     }
 }

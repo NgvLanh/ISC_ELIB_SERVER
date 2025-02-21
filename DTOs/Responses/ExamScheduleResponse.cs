@@ -14,6 +14,5 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int? SubjectId { get; set; }
         public int? SemesterId { get; set; }
         public int? GradeLevelId { get; set; }
-        public bool Active { get; set; }
     }
 }

@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface IExamGraderService
+namespace ISC_ELIB_SERVER.Service
 {
-    Task<List<ExamGraderResponse>> GetAllExamGradersAsync();
-    Task<ExamGraderResponse?> GetExamGraderByIdAsync(int id);
-    Task<ExamGraderResponse> CreateExamGraderAsync(ExamGraderRequest request);
-    Task<ExamGraderResponse?> UpdateExamGraderAsync(int id, ExamGraderRequest request);
-    Task<bool> DeleteExamGraderAsync(int id);
+    public interface IExamGraderService
+    {
+        Task<List<ExamGraderResponse>> GetAllAsync(int page, int pageSize, string? sortBy, bool isDescending, int? examId, int? userId);
+        Task<ExamGraderResponse?> GetByIdAsync(int id);
+        Task AddAsync(ExamGraderRequest request);
+        Task UpdateAsync(int id, ExamGraderRequest request);
+        Task DeleteAsync(int id);
+    }
 }
