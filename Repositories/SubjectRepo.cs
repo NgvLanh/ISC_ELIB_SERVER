@@ -37,10 +37,11 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteSubject(long id)
         {
-            var Subject = GetSubjectById(id);
-            if (Subject != null)
+            var subject = GetSubjectById(id);
+            if (subject != null)
             {
-                _context.Subjects.Remove(Subject);
+                subject.Active = !subject.Active;
+                _context.Subjects.Update(subject);
                 return _context.SaveChanges() > 0;
             }
             return false;

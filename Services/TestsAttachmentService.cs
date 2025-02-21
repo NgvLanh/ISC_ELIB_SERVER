@@ -5,18 +5,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ITestsAttachmentService
-    {
-        ApiResponse<ICollection<TestsAttachment>> GetTestsAttachments();
-        ApiResponse<TestsAttachmentResponse> GetTestsAttachmentById(long id);
-        ApiResponse<TestsAttachmentResponse> CreateTestsAttachment(TestsAttachmentRequest request);
-        ApiResponse<TestsAttachmentResponse> UpdateTestsAttachment(long id, TestsAttachmentRequest request);
-        ApiResponse<TestsAttachmentResponse> DeleteTestsAttachment(long id);
-    }
-
     public class TestsAttachmentService : ITestsAttachmentService
     {
         private readonly TestsAttachmentRepo _repository;
@@ -142,10 +134,21 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestsAttachmentResponse>.NotFound("Attachment not found.");
             }
+
             try
             {
-                _repository.DeleteTestsAttachment(id);
-                return ApiResponse<TestsAttachmentResponse>.Success();
+                // Thực hiện xóa mềm
+                var success = _repository.DeleteTestsAttachment(id);
+
+                if (success)
+                {
+                    return ApiResponse<TestsAttachmentResponse>.Success();
+                }
+
+                return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
+                {
+                    { "Exception", new[] { "Không có thay đổi nào được thực hiện." } }
+                });
             }
             catch (Exception ex)
             {
@@ -156,5 +159,6 @@ namespace ISC_ELIB_SERVER.Services
                 });
             }
         }
+
     }
 }

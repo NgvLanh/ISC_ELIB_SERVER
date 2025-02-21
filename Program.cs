@@ -9,10 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
-
 using AutoMapper;
-
 using System.Text.Json.Serialization;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,10 +60,17 @@ builder.Services.AddScoped<UserStatusRepo>();
 //Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
+//Tests
 builder.Services.AddScoped<TestRepo>();
 builder.Services.AddScoped<ITestService, TestService>();
+
+//Test-Question
 builder.Services.AddScoped<TestQuestionRepo>();
 builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
+//Test-submisstion
+builder.Services.AddScoped<TestsSubmissionRepo>();
+builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
+
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();
@@ -79,11 +85,11 @@ builder.Services.AddScoped<ExamScheduleClassRepo>();
 builder.Services.AddScoped<IExamScheduleClassService, ExamScheduleClassService>();
 
 builder.Services.AddScoped<AnswersQaRepo>();
-builder.Services.AddScoped<IAnswersQaService>();
+builder.Services.AddScoped<IAnswersQaService, AnswersQaService>();
 builder.Services.AddScoped<QuestionImagesQaRepo>();
-builder.Services.AddScoped<IQuestionImagesQaService>();
+//builder.Services.AddScoped<IQuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
-builder.Services.AddScoped<IAnswerImagesQaService>();
+//builder.Services.AddScoped<IAnswerImagesQaService>();
 
 
 
@@ -103,11 +109,11 @@ builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<TestAnswerRepo>();
 
 builder.Services.AddScoped<ThemesRepo>();
-builder.Services.AddScoped<IThemesService, IThemesService>();
+builder.Services.AddScoped<IThemesService, ThemesService>();
 builder.Services.AddScoped<MajorRepo>();
-builder.Services.AddScoped<IMajorService, IMajorService>();
+builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramsService, ITrainingProgramsService>();
+builder.Services.AddScoped<ITrainingProgramsService, TrainingProgramsService>();
 
 //
 builder.Services.AddScoped<AcademicYearRepo>();

@@ -34,7 +34,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var testSubmissionAnswer = GetTestSubmissionAnswerById(id);
             if (testSubmissionAnswer != null)
             {
-                _context.TestSubmissionsAnswers.Remove(testSubmissionAnswer);
+                testSubmissionAnswer.Active = !testSubmissionAnswer.Active;
                 return _context.SaveChanges() > 0;
             }
             return false;

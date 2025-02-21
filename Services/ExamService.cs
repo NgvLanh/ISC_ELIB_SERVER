@@ -4,19 +4,10 @@ using ISC_ELIB_SERVER.Models.Responses;
 using ISC_ELIB_SERVER.Repositories;
 using AutoMapper;
 using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IExamService
-    {
-        ApiResponse<ICollection<ExamResponse>> GetExams(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<ExamResponse> GetExamById(long id);
-        ApiResponse<ICollection<ExamResponse>> GetExamByName(string name);
-        ApiResponse<ExamResponse> CreateExam(ExamRequest request);
-        ApiResponse<ExamResponse> UpdateExam(long id, ExamRequest request);
-        //ApiResponse<Exam> DeleteExam(long id);
-    }
-
     public class ExamService : IExamService
     {
         private readonly ExamRepo _repository;
@@ -190,11 +181,44 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
-    {
-        { "Error", new[] { "Failed to update exam" } }
-    });
+            {
+                { "Error", new[] { "Failed to update exam" } }
+            });
         }
 
+        public ApiResponse<ExamResponse> DeleteExam(long id)
+        {
+            // Kiểm tra xem exam có tồn tại không
+            var existingExam = _repository.GetExamById(id);
+            if (existingExam == null)
+            {
+                return ApiResponse<ExamResponse>.NotFound("Exam not found.");
+            }
+
+            try
+            {
+                // Thực hiện xóa mềm
+                var success = _repository.DeleteExam(id);
+
+                if (success)
+                {
+                    return ApiResponse<ExamResponse>.Success();
+                }
+
+                return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
+                {
+                    { "Exception", new[] { "Không có thay đổi nào được thực hiện." } }
+                });
+                    }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Xóa thất bại: {ex.Message}");
+                return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
+                {
+                    { "Exception", new[] { "Có lỗi xảy ra trong quá trình xóa." } }
+                });
+            }
+        }
 
     }
 }

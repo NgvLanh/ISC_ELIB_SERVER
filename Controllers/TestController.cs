@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -43,14 +44,14 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult UpdateTest(long id, [FromBody] TestRequest Test)
         {
             var response = _service.UpdateTest(id,Test);
-           return response.Code == 0 ? Ok("Cập nhật thành công") : BadRequest("Cập nhật thất bại");
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTest(long id)
         {
             var response = _service.DeleteTest(id);
-            return response.Code == 0 ? Ok("Xóa thành công") : BadRequest("Xóa nhật thất bại");
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
     }
