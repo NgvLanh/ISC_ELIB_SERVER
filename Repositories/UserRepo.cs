@@ -20,7 +20,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Lấy User theo Id
-        public User GetUserById(long id)
+        public User GetUserById(int id)
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
@@ -42,7 +42,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Xóa User
-        public bool DeleteUser(long id)
+        public bool DeleteUser(int id)
         {
             var user = GetUserById(id);
             if (user != null)

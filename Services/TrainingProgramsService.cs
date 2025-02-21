@@ -5,19 +5,11 @@ using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using System.Xml.Linq;
 using System;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ITrainingProgramsService
-    {
-        ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id);
-        ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest);
-        ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest);
-        ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id);
-    }
-
-    public class TrainingProgramsService : ITrainingProgramsService
+    public class TrainingProgramsService : ITrainingProgramService
     {
         private readonly TrainingProgramsRepo _repository;
         private readonly MajorRepo _Majorrepository;
@@ -28,55 +20,6 @@ namespace ISC_ELIB_SERVER.Services
             _repository = repository;
             _Majorrepository = majorrepository;
             _mapper = mapper;
-        }
-        public ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest)
-        {
-            var existing = _repository.GetTrainingProgram().FirstOrDefault(us => us.Name?.ToLower() == trainingProgramsRequest.Name.ToLower());
-            if (existing != null)
-            {
-                return ApiResponse<TrainingProgramsResponse>.Conflict("Tên chương trình đào tạo đã tồn tại");
-            }
-
-            var majorExists = _Majorrepository.GetMajor()
-            .Any(m => m.Id == trainingProgramsRequest.MajorId);
-            if (!majorExists)
-            {
-                return ApiResponse<TrainingProgramsResponse>.Conflict("Chủ đề không tồn tại");
-            }
-
-            var created = _repository.CreateTrainingProgram(new TrainingProgram()
-            {
-                Name = trainingProgramsRequest.Name,
-                MajorId = trainingProgramsRequest.MajorId,
-                SchoolFacilitiesId = trainingProgramsRequest.SchoolFacilitiesId,
-                StartDate = trainingProgramsRequest.StartDate,
-                EndDate = trainingProgramsRequest.EndDate,
-                TrainingForm = trainingProgramsRequest.TrainingForm,
-                Active = false,
-                FileName = trainingProgramsRequest.FileName,
-                FilePath = trainingProgramsRequest.FilePath,
-                Degree = trainingProgramsRequest.Degree
-            });
-            return ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(created));
-        }
-
-        public ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id)
-        {
-            var existingTrainingProgram = _repository.GetTrainingProgramById(id);
-            if (existingTrainingProgram == null)
-            {
-                return ApiResponse<TrainingProgram>.NotFound("Không tìm thấy Chương trình đào tạo.");
-            }
-
-            if (existingTrainingProgram.Active == true)
-            {
-                return ApiResponse<TrainingProgram>.Conflict("Chương trình đào tạo không tồn tại.");
-            }
-
-            existingTrainingProgram.Active = true;
-            _repository.UpdateTrainingProgram(existingTrainingProgram);
-
-            return ApiResponse<TrainingProgram>.Success();
         }
 
         public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -109,15 +52,46 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
         {
             var trainingProgram = _repository.GetTrainingProgramById(id);
-            return (trainingProgram != null && !(trainingProgram.Active == false))
+            return (trainingProgram != null && (trainingProgram.Active == false))
                 ? ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(trainingProgram))
                 : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
+        }
+
+        public ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest)
+        {
+            var existing = _repository.GetTrainingProgram().FirstOrDefault(us => us.Name?.ToLower() == trainingProgramsRequest.Name.ToLower());
+            if (existing != null)
+            {
+                return ApiResponse<TrainingProgramsResponse>.Conflict("Tên chương trình đào tạo đã tồn tại");
+            }
+
+            var majorExists = _Majorrepository.GetMajor()
+            .Any(m => m.Id == trainingProgramsRequest.MajorId);
+            if (!majorExists)
+            {
+                return ApiResponse<TrainingProgramsResponse>.Conflict("Chủ đề không tồn tại");
+            }
+
+            var created = _repository.CreateTrainingProgram(new TrainingProgram()
+            {
+                Name = trainingProgramsRequest.Name,
+                MajorId = trainingProgramsRequest.MajorId,
+                SchoolFacilitiesId = trainingProgramsRequest.SchoolFacilitiesId,
+                StartDate = trainingProgramsRequest.StartDate,
+                EndDate = trainingProgramsRequest.EndDate,
+                TrainingForm = trainingProgramsRequest.TrainingForm,
+                Active = false,
+                FileName = trainingProgramsRequest.FileName,
+                FilePath = trainingProgramsRequest.FilePath,
+                Degree = trainingProgramsRequest.Degree
+            });
+            return ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(created));
         }
 
         public ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest)
         {
             var existingTrainingPrograms = _repository.GetTrainingProgramById(id);
-            if (existingTrainingPrograms == null)
+            if (existingTrainingPrograms == null || existingTrainingPrograms.Active == true)
             {
                 return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy chương trình đào tạo.");
             }
@@ -141,6 +115,25 @@ namespace ISC_ELIB_SERVER.Services
             existingTrainingPrograms.FilePath = trainingProgramsRequest.FilePath;
             _repository.UpdateTrainingProgram(existingTrainingPrograms);
             return ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(existingTrainingPrograms));
+        }
+
+        public ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id)
+        {
+            var existingTrainingProgram = _repository.GetTrainingProgramById(id);
+            if (existingTrainingProgram == null)
+            {
+                return ApiResponse<TrainingProgram>.NotFound("Không tìm thấy Chương trình đào tạo.");
+            }
+
+            if (existingTrainingProgram.Active == true)
+            {
+                return ApiResponse<TrainingProgram>.Conflict("Chương trình đào tạo không tồn tại.");
+            }
+
+            existingTrainingProgram.Active = true;
+            _repository.DeleteTrainingProgram(existingTrainingProgram);
+
+            return ApiResponse<TrainingProgram>.Success();
         }
     }
 }

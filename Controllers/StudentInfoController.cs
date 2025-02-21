@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/studentinfos/{id}
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> GetStudentInfoById(long id)
+        public ActionResult<ApiResponse<StudentInfoResponses>> GetStudentInfoById(int id)
         {
             return Ok(_studentInfoService.GetStudentInfoById(id));
         }
@@ -43,24 +44,24 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<StudentInfoResponses>> CreateStudentInfo([FromBody] StudentInfoRequest studentInfoRequest)
         {
             if (studentInfoRequest == null)
-                return BadRequest("Invalid student info data.");
+                return BadRequest("Dữ liệu thông tin học sinh không hợp lệ.");
 
             return Ok(_studentInfoService.CreateStudentInfo(studentInfoRequest));
         }
 
         // PUT: api/studentinfos/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> UpdateStudentInfo(long id, [FromBody] StudentInfoRequest studentInfoRequest)
+        public ActionResult<ApiResponse<StudentInfoResponses>> UpdateStudentInfo(int id, [FromBody] StudentInfoRequest studentInfoRequest)
         {
-            if (studentInfoRequest == null || id != studentInfoRequest.Id)
-                return BadRequest("StudentInfo ID mismatch.");
+            if (studentInfoRequest == null)
+                return BadRequest("Dữ liệu không hợp lệ.");
 
-            return Ok(_studentInfoService.UpdateStudentInfo(studentInfoRequest));
+            return Ok(_studentInfoService.UpdateStudentInfo(id, studentInfoRequest));
         }
 
         // DELETE: api/studentinfos/{id}
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> DeleteStudentInfo(long id)
+        public ActionResult<ApiResponse<StudentInfoResponses>> DeleteStudentInfo(int id)
         {
             return Ok(_studentInfoService.DeleteStudentInfo(id));
         }
