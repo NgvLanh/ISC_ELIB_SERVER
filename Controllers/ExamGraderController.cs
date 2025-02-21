@@ -1,15 +1,12 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Service;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exam-graders")]
     [ApiController]
-    public class ExamGraderController : ControllerBase
+    public class ExamGraderController : Controller
     {
         private readonly IExamGraderService _service;
 
@@ -19,43 +16,58 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-                                                [FromQuery] string? sortBy = null, [FromQuery] bool isDescending = false,
-                                                [FromQuery] int? examId = null, [FromQuery] int? userId = null)
+        public IActionResult GetAllExamGraders(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "",
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc")
         {
-            var result = await _service.GetAllAsync(page, pageSize, sortBy, isDescending, examId, userId);
-            return Ok(result);
+            var response = _service.GetExamGraders(page, pageSize, search, sortColumn, sortOrder);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public IActionResult GetExamGraderById(int id)
         {
-            var result = await _service.GetByIdAsync(id);
-            if (result == null) return NotFound("ExamGrader không tồn tại");
-            return Ok(result);
+            var response = _service.GetExamGraderById(id);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
+        }
+
+        [HttpGet("exam/{examId}")]
+        public IActionResult GetExamGraderByExamId(int examId)
+        {
+            var response = _service.GetExamGraderByExamId(examId);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ExamGraderRequest request)
+        public IActionResult CreateExamGrader([FromBody] ExamGraderRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            await _service.AddAsync(request);
-            return Ok("ExamGrader đã được thêm thành công");
+            var response = _service.CreateExamGrader(request);
+            if (response.Code == 0)
+                return CreatedAtAction(nameof(GetExamGraderById), new { id = response.Data.Id }, response);
+            return BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ExamGraderRequest request)
+        public IActionResult UpdateExamGrader(int id, [FromBody] ExamGraderRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            await _service.UpdateAsync(id, request);
-            return Ok("ExamGrader đã được cập nhật thành công");
+            var response = _service.UpdateExamGrader(id, request);
+            if (response.Code == 0)
+                return Ok(response);
+            return BadRequest(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut("{id}/toggle-active")]
+        public IActionResult DeleteExamGrader(int id)
         {
-            await _service.DeleteAsync(id);
-            return Ok("ExamGrader đã được xóa thành công");
+            var response = _service.DeleteExamGrader(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }
 }

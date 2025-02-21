@@ -98,3 +98,14 @@ D:\Intern_ISC\ISC_ELIB_SERVER\obj\Debug\net6.0\refint\ISC_ELIB_SERVER.dll
 D:\Intern_ISC\ISC_ELIB_SERVER\obj\Debug\net6.0\ISC_ELIB_SERVER.pdb
 D:\Intern_ISC\ISC_ELIB_SERVER\obj\Debug\net6.0\ISC_ELIB_SERVER.genruntimeconfig.cache
 D:\Intern_ISC\ISC_ELIB_SERVER\obj\Debug\net6.0\ref\ISC_ELIB_SERVER.dll
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.csproj.AssemblyReference.cache
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.GeneratedMSBuildEditorConfig.editorconfig
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.AssemblyInfoInputs.cache
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.AssemblyInfo.cs
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.csproj.CoreCompileInputs.cache
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.MvcApplicationPartsAssemblyInfo.cs
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.MvcApplicationPartsAssemblyInfo.cache
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.sourcelink.json
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.dll
+D:\ThucTapC#\isc\obj\Debug\net6.0\refint\ISC_ELIB_SERVER.dll
+D:\ThucTapC#\isc\obj\Debug\net6.0\ISC_ELIB_SERVER.pdb

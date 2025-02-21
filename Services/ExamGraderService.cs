@@ -1,75 +1,129 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Service;
+using ISC_ELIB_SERVER.Repositories;
+using AutoMapper;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 namespace ISC_ELIB_SERVER.Services
 {
     public class ExamGraderService : IExamGraderService
     {
-        private readonly ExamGraderRepository _repository;
+        private readonly ExamGraderRepo _repository;
+        private readonly IMapper _mapper;
 
-        public ExamGraderService(ExamGraderRepository repository)
+        public ExamGraderService(ExamGraderRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public async Task<List<ExamGraderResponse>> GetAllAsync(int page, int pageSize, string? sortBy, bool isDescending, int? examId, int? userId)
+        public ApiResponse<ICollection<ExamGraderResponse>> GetExamGraders(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var examGraders = await _repository.GetAllAsync(page, pageSize, sortBy, isDescending, examId, userId);
-            return examGraders.Select(x => new ExamGraderResponse
-            {
-                Id = x.Id,
-                ExamId = x.ExamId,
-                UserId = x.UserId,
-                ClassIds = x.ClassIds
-            }).ToList();
-        }
+            var examGraders = _repository.GetExamGraders();
 
-        public async Task<ExamGraderResponse?> GetByIdAsync(int id)
-        {
-            var examGrader = await _repository.GetByIdAsync(id);
-            if (examGrader == null) return null;
-
-            return new ExamGraderResponse
+            // Tìm kiếm dựa trên thuộc tính ClassIds (có thể mở rộng nếu cần)
+            if (!string.IsNullOrEmpty(search))
             {
-                Id = examGrader.Id,
-                ExamId = examGrader.ExamId,
-                UserId = examGrader.UserId,
-                ClassIds = examGrader.ClassIds
+                examGraders = examGraders.Where(eg => eg.ClassIds != null && eg.ClassIds.Contains(search)).ToList();
+            }
+
+            // Sắp xếp
+            examGraders = sortColumn?.ToLower() switch
+            {
+                "id" => sortOrder.ToLower() == "desc" ? examGraders.OrderByDescending(eg => eg.Id).ToList() : examGraders.OrderBy(eg => eg.Id).ToList(),
+                "examid" => sortOrder.ToLower() == "desc" ? examGraders.OrderByDescending(eg => eg.ExamId).ToList() : examGraders.OrderBy(eg => eg.ExamId).ToList(),
+                "userid" => sortOrder.ToLower() == "desc" ? examGraders.OrderByDescending(eg => eg.UserId).ToList() : examGraders.OrderBy(eg => eg.UserId).ToList(),
+                _ => examGraders.OrderBy(eg => eg.Id).ToList()
             };
+
+            // Phân trang
+            var paginatedResult = examGraders
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var mappedResult = _mapper.Map<ICollection<ExamGraderResponse>>(paginatedResult);
+            return ApiResponse<ICollection<ExamGraderResponse>>.Success(mappedResult);
         }
 
-        public async Task AddAsync(ExamGraderRequest request)
+        public ApiResponse<ExamGraderResponse> GetExamGraderById(int id)
         {
-            var examGrader = new ExamGrader
+            var examGrader = _repository.GetExamGraderById(id);
+            if (examGrader == null)
             {
-                ExamId = request.ExamId,
-                UserId = request.UserId,
-                ClassIds = request.ClassIds,
-                Active = request.Active
-            };
-            await _repository.AddAsync(examGrader);
+                return ApiResponse<ExamGraderResponse>.NotFound();
+            }
+            return ApiResponse<ExamGraderResponse>.Success(_mapper.Map<ExamGraderResponse>(examGrader));
         }
 
-        public async Task UpdateAsync(int id, ExamGraderRequest request)
+        public ApiResponse<ICollection<ExamGraderResponse>> GetExamGraderByExamId(int examId)
         {
-            var existingExamGrader = await _repository.GetByIdAsync(id);
-            if (existingExamGrader == null) return;
-
-            existingExamGrader.ExamId = request.ExamId;
-            existingExamGrader.UserId = request.UserId;
-            existingExamGrader.ClassIds = request.ClassIds;
-            existingExamGrader.Active = request.Active;
-
-            await _repository.UpdateAsync(existingExamGrader);
+            var examGraders = _repository.GetExamGradersByExamId(examId);
+            if (examGraders == null || !examGraders.Any())
+            {
+                return ApiResponse<ICollection<ExamGraderResponse>>.NotFound();
+            }
+            return ApiResponse<ICollection<ExamGraderResponse>>.Success(_mapper.Map<ICollection<ExamGraderResponse>>(examGraders));
         }
 
-        public async Task DeleteAsync(int id)
+        public ApiResponse<ExamGraderResponse> CreateExamGrader(ExamGraderRequest request)
         {
-            await _repository.DeleteAsync(id);
+            var examGrader = _mapper.Map<ExamGrader>(request);
+            var created = _repository.CreateExamGrader(examGrader);
+            if (created != null)
+            {
+                var response = _mapper.Map<ExamGraderResponse>(created);
+                return ApiResponse<ExamGraderResponse>.Success(response);
+            }
+            return ApiResponse<ExamGraderResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new[] { "Failed to create exam grader" } }
+            });
+        }
+
+        public ApiResponse<ExamGraderResponse> UpdateExamGrader(int id, ExamGraderRequest request)
+        {
+            var existing = _repository.GetExamGraderById(id);
+            if (existing == null)
+            {
+                return ApiResponse<ExamGraderResponse>.Error(new Dictionary<string, string[]>
+                {
+                    { "Error", new[] { "Exam grader not found" } }
+                });
+            }
+
+            _mapper.Map(request, existing);
+            var updated = _repository.UpdateExamGrader(existing);
+            if (updated != null)
+            {
+                var response = _mapper.Map<ExamGraderResponse>(updated);
+                return ApiResponse<ExamGraderResponse>.Success(response);
+            }
+            return ApiResponse<ExamGraderResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new[] { "Failed to update exam grader" } }
+            });
+        }
+
+        public ApiResponse<ExamGraderResponse> DeleteExamGrader(int id)
+        {
+            var existing = _repository.GetExamGraderById(id);
+            if (existing == null)
+            {
+                return ApiResponse<ExamGraderResponse>.NotFound("Exam grader not found.");
+            }
+            var success = _repository.DeleteExamGrader(id);
+            if (success)
+            {
+                return ApiResponse<ExamGraderResponse>.Success();
+            }
+            return ApiResponse<ExamGraderResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new[] { "No changes were made." } }
+            });
         }
     }
 }
