@@ -3,19 +3,11 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-        public interface ITestService
-        {
-            ApiResponse<ICollection<TestResponse>> GetTestes(int page, int pageSize, string search, string sortColumn, string sortOrder);
-            ApiResponse<TestResponse> GetTestById(long id);
-            ApiResponse<TestResponse> GetTestByName(string name);
-            ApiResponse<TestResponse> CreateTest(TestRequest TestRequest);
-            ApiResponse<Test> UpdateTest(long id, TestRequest Test);
-            ApiResponse<Test> DeleteTest(long id);
-        }
-
+       
 
         public class TestService : ITestService
         {
@@ -109,7 +101,7 @@ namespace ISC_ELIB_SERVER.Services
                 var success = _repository.DeleteTest(id);
                 return success
                     ? ApiResponse<Test>.Success()
-                    : ApiResponse<Test>.NotFound("Không tìm thấy bài kiểm tra dùng để xóa");
+                    : ApiResponse<Test>.NotFound("Không tìm thấy bài kiểm tra để xóa");
             }
         } 
     }
