@@ -29,7 +29,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Read: Lấy TeacherInfo theo Id
-        public TeacherInfo GetTeacherInfoById(long id)
+        public TeacherInfo GetTeacherInfoById(int id)
         {
             return _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
         }
@@ -42,7 +42,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Delete: Xóa TeacherInfo theo Id
-        public void DeleteTeacherInfo(long id)
+        public void DeleteTeacherInfo(int id)
         {
             var teacherInfo = _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
             if (teacherInfo != null)
