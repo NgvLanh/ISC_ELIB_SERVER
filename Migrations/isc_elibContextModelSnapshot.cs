@@ -341,11 +341,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("subject_quantity");
 
-<<<<<<< HEAD
+
                     b.Property<long>("UserId")
-=======
-                    b.Property<long?>("UserId")
->>>>>>> origin/dev-1
+
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -1204,20 +1202,15 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("training_model");
 
-<<<<<<< HEAD
-                    b.Property<long>("UserId")
-=======
+
                     b.Property<long?>("UserId")
->>>>>>> origin/dev-1
+
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-<<<<<<< HEAD
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
-=======
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long?>("UserId"));
->>>>>>> origin/dev-1
+
 
                     b.Property<long>("WardId")
                         .ValueGeneratedOnAdd()
@@ -1764,12 +1757,9 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("union_place");
 
-<<<<<<< HEAD
+
                     b.Property<long>("UserId")
-=======
-                    b.Property<long?>("UserId")
-                        .IsRequired()
->>>>>>> origin/dev-1
+
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
@@ -2434,12 +2424,10 @@ namespace ISC_ELIB_SERVER.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("address_full");
 
-<<<<<<< HEAD
-                    b.Property<long>("ClassId")
-=======
+
                     b.Property<long?>("ClassId")
                         .IsRequired()
->>>>>>> origin/dev-1
+
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasColumnName("class_id");
@@ -2757,10 +2745,9 @@ namespace ISC_ELIB_SERVER.Migrations
                     b.HasOne("ISC_ELIB_SERVER.Models.User", "User")
                         .WithMany("Classes")
                         .HasForeignKey("UserId")
-<<<<<<< HEAD
+
                         .IsRequired()
-=======
->>>>>>> origin/dev-1
+
                         .HasConstraintName("fk_classes_user_id");
 
                     b.Navigation("AcademicYear");

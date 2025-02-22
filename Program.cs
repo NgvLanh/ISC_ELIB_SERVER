@@ -117,7 +117,7 @@ builder.Services.AddScoped<IThemesService, ThemesService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramsService, TrainingProgramsService>();
+
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
@@ -144,7 +144,7 @@ builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
-=======
+
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
