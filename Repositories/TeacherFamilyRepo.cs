@@ -6,9 +6,9 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TeacherFamilyRepo
     {
-        private readonly isc_elibContext _context;
+        private readonly isc_dbContext _context;
 
-        public TeacherFamilyRepo(isc_elibContext context)
+        public TeacherFamilyRepo(isc_dbContext context)
         {
             _context = context;
         }

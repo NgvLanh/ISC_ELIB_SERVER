@@ -1,6 +1,7 @@
 ﻿using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
