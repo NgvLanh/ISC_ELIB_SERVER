@@ -15,7 +15,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? UserId { get; set; }
         public string? Content { get; set; }
         public DateTime? CreateAt { get; set; }
-        public bool Active { get; set; }
+        
 
         public virtual Topic? Topic { get; set; }
         public virtual User? User { get; set; }

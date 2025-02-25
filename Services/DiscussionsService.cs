@@ -59,7 +59,7 @@ namespace ISC_ELIB_SERVER.Services
             var createdDiscussion = _repository.CreateDiscussion(discussion);
             return ApiResponse<DiscussionResponse>.Success(_mapper.Map<DiscussionResponse>(createdDiscussion));
         }
-
+            
         public ApiResponse<DiscussionResponse> UpdateDiscussion(long id, DiscussionRequest request)
         {
             var existingDiscussion = _repository.GetDiscussionById(id);
