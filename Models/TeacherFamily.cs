@@ -11,9 +11,9 @@ namespace ISC_ELIB_SERVER.Models
         public string? GuardianAddressDetail { get; set; }
         public string? GuardianAddressFull { get; set; }
 
-        public long? ProvinceCode { get; set; }
-        public long? DistrictCode { get; set; }
-        public long? WardCode { get; set; }
+        public int ProvinceCode { get; set; }
+        public int DistrictCode { get; set; }
+        public int WardCode { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         public bool Active { get; set; }

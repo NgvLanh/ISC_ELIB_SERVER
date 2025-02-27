@@ -14,11 +14,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "class_types",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -29,11 +30,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "education_levels",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -44,9 +46,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "entry_types",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true"),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,11 +61,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "major",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     description = table.Column<string>(type: "text", nullable: true),
-                    deleted = table.Column<bool>(type: "boolean", nullable: true)
+                    active = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -72,9 +76,10 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "permissions",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -85,16 +90,15 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "retirement",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
                     date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     note = table.Column<string>(type: "text", nullable: true),
                     attachment = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -105,10 +109,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "roles",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -119,12 +124,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "score_types",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     weight = table.Column<int>(type: "integer", nullable: true),
                     qty_score_semester_1 = table.Column<int>(type: "integer", nullable: true),
-                    qty_score_semester_2 = table.Column<int>(type: "integer", nullable: true)
+                    qty_score_semester_2 = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -135,11 +141,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "subject_types",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -147,26 +154,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "teacher_training_program",
-                columns: table => new
-                {
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    training_program_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("teacher_training_program_pkey", x => new { x.teacher_id, x.training_program_id });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "themes",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -177,12 +171,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "topics",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     end_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    file = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    file = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -193,18 +188,16 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "training_programs",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    major_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    school_facilities_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    start_date = table.Column<DateOnly>(type: "date", nullable: true),
-                    end_date = table.Column<DateOnly>(type: "date", nullable: true),
+                    major_id = table.Column<int>(type: "integer", nullable: true),
+                    school_facilities_id = table.Column<int>(type: "integer", nullable: true),
+                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     degree = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     training_form = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    deleted = table.Column<bool>(type: "boolean", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true"),
                     file_name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     file_path = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true)
                 },
@@ -217,9 +210,10 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "types",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -230,9 +224,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "user_status",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true"),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -243,18 +239,16 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "work_process",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
                     organization = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    subject_groups_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    subject_groups_id = table.Column<int>(type: "integer", nullable: true),
                     position = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    start_date = table.Column<DateOnly>(type: "date", nullable: true),
-                    end_date = table.Column<DateOnly>(type: "date", nullable: true),
+                    start_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    end_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     is_current = table.Column<bool>(type: "boolean", nullable: true),
-                    deleted = table.Column<bool>(type: "boolean", nullable: true)
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -265,16 +259,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "schools",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    province_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    district_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ward_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    province_id = table.Column<int>(type: "integer", nullable: true),
+                    district_id = table.Column<int>(type: "integer", nullable: true),
+                    ward_id = table.Column<int>(type: "integer", nullable: true),
                     head_office = table.Column<bool>(type: "boolean", nullable: true),
                     school_type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     phone_number = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: true),
@@ -283,9 +274,9 @@ namespace ISC_ELIB_SERVER.Migrations
                     established_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     training_model = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     website_url = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: true)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    education_level_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    education_level_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -301,10 +292,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "role_permission",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    permission_id = table.Column<long>(type: "bigint", nullable: false),
-                    role_id = table.Column<long>(type: "bigint", nullable: false)
+                    permission_id = table.Column<int>(type: "integer", nullable: true),
+                    role_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -325,12 +317,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "topics_file",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    topic_id = table.Column<long>(type: "bigint", nullable: false),
+                    topic_id = table.Column<int>(type: "integer", nullable: true),
                     file_url = table.Column<string>(type: "text", nullable: true),
                     file_name = table.Column<string>(type: "text", nullable: true),
-                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -346,11 +339,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "academic_years",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     start_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     end_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    school_id = table.Column<long>(type: "bigint", nullable: false)
+                    school_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -366,11 +360,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "semesters",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     start_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     end_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    academic_year_id = table.Column<long>(type: "bigint", nullable: false)
+                    academic_year_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -386,13 +381,14 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "achievement",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     content = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     date_awarded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     file = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    type_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    type_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -408,10 +404,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "answer_images_qa",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    answer_id = table.Column<long>(type: "bigint", nullable: false),
-                    image_url = table.Column<string>(type: "text", nullable: true)
+                    answer_id = table.Column<int>(type: "integer", nullable: true),
+                    image_url = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -422,13 +419,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "answers_qa",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    question_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    question_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
                     content = table.Column<string>(type: "text", nullable: true),
-                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -439,13 +436,14 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "campuses",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     phone_number = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: true),
-                    school_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    school_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -461,13 +459,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "chats",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     sent_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     content = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    session_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    session_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -478,10 +476,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "discussion_images",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    discussion_id = table.Column<long>(type: "bigint", nullable: false),
-                    image_url = table.Column<string>(type: "text", nullable: true)
+                    discussion_id = table.Column<int>(type: "integer", nullable: true),
+                    image_url = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -492,12 +491,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "discussions",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    topic_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    topic_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
                     content = table.Column<string>(type: "text", nullable: true),
-                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -513,11 +513,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "grade_levels",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false)
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -528,17 +529,18 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "classes",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     student_quantity = table.Column<int>(type: "integer", nullable: true),
                     subject_quantity = table.Column<int>(type: "integer", nullable: true),
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    grade_level_id = table.Column<long>(type: "bigint", nullable: false),
-                    academic_year_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: true),
-                    class_type_id = table.Column<long>(type: "bigint", nullable: false)
+                    grade_level_id = table.Column<int>(type: "integer", nullable: true),
+                    academic_year_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    class_type_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -564,7 +566,7 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     password = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -577,19 +579,17 @@ namespace ISC_ELIB_SERVER.Migrations
                     nation = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     religion = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     enrollment_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    role_id = table.Column<long>(type: "bigint", nullable: false),
-                    academic_year_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_status_id = table.Column<long>(type: "bigint", nullable: false),
-                    class_id = table.Column<long>(type: "bigint", nullable: false),
-                    entry_type = table.Column<long>(type: "bigint", nullable: false),
+                    role_id = table.Column<int>(type: "integer", nullable: true),
+                    academic_year_id = table.Column<int>(type: "integer", nullable: true),
+                    user_status_id = table.Column<int>(type: "integer", nullable: true),
+                    class_id = table.Column<int>(type: "integer", nullable: true),
+                    entry_type = table.Column<int>(type: "integer", nullable: true),
                     address_full = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    province_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    district_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ward_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    street = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    province_code = table.Column<int>(type: "integer", nullable: true),
+                    district_code = table.Column<int>(type: "integer", nullable: true),
+                    ward_code = table.Column<int>(type: "integer", nullable: true),
+                    street = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -625,17 +625,17 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "change_class",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    student_id = table.Column<long>(type: "bigint", nullable: false),
-                    old_class_id = table.Column<long>(type: "bigint", nullable: false),
+                    student_id = table.Column<int>(type: "integer", nullable: true),
+                    old_class_id = table.Column<int>(type: "integer", nullable: true),
                     change_class_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    new_class_id = table.Column<long>(type: "bigint", nullable: false),
+                    new_class_id = table.Column<int>(type: "integer", nullable: true),
                     reason = table.Column<string>(type: "text", nullable: true),
                     attachment_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     attachment_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -661,12 +661,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "exemption",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    student_id = table.Column<long>(type: "bigint", nullable: false),
-                    class_id = table.Column<long>(type: "bigint", nullable: false),
+                    student_id = table.Column<int>(type: "integer", nullable: true),
+                    class_id = table.Column<int>(type: "integer", nullable: true),
                     exempted_objects = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    form_exemption = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    form_exemption = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -687,14 +688,15 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "notifications",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     content = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    sender_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    sender_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -715,20 +717,18 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "reserve",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    student_id = table.Column<long>(type: "bigint", nullable: false),
+                    student_id = table.Column<int>(type: "integer", nullable: true),
                     reserve_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     retention_period = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     reason = table.Column<string>(type: "text", nullable: true),
                     file = table.Column<string>(type: "text", nullable: true),
                     semester = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    class_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    semesters_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    class_id = table.Column<int>(type: "integer", nullable: true),
+                    semesters_id = table.Column<int>(type: "integer", nullable: true),
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -744,7 +744,7 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "student_info",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guardian_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     guardian_phone = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
@@ -752,7 +752,8 @@ namespace ISC_ELIB_SERVER.Migrations
                     guardian_dob = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     guardian_address = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     guardian_role = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -768,13 +769,14 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "supports",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     content = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -790,11 +792,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "system_settings",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     captcha = table.Column<bool>(type: "boolean", nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    theme_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    theme_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -815,7 +818,7 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "teacher_info",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     cccd = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
                     issued_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -825,14 +828,12 @@ namespace ISC_ELIB_SERVER.Migrations
                     union_place = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     party_member = table.Column<bool>(type: "boolean", nullable: true),
                     party_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
                     address_full = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    province_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    district_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ward_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    province_code = table.Column<int>(type: "integer", nullable: true),
+                    district_code = table.Column<int>(type: "integer", nullable: true),
+                    ward_code = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -848,17 +849,17 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "transfer_school",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    student_id = table.Column<long>(type: "bigint", nullable: false),
+                    student_id = table.Column<int>(type: "integer", nullable: true),
                     transfer_school_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     transfer_to_school = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     school_address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     reason = table.Column<string>(type: "text", nullable: true),
                     attachment_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     attachment_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -874,15 +875,15 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "resignation",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     note = table.Column<string>(type: "text", nullable: true),
                     attachment = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -898,10 +899,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "subject_groups",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false)
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -917,25 +919,42 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "teacher_family",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false),
+                    teacher_id = table.Column<int>(type: "integer", nullable: false),
                     guardian_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     guardian_phone = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: true),
                     guardian_address_detail = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     guardian_address_full = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    province_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    district_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ward_code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    province_code = table.Column<int>(type: "integer", nullable: false),
+                    district_code = table.Column<int>(type: "integer", nullable: false),
+                    ward_code = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_teacher_family", x => x.id);
                     table.ForeignKey(
                         name: "fk_teacher_family_teacher_id",
+                        column: x => x.teacher_id,
+                        principalTable: "teacher_info",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "teacher_training_program",
+                columns: table => new
+                {
+                    teacher_id = table.Column<int>(type: "integer", nullable: false),
+                    training_program_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("teacher_training_program_pkey", x => new { x.teacher_id, x.training_program_id });
+                    table.ForeignKey(
+                        name: "fk_teacher_training_program_teacher_info",
                         column: x => x.teacher_id,
                         principalTable: "teacher_info",
                         principalColumn: "id");
@@ -945,15 +964,15 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "temporary_leave",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     note = table.Column<string>(type: "text", nullable: true),
                     attachment = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     status = table.Column<bool>(type: "boolean", nullable: true),
-                    teacher_id = table.Column<long>(type: "bigint", nullable: false),
-                    leadership_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                    teacher_id = table.Column<int>(type: "integer", nullable: true),
+                    leadership_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -969,14 +988,15 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "subjects",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     hours_semester_1 = table.Column<int>(type: "integer", nullable: true),
                     hours_semester_2 = table.Column<int>(type: "integer", nullable: true),
-                    subject_group_id = table.Column<long>(type: "bigint", nullable: false),
-                    subject_type_id = table.Column<long>(type: "bigint", nullable: false)
+                    subject_group_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_type_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -997,17 +1017,18 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "exam_schedule",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     exam_day = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     type = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     form = table.Column<bool>(type: "boolean", nullable: true),
                     status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    academic_year_id = table.Column<long>(type: "bigint", nullable: false),
-                    subject = table.Column<long>(type: "bigint", nullable: false),
-                    semester_id = table.Column<long>(type: "bigint", nullable: false),
-                    grade_levels_id = table.Column<long>(type: "bigint", nullable: false)
+                    academic_year_id = table.Column<int>(type: "integer", nullable: true),
+                    subject = table.Column<int>(type: "integer", nullable: true),
+                    semester_id = table.Column<int>(type: "integer", nullable: true),
+                    grade_levels_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1038,18 +1059,19 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "exams",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     exam_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     duration_minutes = table.Column<int>(type: "integer", nullable: true),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    status = table.Column<string>(type: "text", nullable: false),
                     file = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    semester_id = table.Column<long>(type: "bigint", nullable: false),
-                    academic_year_id = table.Column<long>(type: "bigint", nullable: false),
-                    grade_level_id = table.Column<long>(type: "bigint", nullable: false),
-                    class_type_id = table.Column<long>(type: "bigint", nullable: false),
-                    subject_id = table.Column<long>(type: "bigint", nullable: false)
+                    semester_id = table.Column<int>(type: "integer", nullable: true),
+                    academic_year_id = table.Column<int>(type: "integer", nullable: true),
+                    grade_level_id = table.Column<int>(type: "integer", nullable: true),
+                    class_type_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1085,13 +1107,13 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "question_qa",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    subject_id = table.Column<long>(type: "bigint", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_id = table.Column<int>(type: "integer", nullable: true),
                     content = table.Column<string>(type: "text", nullable: true),
-                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    create_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1107,13 +1129,14 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "student_scores",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     score = table.Column<double>(type: "double precision", nullable: true),
-                    score_type_id = table.Column<long>(type: "bigint", nullable: false),
-                    subject_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    semester_id = table.Column<long>(type: "bigint", nullable: false)
+                    score_type_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    semester_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1144,15 +1167,16 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "teaching_assignments",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     start_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     end_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    class_id = table.Column<long>(type: "bigint", nullable: false),
-                    subject_id = table.Column<long>(type: "bigint", nullable: false),
-                    topics_id = table.Column<long>(type: "bigint", nullable: false)
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    class_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_id = table.Column<int>(type: "integer", nullable: true),
+                    topics_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1183,7 +1207,7 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "tests",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -1194,10 +1218,10 @@ namespace ISC_ELIB_SERVER.Migrations
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     class_ids = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     file_submit = table.Column<bool>(type: "boolean", nullable: true),
-                    semester_id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    subject_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                    semester_id = table.Column<int>(type: "integer", nullable: true),
+                    subject_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1218,11 +1242,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "exam_schedule_class",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    class_id = table.Column<long>(type: "bigint", nullable: false),
-                    example_schedule = table.Column<long>(type: "bigint", nullable: false),
-                    supervisory_teacher_id = table.Column<long>(type: "bigint", nullable: false)
+                    class_id = table.Column<int>(type: "integer", nullable: true),
+                    example_schedule = table.Column<int>(type: "integer", nullable: true),
+                    supervisory_teacher_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1248,11 +1273,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "exam_graders",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    exam_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    class_ids = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    exam_id = table.Column<int>(type: "integer", nullable: true),
+                    user_id = table.Column<int>(type: "integer", nullable: true),
+                    class_ids = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1273,10 +1299,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "question_images_qa",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    question_id = table.Column<long>(type: "bigint", nullable: false),
-                    image_url = table.Column<string>(type: "text", nullable: true)
+                    question_id = table.Column<int>(type: "integer", nullable: true),
+                    image_url = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1292,7 +1319,7 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "sessions",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
@@ -1304,8 +1331,9 @@ namespace ISC_ELIB_SERVER.Migrations
                     share_code_url = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     is_exam = table.Column<bool>(type: "boolean", nullable: true),
-                    teaching_assignment_id = table.Column<long>(type: "bigint", nullable: false),
-                    exam_id = table.Column<long>(type: "bigint", nullable: false)
+                    teaching_assignment_id = table.Column<int>(type: "integer", nullable: true),
+                    exam_id = table.Column<int>(type: "integer", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1326,10 +1354,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "test_file",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    test_id = table.Column<long>(type: "bigint", nullable: false),
-                    file_url = table.Column<string>(type: "text", nullable: true)
+                    test_id = table.Column<int>(type: "integer", nullable: true),
+                    file_url = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1345,11 +1374,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "test_questions",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    test_id = table.Column<long>(type: "bigint", nullable: false),
+                    test_id = table.Column<int>(type: "integer", nullable: true),
                     question_text = table.Column<string>(type: "text", nullable: true),
-                    question_type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    question_type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1365,16 +1395,17 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "tests_submissions",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    test_id = table.Column<long>(type: "bigint", nullable: false),
-                    student_id = table.Column<long>(type: "bigint", nullable: false),
+                    test_id = table.Column<int>(type: "integer", nullable: true),
+                    student_id = table.Column<int>(type: "integer", nullable: true),
                     submitted_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     total_question = table.Column<int>(type: "integer", nullable: true),
                     correct_answers = table.Column<int>(type: "integer", nullable: true),
                     wrong_answers = table.Column<int>(type: "integer", nullable: true),
                     score = table.Column<double>(type: "double precision", nullable: true),
-                    graded = table.Column<bool>(type: "boolean", nullable: true)
+                    graded = table.Column<bool>(type: "boolean", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: true, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1395,11 +1426,12 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "test_answers",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    question_id = table.Column<long>(type: "bigint", nullable: false),
+                    question_id = table.Column<int>(type: "integer", nullable: true),
                     answer_text = table.Column<string>(type: "text", nullable: true),
-                    is_correct = table.Column<bool>(type: "boolean", nullable: true)
+                    is_correct = table.Column<bool>(type: "boolean", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1415,10 +1447,11 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "tests_attachment",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    submission_id = table.Column<long>(type: "bigint", nullable: false),
-                    file_url = table.Column<string>(type: "text", nullable: true)
+                    submission_id = table.Column<int>(type: "integer", nullable: true),
+                    file_url = table.Column<string>(type: "text", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {
@@ -1434,13 +1467,14 @@ namespace ISC_ELIB_SERVER.Migrations
                 name: "test_submissions_answers",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    submission_id = table.Column<long>(type: "bigint", nullable: false),
-                    question_id = table.Column<long>(type: "bigint", nullable: false),
-                    selected_answer_id = table.Column<long>(type: "bigint", nullable: false),
+                    submission_id = table.Column<int>(type: "integer", nullable: true),
+                    question_id = table.Column<int>(type: "integer", nullable: true),
+                    selected_answer_id = table.Column<int>(type: "integer", nullable: true),
                     answer_text = table.Column<string>(type: "text", nullable: true),
-                    is_correct = table.Column<bool>(type: "boolean", nullable: true)
+                    is_correct = table.Column<bool>(type: "boolean", nullable: true),
+                    active = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
                 constraints: table =>
                 {

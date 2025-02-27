@@ -97,3 +97,7 @@ C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6
 C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\ISC_ELIB_SERVER.pdb
 C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\ISC_ELIB_SERVER.genruntimeconfig.cache
 C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\obj\Debug\net6.0\ref\ISC_ELIB_SERVER.dll
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Trinh\Documents\GitHub\K01Y25_Nhom4_BT02\ISC_ELIB_SERVER\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll

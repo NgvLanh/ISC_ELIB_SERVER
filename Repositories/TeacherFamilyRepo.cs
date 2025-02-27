@@ -6,13 +6,11 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class TeacherFamilyRepo
     {
-        private readonly isc_elibContext _context;
-
-        public TeacherFamilyRepo(isc_elibContext context)
+        private readonly isc_dbContext _context;
+        public TeacherFamilyRepo(isc_dbContext context)
         {
             _context = context;
         }
-
         public ICollection<TeacherFamily> GetTeacherFamilies()
         {
             return _context.TeacherFamilies.Where(tf => !tf.IsDeleted).ToList();
