@@ -108,6 +108,7 @@ builder.Services.AddScoped<IExamService, ExamService>();
 // Add services and repositories Test Answer
 builder.Services.AddScoped<TestAnswerRepo>();
 
+
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, ThemesService>();
 builder.Services.AddScoped<MajorRepo>();
@@ -178,6 +179,8 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 //Resignation
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
+
+builder.Services.AddScoped<TopicRepo>();
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
