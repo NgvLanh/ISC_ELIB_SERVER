@@ -3,7 +3,6 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
-using System.Xml.Linq;
 using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
@@ -90,7 +89,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<GradeLevelResponse>.NotFound($"Không tìm thấy khoa - khối #{id}");
             }
 
-            var ListGradeLevel = _repository.GetGradeLevels().Where(item => item.Active); 
+            var ListGradeLevel = _repository.GetGradeLevels().Where(item => item.Active);
 
             if (ListGradeLevel.Any(item => item.Code.Equals(GradeLevelRequest.Code) && item.Id != id))
             {

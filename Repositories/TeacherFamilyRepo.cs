@@ -15,12 +15,12 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<TeacherFamily> GetTeacherFamilies()
         {
-            return _context.TeacherFamilies.Where(tf => !tf.IsDeleted).ToList();
+            return _context.TeacherFamilies.Where(tf => tf.Active).ToList();
         }
 
         public TeacherFamily? GetTeacherFamilyById(long id)
         {
-            return _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && !tf.IsDeleted);
+            return _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && tf.Active);
         }
 
         public TeacherFamily CreateTeacherFamily(TeacherFamily teacherFamily)
@@ -45,7 +45,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var teacherFamily = GetTeacherFamilyById(id);
             if (teacherFamily == null) return false;
 
-            teacherFamily.IsDeleted = true;
+            teacherFamily.Active = true;
             _context.TeacherFamilies.Update(teacherFamily);
             return _context.SaveChanges() > 0;
         }
