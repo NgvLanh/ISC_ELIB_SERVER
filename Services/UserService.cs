@@ -3,19 +3,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IUserService
-    {
-        ApiResponse<ICollection<UserResponse>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<UserResponse> GetUserById(long id);
-        ApiResponse<UserResponse> GetUserByCode(string code);
-        ApiResponse<UserResponse> CreateUser(UserRequest userRequest);
-        ApiResponse<UserResponse> UpdateUser(UserRequest userRequest);
-        ApiResponse<User> DeleteUser(long id);
-    }
-
     public class UserService : IUserService
     {
         private readonly UserRepo _repository;
@@ -57,7 +48,7 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<UserResponse>>.NotFound("Không có dữ liệu người dùng");
         }
 
-        public ApiResponse<UserResponse> GetUserById(long id)
+        public ApiResponse<UserResponse> GetUserById(int id)
         {
             var user = _repository.GetUserById(id);
             return user != null
@@ -106,9 +97,9 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(createdUser));
         }
 
-        public ApiResponse<UserResponse> UpdateUser(UserRequest userRequest)
+        public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
         {
-            var user = _repository.GetUserById(userRequest.Id);
+            var user = _repository.GetUserById(id);
             if (user == null)
             {
                 return ApiResponse<UserResponse>.NotFound("Không tìm thấy người dùng để cập nhật");
@@ -135,7 +126,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
         }
 
-        public ApiResponse<User> DeleteUser(long id)
+        public ApiResponse<User> DeleteUser(int id)
         {
             var success = _repository.DeleteUser(id);
             return success

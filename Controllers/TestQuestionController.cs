@@ -1,11 +1,12 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/testQuestion")]
+    [Route("api/test-question")]
     public class TestQuestionController : ControllerBase
     {
         private readonly ITestQuestionService _service;
@@ -41,14 +42,14 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult UpdateTest(long id, [FromBody] TestQuestionRequest Test)
         {
             var response = _service.UpdateTestQuestion(id, Test);
-            return response.Code == 0 ? Ok("Cập nhật thành công") : BadRequest("Cập nhật thất bại");
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTest(long id)
         {
             var response = _service.DeleteTestQuestion(id);
-            return response.Code == 0 ? Ok("Xóa thành công") : BadRequest("Xóa thất bại");
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
     }
