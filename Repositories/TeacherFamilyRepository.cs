@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
-    public class TeacherFamilyRepository : ITeacherFamilyRepository
+    public class TeacherFamilyRepository
     {
         private readonly isc_dbContext _context;
 
@@ -47,15 +47,17 @@ namespace ISC_ELIB_SERVER.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        Task ITeacherFamilyRepository.AddAsync(TeacherFamily entity)
-        {
-            throw new NotImplementedException();
-        }
+        // ko merge đc về cái này nên tui comment
 
-        Task ITeacherFamilyRepository.DeleteAsync(long id)
-        {
-            throw new NotImplementedException();
-        }
+        // Task ITeacherFamilyRepository.AddAsync(TeacherFamily entity)
+        // {
+        //     throw new NotImplementedException();
+        // }
+
+        // Task ITeacherFamilyRepository.DeleteAsync(long id)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 
 
