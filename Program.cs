@@ -165,6 +165,12 @@ builder.Services.AddScoped<ISemesterService, SemesterService>();
 builder.Services.AddScoped<GradeLevelRepo>();
 builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
 
+//
+builder.Services.AddScoped<EntryTypeRepo>();
+
+
+
+
 //EducationLevel
 builder.Services.AddScoped<EducationLevelRepo>();
 builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
