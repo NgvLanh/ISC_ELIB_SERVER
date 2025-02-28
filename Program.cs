@@ -181,6 +181,8 @@ builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
 builder.Services.AddScoped<TopicRepo>();
+builder.Services.AddScoped<TopicsFileRepo>();
+
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
