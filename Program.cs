@@ -163,13 +163,11 @@ builder.Services.AddScoped<ISemesterService, SemesterService>();
 builder.Services.AddScoped<GradeLevelRepo>();
 builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
 
-<<<<<<< HEAD
-=======
 //EducationLevel
 builder.Services.AddScoped<EducationLevelRepo>();
 builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
 
->>>>>>> dev
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
