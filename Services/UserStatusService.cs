@@ -1,22 +1,11 @@
-﻿using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.DTOs.Responses;
+﻿using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
-using AutoMapper;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Repositories;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IUserStatusService
-    {
-        ApiResponse<ICollection<UserStatusResponse>> GetUserStatuses(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<UserStatusResponse> GetUserStatusById(long id);
-        ApiResponse<UserStatusResponse> GetUserStatusByName(string name);
-        ApiResponse<UserStatusResponse> CreateUserStatus(UserStatusRequest userStatusRequest);
-        ApiResponse<UserStatus> UpdateUserStatus(UserStatus userStatus);
-        ApiResponse<UserStatus> DeleteUserStatus(long id);
-    }
-
-
     public class UserStatusService : IUserStatusService
     {
         private readonly UserStatusRepo _repository;
@@ -30,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<UserStatusResponse>> GetUserStatuses(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var query = _repository.GetUserStatuses().AsQueryable();
+            var query = _repository.GetUserStatuses().Where(us => !us.IsDeleted).AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -45,7 +34,6 @@ namespace ISC_ELIB_SERVER.Services
             };
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
             var response = _mapper.Map<ICollection<UserStatusResponse>>(result);
 
             return result.Any()
@@ -56,46 +44,46 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<UserStatusResponse> GetUserStatusById(long id)
         {
             var userStatus = _repository.GetUserStatusById(id);
-            return userStatus != null
-                ? ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(userStatus))
-                : ApiResponse<UserStatusResponse>.NotFound($"Không tìm thấy trạng thái người dùng #{id}");
-        }
+            if (userStatus == null || userStatus.IsDeleted)
+                return ApiResponse<UserStatusResponse>.NotFound($"Không tìm thấy trạng thái người dùng #{id}");
 
-        public ApiResponse<UserStatusResponse> GetUserStatusByName(string name)
-        {
-            var userStatus = _repository.GetUserStatuses().FirstOrDefault(us => us.Name?.ToLower() == name.ToLower());
-            return userStatus != null
-                ? ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(userStatus))
-                : ApiResponse<UserStatusResponse>.NotFound($"Không tìm thấy trạng thái người dùng có tên: {name}");
+            return ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(userStatus));
         }
 
         public ApiResponse<UserStatusResponse> CreateUserStatus(UserStatusRequest userStatusRequest)
         {
-            var existing = _repository.GetUserStatuses().FirstOrDefault(us => us.Name?.ToLower() == userStatusRequest.Name.ToLower());
+            var existing = _repository.GetUserStatuses().FirstOrDefault(us => us.Name.ToLower() == userStatusRequest.Name.ToLower() && !us.IsDeleted);
             if (existing != null)
             {
                 return ApiResponse<UserStatusResponse>.Conflict("Tên trạng thái đã tồn tại");
             }
 
-            var created = _repository.CreateUserStatus(new UserStatus() { Name = userStatusRequest.Name });
+            var created = _repository.CreateUserStatus(new UserStatus { Name = userStatusRequest.Name });
             return ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(created));
         }
 
-        public ApiResponse<UserStatus> UpdateUserStatus(UserStatus userStatus)
+        public ApiResponse<UserStatusResponse> UpdateUserStatus(long id, UserStatusRequest userStatusRequest)
         {
+            var userStatus = _repository.GetUserStatusById(id);
+            if (userStatus == null || userStatus.IsDeleted)
+                return ApiResponse<UserStatusResponse>.NotFound("Không tìm thấy trạng thái người dùng để cập nhật");
+
+            userStatus.Name = userStatusRequest.Name;
             var updated = _repository.UpdateUserStatus(userStatus);
-            return updated != null
-                ? ApiResponse<UserStatus>.Success(updated)
-                : ApiResponse<UserStatus>.NotFound("Không tìm thấy trạng thái người dùng để cập nhật");
+
+            return ApiResponse<UserStatusResponse>.Success(_mapper.Map<UserStatusResponse>(updated));
         }
 
-        public ApiResponse<UserStatus> DeleteUserStatus(long id)
+        public ApiResponse<bool> DeleteUserStatus(long id)
         {
-            var success = _repository.DeleteUserStatus(id);
-            return success
-                ? ApiResponse<UserStatus>.Success()
-                : ApiResponse<UserStatus>.NotFound("Không tìm thấy trạng thái người dùng để xóa");
+            var userStatus = _repository.GetUserStatusById(id);
+            if (userStatus == null || userStatus.IsDeleted)
+                return ApiResponse<bool>.NotFound("Không tìm thấy trạng thái người dùng để xóa");
+
+            userStatus.IsDeleted = true;
+            _repository.UpdateUserStatus(userStatus);
+
+            return ApiResponse<bool>.Success();
         }
     }
-
 }

@@ -9,6 +9,5 @@
         public bool? Status { get; set; }
         public int TeacherId { get; set; }
         public int LeadershipId { get; set; }
-        public bool Active { get; set; }
     }
 }

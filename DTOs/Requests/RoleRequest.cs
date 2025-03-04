@@ -11,12 +11,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(255, ErrorMessage = "Tên không được vượt quá 255 ký tự")]
         public string Description { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Active không được để trống")]
+        [Required(ErrorMessage = "Trạng thái không được để trống")]
         public bool Active { get; set; } = true;
-    }
-    public class RoleGetById
-    {
-        [RegularExpression(@"^\d+$", ErrorMessage = "Id phải là số nguyên")]
-        public int Id { get; set; }
     }
 }

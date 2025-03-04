@@ -4,7 +4,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class ClassesResponse
     {
-        public int Id { get; set; }
 
         public string? Code { get; set; }
 
@@ -14,7 +13,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 
         public int? SubjectQuantity { get; set; }
 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Description { get; set; }
 
         public int GradeLevelId { get; set; }

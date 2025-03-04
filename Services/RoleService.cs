@@ -3,19 +3,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IRoleService
-    {
-        ApiResponse<ICollection<RoleResponse>> GetRoles(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<RoleResponse> GetRoleById(long id);
-        ApiResponse<RoleResponse> GetRoleByName(string name);
-        ApiResponse<RoleResponse> CreateRole(RoleRequest roleRequest);
-        ApiResponse<Role> UpdateRole(long id ,RoleRequest roleRequest);
-        ApiResponse<Role> DeleteRole(long id);
-    }
-
     public class RoleService : IRoleService
     {
         private readonly RoleRepo _repository;
@@ -77,7 +68,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<RoleResponse>.Conflict("Tên đã tồn tại");
             }
 
-            var created = _repository.CreateRole(new Role() { Name = roleRequest.Name });
+            var created = _repository.CreateRole(new Role() { Name = roleRequest.Name, Description = roleRequest.Description });
             return ApiResponse<RoleResponse>.Success(_mapper.Map<RoleResponse>(created));
         }
 

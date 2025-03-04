@@ -9,6 +9,5 @@
         public string? Attachment { get; set; }
         public bool? Status { get; set; }
         public int LeadershipId { get; set; }
-        public bool Active { get; set; }
     }
 }

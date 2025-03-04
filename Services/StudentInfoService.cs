@@ -62,7 +62,7 @@ namespace ISC_ELIB_SERVER.Services
             _repository.AddStudentInfo(studentInfo);
             var createdStudentInfo = _mapper.Map<StudentInfoResponses>(studentInfo);
 
-            return ApiResponse<StudentInfoResponses>.Success(createdStudentInfo, "Tạo StudentInfo thành công");
+            return ApiResponse<StudentInfoResponses>.Success(createdStudentInfo);
         }
 
         public ApiResponse<StudentInfoResponses> UpdateStudentInfo(int id, StudentInfoRequest studentInfoRequest)
@@ -77,7 +77,7 @@ namespace ISC_ELIB_SERVER.Services
             _repository.UpdateStudentInfo(studentInfo);
             var updatedStudentInfo = _mapper.Map<StudentInfoResponses>(studentInfo);
 
-            return ApiResponse<StudentInfoResponses>.Success(updatedStudentInfo, "Cập nhật StudentInfo thành công");
+            return ApiResponse<StudentInfoResponses>.Success(updatedStudentInfo);
         }
 
         public ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id)
@@ -89,7 +89,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             _repository.DeleteStudentInfo(id);
-            return ApiResponse<StudentInfoResponses>.Success(null, "Xóa StudentInfo thành công");
+            return ApiResponse<StudentInfoResponses>.Success();
         }
     }
 }

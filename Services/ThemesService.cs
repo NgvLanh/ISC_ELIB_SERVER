@@ -3,17 +3,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IThemesService
-    {
-        ApiResponse<ICollection<ThemesResponse>> GetThemes(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<ThemesResponse> GetThemesById(long id);
-        ApiResponse<ThemesResponse> CreateThemes(ThemesRequest themesRequest);
-        ApiResponse<ThemesResponse> UpdateThemes(long id, ThemesRequest themesRequest);
-        ApiResponse<Theme> DeleteThemes(long id);
-    }
     public class ThemesService : IThemesService
     {
         private readonly ThemesRepo _repository;
@@ -56,7 +49,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ThemesResponse> GetThemesById(long id)
         {
             var themes = _repository.GetThemesById(id);
-            return (themes != null && !(themes.Active == false))
+            return (themes != null && (themes.Active == false))
                 ? ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(themes))
                 : ApiResponse<ThemesResponse>.NotFound($"Không tìm thấy chủ đề #{id}");
         }
@@ -76,7 +69,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ThemesResponse> UpdateThemes(long id, ThemesRequest themesRequest)
         {
             var existingTheme = _repository.GetThemesById(id);
-            if (existingTheme == null)
+            if (existingTheme == null || existingTheme.Active == true)
             {
                 return ApiResponse<ThemesResponse>.NotFound("Không tìm thấy chủ đề.");
             }
@@ -94,13 +87,6 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(existingTheme));
         }
 
-        //public ApiResponse<Theme> DeleteThemes(long id)
-        //{
-        //    var success = _repository.DeleteThemes(id);
-        //    return success
-        //        ? ApiResponse<Theme>.Success()
-        //        : ApiResponse<Theme>.NotFound("Không tìm thấy chủ đề để xóa");
-        //}
         public ApiResponse<Theme> DeleteThemes(long id)
         {
             var existingTheme = _repository.GetThemesById(id);
@@ -115,7 +101,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingTheme.Active = true;
-            _repository.UpdateThemes(existingTheme);
+            _repository.DeleteThemes(existingTheme);
 
             return ApiResponse<Theme>.Success();
         }

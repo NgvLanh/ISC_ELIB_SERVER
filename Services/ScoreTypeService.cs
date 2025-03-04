@@ -2,24 +2,12 @@
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using AutoMapper;
-using System.Collections.Generic;
-using System.Linq;
-using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IScoreTypeService
-    {
-        ApiResponse<ICollection<ScoreTypeResponse>> GetScoreTypes(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<ScoreTypeResponse> GetScoreTypeById(long id);
-        ApiResponse<ScoreTypeResponse> GetScoreTypeByName(string name);
-        ApiResponse<ScoreTypeResponse> CreateScoreType(ScoreTypeRequest scoreTypeRequest);
-        ApiResponse<ScoreTypeResponse> UpdateScoreType(long id, ScoreTypeRequest scoreTypeRequest);
-        ApiResponse<ScoreType> DeleteScoreType(long id);
-    }
-
     public class ScoreTypeService : IScoreTypeService
     {
         private readonly IScoreTypeRepo _repository;
@@ -90,7 +78,6 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<ScoreTypeResponse>.Success(_mapper.Map<ScoreTypeResponse>(created));
         }
 
-
         public ApiResponse<ScoreTypeResponse> UpdateScoreType(long id, ScoreTypeRequest scoreTypeRequest)
         {
             var existingScoreType = _repository.GetScoreTypeById(id);
@@ -117,7 +104,6 @@ namespace ISC_ELIB_SERVER.Services
 
             return ApiResponse<ScoreTypeResponse>.Success(_mapper.Map<ScoreTypeResponse>(updated));
         }
-
 
         public ApiResponse<ScoreType> DeleteScoreType(long id)
         {

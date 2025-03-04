@@ -1,5 +1,6 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -62,7 +63,7 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete("{id}")]    
+        [HttpPut("{id}/toggle-active")]    
         public IActionResult DeleteTestSubmissionAnswer(int id)
         {
             var response = _service.DeleteTestSubmissionAnswer(id);

@@ -11,7 +11,6 @@
         public string? AttachmentName { get; set; }
         public string? AttachmentPath { get; set; }
         public int LeadershipId { get; set; }
-        public bool Active { get; set; }
 
     }
 }
