@@ -5,10 +5,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface IClassTypeRepo
     {
         ICollection<ClassType> GetClassTypes();
-        ClassType GetClassTypeById(long id);
+        ClassType GetClassTypeById(int id);
         ClassType CreateClassType(ClassType classType);
         ClassType? UpdateClassType(ClassType classType);
-        bool DeleteClassType(long id);
+        bool DeleteClassType(int id);
     }
 
     public class ClassTypeRepo : IClassTypeRepo
@@ -25,7 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.ClassTypes.ToList();
         }
 
-        public ClassType GetClassTypeById(long id)
+        public ClassType GetClassTypeById(int id)
         {
             return _context.ClassTypes.FirstOrDefault(s => s.Id == id);
         }
@@ -53,7 +53,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingClassType;
         }
 
-        public bool DeleteClassType(long id)
+        public bool DeleteClassType(int id)
         {
             var classType = _context.ClassTypes.Find(id);
 
