@@ -41,12 +41,19 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
 
+            var total = query.Count();
+
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<SubjectResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<SubjectResponse>>.Success(response)
+                ? ApiResponse<ICollection<SubjectResponse>>.Success(
+                        data: response,
+                        totalItems: total,
+                        pageSize: pageSize,
+                        page: page
+                    )
                 : ApiResponse<ICollection<SubjectResponse>>.NotFound("Không có dữ liệu");
         }
 
