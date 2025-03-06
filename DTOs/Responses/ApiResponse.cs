@@ -1,32 +1,49 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class ApiResponse<T>
     {
-        public int Code { get; }
-        public string Message { get; }
+        public int Code { get; set; }
+        public string Message { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public T? Data { get; }
+        public T? Data { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string[]>? Errors { get; }
+        public Dictionary<string, string[]>? Errors { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? Page { get; set; }
 
-        public ApiResponse(int code, string message, T? data, Dictionary<string, string[]>? errors)
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? PageSize { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? TotalItems { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int? TotalPages { get; set; }
+
+        public ApiResponse(int code, string message, T? data = default, Dictionary<string, string[]>? errors = null,
+                           int? page = null, int? pageSize = null, int? totalItems = null, int? totalPages = null)
         {
             Code = code;
             Message = message;
             Data = data;
             Errors = errors;
+            Page = page;
+            PageSize = pageSize;
+            TotalItems = totalItems;
+            TotalPages = totalPages;
         }
 
-        public static ApiResponse<T> Success(T data = default, string v = null)
+        public static ApiResponse<T> Success(T data = default, int? page = null, int? pageSize = null, int? totalItems = null)
         {
-            return new ApiResponse<T>(0, "Success", data, null);
+            int? totalPages = (totalItems.HasValue && pageSize.HasValue && pageSize > 0) ?
+                              (int?)Math.Ceiling((double)totalItems.Value / pageSize.Value) : null;
+            return new ApiResponse<T>(0, "Success", data, null, page, pageSize, totalItems, totalPages);
         }
 
         public static ApiResponse<T> Error(Dictionary<string, string[]> errors)
@@ -36,17 +53,17 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 
         public static ApiResponse<T> NotFound(string message = "Not found")
         {
-            return new ApiResponse<T>(1, message, default, default);
+            return new ApiResponse<T>(1, message);
         }
 
         public static ApiResponse<T> BadRequest(string message = "Bad request")
         {
-            return new ApiResponse<T>(1, message, default, default);
+            return new ApiResponse<T>(1, message);
         }
 
         public static ApiResponse<T> Conflict(string message = "Conflict")
         {
-            return new ApiResponse<T>(1, message, default, default);
+            return new ApiResponse<T>(1, message);
         }
     }
 }
