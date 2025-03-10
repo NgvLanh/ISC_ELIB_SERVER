@@ -18,7 +18,10 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(
+            int? page, int? pageSize,
+            string? sortColumn, string? sortOrder
+            )
         {
             var query = _repository.GetAcademicYears().AsQueryable();
 

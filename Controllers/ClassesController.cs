@@ -18,10 +18,9 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpGet]
-        public IActionResult GetClass([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
+        public IActionResult GetClass([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetClass(page, pageSize, search, sortColumn, sortOrder);
+            var response = _service.GetClass(page, pageSize, sortColumn, sortOrder);
             return Ok(response);
         }
 
@@ -34,7 +33,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateClass(long id, [FromBody] ClassesRequest classesRequest)
+        public IActionResult UpdateClass(int id, [FromBody] ClassesRequest classesRequest)
         {
 
             var response = _service.UpdateClass(id, classesRequest);
@@ -43,14 +42,14 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteClass(long id)
+        public IActionResult DeleteClass(int id)
         {
             var response = _service.DeleteClass(id);
 
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
         [HttpGet("{id}")]
-        public IActionResult GetClassById(long id)
+        public IActionResult GetClassById(int id)
         {
             var response = _service.GetClassById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);

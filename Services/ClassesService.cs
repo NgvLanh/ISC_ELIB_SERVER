@@ -19,31 +19,32 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<ClassesResponse>> GetClass(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetClass().AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(c => c.Name.ToLower().Contains(search.ToLower()));
-            }
-
             query = sortColumn switch
             {
-                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name),
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(c => c.Id) : query.OrderBy(c => c.Id),
-                _ => query.OrderBy(c => c.Id)
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                _ => query.OrderBy(ay => ay.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+
             var response = _mapper.Map<ICollection<ClassesResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<ClassesResponse>>.Success(response)
-                : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<ClassesResponse>>
+            .Success(response, page, pageSize, _repository.GetClass().Count)
+             : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public ApiResponse<ClassesResponse> GetClassById(long id)
+        public ApiResponse<ClassesResponse> GetClassById(int id)
         {
             var classData = _repository.GetClassById(id);
             return classData != null
@@ -77,7 +78,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
         }
 
-        public ApiResponse<ClassesResponse> UpdateClass(long id, ClassesRequest classesRequest)
+        public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)
         {
             var existingClass = _repository.GetClassById(id);
             if (existingClass == null)
@@ -98,7 +99,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(updatedClass));
         }
 
-        public ApiResponse<bool> DeleteClass(long id)
+        public ApiResponse<bool> DeleteClass(int id)
         {
             var deleted = _repository.DeleteClass(id);
             return deleted

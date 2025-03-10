@@ -41,7 +41,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<CampusResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<CampusResponse>>.Success(response) : ApiResponse<ICollection<CampusResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<CampusResponse>>
+            .Success(response, page, pageSize, _repository.GetCampuses().Count) :
+            ApiResponse<ICollection<CampusResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<CampusResponse> GetCampusById(long id)
