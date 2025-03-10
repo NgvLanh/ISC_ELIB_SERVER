@@ -43,7 +43,16 @@ namespace ISC_ELIB_SERVER.Controllers
                 var response = _service.GetRetirementById(id);
                 return response.Code == 0 ? Ok(response) : NotFound(response);
             }
-            [HttpPut("{id}")]
+
+            [HttpGet("getbyteacherid/{id}")]
+            public IActionResult GetRetirementByTeacherId(long id)
+            {
+                var respose = _service.GetRetirementByTeacherId(id);
+                return respose.Code == 0 ? Ok(respose) : NotFound(respose);
+            }
+
+
+        [HttpPut("{id}")]
             public IActionResult UpdateRetirement(long id, [FromBody] RetirementRequest Retirement_UpdateRequest)
             {
                 var response = _service.UpdateRetirement(id, Retirement_UpdateRequest);

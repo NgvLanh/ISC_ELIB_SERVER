@@ -14,5 +14,8 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime EndDate { get; set; }
         public bool? IsCurrent { get; set; }
         public bool Active { get; set; }
+
+        public virtual TeacherInfo? Teacher { get; set; }
+        public SubjectGroup? SubjectGroup { get; set; }
     }
 }

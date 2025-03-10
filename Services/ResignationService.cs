@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Sprache;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -78,6 +79,29 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ResignationResponse>.NotFound($"Không tìm thấy trạng từ chức #{id}");
         }
 
+        public ApiResponse<ICollection<ResignationResponse>> GetResignationByTeacherId(long id)
+        {
+
+            var resignations = _repository.GetResignationsByTeacherId(id);
+
+            if (resignations == null || !resignations.Any())
+            {
+                return ApiResponse<ICollection<ResignationResponse>>.NotFound("Không có dữ liệu");
+            }
+
+            var response = resignations.Select(r => new ResignationResponse
+            {
+                Id = r.Id,
+                TeacherId = (int)r.TeacherId,
+                Date = r.Date,
+                Note = r.Note,
+                Attachment = r.Attachment,
+                Status = r.Status
+            }).ToList();
+
+            return ApiResponse<ICollection<ResignationResponse>>.Success(response);
+        }
+
         public ApiResponse<Resignation> UpdateResignation(long id, ResignationRequest ResignationRequest)
         {
             if (ResignationRequest.Date.HasValue)
@@ -92,5 +116,8 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<Resignation>.NotFound("Không tìm thấy trạng thái từ chức để cập nhật");
         }
 
+        
+
+    
     }
 }
