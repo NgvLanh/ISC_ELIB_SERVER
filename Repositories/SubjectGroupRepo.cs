@@ -40,7 +40,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var subjectGroup = GetSubjectGroupById(id);
             if (subjectGroup != null)
             {
-                subjectGroup.Active = !subjectGroup.Active;
+                subjectGroup.Active = false;
                 _context.SubjectGroups.Update(subjectGroup);
                 return _context.SaveChanges() > 0;
             }
