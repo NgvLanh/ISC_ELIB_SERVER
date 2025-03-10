@@ -34,6 +34,8 @@ namespace ISC_ELIB_SERVER.Services
                 "Status" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Status) : query.OrderBy(us => us.Status),
                 _ => query.OrderBy(us => us.Id)
             };
+            query = query.Where(qr => qr.Active == true);
+
             var total = query.Count();
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();

@@ -40,6 +40,7 @@ namespace ISC_ELIB_SERVER.Services
                 "HoursSemester2" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
                 _ => query.OrderBy(us => us.Id)
             };
+            query = query.Where(qr => qr.Active == true);
 
             var total = query.Count();
 
