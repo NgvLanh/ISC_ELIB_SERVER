@@ -10,6 +10,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 
         ApiResponse<ICollection<ResignationResponse>> GetResignationNoPaging();
         ApiResponse<ResignationResponse> GetResignationById(long id);
+        ApiResponse<ICollection<ResignationResponse>> GetResignationByTeacherId(long id);
         ApiResponse<ResignationResponse> CreateResignation(ResignationRequest Resignation_AddRequest);
         ApiResponse<Resignation> UpdateResignation(long id, ResignationRequest Resignation_UpdateRequest);
         ApiResponse<Resignation> DeleteResignation(long id);

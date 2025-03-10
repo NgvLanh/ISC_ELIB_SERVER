@@ -28,6 +28,14 @@ namespace ISC_ELIB_SERVER.Services
                 // Chuyển sang DateTime có Kind Unspecified
                 Retirement_AddRequest.Date = DateTime.SpecifyKind(Retirement_AddRequest.Date.Value, DateTimeKind.Unspecified);
             }
+            if (!_context.TeacherInfos.Any(t => t.Id == Retirement_AddRequest.TeacherId))
+            {
+                return ApiResponse<RetirementResponse>.NotFound("TeacherId không tồn tại");
+            }
+            if (!_context.Users.Any(u => u.Id == Retirement_AddRequest.LeadershipId))
+            {
+                return ApiResponse<RetirementResponse>.NotFound("LeadershipId không tồn tại");
+            }
             var retirement = _mapper.Map<Retirement>(Retirement_AddRequest);
             var created = _repository.CreateRetirement(retirement);
             return ApiResponse<RetirementResponse>.Success(_mapper.Map<RetirementResponse>(created));
@@ -79,6 +87,28 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<RetirementResponse>.NotFound($"Không tìm thấy trạng thái nghỉ hưu  #{id}");
         }
 
+        public ApiResponse<ICollection<RetirementResponse>> GetRetirementByTeacherId(long id)
+        {
+
+            var resignations = _repository.GetRetirementByTeacherId(id);
+
+            if (resignations == null || !resignations.Any())
+            {
+                return ApiResponse<ICollection<RetirementResponse>>.NotFound("Không có dữ liệu");
+            }
+
+            var response = resignations.Select(r => new RetirementResponse
+            {
+                Id = r.Id,
+                TeacherId = (int)r.TeacherId,
+                Date = r.Date,
+                Note = r.Note,
+                Attachment = r.Attachment,
+                Status = r.Status
+            }).ToList();
+
+            return ApiResponse<ICollection<RetirementResponse>>.Success(response);
+        }
         public ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest RetirementRequest)
         {
             if (RetirementRequest.Date.HasValue)

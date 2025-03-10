@@ -17,6 +17,8 @@ namespace ISC_ELIB_SERVER.Models
             NotificationSenders = new HashSet<Notification>();
             NotificationUsers = new HashSet<Notification>();
             Reserves = new HashSet<Reserve>();
+            Resignations = new HashSet<Resignation>();
+            Retirements = new HashSet<Retirement>();
             StudentInfos = new HashSet<StudentInfo>();
             StudentScores = new HashSet<StudentScore>();
             Supports = new HashSet<Support>();
@@ -67,6 +69,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Notification> NotificationSenders { get; set; }
         public virtual ICollection<Notification> NotificationUsers { get; set; }
         public virtual ICollection<Reserve> Reserves { get; set; }
+        public virtual ICollection<Resignation> Resignations { get; set; }
+        public virtual ICollection<Retirement> Retirements { get; set; }
         public virtual ICollection<StudentInfo> StudentInfos { get; set; }
         public virtual ICollection<StudentScore> StudentScores { get; set; }
         public virtual ICollection<Support> Supports { get; set; }
