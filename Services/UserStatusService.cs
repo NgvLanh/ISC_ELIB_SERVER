@@ -83,7 +83,7 @@ namespace ISC_ELIB_SERVER.Services
             userStatus.IsDeleted = true;
             _repository.UpdateUserStatus(userStatus);
 
-            return ApiResponse<bool>.Success(true, "Xóa trạng thái người dùng thành công");
+            return ApiResponse<bool>.Success();
         }
     }
 }

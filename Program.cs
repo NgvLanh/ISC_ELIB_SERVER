@@ -12,6 +12,7 @@ using System.Reflection;
 using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Autofac.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
-
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -166,6 +166,22 @@ builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
 //EducationLevel
 builder.Services.AddScoped<EducationLevelRepo>();
 builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
+
+//WorkProcess
+builder.Services.AddScoped<WorkProcessRepo>();
+builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
+
+//Resignation
+builder.Services.AddScoped<ResignationRepo>();
+builder.Services.AddScoped<IResignationService, ResignationService>();
+
+//Retirement
+builder.Services.AddScoped<RetirementRepo>();
+builder.Services.AddScoped<IRetirementService, RetirementService>();
+
+//TeacherList
+builder.Services.AddScoped<TeacherListRepo>();
+builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

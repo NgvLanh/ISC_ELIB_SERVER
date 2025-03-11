@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
-        public ApiResponse<ICollection<ThemesResponse>> GetThemes(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<ThemesResponse>> GetThemes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetThemes().AsQueryable();
 
@@ -37,13 +37,20 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            int totalItems = query.Count();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<ThemesResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<ThemesResponse>>.Success(response)
-                : ApiResponse<ICollection<ThemesResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<ThemesResponse>>
+            .Success(response, page, pageSize, totalItems)
+            : ApiResponse<ICollection<ThemesResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<ThemesResponse> GetThemesById(long id)

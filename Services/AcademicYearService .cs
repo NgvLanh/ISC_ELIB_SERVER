@@ -18,7 +18,10 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<AcademicYearResponse>> GetAcademicYears(
+            int? page, int? pageSize,
+            string? sortColumn, string? sortOrder
+            )
         {
             var query = _repository.GetAcademicYears().AsQueryable();
 
@@ -38,7 +41,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<AcademicYearResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<AcademicYearResponse>>.Success(response) : ApiResponse<ICollection<AcademicYearResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<AcademicYearResponse>>
+            .Success(response, page, pageSize, _repository.GetAcademicYears().Count)
+             : ApiResponse<ICollection<AcademicYearResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<AcademicYearResponse> GetAcademicYearById(long id)

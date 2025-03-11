@@ -1,6 +1,6 @@
-﻿using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -16,9 +16,17 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGradeLevels([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetGradeLevels(
+                [FromQuery] string schoolName,
+                [FromQuery] int? startYear,
+                [FromQuery] int? endYear,
+                [FromQuery] int? page = 1,
+                [FromQuery] int? pageSize = 10,
+                [FromQuery] string? sortColumn = "Id",
+                [FromQuery] string? sortOrder = "asc"
+            )
         {
-            var response = _service.GetGradeLevels(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetGradeLevelsByAyAndSc(page, pageSize, sortColumn, sortOrder, schoolName, startYear, endYear);
             return Ok(response);
         }
 

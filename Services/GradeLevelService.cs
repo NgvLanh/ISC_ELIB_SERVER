@@ -3,7 +3,6 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
-using System.Xml.Linq;
 using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
@@ -23,6 +22,29 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ICollection<GradeLevelResponse>> GetGradeLevels(int? page, int? pageSize, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetGradeLevels().AsQueryable();
+
+            query = sortColumn switch
+            {
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                _ => query.OrderBy(ay => ay.Id)
+            };
+
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<GradeLevelResponse>>(result);
+
+            return result.Any() ? ApiResponse<ICollection<GradeLevelResponse>>.Success(response) : ApiResponse<ICollection<GradeLevelResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public ApiResponse<ICollection<GradeLevelResponse>> GetGradeLevelsByAyAndSc(int? page, int? pageSize, string? sortColumn, string? sortOrder, string schoolName, int? startYear, int? endYear)
+        {
+            var query = _repository.GetGradeLevels(schoolName, startYear, endYear).AsQueryable();
 
             query = sortColumn switch
             {
@@ -90,7 +112,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<GradeLevelResponse>.NotFound($"Không tìm thấy khoa - khối #{id}");
             }
 
-            var ListGradeLevel = _repository.GetGradeLevels().Where(item => item.Active); 
+            var ListGradeLevel = _repository.GetGradeLevels().Where(item => item.Active);
 
             if (ListGradeLevel.Any(item => item.Code.Equals(GradeLevelRequest.Code) && item.Id != id))
             {
