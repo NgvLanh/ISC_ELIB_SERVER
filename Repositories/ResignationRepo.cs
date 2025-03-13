@@ -21,6 +21,13 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Resignations.FirstOrDefault(s => s.Id == id);
         }
 
+        public ICollection<Resignation> GetResignationsByTeacherId(long id)
+        {
+            return _context.Resignations
+                .Where(s => s.TeacherId == id)
+                .ToList();
+        }
+
         public Resignation CreateResignation(Resignation Resignation)
         {
             _context.Resignations.Add(Resignation);

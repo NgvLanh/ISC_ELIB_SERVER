@@ -6,15 +6,6 @@ using AutoMapper;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ICampusService
-    {
-        ApiResponse<ICollection<CampusResponse>> GetCampuses(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
-        ApiResponse<CampusResponse> GetCampusById(long id);
-        ApiResponse<CampusResponse> CreateCampus(CampusRequest campusRequest);
-        ApiResponse<CampusResponse> UpdateCampus(long id, CampusRequest campusRequest);
-        ApiResponse<bool> DeleteCampus(long id);
-    }
-
     public class CampusService : ICampusService
     {
         private readonly CampusRepo _repository;
@@ -50,7 +41,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<CampusResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<CampusResponse>>.Success(response) : ApiResponse<ICollection<CampusResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<CampusResponse>>
+            .Success(response, page, pageSize, _repository.GetCampuses().Count) :
+            ApiResponse<ICollection<CampusResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<CampusResponse> GetCampusById(long id)

@@ -3,19 +3,10 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IChangeClassService
-    {
-        ApiResponse<ICollection<ChangeClassResponse>> GetChangeClasses(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<ICollection<ChangeClassResponse>> GetChangeClassesNormal();
-        ApiResponse<ChangeClassResponse> GetChangeClassById(long id);
-        ApiResponse<ChangeClassResponse> CreateChangeClass(ChangeClass_AddRequest ChangeClassRequest);
-        ApiResponse<ChangeClass> UpdateChangeClass(long id,ChangeClass_UpdateRequest ChangeClass);
-        ApiResponse<ChangeClass> DeleteChangeClass(long id);
-    }
-
 
     public class ChangeClassService : IChangeClassService
     {
@@ -70,11 +61,9 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ChangeClassResponse> CreateChangeClass(ChangeClass_AddRequest request)
         {
-            if (request.ChangeClassDate.HasValue)
-            {
+
                 // Chuyển sang DateTime có Kind Unspecified
-                request.ChangeClassDate = DateTime.SpecifyKind(request.ChangeClassDate.Value, DateTimeKind.Unspecified);
-            }
+                request.ChangeClassDate = DateTime.SpecifyKind(request.ChangeClassDate, DateTimeKind.Unspecified);
             var ChangeClass = _mapper.Map<ChangeClass>(request);
             var created = _repository.CreateChangeClass(ChangeClass);
             return ApiResponse<ChangeClassResponse>.Success(_mapper.Map<ChangeClassResponse>(created));
@@ -82,11 +71,8 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ChangeClass> UpdateChangeClass(long id , ChangeClass_UpdateRequest request)
         {
-            if (request.ChangeClassDate.HasValue)
-            {
                 // Chuyển sang DateTime có Kind Unspecified
-                request.ChangeClassDate = DateTime.SpecifyKind(request.ChangeClassDate.Value, DateTimeKind.Unspecified);
-            }
+                request.ChangeClassDate = DateTime.SpecifyKind(request.ChangeClassDate, DateTimeKind.Unspecified);
             var ChangeClass = _mapper.Map<ChangeClass>(request);
             var updated = _repository.UpdateChangeClass(id ,ChangeClass);
             return updated != null

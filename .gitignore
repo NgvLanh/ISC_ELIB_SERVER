@@ -38,5 +38,6 @@ wwwroot/
 .env
 
 # Build Folders
-/bin
-/obj
+obj/
+bin/
+Migrations/

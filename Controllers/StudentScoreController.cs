@@ -1,6 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -17,16 +16,15 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetStudentScore([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
+        public IActionResult GetStudentScore([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetStudentScores(page, pageSize, search, sortColumn, sortOrder);
+            var response = _service.GetStudentScores(page, pageSize, sortColumn, sortOrder);
             return Ok(response);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetStudentScoreById(long id)
+        public IActionResult GetStudentScoreById(int id)
         {
             var response = _service.GetStudentScoreById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
@@ -40,7 +38,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateStudentScore(long id, [FromBody] StudentScoreRequest studentScoreRequest)
+        public IActionResult UpdateStudentScore(int id, [FromBody] StudentScoreRequest studentScoreRequest)
         {
 
             var response = _service.UpdateStudentScore(id, studentScoreRequest);
@@ -49,7 +47,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteStudentScore(long id)
+        public IActionResult DeleteStudentScore(int id)
         {
             var response = _service.DeleteStudentScore(id);
 

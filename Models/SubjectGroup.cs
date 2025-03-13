@@ -8,6 +8,7 @@ namespace ISC_ELIB_SERVER.Models
         public SubjectGroup()
         {
             Subjects = new HashSet<Subject>();
+            WorkProcesses = new HashSet<WorkProcess>();
         }
 
         public int Id { get; set; }
@@ -17,5 +18,6 @@ namespace ISC_ELIB_SERVER.Models
 
         public virtual TeacherInfo? Teacher { get; set; }
         public virtual ICollection<Subject> Subjects { get; set; }
+        public virtual ICollection<WorkProcess> WorkProcesses { get; set; }
     }
 }

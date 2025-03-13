@@ -3,17 +3,10 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IMajorService
-    {
-        ApiResponse<ICollection<MajorResponse>> GetMajor(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<MajorResponse> GetMajorById(long id);
-        ApiResponse<MajorResponse> CreateMajor(MajorRequest majorRequest);
-        ApiResponse<MajorResponse> UpdateMajor(long id, MajorRequest majorRequest);
-        ApiResponse<Major> DeleteMajor(long id);
-    }
     public class MajorService : IMajorService
     {
         private readonly MajorRepo _repository;
@@ -25,7 +18,7 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<MajorResponse>> GetMajor(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<MajorResponse>> GetMajor(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetMajor().AsQueryable();
 
@@ -43,19 +36,27 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            int totalItems = query.Count();
+
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<MajorResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<MajorResponse>>.Success(response)
-                : ApiResponse<ICollection<MajorResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<MajorResponse>>
+            .Success(response, page, pageSize, totalItems)
+            : ApiResponse<ICollection<MajorResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<MajorResponse> GetMajorById(long id)
         {
             var major = _repository.GetMajorById(id);
-            return (major != null && !(major.Active == false))
+            return (major != null && (major.Active == false))
                 ? ApiResponse<MajorResponse>.Success(_mapper.Map<MajorResponse>(major))
                 : ApiResponse<MajorResponse>.NotFound($"Không tìm thấy chuyên ngành #{id}");
         }
@@ -75,7 +76,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<MajorResponse> UpdateMajor(long id, MajorRequest majorRequest)
         {
             var existingMajor = _repository.GetMajorById(id);
-            if (existingMajor == null)
+            if (existingMajor == null || existingMajor.Active == true)
             {
                 return ApiResponse<MajorResponse>.NotFound("Không tìm thấy chuyên ngành.");
             }
@@ -86,6 +87,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<MajorResponse>.Conflict("Tên chuyên ngành đã tồn tại");
             }
+
 
             existingMajor.Name = majorRequest.Name;
             existingMajor.Description = majorRequest.Description;
@@ -108,7 +110,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingMajor.Active = true;
-            _repository.UpdateMajor(existingMajor);
+            _repository.DeleteMajor(existingMajor);
 
             return ApiResponse<Major>.Success();
         }

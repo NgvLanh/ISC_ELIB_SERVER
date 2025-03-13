@@ -1,4 +1,6 @@
-﻿namespace ISC_ELIB_SERVER.DTOs.Responses
+﻿using ISC_ELIB_SERVER.Models;
+
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class RetirementResponse
     {
@@ -7,8 +9,7 @@
         public DateTime? Date { get; set; }
         public string? Note { get; set; }
         public string? Attachment { get; set; }
-        public bool? Status { get; set; }
+        public RetirementStatus Status { get; set; }
         public int LeadershipId { get; set; }
-        public bool Active { get; set; }
     }
 }

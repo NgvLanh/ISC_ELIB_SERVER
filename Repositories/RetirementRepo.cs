@@ -20,12 +20,36 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Retirements.FirstOrDefault(s => s.Id == id);
         }
 
-        public Retirement CreateRetirement(Retirement Retirement)
+        public ICollection<Retirement> GetRetirementByTeacherId(long id)
         {
-            _context.Retirements.Add(Retirement);
-            _context.SaveChanges();
-            return Retirement;
+            return _context.Retirements
+                .Where(s => s.TeacherId == id)
+                .ToList();
         }
+
+        public Retirement CreateRetirement(Retirement retirement)
+        {
+            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId);
+            if (!teacherExists)
+            {
+                return null;
+            }
+
+            if (retirement.LeadershipId.HasValue)
+            {
+                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId.Value);
+                if (!leadershipExists)
+                {
+                    return null;
+                }
+            }
+
+            _context.Retirements.Add(retirement);
+            _context.SaveChanges();
+
+            return retirement;
+        }
+
 
         public Retirement UpdateRetirement(long id, RetirementRequest Retirement)
         {
