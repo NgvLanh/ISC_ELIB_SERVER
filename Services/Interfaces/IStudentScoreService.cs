@@ -7,10 +7,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 {
     public interface IStudentScoreService
     {
-        ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<StudentScoreResponse> GetStudentScoreById(long id);
+        ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int? page, int? pageSize, string? sortColumn, string? sortOrder);
+        ApiResponse<StudentScoreResponse> GetStudentScoreById(int id);
         ApiResponse<StudentScoreResponse> CreateStudentScore(StudentScoreRequest studentScoreRequest);
-        ApiResponse<StudentScoreResponse> UpdateStudentScore(long id, StudentScoreRequest studentScoreRequest);
-        ApiResponse<StudentScore> DeleteStudentScore(long id);
+        ApiResponse<StudentScoreResponse> UpdateStudentScore(int id, StudentScoreRequest studentScoreRequest);
+        ApiResponse<StudentScore> DeleteStudentScore(int id);
     }
 }

@@ -5,10 +5,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface IClassesRepo
     {
         ICollection<Class> GetClass();
-        Class GetClassById(long id);
+        Class GetClassById(int id);
         Class CreateClass(Class classes);
         Class? UpdateClass(Class classes);
-        bool DeleteClass(long id);
+        bool DeleteClass(int id);
 
     }
 
@@ -26,7 +26,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Classes.ToList();
         }
 
-        public Class GetClassById(long id)
+        public Class GetClassById(int id)
         {
             return _context.Classes.FirstOrDefault(c => c.Id == id);
         }
@@ -58,7 +58,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingClass;
         }
 
-        public bool DeleteClass(long id)
+        public bool DeleteClass(int id)
         {
             var existingClass = _context.Classes.Find(id);
 
