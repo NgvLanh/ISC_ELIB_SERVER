@@ -17,18 +17,17 @@ namespace ISC_ELIB_SERVER.Controllers
 
         [HttpGet]
         public IActionResult GetTeachingAssignments(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "",
-            [FromQuery] string sortColumn = "Id",
-            [FromQuery] string sortOrder = "asc")
+            [FromQuery] int? page = 1,
+            [FromQuery] int? pageSize = 10,
+            [FromQuery] string? sortColumn = "Id",
+            [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetTeachingAssignments(page, pageSize, search, sortColumn, sortOrder);
+            var response = _service.GetTeachingAssignments(page, pageSize, sortColumn, sortOrder);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTeachingAssignmentById(long id)
+        public IActionResult GetTeachingAssignmentById(int id)
         {
             var response = _service.GetTeachingAssignmentById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
@@ -42,14 +41,14 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTeachingAssignment(long id, [FromBody] TeachingAssignmentsRequest request)
+        public IActionResult UpdateTeachingAssignment(int id, [FromBody] TeachingAssignmentsRequest request)
         {
             var response = _service.UpdateTeachingAssignment(id, request);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTeachingAssignment(long id)
+        public IActionResult DeleteTeachingAssignment(int id)
         {
             var response = _service.DeleteTeachingAssignment(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
