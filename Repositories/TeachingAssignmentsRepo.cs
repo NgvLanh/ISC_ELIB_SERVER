@@ -7,10 +7,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface ITeachingAssignmentsRepo
     {
         ICollection<TeachingAssignment> GetTeachingAssignments();
-        TeachingAssignment GetTeachingAssignmentById(long id);
+        TeachingAssignment GetTeachingAssignmentById(int id);
         TeachingAssignment CreateTeachingAssignment(TeachingAssignment teachingAssignment);
         TeachingAssignment UpdateTeachingAssignment(TeachingAssignment teachingAssignment);
-        bool DeleteTeachingAssignment(long id);
+        bool DeleteTeachingAssignment(int id);
     }
 
     public class TeachingAssignmentsRepo : ITeachingAssignmentsRepo
@@ -27,7 +27,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.TeachingAssignments.ToList();
         }
 
-        public TeachingAssignment GetTeachingAssignmentById(long id)
+        public TeachingAssignment GetTeachingAssignmentById(int id)
         {
             return _context.TeachingAssignments.FirstOrDefault(t => t.Id == id);
         }
@@ -57,7 +57,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingAssignment;
         }
 
-        public bool DeleteTeachingAssignment(long id)
+        public bool DeleteTeachingAssignment(int id)
         {
             var teachingAssignment = _context.TeachingAssignments.Find(id);
 
@@ -66,7 +66,8 @@ namespace ISC_ELIB_SERVER.Repositories
                 return false;
             }
 
-            _context.TeachingAssignments.Remove(teachingAssignment);
+            teachingAssignment.Active = false;
+            _context.TeachingAssignments.Update(teachingAssignment);
             return _context.SaveChanges() > 0;
         }
     }
