@@ -30,13 +30,13 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         public bool? FileSubmit { get; set; }
 
-        //[Required(ErrorMessage = "Không được để trống.")]
-        public int? SemesterId { get; set; }
+        [Required(ErrorMessage = "Không được để trống.")]
+        public long SemesterId { get; set; }
 
-        //[Required(ErrorMessage = "Không được để trống.")]
-        public int? SubjectId { get; set; }
+        [Required(ErrorMessage = "Không được để trống.")]
+        public long SubjectId { get; set; }
 
-        //[Required(ErrorMessage = "Không được để trống.")]
-        public int? UserId { get; set; }
+        [Required(ErrorMessage = "Không được để trống.")]
+        public int UserId { get; set; }
     }
 }
