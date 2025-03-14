@@ -179,6 +179,9 @@ builder.Services.AddScoped<IResignationService, ResignationService>();
 
 builder.Services.AddScoped<TopicRepo>();
 builder.Services.AddScoped<TopicsFileRepo>();
+builder.Services.AddAutoMapper(typeof(SessionMapper));
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<SessionRepo>();
 
 
 
