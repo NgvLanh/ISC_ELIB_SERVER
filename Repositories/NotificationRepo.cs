@@ -37,15 +37,11 @@ namespace ISC_ELIB_SERVER.Repositories
             return notification;
         }
 
-        public bool DeleteNotification(long id)
+        public bool DeleteNotification(Notification notification)
         {
-            var notification = GetNotificationById(id);
-            if (notification != null)
-            {
-                _context.Notifications.Remove(notification);
-                return _context.SaveChanges() > 0;
-            }
-            return false;
+            _context.Notifications.Update(notification);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

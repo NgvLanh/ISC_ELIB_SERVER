@@ -114,6 +114,8 @@ builder.Services.AddScoped<TestAnswerRepo>();
 
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, ThemesService>();
+builder.Services.AddScoped<NotificationRepo>();
+builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
