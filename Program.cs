@@ -13,12 +13,93 @@ using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Autofac.Core;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using BTBackendOnline2.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
+var jwtSettings = new TokenRequiment
+{
+    SecretKey = Env.GetString("JWT_SECRET_KEY"),
+    Issuer = Env.GetString("JWT_ISSUER"),
+    Audience = Env.GetString("JWT_AUDIENCE"),
+    Subject = Env.GetString("JWT_SUBJECT")
+};
+
+
+var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidAudience = jwtSettings.Audience,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ClockSkew = TimeSpan.Zero
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            context.Response.Headers.Add("Token-Validation-Error", context.Exception.Message);
+                            return Task.CompletedTask;
+                        },
+                        OnChallenge = context =>
+                        {
+                            if (!context.Response.Headers.ContainsKey("Token-Validation-Error"))
+                            {
+                                context.Response.Headers.Add("Token-Validation-Error", context.ErrorDescription);
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Enter AccessToken",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -178,6 +259,8 @@ builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
+//Authentication
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 builder.Services.AddScoped<TopicRepo>();
 builder.Services.AddScoped<TopicsFileRepo>();
@@ -240,6 +323,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
