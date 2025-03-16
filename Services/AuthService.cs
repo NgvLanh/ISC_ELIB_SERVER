@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System;
 using System.Security.Cryptography;
 using DotNetEnv;
 
@@ -23,61 +22,60 @@ namespace ISC_ELIB_SERVER.Services
             _context = context;
 
             jwt = new()
-             {
-                 SecretKey = Env.GetString("JWT_SECRET_KEY"),
-                 Issuer = Env.GetString("JWT_ISSUER"),
-                 Audience = Env.GetString("JWT_AUDIENCE"),
-                 Subject = Env.GetString("JWT_SUBJECT")
-             };
+            {
+                SecretKey = Env.GetString("JWT_SECRET_KEY"),
+                Issuer = Env.GetString("JWT_ISSUER"),
+                Audience = Env.GetString("JWT_AUDIENCE"),
+                Subject = Env.GetString("JWT_SUBJECT")
+            };
         }
 
-        public ApiResponse<LoginRes> AuthLogin(LoginReq request)
+        public ApiResponse<LoginResponse> AuthLogin(LoginReq request)
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == ComputeSha256(request.Password));
+                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == request.Password);
 
                 if (user == null)
                 {
-                    return ApiResponse<LoginRes>.Fail("Tên đăng nhập hoặc mật khẩu không đúng");
+                    return ApiResponse<LoginResponse>.Fail("Tên đăng nhập hoặc mật khẩu không đúng");
                 }
 
                 var token = GenerateTokens(user);
 
                 if (string.IsNullOrEmpty(token.Item1))
                 {
-                    return ApiResponse<LoginRes>.Fail("Không thể tạo AccessToken");
+                    return ApiResponse<LoginResponse>.Fail("Không thể tạo AccessToken");
                 }
-
-                return ApiResponse<LoginRes>.Success(new LoginRes
+                string roleName = user.Role?.Name ?? "Student";
+                return ApiResponse<LoginResponse>.Success(new LoginResponse
                 {
                     AccessToken = token.Item1,
-                    RefreshTokens = token.Item2
+                    RefreshToken = token.Item2,
+                    User = new UserResponseLogin
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        FullName = user.FullName,
+                        // Avatar = user.Avatar,
+                        Role = roleName.ToUpper()
+                    }
                 });
             }
-            catch
+            catch (Exception e)
             {
-                return ApiResponse<LoginRes>.Fail("Lỗi khi xác thực người dùng");
+                return ApiResponse<LoginResponse>.Fail("Lỗi khi xác thực người dùng: " + e.Message);
             }
 
         }
 
-        public (string, RefreshToken) GenerateTokens(User user,
+        public (string, string) GenerateTokens(User user,
                                                             int accessExpire = 15,
                                                             int refreshExpire = 600)
         {
 
             var role = _context.Roles.FirstOrDefault(a => a.Id == user.RoleId);
-
-            if (role == null || string.IsNullOrEmpty(role.Name))
-            {
-                throw new Exception("User role is not valid");
-            }
-
-            if (user == null || string.IsNullOrEmpty(user.Email))
-            {
-                throw new Exception("User is not valid");
-            }
+            var roleName = role?.Name ?? "Student";
 
             var claims = new[]
             {
@@ -85,33 +83,32 @@ namespace ISC_ELIB_SERVER.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, role.Name),
+                new Claim(ClaimTypes.Role, roleName),
                 new Claim("Id", user.Id.ToString()),
-                new Claim("Email", user.Email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey));
-
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                    jwt.Issuer,
-                    jwt.Audience,
-                    claims,
-                    expires: DateTime.UtcNow.AddMinutes(accessExpire),
-                    signingCredentials: signIn
-                    );
-            string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenAccess = new JwtSecurityToken(
+                jwt.Issuer,
+                jwt.Audience,
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(accessExpire),
+                signingCredentials: signIn
+            );
 
-            Console.WriteLine(accessToken);
+            var tokenRefresh = new JwtSecurityToken(
+                jwt.Issuer,
+                jwt.Audience,
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(refreshExpire),
+                signingCredentials: signIn
+            );
 
-            RefreshToken refreshToken = new()
-            {
-                Id = user.Id + DateTime.Now.Millisecond,
-                Token = Guid.NewGuid().ToString(),
-                ExpireDate = DateTime.UtcNow.AddMinutes(refreshExpire),
-                Email = user.Email
-            };
+            string accessToken = new JwtSecurityTokenHandler().WriteToken(tokenAccess);
+            string refreshToken = new JwtSecurityTokenHandler().WriteToken(tokenRefresh);
+
             return (accessToken, refreshToken);
         }
 

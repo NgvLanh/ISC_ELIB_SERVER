@@ -99,6 +99,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>

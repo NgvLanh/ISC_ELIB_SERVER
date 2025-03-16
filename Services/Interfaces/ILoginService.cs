@@ -5,6 +5,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 {
     public interface ILoginService
     {
-        ApiResponse<LoginRes> AuthLogin(LoginReq request);
+        ApiResponse<LoginResponse> AuthLogin(LoginReq request);
     }
 }

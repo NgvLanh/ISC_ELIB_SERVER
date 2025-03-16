@@ -8,7 +8,7 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public AuthMapper()
         {
-            CreateMap<LoginRes, AccessTokenReq>();
+            CreateMap<LoginResponse, AccessTokenReq>();
         }
     }
 }

@@ -1,29 +1,26 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly ILoginService _service;
-        private readonly IMapper _mapper;
-
 
         public AuthController(ILoginService service, IMapper mapper)
         {
             _service = service;
-            _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public IActionResult Login([FromBody] LoginReq request)
         {
             var response = _service.AuthLogin(request);
@@ -31,33 +28,18 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("GetUserIdByAccessToken")]
-        public IActionResult GetUserIdByAccessToken([FromBody] AccessTokenReq request)
+        [Authorize]
+        [HttpGet("verify-token")]
+        public IActionResult VerifyToken()
         {
-            var accessTokenRes = _mapper.Map<AccessTokenReq>(request);
+            var userId = User.FindFirst("Id")?.Value;
 
-            if (string.IsNullOrEmpty(accessTokenRes.AccessToken))
+            if (string.IsNullOrEmpty(userId))
             {
-                return BadRequest(new { message = "AccessToken is required." });
+                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
             }
 
-            try
-            {
-                var payload = ExtractAccessTokenJWT.DecodeJWT(accessTokenRes);
-
-                if (payload != null && payload.ContainsKey("Id"))
-                {
-                    return Ok(new { UserId = payload["Id"] });
-                }
-                else
-                {
-                    return BadRequest(new { message = "UserId not found in token." });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "Invalid token.", error = ex.Message });
-            }
+            return Ok(ApiResponse<string>.Success($"User ID: {userId}"));
         }
     }
 }
