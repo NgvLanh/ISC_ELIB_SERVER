@@ -16,7 +16,13 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSchools([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? search = "", [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetSchools(
+            [FromQuery] int? page = null,
+                [FromQuery] int? pageSize = null,
+                [FromQuery] string? sortColumn = null,
+                [FromQuery] string? sortOrder = null,
+                [FromQuery] string? search = ""
+        )
         {
             var response = _service.GetSchools(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
