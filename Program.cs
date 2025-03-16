@@ -13,6 +13,7 @@ using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Autofac.Core;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -216,7 +217,15 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Map RetirementStatus enum thành kiểu int
+    c.MapType<RetirementStatus>(() => new OpenApiSchema
+    {
+        Type = "integer",
+        Format = "int32"
+    });
+});
 
 var app = builder.Build();
 
