@@ -313,7 +313,15 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Map RetirementStatus enum thành kiểu int
+    c.MapType<RetirementStatus>(() => new OpenApiSchema
+    {
+        Type = "integer",
+        Format = "int32"
+    });
+});
 
 var app = builder.Build();
 
