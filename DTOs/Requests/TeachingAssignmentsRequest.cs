@@ -8,7 +8,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "Ngày bắt đầu không được để trống!")]
         public DateTime? StartDate { get; set; }
 
-        [Required(ErrorMessage = "Ngày kết thúc không được để trống!")]
         public DateTime? EndDate { get; set; }
 
         [MaxLength(500, ErrorMessage = "Mô tả không được vượt quá 500 ký tự")]
@@ -26,6 +25,5 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "Vui lòng chọn chủ đề!")]
         public int? TopicsId { get; set; }
 
-        public bool Active { get; set; }
     }
 }

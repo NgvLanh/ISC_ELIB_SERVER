@@ -9,7 +9,9 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public AcademicYearMapper()
         {
-            CreateMap<AcademicYear, AcademicYearResponse>();
+            CreateMap<AcademicYear, AcademicYearResponse>()
+            .ForMember(academicYear => academicYear.Name,
+             opt => opt.MapFrom(src => $"{src.StartTime:yyyy}-{src.EndTime:yyyy}"));
             CreateMap<AcademicYearRequest, AcademicYear>();
         }
     }

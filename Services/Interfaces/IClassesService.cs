@@ -6,11 +6,11 @@ namespace ISC_ELIB_SERVER.Services
 {
     public interface IClassesService
     {
-        ApiResponse<ICollection<ClassesResponse>> GetClass(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<ClassesResponse> GetClassById(long id);
+        ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? sortColumn, string? sortOrder);
+        ApiResponse<ClassesResponse> GetClassById(int id);
         ApiResponse<ClassesResponse> GetClassByName(string name);
         ApiResponse<ClassesResponse> CreateClass(ClassesRequest classesRequest);
-        ApiResponse<ClassesResponse> UpdateClass(long id, ClassesRequest classesRequest);
-        ApiResponse<bool> DeleteClass(long id);
+        ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest);
+        ApiResponse<bool> DeleteClass(int id);
     }
 }
