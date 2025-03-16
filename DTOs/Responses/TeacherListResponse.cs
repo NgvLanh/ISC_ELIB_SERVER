@@ -13,6 +13,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string Position { get; set; } = "";
 
         // Status dạng enum
-        public RetirementStatus Status { get; set; }
+        public int Status { get; set; }
     }
 }
