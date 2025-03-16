@@ -77,6 +77,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
         public virtual DbSet<WorkProcess> WorkProcesses { get; set; } = null!;
+        public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -835,6 +837,26 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.SubjectId)
                     .HasConstraintName("fk_question_qa_subject_id");
             });
+          modelBuilder.Entity<QuestionView>(entity =>
+            {
+                entity.ToTable("question_views");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.QuestionId).HasColumnName("question_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.ViewedAt).HasColumnName("viewed_at").HasColumnType("timestamp without time zone");
+
+                entity.HasOne(d => d.Question)
+                    .WithMany()
+                    .HasForeignKey(d => d.QuestionId)
+                    .HasConstraintName("fk_question_views_question_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_question_views_user_id");
+            });
+
 
             modelBuilder.Entity<Reserve>(entity =>
             {

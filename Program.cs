@@ -12,11 +12,45 @@ using System.Reflection;
 using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Autofac.Core;
+using CloudinaryDotNet;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+var cloudinarySettings = new CloudinarySettings
+{
+    CloudName = Env.GetString("CLOUDINARY_CLOUD_NAME"),
+    ApiKey = Env.GetString("CLOUDINARY_API_KEY"),
+    ApiSecret = Env.GetString("CLOUDINARY_API_SECRET")
+};
+
+// 📌 Khởi tạo Cloudinary
+var cloudinary = new Cloudinary(new Account(
+    cloudinarySettings.CloudName,
+    cloudinarySettings.ApiKey,
+    cloudinarySettings.ApiSecret
+));
+
+builder.Services.AddSingleton(cloudinary);
+builder.Services.AddSingleton<CloudinaryService>();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000") // Cho phép React truy cập API
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
 
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -95,6 +129,12 @@ builder.Services.AddScoped<IQuestionImagesQaService, QuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
 builder.Services.AddScoped<IAnswerImagesQaService, AnswerImagesQaService>();
 builder.Services.AddScoped<IQuestionQaService, QuestionQaService>();
+builder.Services.AddScoped<QuestionViewRepo>();
+// Đăng ký QuestionView Repository và Service
+builder.Services.AddScoped<QuestionViewRepo>();
+builder.Services.AddScoped<IQuestionViewService, QuestionViewService>();
+
+
 
 
 // Add services and repositories Test attachment
@@ -209,7 +249,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
