@@ -4,6 +4,8 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -90,12 +92,15 @@ namespace ISC_ELIB_SERVER.Services
                 AcademicYearId = userRequest.AcademicYearId,
                 UserStatusId = userRequest.UserStatusId,
                 ClassId = userRequest.ClassId,
-                EntryType = userRequest.EntryType
+                EntryType = userRequest.EntryType,
+                Password = ComputeSha256(userRequest.Password),
             };
 
             var createdUser = _repository.CreateUser(user);
             return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(createdUser));
         }
+
+
 
         public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
         {
@@ -121,6 +126,7 @@ namespace ISC_ELIB_SERVER.Services
             user.UserStatusId = userRequest.UserStatusId;
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
+            user.Password = ComputeSha256(userRequest.Password);
 
             var updatedUser = _repository.UpdateUser(user);
             return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
@@ -132,6 +138,18 @@ namespace ISC_ELIB_SERVER.Services
             return success
                 ? ApiResponse<User>.Success()
                 : ApiResponse<User>.NotFound("Không tìm thấy người dùng để xóa");
+        }
+
+        public static string ComputeSha256(string? input)
+        {
+            using SHA256 sha256 = SHA256.Create();
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
+            StringBuilder builder = new();
+            foreach (byte b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+            return builder.ToString();
         }
     }
 }
