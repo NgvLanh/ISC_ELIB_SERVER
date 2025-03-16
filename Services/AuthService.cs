@@ -13,12 +13,12 @@ using DotNetEnv;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class LoginService : ILoginService
+    public class AuthService : ILoginService
     {
         private readonly isc_dbContext _context;
         private readonly TokenRequiment jwt;
 
-        public LoginService(IConfiguration configuration, isc_dbContext context)
+        public AuthService(isc_dbContext context)
         {
             _context = context;
 
@@ -39,14 +39,14 @@ namespace ISC_ELIB_SERVER.Services
 
                 if (user == null)
                 {
-                    return ApiResponse<LoginRes>.Fail();
+                    return ApiResponse<LoginRes>.Fail("Tên đăng nhập hoặc mật khẩu không đúng");
                 }
 
                 var token = GenerateTokens(user);
 
                 if (string.IsNullOrEmpty(token.Item1))
                 {
-                    return ApiResponse<LoginRes>.Fail();
+                    return ApiResponse<LoginRes>.Fail("Không thể tạo AccessToken");
                 }
 
                 return ApiResponse<LoginRes>.Success(new LoginRes
@@ -57,7 +57,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             catch
             {
-                return ApiResponse<LoginRes>.Fail();
+                return ApiResponse<LoginRes>.Fail("Lỗi khi xác thực người dùng");
             }
 
         }

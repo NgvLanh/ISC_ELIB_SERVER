@@ -260,7 +260,7 @@ builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
 
 //Authentication
-builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<ILoginService, AuthService>();
 
 builder.Services.AddScoped<TopicRepo>();
 builder.Services.AddScoped<TopicsFileRepo>();

@@ -51,9 +51,9 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
             return new ApiResponse<T>(1, "Errors", default, errors);
         }
 
-        public static ApiResponse<T> Fail()
+        public static ApiResponse<T> Fail(string message)
         {
-            return new ApiResponse<T>(1, "Error", default);
+            return new ApiResponse<T>(1, message);
         }
 
         public static ApiResponse<T> NotFound(string message = "Not found")
