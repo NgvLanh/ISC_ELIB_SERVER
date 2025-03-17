@@ -33,7 +33,7 @@ namespace ISC_ELIB_SERVER.Mappers
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
                     src.Retirements != null && src.Retirements.Any()
                         ? src.Retirements.OrderByDescending(r => r.Date).FirstOrDefault().Status
-                        : RetirementStatus.DangLamViec
+                        : RetirementStatus.Working
                            ));
         }
     }

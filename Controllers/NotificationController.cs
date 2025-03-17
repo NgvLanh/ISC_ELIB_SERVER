@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -36,36 +37,16 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPost]
         public IActionResult CreateNotification([FromBody] NotificationRequest notificationRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var response = _service.CreateNotification(notificationRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
-//        POST
-//     {
-//    "title": "Thông báo 8",
-//    "content": "Mật khẩu thay đổi thành công",
-//    "type": "Bảo mật",
-//    "createAt": "2025-02-15T10:00:00",
-//    "senderId": 11,
-//    "userId": 12
-//    }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateNotification(long id, [FromBody] Notification notification)
+        public IActionResult UpdateNotification(long id, [FromBody] NotificationRequest notificationRequest)
         {
-            var response = _service.UpdateNotification(notification);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            var response = _service.UpdateNotification(id, notificationRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
-//        PUT
-//    {
-//    "id": 37,
-//    "title": "Thông báo 222",
-//    "content": "Mật khẩu thành công",
-//    "type": "Bảo mật",
-//    "createAt": "2025-02-15T10:00:00",
-//    "senderId": 11,
-//    "userId": 12
-//    }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteNotification(long id)

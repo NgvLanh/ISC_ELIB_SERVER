@@ -2018,7 +2018,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("nation");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(50)
+                    .HasColumnType("text")
                     .HasColumnName("password");
 
                 entity.Property(e => e.PhoneNumber)
