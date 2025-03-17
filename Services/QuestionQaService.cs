@@ -24,7 +24,7 @@ namespace ISC_ELIB_SERVER.Services
                 _mapper = mapper;
             }
 
-  public ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int userId, int page, int pageSize, string search, string sortColumn, string sortOrder)
+ public ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int userId, int page, int pageSize, string search, string sortColumn, string sortOrder)
 {
     var query = _repository.GetQuestions().AsQueryable();
 
@@ -38,8 +38,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             Question = q,
             IsRead = _viewRepo.HasUserViewed(q.Id, userId),
-            HasAnswer = q.AnswersQas.Any(), // Kiểm tra có câu trả lời hay không
-            ImageUrls = q.QuestionImagesQas.Select(img => img.ImageUrl).ToList() // Lấy danh sách ảnh
+            HasAnswer = q.AnswersQas.Any()
         })
         .ToList();
 
@@ -57,7 +56,7 @@ namespace ISC_ELIB_SERVER.Services
             ViewCount = _viewRepo.GetViewCount(q.Question.Id),
             IsRead = q.IsRead,
             HasAnswer = q.HasAnswer,
-            ImageUrls = q.ImageUrls //Gán danh sách ảnh
+            ImageUrls = q.Question.QuestionImagesQas.Select(i => i.ImageUrl).ToList() // 🔥 Trả về danh sách Base64
         })
         .Skip((page - 1) * pageSize)
         .Take(pageSize)
@@ -134,46 +133,50 @@ namespace ISC_ELIB_SERVER.Services
     return ApiResponse<QuestionQaResponse>.Success(response);
 }
 
-         public async Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files)
-    {
-        List<string> imageUrls = new List<string>();
+   public async Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files)
+{
+    List<string> imageBase64List = new List<string>();
 
-        //Upload từng ảnh lên Cloudinary
-        if (files != null && files.Count > 0)
+    // Chuyển đổi ảnh thành Base64 và lưu vào danh sách
+    if (files != null && files.Count > 0)
+    {
+        foreach (var file in files)
         {
-            foreach (var file in files)
+            using (var ms = new MemoryStream())
             {
-                var imageUrl = await _cloudinaryService.UploadImageAsync(file);
-                if (!string.IsNullOrEmpty(imageUrl))
-                {
-                    imageUrls.Add(imageUrl);
-                }
+                await file.CopyToAsync(ms);
+                var fileBytes = ms.ToArray();
+                string base64String = Convert.ToBase64String(fileBytes);
+                imageBase64List.Add(base64String);
             }
         }
-
-        var newQuestion = new QuestionQa
-        {
-            Content = questionRequest.Content,
-            UserId = questionRequest.UserId,
-            SubjectId = questionRequest.SubjectId,
-            CreateAt = DateTime.Now,
-            Active = true
-        };
-
-        var createdQuestion = _repository.CreateQuestion(newQuestion, imageUrls); //Truyền danh sách ảnh
-
-        var response = new QuestionQaResponse
-        {
-            Id = createdQuestion.Id,
-            Content = createdQuestion.Content,
-            CreateAt = createdQuestion.CreateAt ?? DateTime.Now,
-            UserId = createdQuestion.UserId ?? 0,
-            UserAvatar = createdQuestion.User?.AvatarUrl ?? "https://via.placeholder.com/50",
-            UserName = createdQuestion.User?.FullName ?? "Unknown",
-        };
-
-        return ApiResponse<QuestionQaResponse>.Success(response);
     }
+
+    var newQuestion = new QuestionQa
+    {
+        Content = questionRequest.Content,
+        UserId = questionRequest.UserId,
+        SubjectId = questionRequest.SubjectId,
+        CreateAt = DateTime.Now,
+        Active = true
+    };
+
+    // Tạo câu hỏi và lưu hình ảnh dưới dạng Base64
+    var createdQuestion = _repository.CreateQuestion(newQuestion, imageBase64List);
+
+    var response = new QuestionQaResponse
+    {
+        Id = createdQuestion.Id,
+        Content = createdQuestion.Content,
+        CreateAt = createdQuestion.CreateAt ?? DateTime.Now,
+        UserId = createdQuestion.UserId ?? 0,
+        UserAvatar = createdQuestion.User?.AvatarUrl ?? "https://via.placeholder.com/50",
+        UserName = createdQuestion.User?.FullName ?? "Unknown",
+        ImageUrls = imageBase64List // 🔥 Lưu danh sách ảnh dạng base64 vào response
+    };
+
+    return ApiResponse<QuestionQaResponse>.Success(response);
+}
 
         public ApiResponse<QuestionQaResponse> UpdateQuestion(long id, QuestionQaRequest request)
         {
@@ -192,14 +195,13 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<QuestionQaResponse>.Success(_mapper.Map<QuestionQaResponse>(updated));
         }
 
-        public ApiResponse<QuestionQaResponse> DeleteQuestion(long id)
-{
-    var success = _repository.DeleteQuestion(id);
-    return success
-        ? ApiResponse<QuestionQaResponse>.Success()
-        : ApiResponse<QuestionQaResponse>.NotFound("Không tìm thấy câu hỏi để xóa.");
-}
-
+     public ApiResponse<QuestionQaResponse> DeleteQuestion(long id)
+        {
+            var success = _repository.DeleteQuestion(id);
+            return success
+                ? ApiResponse<QuestionQaResponse>.Success()
+                : ApiResponse<QuestionQaResponse>.NotFound("Không tìm thấy câu hỏi để xóa");
+        }
 
         public ApiResponse<QuestionQaResponse> GetQuestionByIdForUser(int id, int userId)
 {

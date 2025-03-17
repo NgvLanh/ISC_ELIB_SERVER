@@ -11,7 +11,7 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int userId,int page, int pageSize, string search, string sortColumn, string sortOrder);
         ApiResponse<QuestionQaResponse> GetQuestionById(long id);
         ApiResponse<QuestionQaResponse> GetQuestionByIdForUser(int id, int userId);
-       Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files);
+        Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files);
         ApiResponse<QuestionQaResponse> UpdateQuestion(long id, QuestionQaRequest QuestionQaRequest);
         ApiResponse<QuestionQaResponse> DeleteQuestion(long id);
         ApiResponse<ICollection<QuestionQaResponse>> GetAnsweredQuestions(int userId, int page, int pageSize);
