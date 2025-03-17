@@ -2,6 +2,7 @@
 using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +15,12 @@ namespace ISC_ELIB_SERVER.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ILoginService _service;
+        private readonly IRegisterService _registerService;
 
-        public AuthController(ILoginService service, IMapper mapper)
+        public AuthController(ILoginService service, IRegisterService registerService)
         {
             _service = service;
+            _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
         }
 
         [HttpPost("login")]
@@ -41,5 +44,13 @@ namespace ISC_ELIB_SERVER.Controllers
 
             return Ok(ApiResponse<string>.Success($"User ID: {userId}"));
         }
+
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterRequest request)
+        {
+            var response = _registerService.Register(request);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
     }
 }

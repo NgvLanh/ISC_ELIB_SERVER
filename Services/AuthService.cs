@@ -12,7 +12,7 @@ using DotNetEnv;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public class AuthService : ILoginService
+    public class AuthService : ILoginService, IRegisterService
     {
         private readonly isc_dbContext _context;
         private readonly TokenRequiment jwt;
@@ -176,5 +176,52 @@ namespace ISC_ELIB_SERVER.Services
             }
             return builder.ToString();
         }
+        public ApiResponse<RegisterResponse> Register(RegisterRequest request)
+        {
+            try
+            {
+                var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+                if (existingUser != null)
+                {
+                    return ApiResponse<RegisterResponse>.Fail("Email đã tồn tại.");
+                }
+
+                var role = _context.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+                if (role == null)
+                {
+                    return ApiResponse<RegisterResponse>.Fail("Vai trò không hợp lệ.");
+                }
+
+                string hashedPassword = ComputeSha256(request.Password);
+
+                var newUser = new User
+                {
+                    FullName = request.FullName,
+                    Email = request.Email,
+                    Password = hashedPassword,
+                    RoleId = request.RoleId
+                };
+
+                _context.Users.Add(newUser);
+                _context.SaveChanges();
+
+                var response = new RegisterResponse
+                {
+                    Id = newUser.Id,
+                    FullName = newUser.FullName,
+                    Email = newUser.Email,
+                    RoleId = newUser.RoleId ?? 3,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+
+                return ApiResponse<RegisterResponse>.Success(response);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<RegisterResponse>.Fail("Lỗi khi đăng ký người dùng: " + e.Message);
+            }
+        }
+
     }
 }

@@ -262,6 +262,7 @@ builder.Services.AddScoped<IResignationService, ResignationService>();
 
 //Authentication
 builder.Services.AddScoped<ILoginService, AuthService>();
+builder.Services.AddScoped<IRegisterService, AuthService>();
 
 builder.Services.AddScoped<TopicRepo>();
 builder.Services.AddScoped<TopicsFileRepo>();
