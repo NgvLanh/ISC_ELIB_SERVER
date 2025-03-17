@@ -64,53 +64,47 @@ namespace ISC_ELIB_SERVER.Repositories
             return question;
         }
 
+      public void DeleteQuestionImages(long questionId)
+        {
+            var images = _context.QuestionImagesQas.Where(i => i.QuestionId == questionId).ToList();
+            if (images.Any())
+            {
+                _context.QuestionImagesQas.RemoveRange(images);
+                _context.SaveChanges();
+            }
+        }
         public bool DeleteQuestion(long id)
-{
-    var question = GetQuestionById(id);
-    if (question == null)
-    {
-        return false; // Không tìm thấy câu hỏi
-    }
+        {
+            var question = GetQuestionById(id);
+            if (question == null)
+            {
+                return false; // Không tìm thấy câu hỏi
+            }
 
-    //  Lấy danh sách ID của ảnh câu hỏi để xóa trên Cloudinary
-    var questionImageUrls = question.QuestionImagesQas.Select(img => img.ImageUrl).ToList();
+            //  Xóa tất cả hình ảnh của câu hỏi
+            var questionImages = _context.QuestionImagesQas.Where(qi => qi.QuestionId == id).ToList();
+            _context.QuestionImagesQas.RemoveRange(questionImages);
 
-    //  Lấy danh sách câu trả lời của câu hỏi
-    var answers = _context.AnswersQas.Where(a => a.QuestionId == id).ToList();
+            // Lấy danh sách câu trả lời liên quan
+            var answers = _context.AnswersQas.Where(a => a.QuestionId == id).ToList();
 
-    //  Lấy danh sách ảnh của câu trả lời để xóa trên Cloudinary
-    var answerImageUrls = _context.AnswerImagesQas
-        .Where(ai => answers.Select(a => a.Id).Contains(ai.AnswerId ?? 0))
-        .Select(ai => ai.ImageUrl)
-        .ToList();
+            foreach (var answer in answers)
+            {
+                // Xóa tất cả hình ảnh của câu trả lời
+                var answerImages = _context.AnswerImagesQas.Where(ai => ai.AnswerId == answer.Id).ToList();
+                _context.AnswerImagesQas.RemoveRange(answerImages);
+            }
 
-    //  Xóa ảnh câu hỏi trên Cloudinary
-    foreach (var imageUrl in questionImageUrls)
-    {
-        _cloudinaryService.DeleteImage(imageUrl);
-    }
+            // Xóa tất cả câu trả lời của câu hỏi
+            _context.AnswersQas.RemoveRange(answers);
 
-    //  Xóa ảnh câu trả lời trên Cloudinary
-    foreach (var imageUrl in answerImageUrls)
-    {
-        _cloudinaryService.DeleteImage(imageUrl);
-    }
+            //Cuối cùng, xóa câu hỏi
+            _context.QuestionQas.Remove(question);
 
-    //  Xóa ảnh câu hỏi trong database
-    _context.QuestionImagesQas.RemoveRange(question.QuestionImagesQas);
+            _context.SaveChanges();
+            return true;
+        }
 
-    //  Xóa ảnh câu trả lời trong database
-    _context.AnswerImagesQas.RemoveRange(_context.AnswerImagesQas.Where(ai => answers.Select(a => a.Id).Contains(ai.AnswerId ?? 0)));
-
-    //  Xóa câu trả lời
-    _context.AnswersQas.RemoveRange(answers);
-
-    //  Xóa câu hỏi
-    _context.QuestionQas.Remove(question);
-
-    _context.SaveChanges();
-    return true;
-}
         
         public ICollection<QuestionQa> SearchQuestionsByUserName(string userName)
         {
