@@ -18,31 +18,32 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignments(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignments(int? page, int? pageSize, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetTeachingAssignments().AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(t => t.Description.ToLower().Contains(search.ToLower()));
-            }
-
             query = sortColumn switch
             {
-                "StartDate" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.StartDate) : query.OrderBy(t => t.StartDate),
-                "EndDate" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.EndDate) : query.OrderBy(t => t.EndDate),
-                _ => query.OrderBy(t => t.Id)
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                _ => query.OrderBy(ay => ay.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+
             var response = _mapper.Map<ICollection<TeachingAssignmentsResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<TeachingAssignmentsResponse>>.Success(response)
-                : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<TeachingAssignmentsResponse>>
+            .Success(response, page, pageSize, _repository.GetTeachingAssignments().Count)
+             : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public ApiResponse<TeachingAssignmentsResponse> GetTeachingAssignmentById(long id)
+        public ApiResponse<TeachingAssignmentsResponse> GetTeachingAssignmentById(int id)
         {
             var assignment = _repository.GetTeachingAssignmentById(id);
             return assignment != null
@@ -57,7 +58,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<TeachingAssignmentsResponse>.Success(_mapper.Map<TeachingAssignmentsResponse>(createdAssignment));
         }
 
-        public ApiResponse<TeachingAssignmentsResponse> UpdateTeachingAssignment(long id, TeachingAssignmentsRequest request)
+        public ApiResponse<TeachingAssignmentsResponse> UpdateTeachingAssignment(int id, TeachingAssignmentsRequest request)
         {
             var existingAssignment = _repository.GetTeachingAssignmentById(id);
             if (existingAssignment == null)
@@ -72,13 +73,12 @@ namespace ISC_ELIB_SERVER.Services
             existingAssignment.ClassId = request.ClassId;
             existingAssignment.SubjectId = request.SubjectId;
             existingAssignment.TopicsId = request.TopicsId;
-            existingAssignment.Active = request.Active;
 
             var updatedAssignment = _repository.UpdateTeachingAssignment(existingAssignment);
             return ApiResponse<TeachingAssignmentsResponse>.Success(_mapper.Map<TeachingAssignmentsResponse>(updatedAssignment));
         }
 
-        public ApiResponse<bool> DeleteTeachingAssignment(long id)
+        public ApiResponse<bool> DeleteTeachingAssignment(int id)
         {
             var deleted = _repository.DeleteTeachingAssignment(id);
             return deleted

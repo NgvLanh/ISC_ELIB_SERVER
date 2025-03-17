@@ -9,9 +9,7 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public ThemMapper()
         {
-            // us - res
             CreateMap<Theme, ThemesResponse>();
-            // res - us
             CreateMap<ThemesRequest, Theme>();
         }
     }

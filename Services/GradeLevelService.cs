@@ -42,6 +42,29 @@ namespace ISC_ELIB_SERVER.Services
             return result.Any() ? ApiResponse<ICollection<GradeLevelResponse>>.Success(response) : ApiResponse<ICollection<GradeLevelResponse>>.NotFound("Không có dữ liệu");
         }
 
+        public ApiResponse<ICollection<GradeLevelResponse>> GetGradeLevelsByAyAndSc(int? page, int? pageSize, string? sortColumn, string? sortOrder, string schoolName, int? startYear, int? endYear)
+        {
+            var query = _repository.GetGradeLevels(schoolName, startYear, endYear).AsQueryable();
+
+            query = sortColumn switch
+            {
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                _ => query.OrderBy(ay => ay.Id)
+            };
+
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<GradeLevelResponse>>(result);
+
+            return result.Any() ? ApiResponse<ICollection<GradeLevelResponse>>.Success(response) : ApiResponse<ICollection<GradeLevelResponse>>.NotFound("Không có dữ liệu");
+        }
+
         public ApiResponse<GradeLevelResponse> GetGradeLevelById(long id)
         {
             var GradeLevel = _repository.GetGradeLevelById(id);

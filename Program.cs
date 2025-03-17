@@ -14,7 +14,11 @@ using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Autofac.Core;
 using CloudinaryDotNet;
-
+using Microsoft.OpenApi.Models;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using BTBackendOnline2.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +56,83 @@ builder.Services.AddCors(options =>
                       });
 });
 
+var jwtSettings = new TokenRequiment
+{
+    SecretKey = Env.GetString("JWT_SECRET_KEY"),
+    Issuer = Env.GetString("JWT_ISSUER"),
+    Audience = Env.GetString("JWT_AUDIENCE"),
+    Subject = Env.GetString("JWT_SUBJECT")
+};
+
+
+var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidAudience = jwtSettings.Audience,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ClockSkew = TimeSpan.Zero
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            context.Response.Headers.Add("Token-Validation-Error", context.Exception.Message);
+                            return Task.CompletedTask;
+                        },
+                        OnChallenge = context =>
+                        {
+                            if (!context.Response.Headers.ContainsKey("Token-Validation-Error"))
+                            {
+                                context.Response.Headers.Add("Token-Validation-Error", context.ErrorDescription);
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Enter AccessToken",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -66,7 +147,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
-
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -152,8 +232,11 @@ builder.Services.AddScoped<IExamService, ExamService>();
 // Add services and repositories Test Answer
 builder.Services.AddScoped<TestAnswerRepo>();
 
+
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, ThemesService>();
+builder.Services.AddScoped<NotificationRepo>();
+builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
@@ -207,6 +290,34 @@ builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
 builder.Services.AddScoped<EducationLevelRepo>();
 builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
 
+//WorkProcess
+builder.Services.AddScoped<WorkProcessRepo>();
+builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
+
+//Resignation
+builder.Services.AddScoped<ResignationRepo>();
+builder.Services.AddScoped<IResignationService, ResignationService>();
+
+//Authentication
+builder.Services.AddScoped<ILoginService, AuthService>();
+
+builder.Services.AddScoped<TopicRepo>();
+builder.Services.AddScoped<TopicsFileRepo>();
+builder.Services.AddAutoMapper(typeof(SessionMapper));
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<SessionRepo>();
+
+
+
+//Retirement
+builder.Services.AddScoped<RetirementRepo>();
+builder.Services.AddScoped<IRetirementService, RetirementService>();
+
+//TeacherList
+builder.Services.AddScoped<TeacherListRepo>();
+builder.Services.AddScoped<ITeacherListService, TeacherListService>();
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
@@ -240,17 +351,26 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Map RetirementStatus enum thành kiểu int
+    c.MapType<RetirementStatus>(() => new OpenApiSchema
+    {
+        Type = "integer",
+        Format = "int32"
+    });
+});
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors(MyAllowSpecificOrigins);
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

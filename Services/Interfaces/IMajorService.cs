@@ -6,7 +6,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 {
     public interface IMajorService
     {
-        ApiResponse<ICollection<MajorResponse>> GetMajor(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<ICollection<MajorResponse>> GetMajor(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
         ApiResponse<MajorResponse> GetMajorById(long id);
         ApiResponse<MajorResponse> CreateMajor(MajorRequest majorRequest);
         ApiResponse<MajorResponse> UpdateMajor(long id, MajorRequest majorRequest);

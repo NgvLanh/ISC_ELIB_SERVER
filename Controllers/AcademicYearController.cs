@@ -1,11 +1,10 @@
-﻿using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/academic-years")]
     [ApiController]
+    [Route("api/academic-years")]
     public class AcademicYearController : ControllerBase
     {
         private readonly IAcademicYearService _service;
@@ -16,7 +15,12 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAcademicYears([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetAcademicYears(
+            [FromQuery] int? page = null,
+            [FromQuery] int? pageSize = null,
+            [FromQuery] string? sortColumn = null,
+            [FromQuery] string? sortOrder = null
+            )
         {
             var response = _service.GetAcademicYears(page, pageSize, sortColumn, sortOrder);
             return Ok(response);

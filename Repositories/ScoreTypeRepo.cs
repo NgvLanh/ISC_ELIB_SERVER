@@ -5,10 +5,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface IScoreTypeRepo
     {
         ICollection<ScoreType> GetScoreTypes();
-        ScoreType GetScoreTypeById(long id);
+        ScoreType GetScoreTypeById(int id);
         ScoreType CreateScoreType(ScoreType scoreType);
         ScoreType UpdateScoreType(ScoreType scoreType);
-        bool DeleteScoreType(long id);
+        bool DeleteScoreType(int id);
     }
 
     public class ScoreTypeRepo : IScoreTypeRepo
@@ -25,7 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.ScoreTypes.ToList();
         }
 
-        public ScoreType GetScoreTypeById(long id)
+        public ScoreType GetScoreTypeById(int id)
         {
             return _context.ScoreTypes.FirstOrDefault(s => s.Id == id);
         }
@@ -56,7 +56,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-        public bool DeleteScoreType(long id)
+        public bool DeleteScoreType(int id)
         {
             var scoreType = _context.ScoreTypes.Find(id);
 

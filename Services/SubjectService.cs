@@ -40,13 +40,21 @@ namespace ISC_ELIB_SERVER.Services
                 "HoursSemester2" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
                 _ => query.OrderBy(us => us.Id)
             };
+            query = query.Where(qr => qr.Active == true);
+
+            var total = query.Count();
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<SubjectResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<SubjectResponse>>.Success(response)
+                ? ApiResponse<ICollection<SubjectResponse>>.Success(
+                        data: response,
+                        totalItems: total,
+                        pageSize: pageSize,
+                        page: page
+                    )
                 : ApiResponse<ICollection<SubjectResponse>>.NotFound("Không có dữ liệu");
         }
 

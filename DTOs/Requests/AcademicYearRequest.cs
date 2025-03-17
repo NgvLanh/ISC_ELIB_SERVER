@@ -4,8 +4,10 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class AcademicYearRequest
     {
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "Ngày bắt đầu không được để trống")]
         public DateTime StartTime { get; set; }
+        [DataType(DataType.Date)]
 
         [Required(ErrorMessage = "Ngày kết thúc không được để trống")]
         public DateTime EndTime { get; set; }

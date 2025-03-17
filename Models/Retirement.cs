@@ -10,8 +10,11 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime? Date { get; set; }
         public string? Note { get; set; }
         public string? Attachment { get; set; }
-        public bool? Status { get; set; }
+        public RetirementStatus Status { get; set; } = RetirementStatus.Working;
         public int? LeadershipId { get; set; }
         public bool Active { get; set; }
+
+        public virtual TeacherInfo? Teacher { get; set; }
+        public User Leadership { get; set; }
     }
 }

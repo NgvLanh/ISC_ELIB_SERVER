@@ -18,7 +18,7 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<MajorResponse>> GetMajor(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<MajorResponse>> GetMajor(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetMajor().AsQueryable();
 
@@ -36,13 +36,21 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            int totalItems = query.Count();
+
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<MajorResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<MajorResponse>>.Success(response)
-                : ApiResponse<ICollection<MajorResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<MajorResponse>>
+            .Success(response, page, pageSize, totalItems)
+            : ApiResponse<ICollection<MajorResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<MajorResponse> GetMajorById(long id)

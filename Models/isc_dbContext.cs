@@ -928,6 +928,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Resignations)
                     .HasForeignKey(d => d.TeacherId)
                     .HasConstraintName("fk_resignation_teacher_id");
+                
+                entity.HasOne(d => d.Leadership)
+                    .WithMany(p => p.Resignations)
+                    .HasForeignKey(d => d.LeadershipId)
+                    .HasConstraintName("fk_resignation_user_id");
             });
 
             modelBuilder.Entity<Retirement>(entity =>
@@ -955,6 +960,16 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.TeacherId).HasColumnName("teacher_id");
+
+                entity.HasOne(d => d.Teacher)
+                    .WithMany(p => p.Retirements)
+                    .HasForeignKey(d => d.TeacherId)
+                    .HasConstraintName("fk_retirement_teacher_info_id");
+
+                entity.HasOne(d => d.Leadership)
+                    .WithMany(p => p.Retirements)
+                    .HasForeignKey(d => d.LeadershipId)
+                    .HasConstraintName("fk_retirement_leadership_id");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -2025,7 +2040,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("nation");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(50)
+                    .HasColumnType("text")
                     .HasColumnName("password");
 
                 entity.Property(e => e.PhoneNumber)
@@ -2120,6 +2135,16 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.SubjectGroupsId).HasColumnName("subject_groups_id");
 
                 entity.Property(e => e.TeacherId).HasColumnName("teacher_id");
+
+                entity.HasOne(d => d.Teacher)
+                    .WithMany(p => p.WorkProcesses)
+                    .HasForeignKey(d => d.TeacherId)
+                    .HasConstraintName("fk_work_process_teacher_info_id");
+
+                entity.HasOne(d => d.SubjectGroup)
+                    .WithMany(p => p.WorkProcesses)
+                    .HasForeignKey(d => d.SubjectGroupsId)
+                    .HasConstraintName("fk_work_process_subject_group_id");
             });
 
             OnModelCreatingPartial(modelBuilder);
