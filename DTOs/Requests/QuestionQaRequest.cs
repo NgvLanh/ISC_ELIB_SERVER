@@ -10,5 +10,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         public int UserId { get; set; }
         public int SubjectId { get; set; }
+
+        public List<string>? ImageUrls { get; set; }
     }
 }

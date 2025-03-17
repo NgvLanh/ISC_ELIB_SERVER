@@ -23,10 +23,10 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateAnswer([FromForm] AnswersQaRequest answerRequest, [FromForm] List<IFormFile> files)
+       [HttpPost]
+        public async Task<IActionResult> CreateAnswer([FromBody] AnswersQaRequest answerRequest)
         {
-            var response = await _service.CreateAnswer(answerRequest, files);
+            var response = await _service.CreateAnswer(answerRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
