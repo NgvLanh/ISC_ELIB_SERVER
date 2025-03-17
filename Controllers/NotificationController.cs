@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -37,14 +38,31 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPost]
         public IActionResult CreateNotification([FromBody] NotificationRequest notificationRequest)
         {
-            var response = _service.CreateNotification(notificationRequest);
+            var senderIdClaim = User.FindFirst("Id")?.Value;
+
+            if (!int.TryParse(senderIdClaim, out int senderId))
+            {
+                return Unauthorized(ApiResponse<string>.Fail("ID trong token không hợp lệ"));
+            }
+
+
+            var response = _service.CreateNotification(notificationRequest, senderId);
+
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+
 
         [HttpPut("{id}")]
         public IActionResult UpdateNotification(long id, [FromBody] NotificationRequest notificationRequest)
         {
-            var response = _service.UpdateNotification(id, notificationRequest);
+            var senderIdClaim = User.FindFirst("Id")?.Value;
+
+            if (!int.TryParse(senderIdClaim, out int senderId))
+            {
+                return Unauthorized(ApiResponse<string>.Fail("ID trong token không hợp lệ"));
+            }
+
+            var response = _service.UpdateNotification(id, notificationRequest, senderId);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
