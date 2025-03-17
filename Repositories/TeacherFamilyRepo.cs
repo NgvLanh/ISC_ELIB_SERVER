@@ -8,13 +8,20 @@ namespace ISC_ELIB_SERVER.Repositories
     public class TeacherFamilyRepo
     {
         private readonly isc_dbContext _context;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         public TeacherFamilyRepo(isc_dbContext context)
         {
             _context = context;
         }
+<<<<<<< HEAD
 
         public IQueryable<TeacherFamily> GetTeacherFamilies()
+=======
+        public ICollection<TeacherFamily> GetTeacherFamilies()
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         {
             return _context.TeacherFamilies.Where(tf => tf.Active);
         }

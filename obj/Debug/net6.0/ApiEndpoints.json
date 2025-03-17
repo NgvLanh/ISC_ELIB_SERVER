@@ -1,0 +1,5066 @@
+[
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AcademicYearController",
+    "Method": "GetAcademicYears",
+    "RelativePath": "api/academic-years",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AcademicYearController",
+    "Method": "CreateAcademicYear",
+    "RelativePath": "api/academic-years",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AcademicYearRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AcademicYearController",
+    "Method": "GetAcademicYearById",
+    "RelativePath": "api/academic-years/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AcademicYearController",
+    "Method": "UpdateAcademicYear",
+    "RelativePath": "api/academic-years/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AcademicYearRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AcademicYearController",
+    "Method": "DeleteAcademicYear",
+    "RelativePath": "api/academic-years/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswerImagesQaController",
+    "Method": "GetAnswerImages",
+    "RelativePath": "api/answer-images",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answerId",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswerImagesQaController",
+    "Method": "CreateAnswerImage",
+    "RelativePath": "api/answer-images",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AnswerImagesQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswerImagesQaController",
+    "Method": "GetAnswerImageById",
+    "RelativePath": "api/answer-images/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswerImagesQaController",
+    "Method": "UpdateAnswerImage",
+    "RelativePath": "api/answer-images/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AnswerImagesQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswerImagesQaController",
+    "Method": "DeleteAnswerImage",
+    "RelativePath": "api/answer-images/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswersQaController",
+    "Method": "GetAnswers",
+    "RelativePath": "api/answers-qa",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "questionId",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswersQaController",
+    "Method": "CreateAnswer",
+    "RelativePath": "api/answers-qa",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "answerRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AnswersQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswersQaController",
+    "Method": "GetAnswerById",
+    "RelativePath": "api/answers-qa/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswersQaController",
+    "Method": "UpdateAnswer",
+    "RelativePath": "api/answers-qa/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "answerRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.AnswersQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.AnswersQaController",
+    "Method": "DeleteAnswer",
+    "RelativePath": "api/answers-qa/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.CampusController",
+    "Method": "GetCampuses",
+    "RelativePath": "api/campuses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.CampusController",
+    "Method": "CreateCampus",
+    "RelativePath": "api/campuses",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.CampusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.CampusController",
+    "Method": "GetCampusById",
+    "RelativePath": "api/campuses/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.CampusController",
+    "Method": "UpdateCampus",
+    "RelativePath": "api/campuses/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.CampusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.CampusController",
+    "Method": "DeleteCampus",
+    "RelativePath": "api/campuses/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChangeClassController",
+    "Method": "GetChangeClasses",
+    "RelativePath": "api/ChangeClass",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChangeClassController",
+    "Method": "CreateChangeClass",
+    "RelativePath": "api/ChangeClass",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ChangeClassRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ChangeClass_AddRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChangeClassController",
+    "Method": "GetChangeClassById",
+    "RelativePath": "api/ChangeClass/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChangeClassController",
+    "Method": "UpdateChangeClass",
+    "RelativePath": "api/ChangeClass/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "ChangeClass",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ChangeClass_UpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChangeClassController",
+    "Method": "DeleteChangeClass",
+    "RelativePath": "api/ChangeClass/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChatController",
+    "Method": "CreateChat",
+    "RelativePath": "api/chats",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChatController",
+    "Method": "GetChatById",
+    "RelativePath": "api/chats/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChatController",
+    "Method": "UpdateChat",
+    "RelativePath": "api/chats/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "chatRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ChatUpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChatController",
+    "Method": "DeleteChat",
+    "RelativePath": "api/chats/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ChatController",
+    "Method": "GetChatsBySessionId",
+    "RelativePath": "api/chats/session/{sessionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sessionId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassesController",
+    "Method": "GetClass",
+    "RelativePath": "api/class",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassesController",
+    "Method": "CreateClass",
+    "RelativePath": "api/class",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classesRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ClassesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "GetClassType",
+    "RelativePath": "api/class-type",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "CreateClassType",
+    "RelativePath": "api/class-type",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "classTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ClassTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "UpdateClassType",
+    "RelativePath": "api/class-type/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "classTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ClassTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "DeleteClassType",
+    "RelativePath": "api/class-type/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "GetClassTypeById",
+    "RelativePath": "api/class-type/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassTypeController",
+    "Method": "GetClassTypeByName",
+    "RelativePath": "api/class-type/by-name",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassesController",
+    "Method": "UpdateClass",
+    "RelativePath": "api/class/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "classesRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ClassesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassesController",
+    "Method": "DeleteClass",
+    "RelativePath": "api/class/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ClassesController",
+    "Method": "GetClassById",
+    "RelativePath": "api/class/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionImageController",
+    "Method": "CreateDiscussionImage",
+    "RelativePath": "api/discussion-image",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.DiscussionImageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionImageController",
+    "Method": "GetDiscussionImageById",
+    "RelativePath": "api/discussion-image/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionImageController",
+    "Method": "UpdateDiscussionImage",
+    "RelativePath": "api/discussion-image/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.DiscussionImageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionImageController",
+    "Method": "DeleteDiscussionImage",
+    "RelativePath": "api/discussion-image/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionImageController",
+    "Method": "GetDiscussionImagesByDiscussionId",
+    "RelativePath": "api/discussion-image/discussion/{discussionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "discussionId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionsController",
+    "Method": "GetDiscussions",
+    "RelativePath": "api/discussions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionsController",
+    "Method": "CreateDiscussion",
+    "RelativePath": "api/discussions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "discussionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.DiscussionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionsController",
+    "Method": "GetDiscussionById",
+    "RelativePath": "api/discussions/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionsController",
+    "Method": "UpdateDiscussion",
+    "RelativePath": "api/discussions/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "discussionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.DiscussionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.DiscussionsController",
+    "Method": "DeleteDiscussion",
+    "RelativePath": "api/discussions/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.EntryTypeController",
+    "Method": "GetEntryTypes",
+    "RelativePath": "api/entrytype",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.EntryTypeController",
+    "Method": "CreateEntryType",
+    "RelativePath": "api/entrytype",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entryTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.EntryTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.EntryTypeController",
+    "Method": "GetEntryTypeById",
+    "RelativePath": "api/entrytype/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.EntryTypeController",
+    "Method": "UpdateEntryType",
+    "RelativePath": "api/entrytype/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "entryTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.EntryTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.EntryTypeController",
+    "Method": "DeleteEntryType",
+    "RelativePath": "api/entrytype/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "GetAllExams",
+    "RelativePath": "api/exam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "CreateExam",
+    "RelativePath": "api/exam",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DurationMinutes",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "ISC_ELIB_SERVER.Models.ExamStatus",
+        "IsRequired": false
+      },
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "SemesterId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "AcademicYearId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "GradeLevelId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClassTypeId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubjectId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Active",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamGraderController",
+    "Method": "GetAll",
+    "RelativePath": "api/exam-graders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "isDescending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamGraderController",
+    "Method": "Create",
+    "RelativePath": "api/exam-graders",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamGraderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamGraderController",
+    "Method": "GetById",
+    "RelativePath": "api/exam-graders/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamGraderController",
+    "Method": "Update",
+    "RelativePath": "api/exam-graders/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamGraderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamGraderController",
+    "Method": "Delete",
+    "RelativePath": "api/exam-graders/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleClassController",
+    "Method": "GetAll",
+    "RelativePath": "api/exam-schedule-classes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "searchTerm",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[PagedResult\u00601[[ISC_ELIB_SERVER.DTOs.Responses.ExamScheduleClassResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleClassController",
+    "Method": "Create",
+    "RelativePath": "api/exam-schedule-classes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamScheduleClassRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.ExamScheduleClassResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleClassController",
+    "Method": "GetById",
+    "RelativePath": "api/exam-schedule-classes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.ExamScheduleClassResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleClassController",
+    "Method": "Update",
+    "RelativePath": "api/exam-schedule-classes/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamScheduleClassRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.ExamScheduleClassResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleClassController",
+    "Method": "Delete",
+    "RelativePath": "api/exam-schedule-classes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[System.Object, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "GetExamById",
+    "RelativePath": "api/exam/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "UpdateExam",
+    "RelativePath": "api/exam/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DurationMinutes",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "ISC_ELIB_SERVER.Models.ExamStatus",
+        "IsRequired": false
+      },
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "SemesterId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "AcademicYearId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "GradeLevelId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClassTypeId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubjectId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Active",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "DeleteExam",
+    "RelativePath": "api/exam/{id}/toggle-active",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamController",
+    "Method": "GetExamByName",
+    "RelativePath": "api/exam/{name}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleController",
+    "Method": "GetAll",
+    "RelativePath": "api/ExamSchedule",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "isDescending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleController",
+    "Method": "Create",
+    "RelativePath": "api/ExamSchedule",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamScheduleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleController",
+    "Method": "GetById",
+    "RelativePath": "api/ExamSchedule/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleController",
+    "Method": "Update",
+    "RelativePath": "api/ExamSchedule/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ExamScheduleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExamScheduleController",
+    "Method": "Delete",
+    "RelativePath": "api/ExamSchedule/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExemptionController",
+    "Method": "GetExemptions",
+    "RelativePath": "api/Exemption",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExemptionController",
+    "Method": "CreateExemption",
+    "RelativePath": "api/Exemption",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ExemptionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.Exemption_AddRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExemptionController",
+    "Method": "GetExemptionById",
+    "RelativePath": "api/Exemption/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExemptionController",
+    "Method": "UpdateExemption",
+    "RelativePath": "api/Exemption/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Exemption",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.Exemption_UpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ExemptionController",
+    "Method": "DeleteExemption",
+    "RelativePath": "api/Exemption/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.MajorController",
+    "Method": "GetMajor",
+    "RelativePath": "api/major",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.MajorController",
+    "Method": "CreateMajor",
+    "RelativePath": "api/major",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "majorRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.MajorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.MajorController",
+    "Method": "GetMajorById",
+    "RelativePath": "api/major/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.MajorController",
+    "Method": "UpdateMajor",
+    "RelativePath": "api/major/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "majorRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.MajorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.MajorController",
+    "Method": "DeleteMajor",
+    "RelativePath": "api/major/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.NotificationController",
+    "Method": "GetNotifications",
+    "RelativePath": "api/notifications",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.NotificationController",
+    "Method": "CreateNotification",
+    "RelativePath": "api/notifications",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "notificationRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.NotificationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.NotificationController",
+    "Method": "GetNotificationById",
+    "RelativePath": "api/notifications/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.NotificationController",
+    "Method": "UpdateNotification",
+    "RelativePath": "api/notifications/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "notification",
+        "Type": "ISC_ELIB_SERVER.Models.Notification",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.NotificationController",
+    "Method": "DeleteNotification",
+    "RelativePath": "api/notifications/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.PermissionController",
+    "Method": "GetPermissions",
+    "RelativePath": "api/permission",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.PermissionController",
+    "Method": "CreatePermission",
+    "RelativePath": "api/permission",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "permissionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.PermissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.PermissionController",
+    "Method": "GetPermissionById",
+    "RelativePath": "api/permission/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.PermissionController",
+    "Method": "UpdatePermission",
+    "RelativePath": "api/permission/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "permissionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.PermissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.PermissionController",
+    "Method": "DeletePermission",
+    "RelativePath": "api/permission/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionImagesQaController",
+    "Method": "GetQuestionImages",
+    "RelativePath": "api/question-images",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "questionId",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionImagesQaController",
+    "Method": "CreateQuestionImage",
+    "RelativePath": "api/question-images",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.QuestionImagesQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionImagesQaController",
+    "Method": "GetQuestionImageById",
+    "RelativePath": "api/question-images/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionImagesQaController",
+    "Method": "UpdateQuestionImage",
+    "RelativePath": "api/question-images/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.QuestionImagesQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionImagesQaController",
+    "Method": "DeleteQuestionImage",
+    "RelativePath": "api/question-images/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionQaController",
+    "Method": "GetQuestions",
+    "RelativePath": "api/question-qa",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionQaController",
+    "Method": "CreateQuestion",
+    "RelativePath": "api/question-qa",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "questionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.QuestionQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionQaController",
+    "Method": "GetQuestionById",
+    "RelativePath": "api/question-qa/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionQaController",
+    "Method": "UpdateQuestion",
+    "RelativePath": "api/question-qa/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "question",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.QuestionQaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.QuestionQaController",
+    "Method": "DeleteQuestion",
+    "RelativePath": "api/question-qa/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ReserveController",
+    "Method": "GetReserves",
+    "RelativePath": "api/reserves",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ReserveController",
+    "Method": "CreateReserve",
+    "RelativePath": "api/reserves",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reserveRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ReserveRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ReserveController",
+    "Method": "GetReserveById",
+    "RelativePath": "api/reserves/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ReserveController",
+    "Method": "UpdateReserve",
+    "RelativePath": "api/reserves/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "reserve",
+        "Type": "ISC_ELIB_SERVER.Models.Reserve",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ReserveController",
+    "Method": "DeleteReserve",
+    "RelativePath": "api/reserves/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "GetResignation",
+    "RelativePath": "api/Resignation",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "CreateResignation",
+    "RelativePath": "api/Resignation",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ResignationRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ResignationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "GetResignationById",
+    "RelativePath": "api/Resignation/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "UpdateResignation",
+    "RelativePath": "api/Resignation/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Resignation_UpdateRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ResignationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "DeleteUserStatus",
+    "RelativePath": "api/Resignation/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ResignationController",
+    "Method": "GetResignationNoPaging",
+    "RelativePath": "api/Resignation/getResignationnopaging",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "GetRetirement",
+    "RelativePath": "api/retirement",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "CreateRetirement",
+    "RelativePath": "api/retirement",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RetirementRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RetirementRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "GetRetirementById",
+    "RelativePath": "api/retirement/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "UpdateRetirement",
+    "RelativePath": "api/retirement/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Retirement_UpdateRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RetirementRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "DeleteUserStatus",
+    "RelativePath": "api/retirement/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RetirementController",
+    "Method": "GetRetirementNoPaging",
+    "RelativePath": "api/retirement/getRetirementnopaging",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RoleController",
+    "Method": "GetRoles",
+    "RelativePath": "api/role",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RoleController",
+    "Method": "CreateRole",
+    "RelativePath": "api/role",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RolePermissionController",
+    "Method": "GetList",
+    "RelativePath": "api/role-permission",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RolePermissionController",
+    "Method": "Create",
+    "RelativePath": "api/role-permission",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rolePermissionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RolePermissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RolePermissionController",
+    "Method": "GetById",
+    "RelativePath": "api/role-permission/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RolePermissionController",
+    "Method": "Update",
+    "RelativePath": "api/role-permission/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "rolePermissionRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RolePermissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RolePermissionController",
+    "Method": "Delete",
+    "RelativePath": "api/role-permission/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RoleController",
+    "Method": "GetRoleById",
+    "RelativePath": "api/role/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RoleController",
+    "Method": "UpdateRole",
+    "RelativePath": "api/role/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "roleRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.RoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.RoleController",
+    "Method": "DeleteRole",
+    "RelativePath": "api/role/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SchoolController",
+    "Method": "GetSchools",
+    "RelativePath": "api/schools",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SchoolController",
+    "Method": "CreateSchool",
+    "RelativePath": "api/schools",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SchoolRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SchoolController",
+    "Method": "GetSchoolById",
+    "RelativePath": "api/schools/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SchoolController",
+    "Method": "UpdateSchool",
+    "RelativePath": "api/schools/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SchoolRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SchoolController",
+    "Method": "DeleteSchool",
+    "RelativePath": "api/schools/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectGroupController",
+    "Method": "GetSubjectGroup",
+    "RelativePath": "api/subject-groups",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectGroupController",
+    "Method": "CreateSubjectType",
+    "RelativePath": "api/subject-groups",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectGroupController",
+    "Method": "GetSubjectGroupById",
+    "RelativePath": "api/subject-groups/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectGroupController",
+    "Method": "UpdateSubjectGroup",
+    "RelativePath": "api/subject-groups/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectGroupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectGroupController",
+    "Method": "DeleteSubjectGroup",
+    "RelativePath": "api/subject-groups/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectTypeController",
+    "Method": "GetSubjectType",
+    "RelativePath": "api/subject-types",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectTypeController",
+    "Method": "CreateSubjectType",
+    "RelativePath": "api/subject-types",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "subjectTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectTypeController",
+    "Method": "GetSubjectTypeById",
+    "RelativePath": "api/subject-types/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectTypeController",
+    "Method": "UpdateSubjectType",
+    "RelativePath": "api/subject-types/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "subjectTypeRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectTypeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectTypeController",
+    "Method": "DeleteSubjectType",
+    "RelativePath": "api/subject-types/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectController",
+    "Method": "GetSubject",
+    "RelativePath": "api/subjects",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectController",
+    "Method": "CreateSubjectType",
+    "RelativePath": "api/subjects",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectController",
+    "Method": "GetSubjectById",
+    "RelativePath": "api/subjects/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectController",
+    "Method": "UpdateSubject",
+    "RelativePath": "api/subjects/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SubjectRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SubjectController",
+    "Method": "DeleteSubject",
+    "RelativePath": "api/subjects/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SupportController",
+    "Method": "GetSupport",
+    "RelativePath": "api/support",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SupportController",
+    "Method": "CreateSupport",
+    "RelativePath": "api/support",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SupportRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SupportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SupportController",
+    "Method": "GetSupportById",
+    "RelativePath": "api/support/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SupportController",
+    "Method": "UpdateSupport",
+    "RelativePath": "api/support/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Support",
+        "Type": "ISC_ELIB_SERVER.Models.Support",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SupportController",
+    "Method": "DeleteSupport",
+    "RelativePath": "api/support/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SystemSettingController",
+    "Method": "GetSystemSettings",
+    "RelativePath": "api/system-settings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SystemSettingController",
+    "Method": "CreateOrUpdateSystemSetting",
+    "RelativePath": "api/system-settings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.SystemSettingRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SystemSettingController",
+    "Method": "DeleteSystemSetting",
+    "RelativePath": "api/system-settings/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.SystemSettingController",
+    "Method": "GetSystemSettingByUserId",
+    "RelativePath": "api/system-settings/user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherFamilyController",
+    "Method": "GetTeacherFamilies",
+    "RelativePath": "api/teacher-families",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherFamilyController",
+    "Method": "CreateTeacherFamily",
+    "RelativePath": "api/teacher-families",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeacherFamilyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherFamilyController",
+    "Method": "GetTeacherFamilyById",
+    "RelativePath": "api/teacher-families/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherFamilyController",
+    "Method": "UpdateTeacherFamily",
+    "RelativePath": "api/teacher-families/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeacherFamilyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherFamilyController",
+    "Method": "DeleteTeacherFamily",
+    "RelativePath": "api/teacher-families/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "GetTeacherInfos",
+    "RelativePath": "api/teacherinfos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[System.Collections.Generic.ICollection\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "CreateTeacherInfo",
+    "RelativePath": "api/teacherinfos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teacherInfoRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeacherInfoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "GetTeacherInfoById",
+    "RelativePath": "api/teacherinfos/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "UpdateTeacherInfo",
+    "RelativePath": "api/teacherinfos/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "teacherInfoRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeacherInfoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "DeleteTeacherInfo",
+    "RelativePath": "api/teacherinfos/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeacherInfoController",
+    "Method": "GetTeacherInfoByCode",
+    "RelativePath": "api/teacherinfos/code/{code}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.TeacherInfoResponses, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeachingAssignmentsController",
+    "Method": "GetTeachingAssignments",
+    "RelativePath": "api/teaching-assignments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeachingAssignmentsController",
+    "Method": "CreateTeachingAssignment",
+    "RelativePath": "api/teaching-assignments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeachingAssignmentsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeachingAssignmentsController",
+    "Method": "GetTeachingAssignmentById",
+    "RelativePath": "api/teaching-assignments/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeachingAssignmentsController",
+    "Method": "UpdateTeachingAssignment",
+    "RelativePath": "api/teaching-assignments/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TeachingAssignmentsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TeachingAssignmentsController",
+    "Method": "DeleteTeachingAssignment",
+    "RelativePath": "api/teaching-assignments/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TemporaryLeaveController",
+    "Method": "GetTemporaryLeaves",
+    "RelativePath": "api/temporaryleave",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TemporaryLeaveController",
+    "Method": "CreateTemporaryLeave",
+    "RelativePath": "api/temporaryleave",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TemporaryLeaveRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TemporaryLeave_AddRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TemporaryLeaveController",
+    "Method": "GetTemporaryLeaveById",
+    "RelativePath": "api/temporaryleave/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TemporaryLeaveController",
+    "Method": "UpdateTemporaryLeave",
+    "RelativePath": "api/temporaryleave/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "TemporaryLeave",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TemporaryLeave_UpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TemporaryLeaveController",
+    "Method": "DeleteTemporaryLeave",
+    "RelativePath": "api/temporaryleave/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestController",
+    "Method": "GetTestes",
+    "RelativePath": "api/test",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestController",
+    "Method": "CreateTest",
+    "RelativePath": "api/test",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TestRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestQuestionController",
+    "Method": "GetTestes",
+    "RelativePath": "api/test-question",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestQuestionController",
+    "Method": "CreateTest",
+    "RelativePath": "api/test-question",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TestRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestQuestionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestQuestionController",
+    "Method": "GetTestById",
+    "RelativePath": "api/test-question/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestQuestionController",
+    "Method": "UpdateTest",
+    "RelativePath": "api/test-question/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Test",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestQuestionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestQuestionController",
+    "Method": "DeleteTest",
+    "RelativePath": "api/test-question/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsSubmissionController",
+    "Method": "GetTestes",
+    "RelativePath": "api/test-submission",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsSubmissionController",
+    "Method": "CreateTest",
+    "RelativePath": "api/test-submission",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TestRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestsSubmissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestSubmissionAnswerController",
+    "Method": "GetTestSubmissionAnswers",
+    "RelativePath": "api/test-submission-answer",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestSubmissionAnswerController",
+    "Method": "CreateTestSubmissionAnswer",
+    "RelativePath": "api/test-submission-answer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestSubmissionAnswerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestSubmissionAnswerController",
+    "Method": "GetTestSubmissionAnswerById",
+    "RelativePath": "api/test-submission-answer/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestSubmissionAnswerController",
+    "Method": "UpdateTestSubmissionAnswer",
+    "RelativePath": "api/test-submission-answer/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestSubmissionAnswerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestSubmissionAnswerController",
+    "Method": "DeleteTestSubmissionAnswer",
+    "RelativePath": "api/test-submission-answer/{id}/toggle-active",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsSubmissionController",
+    "Method": "GetTestById",
+    "RelativePath": "api/test-submission/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsSubmissionController",
+    "Method": "UpdateTest",
+    "RelativePath": "api/test-submission/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Test",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestsSubmissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsSubmissionController",
+    "Method": "DeleteTest",
+    "RelativePath": "api/test-submission/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestController",
+    "Method": "GetTestById",
+    "RelativePath": "api/test/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestController",
+    "Method": "UpdateTest",
+    "RelativePath": "api/test/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "Test",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestController",
+    "Method": "DeleteTest",
+    "RelativePath": "api/test/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsAttachmentController",
+    "Method": "GetAllTestsAttachments",
+    "RelativePath": "api/tests-attachments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsAttachmentController",
+    "Method": "CreateAttachment",
+    "RelativePath": "api/tests-attachments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestsAttachmentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsAttachmentController",
+    "Method": "UpdateTestsAttachment",
+    "RelativePath": "api/tests-attachments/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TestsAttachmentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsAttachmentController",
+    "Method": "GetById",
+    "RelativePath": "api/tests-attachments/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TestsAttachmentController",
+    "Method": "DeleteTestsAttachment",
+    "RelativePath": "api/tests-attachments/{id}/toggle-active",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ThemesController",
+    "Method": "GetUserStatuses",
+    "RelativePath": "api/themes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ThemesController",
+    "Method": "CreateThemes",
+    "RelativePath": "api/themes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "themesRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ThemesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ThemesController",
+    "Method": "GetThemesById",
+    "RelativePath": "api/themes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ThemesController",
+    "Method": "UpdateThemes",
+    "RelativePath": "api/themes/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "themesRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.ThemesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.ThemesController",
+    "Method": "DeleteThemes",
+    "RelativePath": "api/themes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TrainingProgramsController",
+    "Method": "GetTrainingPrograms",
+    "RelativePath": "api/training-program",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TrainingProgramsController",
+    "Method": "CreateTrainingProgram",
+    "RelativePath": "api/training-program",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "trainingProgramsRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TrainingProgramsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TrainingProgramsController",
+    "Method": "GetTrainingProgramsById",
+    "RelativePath": "api/training-program/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TrainingProgramsController",
+    "Method": "UpdateTrainingProgram",
+    "RelativePath": "api/training-program/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "trainingProgramsRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TrainingProgramsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TrainingProgramsController",
+    "Method": "DeleteTrainingPrograms",
+    "RelativePath": "api/training-program/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TransferSchoolController",
+    "Method": "GetTransferSchools",
+    "RelativePath": "api/TransferSchool",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TransferSchoolController",
+    "Method": "CreateTransferSchool",
+    "RelativePath": "api/TransferSchool",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TransferSchoolRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TransferSchool_AddRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TransferSchoolController",
+    "Method": "GetTransferSchoolById",
+    "RelativePath": "api/TransferSchool/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TransferSchoolController",
+    "Method": "UpdateTransferSchool",
+    "RelativePath": "api/TransferSchool/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "TransferSchool",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.TransferSchool_UpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.TransferSchoolController",
+    "Method": "DeleteTransferSchool",
+    "RelativePath": "api/TransferSchool/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserStatusController",
+    "Method": "GetUserStatuses",
+    "RelativePath": "api/user-statuses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserStatusController",
+    "Method": "CreateUserStatus",
+    "RelativePath": "api/user-statuses",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userStatusRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.UserStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserStatusController",
+    "Method": "GetUserStatusById",
+    "RelativePath": "api/user-statuses/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserStatusController",
+    "Method": "UpdateUserStatus",
+    "RelativePath": "api/user-statuses/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "userStatusRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.UserStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserStatusController",
+    "Method": "DeleteUserStatus",
+    "RelativePath": "api/user-statuses/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserController",
+    "Method": "GetUsers",
+    "RelativePath": "api/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[System.Collections.Generic.ICollection\u00601[[ISC_ELIB_SERVER.DTOs.Responses.UserResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserController",
+    "Method": "CreateUser",
+    "RelativePath": "api/users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.UserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.UserResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserController",
+    "Method": "GetUserById",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.UserResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.UserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.DTOs.Responses.UserResponse, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.UserController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ISC_ELIB_SERVER.DTOs.Responses.ApiResponse\u00601[[ISC_ELIB_SERVER.Models.User, ISC_ELIB_SERVER, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "GetWorkProcess",
+    "RelativePath": "api/work-process",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortColumn",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "CreateWorkProcess",
+    "RelativePath": "api/work-process",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "workProcessRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.WorkProcessRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "GetWorkProcessById",
+    "RelativePath": "api/work-process/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "UpdateWorkProcess",
+    "RelativePath": "api/work-process/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      },
+      {
+        "Name": "workProcess_UpdateRequest",
+        "Type": "ISC_ELIB_SERVER.DTOs.Requests.WorkProcessRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "DeleteUserStatus",
+    "RelativePath": "api/work-process/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ISC_ELIB_SERVER.Controllers.WorkProcessController",
+    "Method": "GetWorkProcessNoPaging",
+    "RelativePath": "api/work-process/getworkprocessnopaging",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
