@@ -11,11 +11,15 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly SchoolRepo _repository;
         private readonly IMapper _mapper;
+        private readonly UserRepo _userRepository;
+        private readonly EducationLevelRepo _educationLevelRepository;
 
-        public SchoolService(SchoolRepo repository, IMapper mapper)
+        public SchoolService(SchoolRepo repository, IMapper mapper, UserRepo userRepository, EducationLevelRepo educationLevelRepository)
         {
             _repository = repository;
             _mapper = mapper;
+            _userRepository = userRepository;
+            _educationLevelRepository = educationLevelRepository;
         }
 
         public ApiResponse<ICollection<SchoolResponse>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -39,7 +43,6 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
-
             var response = _mapper.Map<ICollection<SchoolResponse>>(result);
 
             return result.Any() ? ApiResponse<ICollection<SchoolResponse>>
@@ -57,11 +60,20 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<SchoolResponse> CreateSchool(SchoolRequest schoolRequest)
         {
-            string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
+            if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
+            {
+                return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
+            }
 
+            if (_educationLevelRepository.GetEducationLevelById((long)schoolRequest.EducationLevelId) == null)
+            {
+                return ApiResponse<SchoolResponse>.BadRequest("Mã cấp giáo dục không tồn tại");
+            }
+
+            string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
             if (!Enum.IsDefined(typeof(TrainingModel), trainingModel))
             {
-                return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'" + trainingModel);
+                return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'");
             }
 
             if (_repository.IsSchoolNameExists(schoolRequest.Name))
@@ -105,16 +117,21 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
             }
-            string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
 
+            if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
+            {
+                return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
+            }
+
+            if (_educationLevelRepository.GetEducationLevelById((long)schoolRequest.EducationLevelId) == null)
+            {
+                return ApiResponse<SchoolResponse>.BadRequest("Mã cấp giáo dục không tồn tại");
+            }
+
+            string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
             if (!Enum.IsDefined(typeof(TrainingModel), trainingModel))
             {
                 return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'");
-            }
-
-            if (_repository.IsSchoolNameExists(schoolRequest.Name, id))
-            {
-                return ApiResponse<SchoolResponse>.BadRequest("Tên trường đã tồn tại");
             }
 
             existing.Code = schoolRequest.Code;
@@ -142,7 +159,6 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<SchoolResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
             }
         }
-
         public ApiResponse<object> DeleteSchool(long id)
         {
             var success = _repository.DeleteSchool(id);

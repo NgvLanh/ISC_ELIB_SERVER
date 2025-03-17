@@ -44,7 +44,8 @@ namespace ISC_ELIB_SERVER.Repositories
             var test = GetTestById(id);
             if (test != null)
             {
-                _context.Tests.Remove(test);
+                test.Active = false;
+                _context.Tests.Update(test);
                 return _context.SaveChanges() > 0;
             }
             return false;

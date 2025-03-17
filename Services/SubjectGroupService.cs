@@ -35,13 +35,21 @@ namespace ISC_ELIB_SERVER.Services
                 "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
                 _ => query.OrderBy(us => us.Id)
             };
+            query = query.Where(qr => qr.Active == true);
+
+            var total = query.Count();
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<SubjectGroupResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<SubjectGroupResponse>>.Success(response)
+                ? ApiResponse<ICollection<SubjectGroupResponse>>.Success(
+                        data: response,
+                        totalItems: total,
+                        pageSize: pageSize,
+                        page: page
+                    )
                 : ApiResponse<ICollection<SubjectGroupResponse>>.NotFound("Không có dữ liệu");
         }
 

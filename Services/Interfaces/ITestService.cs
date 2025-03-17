@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<TestResponse> GetTestById(long id);
         ApiResponse<TestResponse> GetTestByName(string name);
         ApiResponse<TestResponse> CreateTest(TestRequest TestRequest);
-        ApiResponse<Test> UpdateTest(long id, TestRequest Test);
+        ApiResponse<TestResponse> UpdateTest(long id, TestRequest Test);
         ApiResponse<Test> DeleteTest(long id);
     }
 }

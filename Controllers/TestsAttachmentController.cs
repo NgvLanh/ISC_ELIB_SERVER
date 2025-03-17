@@ -17,9 +17,16 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllTestsAttachments()
+        public IActionResult GetAllTestsAttachments
+        (
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "",
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc"
+        )
         {
-            var response = _service.GetTestsAttachments();
+            var response = _service.GetTestsAttachments(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 

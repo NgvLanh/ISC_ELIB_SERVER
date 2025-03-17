@@ -26,12 +26,9 @@ namespace ISC_ELIB_SERVER.Controllers
             [FromQuery] string sortOrder = "asc"
         )
         {
-            Console.WriteLine($"API called with params - Page: {page}, PageSize: {pageSize}, Search: {search}, SortColumn: {sortColumn}, SortOrder: {sortOrder}");
-
+            //Console.WriteLine($"API called with params - Page: {page}, PageSize: {pageSize}, Search: {search}, SortColumn: {sortColumn}, SortOrder: {sortOrder}");
             var response = _service.GetTestSubmissionAnswers(page, pageSize, search, sortColumn, sortOrder);
-
-            Console.WriteLine($"API response: {response.Data.Count} records returned");
-
+            //Console.WriteLine($"API response: {response.Data.Count} records returned");
             return Ok(response);
         }
 
