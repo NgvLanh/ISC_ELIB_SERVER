@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Services
     {
         ApiResponse<ICollection<AnswersQaResponse>> GetAnswers(long? questionId);
         ApiResponse<AnswersQaResponse> GetAnswerById(long id);
-        Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest, List<IFormFile> files);
+        Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest);
 
         ApiResponse<AnswersQaResponse> UpdateAnswer(long id, AnswersQaRequest answerRequest);
         ApiResponse<AnswersQaResponse> DeleteAnswer(long id);

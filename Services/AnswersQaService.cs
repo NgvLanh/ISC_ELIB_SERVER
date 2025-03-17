@@ -76,48 +76,48 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<AnswersQaResponse>.Success(response);
         }
 
-       public async Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest, List<IFormFile> files)
-{
-    List<string> imageUrls = new List<string>();
-
-    // 🔹 Upload từng ảnh lên Cloudinary nếu có file
-    if (files != null && files.Count > 0)
-    {
-        foreach (var file in files)
+      public async Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest)
         {
-            var imageUrl = await _cloudinaryService.UploadImageAsync(file);
-            if (!string.IsNullOrEmpty(imageUrl))
+            List<string> imageBase64List = new List<string>();
+
+            // 🔥 Kiểm tra xem có ảnh không
+            if (answerRequest.ImageBase64s != null && answerRequest.ImageBase64s.Count > 0)
             {
-                imageUrls.Add(imageUrl);
+                foreach (var base64 in answerRequest.ImageBase64s)
+                {
+                    if (!string.IsNullOrEmpty(base64))
+                    {
+                        imageBase64List.Add(base64); // ✅ Lưu trực tiếp Base64
+                    }
+                }
             }
+
+            var newAnswer = new AnswersQa
+            {
+                Content = answerRequest.Content,
+                UserId = answerRequest.UserId,
+                QuestionId = answerRequest.QuestionId,
+                CreateAt = DateTime.Now,
+                Active = true
+            };
+
+            var createdAnswer = _repository.CreateAnswer(newAnswer, imageBase64List); // ✅ Lưu ảnh Base64
+
+            var response = new AnswersQaResponse
+            {
+                Id = createdAnswer.Id,
+                Content = createdAnswer.Content,
+                CreateAt = createdAnswer.CreateAt ?? DateTime.Now,
+                UserId = createdAnswer.UserId ?? 0,
+                QuestionId = createdAnswer.QuestionId ?? 0,
+                UserAvatar = createdAnswer.User?.AvatarUrl ?? "https://via.placeholder.com/40",
+                UserName = createdAnswer.User?.FullName ?? "Unknown",
+                UserRole = createdAnswer.User?.Role?.Name ?? "Người dùng",
+                ImageUrls = imageBase64List // ✅ Trả về danh sách Base64
+            };
+
+            return ApiResponse<AnswersQaResponse>.Success(response);
         }
-    }
-
-    var newAnswer = new AnswersQa
-    {
-        Content = answerRequest.Content,
-        UserId = answerRequest.UserId,
-        QuestionId = answerRequest.QuestionId,
-        CreateAt = DateTime.Now,
-        Active = true
-    };
-
-    var createdAnswer = _repository.CreateAnswer(newAnswer, imageUrls); // Pass imageUrls here
-
-    var response = new AnswersQaResponse
-    {
-        Id = createdAnswer.Id,
-        Content = createdAnswer.Content,
-        CreateAt = createdAnswer.CreateAt ?? DateTime.Now,
-        UserId = createdAnswer.UserId ?? 0,
-        QuestionId = createdAnswer.QuestionId ?? 0,
-        UserAvatar = createdAnswer.User?.AvatarUrl ?? "https://via.placeholder.com/40",
-        UserName = createdAnswer.User?.FullName ?? "Unknown",
-        UserRole = createdAnswer.User?.Role?.Name ?? "Người dùng"
-    };
-
-    return ApiResponse<AnswersQaResponse>.Success(response);
-}
         public ApiResponse<AnswersQaResponse> UpdateAnswer(long id, AnswersQaRequest answerRequest)
         {
             var existing = _repository.GetAnswerById(id);
