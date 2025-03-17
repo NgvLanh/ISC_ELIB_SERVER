@@ -215,6 +215,13 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 });
 
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(TeacherFamilyMapper));
+
+//techerfamily
+builder.Services.AddScoped<TeacherFamilyRepo>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
