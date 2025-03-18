@@ -9,13 +9,12 @@ namespace ISC_ELIB_SERVER.Services
     public class AnswersQaService : IAnswersQaService
     {
         private readonly AnswersQaRepo _repository;
-        private readonly CloudinaryService _cloudinaryService;
         private readonly IMapper _mapper;
 
-        public AnswersQaService(AnswersQaRepo repository, CloudinaryService cloudinaryService, IMapper mapper)
+        public AnswersQaService(AnswersQaRepo repository, IMapper mapper)
         {
             _repository = repository;
-            _cloudinaryService = cloudinaryService;
+         
             _mapper = mapper;
         }
 
@@ -87,7 +86,7 @@ namespace ISC_ELIB_SERVER.Services
                 {
                     if (!string.IsNullOrEmpty(base64))
                     {
-                        imageBase64List.Add(base64); // ✅ Lưu trực tiếp Base64
+                        imageBase64List.Add(base64); //  Lưu trực tiếp Base64
                     }
                 }
             }
@@ -101,7 +100,7 @@ namespace ISC_ELIB_SERVER.Services
                 Active = true
             };
 
-            var createdAnswer = _repository.CreateAnswer(newAnswer, imageBase64List); // ✅ Lưu ảnh Base64
+            var createdAnswer = _repository.CreateAnswer(newAnswer, imageBase64List); // Lưu ảnh Base64
 
             var response = new AnswersQaResponse
             {
@@ -113,7 +112,7 @@ namespace ISC_ELIB_SERVER.Services
                 UserAvatar = createdAnswer.User?.AvatarUrl ?? "https://via.placeholder.com/40",
                 UserName = createdAnswer.User?.FullName ?? "Unknown",
                 UserRole = createdAnswer.User?.Role?.Name ?? "Người dùng",
-                ImageUrls = imageBase64List // ✅ Trả về danh sách Base64
+                ImageUrls = imageBase64List //  Trả về danh sách Base64
             };
 
             return ApiResponse<AnswersQaResponse>.Success(response);
@@ -132,12 +131,13 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<AnswersQaResponse>.Success(_mapper.Map<AnswersQaResponse>(updated));
         }
 
-        public ApiResponse<AnswersQaResponse> DeleteAnswer(long id)
+       public ApiResponse<AnswersQaResponse> DeleteAnswer(long id)
         {
             var success = _repository.DeleteAnswer(id);
             return success
                 ? ApiResponse<AnswersQaResponse>.Success()
-                : ApiResponse<AnswersQaResponse>.NotFound("Không tìm thấy câu trả lời để xóa.");
+                : ApiResponse<AnswersQaResponse>.NotFound("Không tìm thấy câu trả lời để xóa");
         }
+
     }
 }

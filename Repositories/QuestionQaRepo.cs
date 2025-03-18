@@ -7,12 +7,12 @@ namespace ISC_ELIB_SERVER.Repositories
     public class QuestionQaRepo
     {
         private readonly isc_dbContext _context;
-        private readonly CloudinaryService _cloudinaryService; // 
+       
 
-        public QuestionQaRepo(isc_dbContext context, CloudinaryService cloudinaryService)
+        public QuestionQaRepo(isc_dbContext context)
         {
             _context = context;
-            _cloudinaryService = cloudinaryService;
+           
         }
 
         public ICollection<QuestionQa> GetQuestions()

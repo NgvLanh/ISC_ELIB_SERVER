@@ -67,6 +67,16 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+        [HttpGet("recent")]
+        public IActionResult GetRecentQuestions(
+            [FromQuery] int iduser,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var response = _service.GetRecentQuestions(iduser, page, pageSize);
+            return Ok(response);
+        }
+
 
         [HttpPut("{id}")]
         [ApiExplorerSettings(IgnoreApi = true)]
