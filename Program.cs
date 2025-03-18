@@ -19,9 +19,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BTBackendOnline2.Models;
 
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
 var jwtSettings = new TokenRequiment
@@ -279,6 +280,9 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+//ForgotPassword
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
