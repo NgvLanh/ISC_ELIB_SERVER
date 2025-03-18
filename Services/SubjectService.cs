@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -22,29 +23,34 @@ namespace ISC_ELIB_SERVER.Services
             _subjectTypeRepo = subjectTypeRepo;
         }
 
-        public ApiResponse<ICollection<SubjectResponse>> GetSubject(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<SubjectResponse>> GetSubject(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _subjectRepo.GetAllSubject().AsQueryable();
+
+            query = query.Where(qr => qr.Active);
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
             }
 
-            query = sortColumn switch
+            query = sortColumn?.ToLower() switch
             {
-                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                "Code" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Code) : query.OrderBy(us => us.Code),
-                "HoursSemester1" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester1) : query.OrderBy(us => us.HoursSemester1),
-                "HoursSemester2" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
+                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "code" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Code) : query.OrderBy(us => us.Code),
+                "hourssemester1" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester1) : query.OrderBy(us => us.HoursSemester1),
+                "hourssemester2" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
                 _ => query.OrderBy(us => us.Id)
             };
-            query = query.Where(qr => qr.Active == true);
 
             var total = query.Count();
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<SubjectResponse>>(result);
 
