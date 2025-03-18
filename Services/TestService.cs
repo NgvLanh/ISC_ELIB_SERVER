@@ -6,13 +6,13 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Sprache;
 using System.Xml.Linq;
+using System.Security.Claims;
 
 namespace ISC_ELIB_SERVER.Services
 {
        
-
-        public class TestService : ITestService
-        {
+    public class TestService : ITestService
+    {
             private readonly TestRepo _testRepo;
             private readonly SemesterRepo _semesterRepo;
         private readonly SubjectRepo _subjectRepo;
@@ -28,26 +28,33 @@ namespace ISC_ELIB_SERVER.Services
                 _mapper = mapper;
             }
 
-            public ApiResponse<ICollection<TestResponse>> GetTestes(int page, int pageSize, string search, string sortColumn, string sortOrder)
+            public ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
             {
                 var query = _testRepo.GetTests().AsQueryable();
+
+                query = query.Where(qr => qr.Active.HasValue && qr.Active.Value);
 
                 if (!string.IsNullOrEmpty(search))
                 {
                     query = query.Where(ts => ts.Name.ToLower().Contains(search.ToLower()));
                 }
 
-                query = sortColumn switch
+                query = sortColumn?.ToLower() switch
                 {
-                    "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Name) : query.OrderBy(ts => ts.Name),
-                    "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Id) : query.OrderBy(ts => ts.Id),
+                    "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Name) : query.OrderBy(ts => ts.Name),
+                    "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Id) : query.OrderBy(ts => ts.Id),
                     _ => query.OrderBy(us => us.Id)
                 };
                 query = query.Where(qr => qr.Active == true);
 
                 var total = query.Count();
 
-                var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            
+                if (page.HasValue && pageSize.HasValue)
+                {
+                    query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+                }
+                var result = query.ToList();
 
                 var response = _mapper.Map<ICollection<TestResponse>>(result);
 
@@ -71,14 +78,25 @@ namespace ISC_ELIB_SERVER.Services
 
             public ApiResponse<TestResponse> GetTestByName(string name)
             {
+                
+
                 var Test = _testRepo.GetTests().FirstOrDefault(ts => ts.Name?.ToLower() == name.ToLower());
                 return Test != null
                     ? ApiResponse<TestResponse>.Success(_mapper.Map<TestResponse>(Test))
                     : ApiResponse<TestResponse>.NotFound($"Không tìm thấy bài kiểm tra có tên: {name}");
             }
 
-            public ApiResponse<TestResponse> CreateTest(TestRequest testRequest)
+        public ApiResponse<TestResponse> CreateTest(TestRequest testRequest, string? idUser)
+        {
+            if (string.IsNullOrEmpty(idUser))
             {
+                return ApiResponse<TestResponse>.Fail("Không tìm thấy ID trong token");
+            }
+
+            if (!int.TryParse(idUser, out int userId))
+            {
+                return ApiResponse<TestResponse>.Fail("ID trong token không hợp lệ");
+            }
 
             var semester = _semesterRepo.GetSemesterById(testRequest.SemesterId);
             if( semester == null)
@@ -91,10 +109,10 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.NotFound($"Môn học có id {testRequest.SubjectId} không tồn tạ!!!");
             }
 
-            var user = _userRepo.GetUserById(testRequest.UserId);
+            var user = _userRepo.GetUserById(userId);
             if (user == null)
             {
-                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {testRequest.UserId} không tồn tạ!!!");
+                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
             }
 
             var testEntity = _mapper.Map<Test>(testRequest);
@@ -106,13 +124,23 @@ namespace ISC_ELIB_SERVER.Services
 
             // Trả về kết quả với kiểu TestResponse
             return ApiResponse<TestResponse>.Success(_mapper.Map<TestResponse>(created));
-        }
+         }
 
-    public ApiResponse<TestResponse> UpdateTest(long id,TestRequest testRequest)
+    public ApiResponse<TestResponse> UpdateTest(long id,TestRequest testRequest, string? idUser)
     {
-            
-                // Tìm bản ghi cần cập nhật trong database
-                var existingTest = _testRepo.GetTestById(id);
+            if (string.IsNullOrEmpty(idUser))
+            {
+                return ApiResponse<TestResponse>.Fail("Không tìm thấy ID trong token");
+            }
+
+            if (!int.TryParse(idUser, out int userId))
+            {
+                return ApiResponse<TestResponse>.Fail("ID trong token không hợp lệ");
+            }
+
+
+            // Tìm bản ghi cần cập nhật trong database
+            var existingTest = _testRepo.GetTestById(id);
                 if (existingTest == null)
                 {
                     return ApiResponse<TestResponse>.NotFound($"Bài kiểm tra có id {id} không tồn tạ!!!");
@@ -129,10 +157,10 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.NotFound($"Môn học có id {testRequest.SubjectId} không tồn tạ!!!");
             }
 
-            var user = _userRepo.GetUserById(testRequest.UserId);
+            var user = _userRepo.GetUserById(userId);
             if (user == null)
             {
-                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {testRequest.UserId} không tồn tạ!!!");
+                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
             }
 
             // Ánh xạ dữ liệu từ request sang entity, chỉ cập nhật các trường cần thiết

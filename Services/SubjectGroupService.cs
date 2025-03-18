@@ -20,26 +20,33 @@ namespace ISC_ELIB_SERVER.Services
             _context = context;
         }
 
-        public ApiResponse<ICollection<SubjectGroupResponse>> GetSubjectGroup(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<SubjectGroupResponse>> GetSubjectGroup(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _subjectGroupRepo.GetAllSubjectGroup().AsQueryable();
+
+            query = query.Where(qr => qr.Active);
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
             }
 
-            query = sortColumn switch
+            query = sortColumn?.ToLower() switch
             {
-                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
                 _ => query.OrderBy(us => us.Id)
             };
             query = query.Where(qr => qr.Active == true);
 
             var total = query.Count();
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<SubjectGroupResponse>>(result);
 
