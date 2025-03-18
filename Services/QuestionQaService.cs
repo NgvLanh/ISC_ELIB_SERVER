@@ -13,15 +13,13 @@ namespace ISC_ELIB_SERVER.Services
 
         private readonly UserRepo _userRepo;
         private readonly QuestionViewRepo _viewRepo;
-         private readonly CloudinaryService _cloudinaryService;
 
-        public QuestionQaService(QuestionQaRepo repository,  CloudinaryService cloudinaryService, UserRepo userRepo, QuestionViewRepo viewRepo, IMapper mapper)
+        public QuestionQaService(QuestionQaRepo repository,  UserRepo userRepo, QuestionViewRepo viewRepo, IMapper mapper)
             {
                 _repository = repository;
                 _userRepo = userRepo;
                 _viewRepo = viewRepo;
-                _cloudinaryService = cloudinaryService;
-                _mapper = mapper;
+               
             }
 
  public ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int userId, int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -204,54 +202,89 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         public ApiResponse<QuestionQaResponse> GetQuestionByIdForUser(int id, int userId)
-{
-    var question = _repository.GetQuestionById(id);
-    if (question == null)
-        return ApiResponse<QuestionQaResponse>.NotFound($"Không tìm thấy câu hỏi #{id}");
+            {
+                var question = _repository.GetQuestionById(id);
+                if (question == null)
+                    return ApiResponse<QuestionQaResponse>.NotFound($"Không tìm thấy câu hỏi #{id}");
 
-    // Thêm lượt xem nếu chưa được xem bởi người dùng này
-    _viewRepo.AddView(id, userId);
+                // Thêm lượt xem nếu chưa được xem bởi người dùng này
+                _viewRepo.AddView(id, userId);
 
-    var response = new QuestionQaResponse
-    {
-        Id = question.Id,
-        Content = question.Content,
-        CreateAt = question.CreateAt,
-        UserId = question.UserId,
-        UserName = question.User != null ? question.User.FullName : "Unknown",
-        UserAvatar = question.User != null ? question.User.AvatarUrl : null,
-        ViewCount = _viewRepo.GetViewCount(question.Id)
-    };
+                var response = new QuestionQaResponse
+                {
+                    Id = question.Id,
+                    Content = question.Content,
+                    CreateAt = question.CreateAt,
+                    UserId = question.UserId,
+                    UserName = question.User != null ? question.User.FullName : "Unknown",
+                    UserAvatar = question.User != null ? question.User.AvatarUrl : null,
+                    ViewCount = _viewRepo.GetViewCount(question.Id)
+                };
 
-    return ApiResponse<QuestionQaResponse>.Success(response);
-}
+                return ApiResponse<QuestionQaResponse>.Success(response);
+            }
    public ApiResponse<ICollection<QuestionQaResponse>> SearchQuestionsByUserName(string userName, bool onlyAnswered = false)
-{
-    var query = _repository.SearchQuestionsByUserName(userName);
+        {
+            var query = _repository.SearchQuestionsByUserName(userName);
 
-    if (onlyAnswered)
-    {
-        query = query.Where(q => q.AnswersQas.Any()).ToList(); // Chỉ lấy câu hỏi có câu trả lời
-    }
+            if (onlyAnswered)
+            {
+                query = query.Where(q => q.AnswersQas.Any()).ToList(); // Chỉ lấy câu hỏi có câu trả lời
+            }
 
-    var result = query.Select(q => new QuestionQaResponse
-    {
-        Id = q.Id,
-        Content = q.Content,
-        CreateAt = q.CreateAt,
-        UserId = q.UserId,
-        UserName = q.User != null ? q.User.FullName : "Unknown",
-        UserAvatar = q.User != null ? q.User.AvatarUrl : null,
-        ViewCount = _viewRepo.GetViewCount(q.Id),
-        IsRead = _viewRepo.HasUserViewed(q.Id, q.UserId ?? 0),
-        HasAnswer = q.AnswersQas.Any(),
-        ImageUrls = q.QuestionImagesQas.Select(img => img.ImageUrl).ToList() // Lấy danh sách ảnh câu hỏi
-    }).ToList();
+            var result = query.Select(q => new QuestionQaResponse
+            {
+                Id = q.Id,
+                Content = q.Content,
+                CreateAt = q.CreateAt,
+                UserId = q.UserId,
+                UserName = q.User != null ? q.User.FullName : "Unknown",
+                UserAvatar = q.User != null ? q.User.AvatarUrl : null,
+                ViewCount = _viewRepo.GetViewCount(q.Id),
+                IsRead = _viewRepo.HasUserViewed(q.Id, q.UserId ?? 0),
+                HasAnswer = q.AnswersQas.Any(),
+                ImageUrls = q.QuestionImagesQas.Select(img => img.ImageUrl).ToList() // Lấy danh sách ảnh câu hỏi
+            }).ToList();
 
-    return result.Any()
-        ? ApiResponse<ICollection<QuestionQaResponse>>.Success(result)
-        : ApiResponse<ICollection<QuestionQaResponse>>.NotFound("Không tìm thấy câu hỏi.");
-}
+            return result.Any()
+                ? ApiResponse<ICollection<QuestionQaResponse>>.Success(result)
+                : ApiResponse<ICollection<QuestionQaResponse>>.NotFound("Không tìm thấy câu hỏi.");
+        }
+
+        public ApiResponse<ICollection<QuestionQaResponse>> GetRecentQuestions(int userId, int page, int pageSize)
+        {
+            var query = _repository.GetQuestions()
+                .OrderByDescending(q => q.CreateAt) // 🔥 Sắp xếp theo thời gian tạo mới nhất
+                .AsQueryable();
+
+            var questionsWithViews = query
+                .Select(q => new
+                {
+                    Question = q,
+                    IsRead = _viewRepo.HasUserViewed(q.Id, userId),
+                    HasAnswer = q.AnswersQas.Any() // Kiểm tra có câu trả lời hay không
+                })
+                .Skip((page - 1) * pageSize) // Phân trang
+                .Take(pageSize)
+                .ToList();
+
+            var result = questionsWithViews.Select(q => new QuestionQaResponse
+            {
+                Id = q.Question.Id,
+                Content = q.Question.Content,
+                CreateAt = q.Question.CreateAt,
+                UserId = q.Question.UserId,
+                UserName = q.Question.User != null ? q.Question.User.FullName : "Unknown",
+                UserAvatar = q.Question.User != null ? q.Question.User.AvatarUrl : null,
+                ViewCount = _viewRepo.GetViewCount(q.Question.Id),
+                IsRead = q.IsRead,
+                HasAnswer = q.HasAnswer
+            }).ToList();
+
+            return result.Any()
+                ? ApiResponse<ICollection<QuestionQaResponse>>.Success(result)
+                : ApiResponse<ICollection<QuestionQaResponse>>.NotFound("Không có dữ liệu");
+        }
 
 
     }

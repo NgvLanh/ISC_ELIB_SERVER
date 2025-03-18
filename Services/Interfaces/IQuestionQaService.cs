@@ -16,6 +16,8 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<QuestionQaResponse> DeleteQuestion(long id);
         ApiResponse<ICollection<QuestionQaResponse>> GetAnsweredQuestions(int userId, int page, int pageSize);
         ApiResponse<ICollection<QuestionQaResponse>> SearchQuestionsByUserName(string userName, bool onlyAnswered = false);
+        ApiResponse<ICollection<QuestionQaResponse>> GetRecentQuestions(int userId, int page, int pageSize);
+
     }
 
   
