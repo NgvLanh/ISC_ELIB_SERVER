@@ -289,7 +289,9 @@ builder.Services.AddAutoMapper(typeof(SessionMapper));
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<SessionRepo>();
 
-
+//class
+builder.Services.AddScoped<ClassRepo>();
+builder.Services.AddScoped<IClassesService, ClassesService>();
 
 //Retirement
 builder.Services.AddScoped<RetirementRepo>();
