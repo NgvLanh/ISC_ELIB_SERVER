@@ -38,29 +38,30 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-       public AnswersQa CreateAnswer(AnswersQa answer, List<string>? imageBase64List)
-        {
-            _context.AnswersQas.Add(answer);
-            _context.SaveChanges();
-
-            // Nếu có ảnh, lưu vào bảng AnswerImagesQa
-            if (imageBase64List != null && imageBase64List.Count > 0)
+      public AnswersQa CreateAnswer(AnswersQa answer, List<string>? imageBase64List)
             {
-                foreach (var base64 in imageBase64List)
-                {
-                    var image = new AnswerImagesQa
-                    {
-                        AnswerId = answer.Id,
-                        ImageUrl = base64, //Lưu Base64 thay vì URL
-                        Active = true
-                    };
-                    _context.AnswerImagesQas.Add(image);
-                }
+                _context.AnswersQas.Add(answer);
                 _context.SaveChanges();
+
+                // Nếu có ảnh, lưu vào bảng `AnswerImagesQa`
+                if (imageBase64List != null && imageBase64List.Count > 0)
+                {
+                    foreach (var base64 in imageBase64List)
+                    {
+                        var image = new AnswerImagesQa
+                        {
+                            AnswerId = answer.Id,
+                            ImageUrl = base64, // Lưu Base64 thay vì URL
+                            Active = true
+                        };
+                        _context.AnswerImagesQas.Add(image);
+                    }
+                    _context.SaveChanges();
+                }
+
+                return answer;
             }
 
-            return answer;
-        }
 
 
         public AnswersQa UpdateAnswer(AnswersQa answer)
