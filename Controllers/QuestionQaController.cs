@@ -18,26 +18,40 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-       [HttpGet]
+      [HttpGet]
         public IActionResult GetQuestions(
             [FromQuery] int iduser,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "",
             [FromQuery] string sortColumn = "Id",
-            [FromQuery] string sortOrder = "asc")
+            [FromQuery] string sortOrder = "asc",
+            [FromQuery] int? classId = null,
+            [FromQuery] int? subjectId = null)
         {
-            var response = _service.GetQuestions(iduser, page, pageSize, search, sortColumn, sortOrder);
+            if (!classId.HasValue || !subjectId.HasValue)
+            {
+                return BadRequest("Thiếu ClassId hoặc SubjectId");
+            }
+
+            var response = _service.GetQuestions(iduser, page, pageSize, search, sortColumn, sortOrder, classId, subjectId);
             return Ok(response);
         }
 
 
-      [HttpPost]
+
+        [HttpPost]
         public async Task<IActionResult> CreateQuestion([FromForm] QuestionQaRequest questionRequest, [FromForm] List<IFormFile> files)
         {
+            if (questionRequest == null)
+            {
+                return BadRequest(ApiResponse<QuestionQaResponse>.BadRequest("Dữ liệu không hợp lệ"));
+            }
+
             var response = await _service.CreateQuestion(questionRequest, files);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+
 
 
         [HttpDelete("{id}")]
@@ -50,32 +64,45 @@ namespace ISC_ELIB_SERVER.Controllers
 
         
 
-        [HttpGet("answered")]
+       [HttpGet("answered")]
         public IActionResult GetAnsweredQuestions(
             [FromQuery] int iduser,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int? classId = null,
+            [FromQuery] int? subjectId = null)
         {
-            var response = _service.GetAnsweredQuestions(iduser, page, pageSize);
+            var response = _service.GetAnsweredQuestions(iduser, page, pageSize, classId, subjectId);
             return Ok(response);
         }
 
-      [HttpGet("search")]
-        public IActionResult SearchQuestionsByUserName([FromQuery] string userName, [FromQuery] bool onlyAnswered = false)
-        {
-            var response = _service.SearchQuestionsByUserName(userName, onlyAnswered);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
-        }
+            [HttpGet("search")]
+            public IActionResult SearchQuestionsByUserName(
+                [FromQuery] int iduser,
+                [FromQuery] string userName,
+                [FromQuery] bool onlyAnswered = false,
+                [FromQuery] int page = 1,
+                [FromQuery] int pageSize = 10,
+                [FromQuery] int? classId = null,
+                [FromQuery] int? subjectId = null)
+            {
+                var response = _service.SearchQuestionsByUserName(iduser, userName, onlyAnswered, page, pageSize, classId, subjectId);
+                return Ok(response);
+            }
+
 
         [HttpGet("recent")]
         public IActionResult GetRecentQuestions(
             [FromQuery] int iduser,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int? classId = null,
+            [FromQuery] int? subjectId = null)
         {
-            var response = _service.GetRecentQuestions(iduser, page, pageSize);
+            var response = _service.GetRecentQuestions(iduser, page, pageSize, classId, subjectId);
             return Ok(response);
         }
+
 
 
         [HttpPut("{id}")]
