@@ -1,4 +1,6 @@
-﻿namespace ISC_ELIB_SERVER.DTOs.Requests
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class UserRequest
     {
@@ -23,6 +25,8 @@
         public int DistrictCode { get; set; }
         public int WardCode { get; set; }
         public string? Street { get; set; }
+        public bool Active { get; set; }
+        public string? AvatarUrl { get; set; }
 
         // Phương thức kiểm tra tính hợp lệ
         public bool IsValid()
