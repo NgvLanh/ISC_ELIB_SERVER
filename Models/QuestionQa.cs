@@ -17,6 +17,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? UserId { get; set; } // ID người đặt câu hỏi
         public int? SubjectId { get; set; }
         public string? Content { get; set; }
+         [Column("create_at")]
         public DateTime? CreateAt { get; set; }
         [Column("active")] 
         public bool Active { get; set; } = true; 
@@ -26,6 +27,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual User? User { get; set; } 
 
         public virtual Subject? Subject { get; set; }
+
         public virtual ICollection<AnswersQa> AnswersQas { get; set; }
         public virtual ICollection<QuestionImagesQa> QuestionImagesQas { get; set; }
     }
