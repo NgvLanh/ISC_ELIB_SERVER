@@ -108,7 +108,7 @@ namespace ISC_ELIB_SERVER.Services
             var newUser = new User
             {
                 Code = userRequest.Code,
-                Password = userRequest.Password,
+                Password = ComputeSha256(userRequest.Password),
                 FullName = userRequest.FullName,
                 Dob = userRequest.Dob,
                 Gender = userRequest.Gender,
@@ -178,6 +178,7 @@ namespace ISC_ELIB_SERVER.Services
             // Cập nhật thông tin người dùng
             user.FullName = userRequest.FullName;
             user.Email = userRequest.Email;
+            user.Password = ComputeSha256(userRequest.Password);
             user.PhoneNumber = userRequest.PhoneNumber;
             user.Dob = userRequest.Dob;
             user.Gender = userRequest.Gender;

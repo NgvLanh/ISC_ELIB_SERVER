@@ -36,6 +36,8 @@ namespace ISC_ELIB_SERVER.Services
             {
                 var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == ComputeSha256(request.Password));
 
+                var a = ComputeSha256(request.Password);
+
                 if (user == null)
                 {
                     return ApiResponse<LoginResponse>.Fail("Tên đăng nhập hoặc mật khẩu không đúng");
