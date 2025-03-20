@@ -18,12 +18,14 @@ namespace ISC_ELIB_SERVER.Models
         public int? ClassId { get; set; }
         public int? SubjectId { get; set; }
         public int? TopicsId { get; set; }
+        public int? SemesterId { get; set; }
         public bool Active { get; set; }
 
         public virtual Class? Class { get; set; }
         public virtual Subject? Subject { get; set; }
         public virtual Topic? Topics { get; set; }
         public virtual User? User { get; set; }
+        public virtual Semester? Semester { get; set; }
         public virtual ICollection<Session> Sessions { get; set; }
     }
 }

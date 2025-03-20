@@ -1131,6 +1131,10 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
 
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
+
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
                     .HasDefaultValueSql("true");
@@ -1576,6 +1580,8 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
+
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.TeachingAssignments)
                     .HasForeignKey(d => d.ClassId)
@@ -1595,6 +1601,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.TeachingAssignments)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_teaching_assignments_user_id");
+
+                entity.HasOne(d => d.Semester)
+                    .WithMany(p => p.TeachingAssignments)
+                    .HasForeignKey(d => d.SemesterId)
+                    .HasConstraintName("fk_teaching_assignments_semester_id");
             });
 
             modelBuilder.Entity<TemporaryLeave>(entity =>
