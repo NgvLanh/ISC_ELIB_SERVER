@@ -461,6 +461,28 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
+                entity.Property(e => e.TrainingType)
+                    .HasMaxLength(100)
+                    .HasColumnName("training_type");
+
+                entity.Property(e => e.IsAnnualSystem)
+                    .HasColumnName("is_annual_system");
+
+                entity.Property(e => e.TrainingDuration)
+                    .HasColumnName("training_duration");
+
+                entity.Property(e => e.SemesterPerYear)
+                    .HasColumnName("semester_per_year");
+
+                entity.Property(e => e.IsCredit)
+                    .HasColumnName("is_credit");
+
+                entity.Property(e => e.MandatoryCourse)
+                    .HasColumnName("mandatory_course");
+
+                entity.Property(e => e.ElectiveCourse)
+                    .HasColumnName("elective_course");
+
                 entity.Property(e => e.Status).HasColumnName("status");
             });
 
