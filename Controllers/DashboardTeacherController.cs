@@ -25,12 +25,11 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpGet("overview")]
         public IActionResult GetDashboardOverview()
         {
-            var userIdResult = GetUserId();
-            if (userIdResult is UnauthorizedResult)
-                return Unauthorized();
+            var userId = GetUserId();
+            if (userId == null)
+                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
 
-            var userId = (userIdResult as OkObjectResult)?.Value as int? ?? 0;
-            var response = _dashboardTeacherService.GetDashboardOverview(userId);
+            var response = _dashboardTeacherService.GetDashboardOverview(userId.Value);
             return Ok(response);
         }
 
@@ -38,26 +37,28 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpGet("student-statistics")]
         public IActionResult GetStudentStatistics()
         {
-            var userIdResult = GetUserId();
-            if (userIdResult is UnauthorizedResult)
-                return Unauthorized();
+            var userId = GetUserId();
+            if (userId == null)
+                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
 
-            var userId = (userIdResult as OkObjectResult)?.Value as int? ?? 0;
-            var response = _dashboardTeacherService.GetStudentStatistics(userId);
+            var response = _dashboardTeacherService.GetStudentStatistics(userId.Value);
             return Ok(response);
         }
 
         // Lấy userId từ token JWT
-        private IActionResult GetUserId()
+        private int? GetUserId()
         {
-            var userId = User.FindFirst("Id")?.Value;
+            var userIdString = User.FindFirst("Id")?.Value;
+            Console.WriteLine($"User.FindFirst(\"Id\"): {userIdString}");
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
             {
-                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
+                return null; // Trả về null nếu không tìm thấy hoặc parse thất bại
             }
-            return Ok(userId);
+
+            return userId;
         }
+
     }
 }
 
