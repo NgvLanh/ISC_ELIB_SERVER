@@ -1,5 +1,7 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -18,26 +20,28 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 // Tổng số khóa học mà giáo viên đang dạy
                 TotalCourses = _context.TeachingAssignments
-                    .Where(c => c.UserId == teacherId && c.Active)
-                    .Select(c => c.SubjectId) // Đếm theo môn học (khóa học)
+                    .AsNoTracking()
+                    .Where(c => c.UserId == teacherId && c.Active == true)
+                    .Select(c => c.SubjectId)
                     .Distinct()
                     .Count(),
 
                 // Tổng số lớp học online mà giáo viên tạo
                 TotalOnlineClasses = _context.Sessions
-                    .Where(s => s.TeachingAssignment.UserId == teacherId && s.Active)
+                    .AsNoTracking()
+                    .Where(s => s.TeachingAssignment.UserId == teacherId && s.Active == true)
                     .Count(),
 
                 // Tổng số bài kiểm tra chưa chấm
                 TotalPendingTests = _context.TestsSubmissions
-                    .Where(t => t.Test.UserId == teacherId &&
-                                (t.Graded == null || t.Graded == false) &&
-                                (t.Active == null || t.Active == true))
+                    .AsNoTracking()
+                    .Where(t => t.Test.UserId == teacherId && t.Graded != true && t.Active == true)
                     .Count(),
 
                 // Tổng số câu hỏi trong mục hỏi đáp mà giáo viên tham gia
                 TotalQA = _context.QuestionQas
-                    .Where(q => q.UserId == teacherId && q.Active)
+                    .AsNoTracking()
+                    .Where(q => q.UserId == teacherId && q.Active == true)
                     .Count()
             };
         }
@@ -46,14 +50,17 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             // Lấy danh sách các lớp giáo viên đang dạy
             var classIds = _context.TeachingAssignments
-                .Where(c => c.UserId == teacherId && c.Active)
+                .AsNoTracking()
+                .Where(c => c.UserId == teacherId && c.Active == true)
                 .Select(c => c.ClassId)
                 .Distinct()
                 .ToList();
 
             // Lấy danh sách học sinh trong các lớp đó
             var studentScores = _context.StudentScores
-                .Where(s => classIds.Contains(s.User.ClassId) && s.Active);
+                .AsNoTracking()
+                .Where(s => classIds.Contains(s.User.ClassId) && s.Active == true)
+                .ToList(); // Load toàn bộ để xử lý trên memory tránh query lồng nhau
 
             return new StudentStatisticsResponse
             {
