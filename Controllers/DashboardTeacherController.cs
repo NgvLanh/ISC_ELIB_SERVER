@@ -56,15 +56,7 @@ namespace ISC_ELIB_SERVER.Controllers
             {
                 return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
             }
-
-            var user = _userService.GetUserById(int.Parse(userId));
-
-            if (user == null)
-            {
-                return BadRequest(ApiResponse<string>.Fail("User not found"));
-            }
-
-            return Ok(int.Parse(userId));
+            return Ok(userId);
         }
     }
 }

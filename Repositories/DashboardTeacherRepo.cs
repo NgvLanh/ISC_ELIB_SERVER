@@ -30,7 +30,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
                 // Tổng số bài kiểm tra chưa chấm
                 TotalPendingTests = _context.TestsSubmissions
-                    .Where(t => t.Test.UserId == teacherId && !t.Graded.GetValueOrDefault() && t.Active.GetValueOrDefault())
+                    .Where(t => t.Test.UserId == teacherId &&
+                                (t.Graded == null || t.Graded == false) &&
+                                (t.Active == null || t.Active == true))
                     .Count(),
 
                 // Tổng số câu hỏi trong mục hỏi đáp mà giáo viên tham gia
