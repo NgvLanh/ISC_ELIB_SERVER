@@ -305,6 +305,9 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+//EntryType
+builder.Services.AddScoped<EntryTypeRepo>();
+builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
