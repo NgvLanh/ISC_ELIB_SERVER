@@ -315,6 +315,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
+//DashboardTeacher
+builder.Services.AddScoped<DashboardTeacherRepo>();
+builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
