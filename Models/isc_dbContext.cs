@@ -78,6 +78,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
         public virtual DbSet<WorkProcess> WorkProcesses { get; set; } = null!;
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
+        
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1704,10 +1705,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("test_answers");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.AnswerText).HasColumnName("answer_text");
 

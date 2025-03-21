@@ -167,6 +167,10 @@ builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
 builder.Services.AddScoped<TestsSubmissionRepo>();
 builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
 
+//Test-Answer
+builder.Services.AddScoped<TestAnswerRepo>(); 
+builder.Services.AddScoped<TestAnswerService>(); 
+
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();
