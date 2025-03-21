@@ -305,6 +305,10 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+//DashboardTeacher
+builder.Services.AddScoped<DashboardTeacherRepo>();
+builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
