@@ -25,6 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public EducationLevel CreateEducationLevel(EducationLevel EducationLevel)
         {
+            _context.ChangeTracker.Clear();
             _context.EducationLevels.Add(EducationLevel);
             _context.SaveChanges();
             return EducationLevel;

@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -22,6 +23,20 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetSemesters(page, pageSize, sortColumn, sortOrder);
             return Ok(response);
         }
+
+        [HttpGet("course")]
+        [Authorize]
+        public IActionResult GetCourseOfSemesters([FromQuery] int? page = 1,
+                                          [FromQuery] int? pageSize = 10,
+                                          [FromQuery] string? sortColumn = "Id",
+                                          [FromQuery] string? sortOrder = "asc")
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
+
+            var response = _service.GetCourseOfSemesters(page, pageSize, sortColumn, sortOrder, userId);
+            return Ok(response);
+        }
+
 
         [HttpGet("{id}")]
         public IActionResult GetSemesterrById(long id)
