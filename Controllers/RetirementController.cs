@@ -1,12 +1,16 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
     [Route("api/retirement")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class RetirementController : ControllerBase
     {
         private readonly IRetirementService _service;
@@ -68,7 +72,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteUserStatus(long id)
+        public IActionResult DeleteRetirement(long id)
         {
             var response = _service.DeleteRetirement(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
