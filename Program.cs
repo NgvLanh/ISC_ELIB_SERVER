@@ -13,6 +13,7 @@ using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Autofac.Core;
+using CloudinaryDotNet;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +25,19 @@ Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 var databaseUrl = Env.GetString("DATABASE_URL");
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000") // Cho phép React truy cập API
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
 
 var jwtSettings = new TokenRequiment
 {
@@ -154,6 +168,10 @@ builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
 builder.Services.AddScoped<TestsSubmissionRepo>();
 builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
 
+//Test-Answer
+builder.Services.AddScoped<TestAnswerRepo>(); 
+builder.Services.AddScoped<TestAnswerService>(); 
+
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();
@@ -178,6 +196,12 @@ builder.Services.AddScoped<IQuestionImagesQaService, QuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
 builder.Services.AddScoped<IAnswerImagesQaService, AnswerImagesQaService>();
 builder.Services.AddScoped<IQuestionQaService, QuestionQaService>();
+builder.Services.AddScoped<QuestionViewRepo>();
+// Đăng ký QuestionView Repository và Service
+builder.Services.AddScoped<QuestionViewRepo>();
+builder.Services.AddScoped<IQuestionViewService, QuestionViewService>();
+
+
 
 
 // Add services and repositories Test attachment
@@ -270,7 +294,9 @@ builder.Services.AddAutoMapper(typeof(SessionMapper));
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<SessionRepo>();
 
-
+//class
+builder.Services.AddScoped<ClassRepo>();
+builder.Services.AddScoped<IClassesService, ClassesService>();
 
 //Retirement
 builder.Services.AddScoped<RetirementRepo>();
@@ -280,9 +306,15 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+
 //ForgotPassword
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+//EntryType
+builder.Services.AddScoped<EntryTypeRepo>();
+builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -329,11 +361,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 

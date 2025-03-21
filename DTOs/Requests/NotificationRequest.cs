@@ -15,8 +15,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(50, ErrorMessage = "Loại thông báo không được vượt quá 50 ký tự")]
         public string Type { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Mã người gửi không được để trống")]
-        public int SenderId { get; set; }
+        //[Required(ErrorMessage = "Mã người gửi không được để trống")]
+        //public int SenderId { get; set; }
 
         [Required(ErrorMessage = "Mã người nhận không được để trống")]
         public int UserId { get; set; }

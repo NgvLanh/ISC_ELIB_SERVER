@@ -23,33 +23,42 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-
-        [HttpGet("{id}")]
-        public IActionResult GetAnswerById(long id)
-        {
-            var response = _service.GetAnswerById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
-        }
-
         [HttpPost]
-        public IActionResult CreateAnswer([FromBody] AnswersQaRequest answerRequest)
+        [Consumes("multipart/form-data")] // 📌 Để nhận file ảnh từ FE
+        public async Task<IActionResult> CreateAnswer([FromForm] AnswersQaRequest answerRequest)
         {
-            var response = _service.CreateAnswer(answerRequest);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            var response = await _service.CreateAnswer(answerRequest);
+            return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateAnswer(long id, [FromBody] AnswersQaRequest answerRequest)
-        {
-            var response = _service.UpdateAnswer(id, answerRequest);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
-        }
 
+        
         [HttpDelete("{id}")]
         public IActionResult DeleteAnswer(long id)
         {
             var response = _service.DeleteAnswer(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
+
+
+        [HttpGet("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult GetAnswerById(long id)
+        {
+            var response = _service.GetAnswerById(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        [HttpPut("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+
+        public IActionResult UpdateAnswer(long id, [FromBody] AnswersQaRequest answerRequest)
+        {
+            var response = _service.UpdateAnswer(id, answerRequest);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+
+
     }
 }

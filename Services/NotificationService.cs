@@ -64,32 +64,39 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<NotificationResponse>.NotFound($"Không tìm thông báo #{id}");
         }
 
-        public ApiResponse<NotificationResponse> CreateNotification(NotificationRequest notificationRequest)
+        public ApiResponse<NotificationResponse> CreateNotification(NotificationRequest notificationRequest, int senderId)
         {
-            if (!CheckUserExists(notificationRequest.SenderId))
+            bool senderExists = CheckUserExists(senderId);
+
+            if (!senderExists)
             {
                 return ApiResponse<NotificationResponse>.NotFound("Người gửi không tồn tại.");
             }
 
-            if (!CheckUserExists(notificationRequest.UserId))
+
+            bool userExists = CheckUserExists(notificationRequest.UserId);
+
+            if (!userExists)
             {
                 return ApiResponse<NotificationResponse>.NotFound("Người nhận không tồn tại.");
             }
 
             var created = _repository.CreateNotification(new Notification()
-            { 
+            {
                 Title = notificationRequest.Title,
                 Content = notificationRequest.Content,
                 Type = notificationRequest.Type,
-                SenderId = notificationRequest.SenderId,
+                SenderId = senderId,
                 UserId = notificationRequest.UserId,
                 Active = false,
                 CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified)
             });
+
             return ApiResponse<NotificationResponse>.Success(_mapper.Map<NotificationResponse>(created));
         }
 
-        public ApiResponse<NotificationResponse> UpdateNotification(long id, NotificationRequest notificationRequest)
+
+        public ApiResponse<NotificationResponse> UpdateNotification(long id, NotificationRequest notificationRequest, int senderId)
         {
             var existingNotification = _repository.GetNotificationById(id);
             if (existingNotification == null || existingNotification.Active == true)
@@ -97,7 +104,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<NotificationResponse>.NotFound("Không tìm thấy thông báo.");
             }
 
-            if (!CheckUserExists(notificationRequest.SenderId))
+            if (!CheckUserExists(senderId))
             {
                 return ApiResponse<NotificationResponse>.NotFound("Người gửi không tồn tại.");
             }
@@ -110,7 +117,7 @@ namespace ISC_ELIB_SERVER.Services
             existingNotification.Title = notificationRequest.Title;
             existingNotification.Content = notificationRequest.Content;
             existingNotification.Type = notificationRequest.Type;
-            existingNotification.SenderId = notificationRequest.SenderId;
+            existingNotification.SenderId = senderId;
             existingNotification.UserId = notificationRequest.UserId;
             existingNotification.Active = false;
             existingNotification.CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);

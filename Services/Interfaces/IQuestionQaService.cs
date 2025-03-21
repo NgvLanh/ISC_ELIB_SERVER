@@ -8,11 +8,16 @@ namespace ISC_ELIB_SERVER.Services
 {
     public interface IQuestionQaService
     {
-        ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<ICollection<QuestionQaResponse>> GetQuestions(int userId, int page, int pageSize, string search, string sortColumn, string sortOrder, int? classId, int? subjectId);
         ApiResponse<QuestionQaResponse> GetQuestionById(long id);
-        ApiResponse<QuestionQaResponse> CreateQuestion(QuestionQaRequest questionRequest);
+        ApiResponse<QuestionQaResponse> GetQuestionByIdForUser(int id, int userId);
+         Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files);
         ApiResponse<QuestionQaResponse> UpdateQuestion(long id, QuestionQaRequest QuestionQaRequest);
         ApiResponse<QuestionQaResponse> DeleteQuestion(long id);
+        ApiResponse<ICollection<QuestionQaResponse>> GetAnsweredQuestions(int userId, int page, int pageSize, int? classId, int? subjectId);
+        ApiResponse<ICollection<QuestionQaResponse>> SearchQuestionsByUserName( int userId, string userName, bool onlyAnswered, int page, int pageSize, int? classId, int? subjectId);
+        ApiResponse<ICollection<QuestionQaResponse>> GetRecentQuestions(int userId, int page, int pageSize, int? classId, int? subjectId);
+
     }
 
   
