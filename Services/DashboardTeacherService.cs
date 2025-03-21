@@ -13,14 +13,20 @@ namespace ISC_ELIB_SERVER.Services
             _dashboardTeacherRepo = dashboardTeacherRepo;
         }
 
-        public DashboardOverviewResponse GetDashboardOverview(int teacherId)
+        public ApiResponse<DashboardOverviewResponse> GetDashboardOverview(int teacherId)
         {
-            return _dashboardTeacherRepo.GetDashboardOverview(teacherId);
+            var data = _dashboardTeacherRepo.GetDashboardOverview(teacherId);
+            return data != null
+                ? ApiResponse<DashboardOverviewResponse>.Success(data)
+                : ApiResponse<DashboardOverviewResponse>.NotFound("Không tìm thấy dữ liệu tổng quan");
         }
 
-        public StudentStatisticsResponse GetStudentStatistics(int teacherId)
+        public ApiResponse<StudentStatisticsResponse> GetStudentStatistics(int teacherId)
         {
-            return _dashboardTeacherRepo.GetStudentStatistics(teacherId);
+            var data = _dashboardTeacherRepo.GetStudentStatistics(teacherId);
+            return data != null
+                ? ApiResponse<StudentStatisticsResponse>.Success(data)
+                : ApiResponse<StudentStatisticsResponse>.NotFound("Không tìm thấy dữ liệu thống kê học sinh");
         }
     }
 }
