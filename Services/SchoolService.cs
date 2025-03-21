@@ -60,10 +60,10 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<SchoolResponse> CreateSchool(SchoolRequest schoolRequest)
         {
-            if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
-            {
-                return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
-            }
+            //if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
+            //{
+            //    return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
+            //}
 
             if (_educationLevelRepository.GetEducationLevelById((long)schoolRequest.EducationLevelId) == null)
             {

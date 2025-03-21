@@ -19,6 +19,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? TrainingModel { get; set; }
         public string? WebsiteUrl { get; set; }
         public int? UserId { get; set; }
-        public EducationLevel? EducationLevel { get; set; }
+        //public EducationLevel? EducationLevel { get; set; }
     }
 }

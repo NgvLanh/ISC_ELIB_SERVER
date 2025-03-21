@@ -72,10 +72,24 @@ namespace ISC_ELIB_SERVER.Services
             {
                 Name = classesRequest.Name,
                 Description = classesRequest.Description,
+                Code = classesRequest.Code,
+                StudentQuantity = classesRequest.StudentQuantity,
+                SubjectQuantity = classesRequest.SubjectQuantity,
+                GradeLevelId = classesRequest.GradeLevelId,
+                AcademicYearId = classesRequest.AcademicYearId,
+                UserId = classesRequest?.UserId,
+                ClassTypeId = classesRequest?.ClassTypeId,
             };
+            try
+            {
+                var createdClass = _repository.CreateClass(newClass);
+                return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
+            }
+            catch
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Kiểm tra lại các khóa ngoại");
+            }
 
-            var createdClass = _repository.CreateClass(newClass);
-            return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
         }
 
         public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)

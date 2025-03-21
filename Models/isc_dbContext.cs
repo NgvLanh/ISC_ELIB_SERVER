@@ -354,7 +354,8 @@ namespace ISC_ELIB_SERVER.Models
                 entity.HasOne(d => d.AcademicYear)
                     .WithMany(p => p.Classes)
                     .HasForeignKey(d => d.AcademicYearId)
-                    .HasConstraintName("fk_classes_academic_year_id");
+                    .HasConstraintName("fk_classes_academic_year_id")
+                    .IsRequired(false); ;
 
                 entity.HasOne(d => d.ClassType)
                     .WithMany(p => p.Classes)
@@ -369,7 +370,8 @@ namespace ISC_ELIB_SERVER.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Classes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("fk_classes_user_id");
+                    .HasConstraintName("fk_classes_user_id")
+                    .IsRequired(false); ;
             });
 
             modelBuilder.Entity<ClassType>(entity =>
@@ -1530,7 +1532,8 @@ namespace ISC_ELIB_SERVER.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TeacherInfos)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("fk_teacher_info_user_id");
+                    .HasConstraintName("fk_teacher_info_user_id")
+                    .IsRequired(false);
             });
 
             modelBuilder.Entity<TeacherTrainingProgram>(entity =>
