@@ -78,6 +78,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
         public virtual DbSet<WorkProcess> WorkProcesses { get; set; } = null!;
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
+        
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -460,6 +461,28 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
+
+                entity.Property(e => e.TrainingType)
+                    .HasMaxLength(100)
+                    .HasColumnName("training_type");
+
+                entity.Property(e => e.IsAnnualSystem)
+                    .HasColumnName("is_annual_system");
+
+                entity.Property(e => e.TrainingDuration)
+                    .HasColumnName("training_duration");
+
+                entity.Property(e => e.SemesterPerYear)
+                    .HasColumnName("semester_per_year");
+
+                entity.Property(e => e.IsCredit)
+                    .HasColumnName("is_credit");
+
+                entity.Property(e => e.MandatoryCourse)
+                    .HasColumnName("mandatory_course");
+
+                entity.Property(e => e.ElectiveCourse)
+                    .HasColumnName("elective_course");
 
                 entity.Property(e => e.Status).HasColumnName("status");
             });
@@ -1109,6 +1132,10 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
 
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
+
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
                     .HasDefaultValueSql("true");
@@ -1554,6 +1581,8 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
+
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.TeachingAssignments)
                     .HasForeignKey(d => d.ClassId)
@@ -1573,6 +1602,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.TeachingAssignments)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_teaching_assignments_user_id");
+
+                entity.HasOne(d => d.Semester)
+                    .WithMany(p => p.TeachingAssignments)
+                    .HasForeignKey(d => d.SemesterId)
+                    .HasConstraintName("fk_teaching_assignments_semester_id");
             });
 
             modelBuilder.Entity<TemporaryLeave>(entity =>
@@ -1671,10 +1705,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("test_answers");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.AnswerText).HasColumnName("answer_text");
 
