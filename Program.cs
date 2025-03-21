@@ -27,24 +27,6 @@ var databaseUrl = Env.GetString("DATABASE_URL");
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var cloudinarySettings = new CloudinarySettings
-{
-    CloudName = Env.GetString("CLOUDINARY_CLOUD_NAME"),
-    ApiKey = Env.GetString("CLOUDINARY_API_KEY"),
-    ApiSecret = Env.GetString("CLOUDINARY_API_SECRET")
-};
-
-// 📌 Khởi tạo Cloudinary
-var cloudinary = new Cloudinary(new Account(
-    cloudinarySettings.CloudName,
-    cloudinarySettings.ApiKey,
-    cloudinarySettings.ApiSecret
-));
-
-builder.Services.AddSingleton(cloudinary);
-builder.Services.AddSingleton<CloudinaryService>();
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -324,7 +306,9 @@ builder.Services.AddAutoMapper(typeof(SessionMapper));
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<SessionRepo>();
 
-
+//class
+builder.Services.AddScoped<ClassRepo>();
+builder.Services.AddScoped<IClassesService, ClassesService>();
 
 //Retirement
 builder.Services.AddScoped<RetirementRepo>();

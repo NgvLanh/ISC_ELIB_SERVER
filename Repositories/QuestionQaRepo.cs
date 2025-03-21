@@ -7,46 +7,87 @@ namespace ISC_ELIB_SERVER.Repositories
     public class QuestionQaRepo
     {
         private readonly isc_dbContext _context;
-        private readonly CloudinaryService _cloudinaryService; // 
+       
 
-        public QuestionQaRepo(isc_dbContext context, CloudinaryService cloudinaryService)
+        public QuestionQaRepo(isc_dbContext context)
         {
             _context = context;
-            _cloudinaryService = cloudinaryService;
+           
         }
 
-        public ICollection<QuestionQa> GetQuestions()
-{
-    return _context.QuestionQas.Include(q => q.User) // Include User để lấy thông tin người đặt câu hỏi
-                               .Include(q => q.Subject)
-                               .Include(q => q.AnswersQas)
-                               .Include(q => q.QuestionImagesQas)
-                               .ToList();
-}
+     public ICollection<QuestionQa> GetQuestions(int? classId, int? subjectId)
+        {
+            var query = _context.QuestionQas
+                .Include(q => q.User) // Lấy thông tin người đặt câu hỏi
+                .Include(q => q.Subject)
+                .Include(q => q.AnswersQas)
+                .Include(q => q.QuestionImagesQas)
+                .Where(q => _context.TeachingAssignments
+                    .Any(t => t.SubjectId == subjectId && t.ClassId == classId && t.Active && t.SubjectId == q.SubjectId))
+                .OrderByDescending(q => q.CreateAt) //  Lấy câu hỏi mới nhất trước
+                .ToList();
+
+            return query;
+        }
+
+         public ICollection<QuestionQa> GetAnsweredQuestions(int? classId, int? subjectId)
+        {
+            var query = _context.QuestionQas
+                .Include(q => q.User) // Lấy thông tin người đặt câu hỏi
+                .Include(q => q.Subject)
+                .Include(q => q.AnswersQas) // Lấy câu trả lời
+                .Include(q => q.QuestionImagesQas)
+                .Where(q => q.AnswersQas.Any() && // Chỉ lấy câu hỏi có câu trả lời
+                    _context.TeachingAssignments
+                        .Any(t => t.SubjectId == subjectId && t.ClassId == classId && t.Active && t.SubjectId == q.SubjectId))
+                .OrderByDescending(q => q.CreateAt) //  Sắp xếp theo ngày mới nhất
+                .ToList();
+
+            return query;
+        }
+
+         public ICollection<QuestionQa> GetRecentQuestions(int? classId, int? subjectId)
+        {
+            var query = _context.QuestionQas
+                .Include(q => q.User) // Lấy thông tin người đặt câu hỏi
+                .Include(q => q.Subject)
+                .Include(q => q.AnswersQas)
+                .Include(q => q.QuestionImagesQas)
+                .Where(q =>
+                    _context.TeachingAssignments
+                        .Any(t => t.SubjectId == subjectId && t.ClassId == classId && t.Active && t.SubjectId == q.SubjectId))
+                .OrderByDescending(q => q.CreateAt) // 🏆 Sắp xếp mới nhất
+                .ToList();
+
+            return query;
+        }
+
+
 
         public QuestionQa GetQuestionById(long id)
-{
-    return _context.QuestionQas.Include(q => q.User) // Include User để lấy thông tin người đặt câu hỏi
-                               .Include(q => q.Subject)
-                               .Include(q => q.AnswersQas)
-                               .Include(q => q.QuestionImagesQas)
-                               .FirstOrDefault(q => q.Id == id);
-}
+        {
+            return _context.QuestionQas
+                .Include(q => q.User)
+                .Include(q => q.Subject)
+                .Include(q => q.AnswersQas)
+                .Include(q => q.QuestionImagesQas)
+                .FirstOrDefault(q => q.Id == id);
+        }
 
-      public QuestionQa CreateQuestion(QuestionQa question, List<string>? imageUrls)
+    public QuestionQa CreateQuestion(QuestionQa question, List<string>? imageBase64s)
 {
     _context.QuestionQas.Add(question);
     _context.SaveChanges();
 
-    //  Nếu có ảnh, lưu vào bảng `QuestionImagesQa`
-    if (imageUrls != null && imageUrls.Count > 0)
+    //  Lưu danh sách ảnh Base64
+    if (imageBase64s != null && imageBase64s.Count > 0)
     {
-        foreach (var imageUrl in imageUrls)
+        foreach (var base64String in imageBase64s)
         {
             var image = new QuestionImagesQa
             {
                 QuestionId = question.Id,
-                ImageUrl = imageUrl,
+                ImageUrl = base64String, // Lưu nguyên vẹn Base64 vào DB
                 Active = true
             };
             _context.QuestionImagesQas.Add(image);
@@ -56,7 +97,6 @@ namespace ISC_ELIB_SERVER.Repositories
 
     return question;
 }
-
         public QuestionQa UpdateQuestion(QuestionQa question)
         {
             _context.QuestionQas.Update(question);
@@ -106,15 +146,29 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         
-        public ICollection<QuestionQa> SearchQuestionsByUserName(string userName)
+        public ICollection<QuestionQa> SearchQuestionsByUserName(string userName, bool onlyAnswered, int? classId, int? subjectId)
         {
-            return _context.QuestionQas
-                .Include(q => q.User) // Lấy thông tin người hỏi
+            var query = _context.QuestionQas
+                .Include(q => q.User)
                 .Include(q => q.Subject)
                 .Include(q => q.AnswersQas)
                 .Include(q => q.QuestionImagesQas)
-                .Where(q => q.User != null && q.User.FullName.ToLower().Contains(userName.ToLower())) //  Tìm theo tên
-                .ToList();
+                .Where(q =>
+                    q.User != null &&
+                    q.User.FullName.ToLower().Contains(userName.ToLower()) && // 🔍 Tìm theo tên
+                    _context.TeachingAssignments.Any(t =>
+                        t.SubjectId == subjectId && 
+                        t.ClassId == classId && 
+                        t.Active &&
+                        t.SubjectId == q.SubjectId) // ✅ Kiểm tra lớp + môn học
+                );
+
+            if (onlyAnswered) 
+            {
+                query = query.Where(q => q.AnswersQas.Any()); // 🔥 Chỉ lấy câu hỏi đã trả lời
+            }
+
+            return query.OrderByDescending(q => q.CreateAt).ToList();
         }
         
     }

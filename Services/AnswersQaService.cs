@@ -9,13 +9,12 @@ namespace ISC_ELIB_SERVER.Services
     public class AnswersQaService : IAnswersQaService
     {
         private readonly AnswersQaRepo _repository;
-        private readonly CloudinaryService _cloudinaryService;
         private readonly IMapper _mapper;
 
-        public AnswersQaService(AnswersQaRepo repository, CloudinaryService cloudinaryService, IMapper mapper)
+        public AnswersQaService(AnswersQaRepo repository, IMapper mapper)
         {
             _repository = repository;
-            _cloudinaryService = cloudinaryService;
+         
             _mapper = mapper;
         }
 
@@ -76,18 +75,20 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<AnswersQaResponse>.Success(response);
         }
 
-      public async Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest)
+         public async Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest)
         {
             List<string> imageBase64List = new List<string>();
 
-            // 🔥 Kiểm tra xem có ảnh không
-            if (answerRequest.ImageBase64s != null && answerRequest.ImageBase64s.Count > 0)
+            if (answerRequest.Files != null && answerRequest.Files.Count > 0)
             {
-                foreach (var base64 in answerRequest.ImageBase64s)
+                foreach (var file in answerRequest.Files)
                 {
-                    if (!string.IsNullOrEmpty(base64))
+                    using (var ms = new MemoryStream())
                     {
-                        imageBase64List.Add(base64); // ✅ Lưu trực tiếp Base64
+                        await file.CopyToAsync(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        string base64String = Convert.ToBase64String(fileBytes);
+                        imageBase64List.Add(base64String);
                     }
                 }
             }
@@ -97,11 +98,11 @@ namespace ISC_ELIB_SERVER.Services
                 Content = answerRequest.Content,
                 UserId = answerRequest.UserId,
                 QuestionId = answerRequest.QuestionId,
-                CreateAt = DateTime.Now,
+                CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified), // 🔥 Sửa lỗi DateTime
                 Active = true
             };
 
-            var createdAnswer = _repository.CreateAnswer(newAnswer, imageBase64List); // ✅ Lưu ảnh Base64
+            var createdAnswer = _repository.CreateAnswer(newAnswer, imageBase64List);
 
             var response = new AnswersQaResponse
             {
@@ -113,11 +114,14 @@ namespace ISC_ELIB_SERVER.Services
                 UserAvatar = createdAnswer.User?.AvatarUrl ?? "https://via.placeholder.com/40",
                 UserName = createdAnswer.User?.FullName ?? "Unknown",
                 UserRole = createdAnswer.User?.Role?.Name ?? "Người dùng",
-                ImageUrls = imageBase64List // ✅ Trả về danh sách Base64
+                ImageUrls = imageBase64List // Trả về danh sách ảnh
             };
 
             return ApiResponse<AnswersQaResponse>.Success(response);
         }
+
+
+
         public ApiResponse<AnswersQaResponse> UpdateAnswer(long id, AnswersQaRequest answerRequest)
         {
             var existing = _repository.GetAnswerById(id);
@@ -132,12 +136,13 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<AnswersQaResponse>.Success(_mapper.Map<AnswersQaResponse>(updated));
         }
 
-        public ApiResponse<AnswersQaResponse> DeleteAnswer(long id)
+       public ApiResponse<AnswersQaResponse> DeleteAnswer(long id)
         {
             var success = _repository.DeleteAnswer(id);
             return success
                 ? ApiResponse<AnswersQaResponse>.Success()
-                : ApiResponse<AnswersQaResponse>.NotFound("Không tìm thấy câu trả lời để xóa.");
+                : ApiResponse<AnswersQaResponse>.NotFound("Không tìm thấy câu trả lời để xóa");
         }
+
     }
 }

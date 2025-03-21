@@ -34,7 +34,9 @@ namespace ISC_ELIB_SERVER.Services
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == request.Password);
+                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == ComputeSha256(request.Password));
+
+                var a = ComputeSha256(request.Password);
 
                 if (user == null)
                 {

@@ -13,6 +13,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         [Required(ErrorMessage = "UserId là bắt buộc")]
         public int UserId { get; set; }
-        public List<string>? ImageBase64s { get; set; }
+       public List<IFormFile>? Files { get; set; }
     }
 }

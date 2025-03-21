@@ -23,11 +23,12 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-       [HttpPost]
-        public async Task<IActionResult> CreateAnswer([FromBody] AnswersQaRequest answerRequest)
+        [HttpPost]
+        [Consumes("multipart/form-data")] // 📌 Để nhận file ảnh từ FE
+        public async Task<IActionResult> CreateAnswer([FromForm] AnswersQaRequest answerRequest)
         {
             var response = await _service.CreateAnswer(answerRequest);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
 
 
