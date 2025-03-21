@@ -28,10 +28,10 @@ namespace ISC_ELIB_SERVER.Repositories
             return new StudentStatisticsResponse
             {
                 TotalClasses = _context.TeachingAssignments.Count(c => c.UserId == teacherId && c.Active),
-                ExcellentStudents = _context.TestsSubmissions.Count(t => t.User.Id == teacherId && t.Score >= 9),
-                GoodStudents = _context.TestsSubmissions.Count(t => t.User.Id == teacherId && t.Score >= 7 && t.Score < 9),
-                AverageStudents = _context.TestsSubmissions.Count(t => t.User.Id == teacherId && t.Score >= 5 && t.Score < 7),
-                WeakStudents = _context.TestsSubmissions.Count(t => t.User.Id == teacherId && t.Score < 5)
+                ExcellentStudents = _context.StudentScores.Count(t => t.User.Id == teacherId && t.Score >= 9),
+                GoodStudents = _context.StudentScores.Count(t => t.User.Id == teacherId && t.Score >= 7 && t.Score < 9),
+                AverageStudents = _context.StudentScores.Count(t => t.User.Id == teacherId && t.Score >= 5 && t.Score < 7),
+                WeakStudents = _context.StudentScores.Count(t => t.User.Id == teacherId && t.Score < 5)
             };
         }
     }
