@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -11,12 +12,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(255, ErrorMessage = "Nội dung không được vượt quá 255 ký tự")]
         public string? Content { get; set; }
 
-        [MaxLength(50, ErrorMessage = "Loại không được vượt quá 100 ký tự")]
-        public string? Type { get; set; }
+        [Required(ErrorMessage = "Chọn loại hỗ trợ")]
+        public SupportType Type { get; set; }
 
-        public DateTime? CreateAt { get; set; }
-
-        [Required(ErrorMessage = "Mã người dùng không được để trống")]
-        public int UserId { get; set; }
     }
 }
