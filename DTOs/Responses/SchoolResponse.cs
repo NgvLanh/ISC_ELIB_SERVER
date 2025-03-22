@@ -18,7 +18,22 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public DateTime? EstablishedDate { get; set; }
         public string? TrainingModel { get; set; }
         public string? WebsiteUrl { get; set; }
-        public int? UserId { get; set; }
-        //public EducationLevel? EducationLevel { get; set; }
+        public UserResponseSchool? User { get; set; }
+        public EducationLevelResponseSchool? EducationLevel { get; set; }
+    }
+
+    public class UserResponseSchool
+    {
+        public int Id { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+    }
+
+    public class EducationLevelResponseSchool
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? TrainingType { get; set; }
+
     }
 }
