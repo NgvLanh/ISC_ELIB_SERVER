@@ -19,28 +19,26 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<EntryTypeResponse>> GetEntryTypes(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            // thiếu hàm bên repository
-            // var query = _repository.GetEntryTypes().AsQueryable();
+             var query = _repository.GetEntryTypes().AsQueryable();
 
-            // if (!string.IsNullOrEmpty(search))
-            // {
-            //     query = query.Where(et => et.Name.ToLower().Contains(search.ToLower()));
-            // }
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(et => et.Name.ToLower().Contains(search.ToLower()));
+            }
 
-            // query = sortColumn switch
-            // {
-            //     "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(et => et.Name) : query.OrderBy(et => et.Name),
-            //     "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(et => et.Id) : query.OrderBy(et => et.Id),
-            //     _ => query.OrderBy(et => et.Id)
-            // };
+            query = sortColumn switch
+            {
+                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(et => et.Name) : query.OrderBy(et => et.Name),
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(et => et.Id) : query.OrderBy(et => et.Id),
+                _ => query.OrderBy(et => et.Id)
+            };
 
-            // var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            // var response = _mapper.Map<ICollection<EntryTypeResponse>>(result);
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var response = _mapper.Map<ICollection<EntryTypeResponse>>(result);
 
-            // return result.Any()
-            //     ? ApiResponse<ICollection<EntryTypeResponse>>.Success(response)
-            //     : ApiResponse<ICollection<EntryTypeResponse>>.NotFound("Không có dữ liệu");
-            return ApiResponse<ICollection<EntryTypeResponse>>.Success();
+            return result.Any()
+                ? ApiResponse<ICollection<EntryTypeResponse>>.Success(response)
+                : ApiResponse<ICollection<EntryTypeResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<EntryTypeResponse> GetEntryTypeById(long id)
@@ -53,17 +51,24 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<EntryTypeResponse> CreateEntryType(EntryTypeRequest entryTypeRequest)
         {
-            // thiếu hàm bên repository
-            // var existing = _repository.GetEntryTypes() 
-            // .FirstOrDefault(et => et.Name?.ToLower() == entryTypeRequest.Name.ToLower());
-            // if (existing != null)
-            // {
-            //     return ApiResponse<EntryTypeResponse>.Conflict("Tên loại đầu vào đã tồn tại");
-            // }
+            var existing = _repository.GetEntryTypes()
+            .FirstOrDefault(et => et.Name?.ToLower() == entryTypeRequest.Name.ToLower());
+            if (existing != null)
+            {
+                return ApiResponse<EntryTypeResponse>.Conflict("Tên loại đầu vào đã tồn tại");
+            }
 
-            // var entryType = _mapper.Map<EntryType>(entryTypeRequest);
-            // var created = _repository.CreateEntryType(entryType);
-            return ApiResponse<EntryTypeResponse>.Success(_mapper.Map<EntryTypeResponse>("Chưa hoàn thiện"));
+            var entryType = _mapper.Map<EntryType>(entryTypeRequest);
+
+            try
+            {
+                var created = _repository.CreateEntryType(entryType);
+                return ApiResponse<EntryTypeResponse>.Success(_mapper.Map<EntryTypeResponse>(created));
+            }
+            catch (Exception)
+            {
+                return ApiResponse<EntryTypeResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
+            }
         }
 
         public ApiResponse<EntryTypeResponse> UpdateEntryType(long id, EntryTypeRequest entryTypeRequest)

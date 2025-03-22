@@ -7,11 +7,11 @@ namespace ISC_ELIB_SERVER.Repositories
     public class AnswersQaRepo
     {
         private readonly isc_dbContext _context;
-        private readonly CloudinaryService _cloudinaryService;
-        public AnswersQaRepo(isc_dbContext context, CloudinaryService cloudinaryService)
+       
+        public AnswersQaRepo(isc_dbContext context)
         {
             _context = context;
-            _cloudinaryService = cloudinaryService; 
+            
         }
 
         public ICollection<AnswersQa> GetAnswers()
@@ -38,29 +38,30 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-       public AnswersQa CreateAnswer(AnswersQa answer, List<string>? imageBase64List)
-        {
-            _context.AnswersQas.Add(answer);
-            _context.SaveChanges();
-
-            // Nếu có ảnh, lưu vào bảng AnswerImagesQa
-            if (imageBase64List != null && imageBase64List.Count > 0)
+      public AnswersQa CreateAnswer(AnswersQa answer, List<string>? imageBase64List)
             {
-                foreach (var base64 in imageBase64List)
-                {
-                    var image = new AnswerImagesQa
-                    {
-                        AnswerId = answer.Id,
-                        ImageUrl = base64, //Lưu Base64 thay vì URL
-                        Active = true
-                    };
-                    _context.AnswerImagesQas.Add(image);
-                }
+                _context.AnswersQas.Add(answer);
                 _context.SaveChanges();
+
+                // Nếu có ảnh, lưu vào bảng `AnswerImagesQa`
+                if (imageBase64List != null && imageBase64List.Count > 0)
+                {
+                    foreach (var base64 in imageBase64List)
+                    {
+                        var image = new AnswerImagesQa
+                        {
+                            AnswerId = answer.Id,
+                            ImageUrl = base64, // Lưu Base64 thay vì URL
+                            Active = true
+                        };
+                        _context.AnswerImagesQas.Add(image);
+                    }
+                    _context.SaveChanges();
+                }
+
+                return answer;
             }
 
-            return answer;
-        }
 
 
         public AnswersQa UpdateAnswer(AnswersQa answer)
@@ -70,34 +71,24 @@ namespace ISC_ELIB_SERVER.Repositories
             return answer;
         }
 
-        public bool DeleteAnswer(long id)
-        {
-            var answer = _context.AnswersQas
-                .Include(a => a.AnswerImagesQas) // Include hình ảnh của câu trả lời
-                .FirstOrDefault(a => a.Id == id);
-
-            if (answer == null)
+       public bool DeleteAnswer(long id)
             {
-                return false; // Không tìm thấy câu trả lời
+                var answer = _context.AnswersQas.FirstOrDefault(a => a.Id == id);
+                if (answer == null)
+                {
+                    return false; // Không tìm thấy câu trả lời
+                }
+
+                // Xóa tất cả hình ảnh của câu trả lời
+                var answerImages = _context.AnswerImagesQas.Where(ai => ai.AnswerId == id).ToList();
+                _context.AnswerImagesQas.RemoveRange(answerImages);
+
+                // Xóa câu trả lời
+                _context.AnswersQas.Remove(answer);
+
+                _context.SaveChanges();
+                return true;
             }
 
-            // Lấy danh sách ảnh câu trả lời để xóa trên Cloudinary
-            var answerImageUrls = answer.AnswerImagesQas.Select(img => img.ImageUrl).ToList();
-
-            //Xóa ảnh câu trả lời trên Cloudinary
-            foreach (var imageUrl in answerImageUrls)
-            {
-                _cloudinaryService.DeleteImage(imageUrl);
-            }
-
-            // Xóa ảnh câu trả lời trong database
-            _context.AnswerImagesQas.RemoveRange(answer.AnswerImagesQas);
-
-            // Xóa câu trả lời
-            _context.AnswersQas.Remove(answer);
-
-            _context.SaveChanges();
-            return true;
-        }
     }
 }

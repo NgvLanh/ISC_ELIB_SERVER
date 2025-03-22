@@ -167,6 +167,10 @@ builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
 builder.Services.AddScoped<TestsSubmissionRepo>();
 builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
 
+//Test-Answer
+builder.Services.AddScoped<TestAnswerRepo>(); 
+builder.Services.AddScoped<TestAnswerService>(); 
+
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();
@@ -289,7 +293,9 @@ builder.Services.AddAutoMapper(typeof(SessionMapper));
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<SessionRepo>();
 
-
+//class
+builder.Services.AddScoped<ClassRepo>();
+builder.Services.AddScoped<IClassesService, ClassesService>();
 
 //Retirement
 builder.Services.AddScoped<RetirementRepo>();
@@ -299,6 +305,9 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+//EntryType
+builder.Services.AddScoped<EntryTypeRepo>();
+builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -331,6 +340,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

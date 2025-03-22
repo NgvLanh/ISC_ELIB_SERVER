@@ -42,6 +42,29 @@ namespace ISC_ELIB_SERVER.Services
             return result.Any() ? ApiResponse<ICollection<SemesterResponse>>.Success(response) : ApiResponse<ICollection<SemesterResponse>>.NotFound("Không có dữ liệu");
         }
 
+        public ApiResponse<ICollection<object>> GetCourseOfSemesters(int? page, int? pageSize, string? sortColumn, string? sortOrder, int UserId)
+        {
+            var query = _repository.GetCourseOfSemesters(UserId).AsQueryable();
+
+            //query = sortColumn switch
+            //{
+            //    "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+            //    _ => query.OrderBy(ay => ay.Id)
+            //};
+
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<object>>(result);
+
+            return result.Any() ? ApiResponse<ICollection<object>>.Success(response) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
+        }
+
         public ApiResponse<SemesterResponse> GetSemesterById(long id)
         {
             var Semester = _repository.GetSemesterById(id);
@@ -59,6 +82,7 @@ namespace ISC_ELIB_SERVER.Services
 
             var newSemester = new Semester
             {
+                Name = SemesterRequest.Name,
                 StartTime = DateTime.SpecifyKind(SemesterRequest.StartTime, DateTimeKind.Unspecified),
                 EndTime = DateTime.SpecifyKind(SemesterRequest.EndTime, DateTimeKind.Unspecified),
                 AcademicYearId = SemesterRequest.AcademicYearId
@@ -87,7 +111,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SemesterResponse>.BadRequest("Ngày bắt đầu phải trước ngày kết thúc");
             }
-
+            existing.Name = SemesterRequest.Name;
             existing.StartTime = DateTime.SpecifyKind(SemesterRequest.StartTime, DateTimeKind.Unspecified);
             existing.EndTime = DateTime.SpecifyKind(SemesterRequest.EndTime, DateTimeKind.Unspecified);
             existing.AcademicYearId = SemesterRequest.AcademicYearId;

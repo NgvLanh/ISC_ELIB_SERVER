@@ -14,10 +14,12 @@ namespace ISC_ELIB_SERVER.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ILoginService _service;
+        private readonly IUserService _userService;
 
-        public AuthController(ILoginService service, IMapper mapper)
+        public AuthController(ILoginService service, IMapper mapper, IUserService userService)
         {
             _service = service;
+            _userService = userService;
         }
 
         [HttpPost("login")]
@@ -39,7 +41,14 @@ namespace ISC_ELIB_SERVER.Controllers
                 return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
             }
 
-            return Ok(ApiResponse<string>.Success($"User ID: {userId}"));
+            var user = _userService.GetUserById(int.Parse(userId));
+            
+            if(user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user);
         }
     }
 }
