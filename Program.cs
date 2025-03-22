@@ -47,6 +47,11 @@ var jwtSettings = new TokenRequiment
     Subject = Env.GetString("JWT_SUBJECT")
 };
 
+var ghnToken = Env.GetString("GHN_TOKEN") ?? throw new Exception("GHN_TOKEN Không tìm thấy");
+builder.Services.AddHttpClient<GhnService>((sp, httpClient) =>
+{
+    httpClient.DefaultRequestHeaders.Add("Token", ghnToken);
+});
 
 var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
@@ -169,8 +174,8 @@ builder.Services.AddScoped<TestsSubmissionRepo>();
 builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
 
 //Test-Answer
-builder.Services.AddScoped<TestAnswerRepo>(); 
-builder.Services.AddScoped<TestAnswerService>(); 
+builder.Services.AddScoped<TestAnswerRepo>();
+builder.Services.AddScoped<TestAnswerService>();
 
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
