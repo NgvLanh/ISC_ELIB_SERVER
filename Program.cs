@@ -309,6 +309,10 @@ builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
+builder.Services.AddScoped<SupportRepo>();
+builder.Services.AddScoped<ISupportService, SupportService>();
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
