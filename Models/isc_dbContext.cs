@@ -230,7 +230,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
-                entity.HasOne(d => d.School)
+                entity.HasOne<School>()
                     .WithMany(p => p.Campuses)
                     .HasForeignKey(d => d.SchoolId)
                     .HasConstraintName("fk_campuses_school_id");

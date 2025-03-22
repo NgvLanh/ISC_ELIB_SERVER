@@ -20,6 +20,8 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? WebsiteUrl { get; set; }
         public UserResponseSchool? User { get; set; }
         public EducationLevelResponseSchool? EducationLevel { get; set; }
+        public ICollection<CampusResponse>? Campuses { get; set; }
+        public ICollection<AcademicYearResponse>? AcademicYears { get; set; }
     }
 
     public class UserResponseSchool

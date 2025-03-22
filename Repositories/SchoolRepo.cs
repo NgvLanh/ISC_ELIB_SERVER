@@ -16,6 +16,8 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Schools
                 .Include(s => s.EducationLevel)
                 .Include(s => s.User)
+                .Include(s => s.Campuses)
+                .Include(s => s.AcademicYears)
                 .Where(s => s.Active)
                 .ToList();
         }
@@ -25,6 +27,8 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Schools
                 .Include(s => s.User)
                 .Include(s => s.EducationLevel)
+                .Include(s => s.Campuses)
+                .Include(s => s.AcademicYears)
                 .Where(s => s.Active)
                 .FirstOrDefault(s => s.Id == id);
         }
