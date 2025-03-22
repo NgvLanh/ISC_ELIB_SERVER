@@ -20,9 +20,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BTBackendOnline2.Models;
 
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -46,6 +47,11 @@ var jwtSettings = new TokenRequiment
     Subject = Env.GetString("JWT_SUBJECT")
 };
 
+var ghnToken = Env.GetString("GHN_TOKEN") ?? throw new Exception("GHN_TOKEN Không tìm thấy");
+builder.Services.AddHttpClient<GhnService>((sp, httpClient) =>
+{
+    httpClient.DefaultRequestHeaders.Add("Token", ghnToken);
+});
 
 var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
@@ -168,8 +174,8 @@ builder.Services.AddScoped<TestsSubmissionRepo>();
 builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
 
 //Test-Answer
-builder.Services.AddScoped<TestAnswerRepo>(); 
-builder.Services.AddScoped<TestAnswerService>(); 
+builder.Services.AddScoped<TestAnswerRepo>();
+builder.Services.AddScoped<TestAnswerService>();
 
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
@@ -305,13 +311,22 @@ builder.Services.AddScoped<IRetirementService, RetirementService>();
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
+
+//ForgotPassword
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 //EntryType
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
+
 builder.Services.AddScoped<SupportRepo>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 
+//DashboardTeacher
+builder.Services.AddScoped<DashboardTeacherRepo>();
+builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

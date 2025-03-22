@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using ISC_ELIB_SERVER.Utils;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -14,15 +15,19 @@ namespace ISC_ELIB_SERVER.Services
         private readonly UserRepo _userRepository;
         private readonly EducationLevelRepo _educationLevelRepository;
 
-        public SchoolService(SchoolRepo repository, IMapper mapper, UserRepo userRepository, EducationLevelRepo educationLevelRepository)
+        private readonly GhnService _ghnService;
+
+        public SchoolService(SchoolRepo repository, IMapper mapper, UserRepo userRepository,
+         EducationLevelRepo educationLevelRepository, GhnService ghnService)
         {
             _repository = repository;
             _mapper = mapper;
             _userRepository = userRepository;
             _educationLevelRepository = educationLevelRepository;
+            _ghnService = ghnService;
         }
 
-        public ApiResponse<ICollection<SchoolResponse>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public async Task<ApiResponse<ICollection<SchoolResponse>>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetSchools().AsQueryable();
 
@@ -43,19 +48,35 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
-            var response = _mapper.Map<ICollection<SchoolResponse>>(result);
+            var responses = new List<SchoolResponse>();
 
-            return result.Any() ? ApiResponse<ICollection<SchoolResponse>>
-            .Success(response, page, pageSize, _repository.GetSchools().Count)
-            : ApiResponse<ICollection<SchoolResponse>>.NotFound("Không có dữ liệu");
+            foreach (var school in result)
+            {
+                var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(school.ProvinceId ?? 0, school.DistrictId ?? 0, school.WardId?.ToString() ?? "");
+                var response = _mapper.Map<SchoolResponse>(school);
+                response.ProvinceName = provinceName;
+                response.DistrictName = districtName;
+                response.WardName = wardName;
+                responses.Add(response);
+            }
+
+            return responses.Any() ? ApiResponse<ICollection<SchoolResponse>>
+                .Success(responses, page, pageSize, _repository.GetSchools().Count)
+                : ApiResponse<ICollection<SchoolResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public ApiResponse<SchoolResponse> GetSchoolById(long id)
+        public async Task<ApiResponse<SchoolResponse>> GetSchoolById(long id)
         {
             var school = _repository.GetSchoolById(id);
-            return school != null
-                ? ApiResponse<SchoolResponse>.Success(_mapper.Map<SchoolResponse>(school))
-                : ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
+            if (school == null)
+                return ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
+
+            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(school.ProvinceId ?? 0, school.DistrictId ?? 0, school.WardId?.ToString() ?? "");
+            var response = _mapper.Map<SchoolResponse>(school);
+            response.ProvinceName = provinceName;
+            response.DistrictName = districtName;
+            response.WardName = wardName;
+            return ApiResponse<SchoolResponse>.Success(response);
         }
 
         public ApiResponse<SchoolResponse> CreateSchool(SchoolRequest schoolRequest)
