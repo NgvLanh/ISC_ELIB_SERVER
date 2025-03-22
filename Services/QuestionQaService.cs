@@ -13,6 +13,8 @@ namespace ISC_ELIB_SERVER.Services
         private readonly isc_dbContext _context;
         private readonly UserRepo _userRepo;
         private readonly QuestionViewRepo _viewRepo;
+        private readonly long _maxImageSize = 2 * 1024 * 1024; // 2MB
+        private readonly string[] _allowedImageTypes = new[] { ".jpg", ".jpeg", ".png", ".webp" };
 
         public QuestionQaService(QuestionQaRepo repository,  UserRepo userRepo, QuestionViewRepo viewRepo, IMapper mapper, isc_dbContext context)
             {
@@ -147,6 +149,19 @@ namespace ISC_ELIB_SERVER.Services
                 {
                     foreach (var file in files)
                     {
+                         var extension = Path.GetExtension(file.FileName).ToLower();
+
+                        // Kiểm tra định dạng ảnh
+                        if (!_allowedImageTypes.Contains(extension))
+                        {
+                            return ApiResponse<QuestionQaResponse>.BadRequest($"Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
+                        }
+
+                        // Kiểm tra dung lượng
+                        if (file.Length > _maxImageSize)
+                        {
+                            return ApiResponse<QuestionQaResponse>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
+                        }
                         using (var ms = new MemoryStream())
                         {
                             await file.CopyToAsync(ms);

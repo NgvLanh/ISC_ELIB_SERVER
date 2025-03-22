@@ -10,6 +10,8 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly AnswersQaRepo _repository;
         private readonly IMapper _mapper;
+        private readonly long _maxImageSize = 2 * 1024 * 1024; // 2MB
+        private readonly string[] _allowedImageTypes = new[] { ".jpg", ".jpeg", ".png", ".webp" };
 
         public AnswersQaService(AnswersQaRepo repository, IMapper mapper)
         {
@@ -83,6 +85,20 @@ namespace ISC_ELIB_SERVER.Services
             {
                 foreach (var file in answerRequest.Files)
                 {
+                     var extension = Path.GetExtension(file.FileName).ToLower();
+
+                    // Kiểm tra định dạng ảnh
+                    if (!_allowedImageTypes.Contains(extension))
+                    {
+                        return ApiResponse<AnswersQaResponse>.BadRequest($"Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
+                    }
+
+                    // Kiểm tra dung lượng
+                    if (file.Length > _maxImageSize)
+                    {
+                        return ApiResponse<AnswersQaResponse>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
+                    }
+                    
                     using (var ms = new MemoryStream())
                     {
                         await file.CopyToAsync(ms);
@@ -98,7 +114,7 @@ namespace ISC_ELIB_SERVER.Services
                 Content = answerRequest.Content,
                 UserId = answerRequest.UserId,
                 QuestionId = answerRequest.QuestionId,
-                CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified), // 🔥 Sửa lỗi DateTime
+                CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified), // Sửa lỗi DateTime
                 Active = true
             };
 
