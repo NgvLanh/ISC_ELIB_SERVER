@@ -320,6 +320,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
+
+builder.Services.AddScoped<SupportRepo>();
+builder.Services.AddScoped<ISupportService, SupportService>();
+
 //DashboardTeacher
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
@@ -355,6 +359,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
