@@ -7,9 +7,9 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
-        public int? ProvinceId { get; set; }
-        public int? DistrictId { get; set; }
-        public int? WardId { get; set; }
+        public string? ProvinceName { get; set; }
+        public string? DistrictName { get; set; }
+        public string? WardName { get; set; }
         public bool? HeadOffice { get; set; }
         public string? SchoolType { get; set; }
         public string? PhoneNumber { get; set; }
