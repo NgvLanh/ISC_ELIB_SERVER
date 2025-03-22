@@ -9,6 +9,8 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public SchoolMapper()
         {
+            CreateMap<User, UserResponseSchool>();
+            CreateMap<EducationLevel, EducationLevelResponseSchool>();
             CreateMap<School, SchoolResponse>();
             CreateMap<SchoolRequest, School>();
         }

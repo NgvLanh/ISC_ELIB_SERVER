@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using ISC_ELIB_SERVER.Utils;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -71,12 +72,10 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
 
             var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(school.ProvinceId ?? 0, school.DistrictId ?? 0, school.WardId?.ToString() ?? "");
-
             var response = _mapper.Map<SchoolResponse>(school);
             response.ProvinceName = provinceName;
             response.DistrictName = districtName;
             response.WardName = wardName;
-
             return ApiResponse<SchoolResponse>.Success(response);
         }
 
