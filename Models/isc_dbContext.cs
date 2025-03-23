@@ -78,8 +78,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<UserStatus> UserStatuses { get; set; } = null!;
         public virtual DbSet<WorkProcess> WorkProcesses { get; set; } = null!;
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
-
-
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -2182,6 +2181,26 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.WorkProcesses)
                     .HasForeignKey(d => d.SubjectGroupsId)
                     .HasConstraintName("fk_work_process_subject_group_id");
+            });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.ToTable("refresh_token");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ExpireDate)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("expire_date");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Token).HasColumnName("token");
+                entity.Property(e => e.Email).HasColumnName("email");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RefreshTokens)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_refresh_token_user_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

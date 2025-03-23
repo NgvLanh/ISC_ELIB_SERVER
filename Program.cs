@@ -340,12 +340,18 @@ builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
 
+//RefreshToken
+builder.Services.AddScoped<RefreshTokenRepo>();
+builder.Services.AddScoped<IRefreshToken, RefreshTokeService>();
+
+
 builder.Services.AddScoped<SupportRepo>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 
 //DashboardTeacher
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
