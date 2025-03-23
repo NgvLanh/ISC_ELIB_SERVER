@@ -19,6 +19,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BTBackendOnline2.Models;
+using OfficeOpenXml;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,7 @@ var jwtSettings = new TokenRequiment
 
 var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
