@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
