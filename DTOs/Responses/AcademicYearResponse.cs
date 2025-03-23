@@ -11,7 +11,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string Name { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public int SchoolId { get; set; }
         public ICollection<SemesterAcademicYearResponse>? Semesters { get; set; }
     }
 

@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -11,14 +12,16 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public ICollection<Subject> GetAllSubject()
+        public  IQueryable<Subject> GetAllSubject()
         {
-            return _context.Subjects.ToList();
+            return  _context.Subjects
+                            .Include(s => s.SubjectType)
+                            .Include(s=> s.SubjectGroup);
         }
 
         public Subject GetSubjectById(long id)
         {
-            return _context.Subjects.FirstOrDefault(x => x.Id == id);
+            return  _context.Subjects.FirstOrDefault(x => x.Id == id);
         }
 
         public Subject CreateSubject(Subject Subject)
