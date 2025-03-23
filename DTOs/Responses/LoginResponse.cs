@@ -1,12 +1,13 @@
 ﻿using BTBackendOnline2.Models;
+using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class LoginResponse
     {
         public string? AccessToken { get; set; }
-        public string? RefreshToken { get; set; }
         public UserResponseLogin? User { get; set; }
+        public RefreshTokenResponse? RefreshToken { get; set; }
     }
 
     public class UserResponseLogin

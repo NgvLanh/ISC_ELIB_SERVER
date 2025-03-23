@@ -126,7 +126,7 @@ namespace ISC_ELIB_SERVER.Services
                 AddressFull = userRequest.AddressFull,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl
+                AvatarUrl = userRequest.AvatarUrl  
             };
 
             try
