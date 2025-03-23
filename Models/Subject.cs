@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -24,7 +25,9 @@ namespace ISC_ELIB_SERVER.Models
         public int? SubjectTypeId { get; set; }
         public bool Active { get; set; }
 
+        [JsonIgnore]
         public virtual SubjectGroup? SubjectGroup { get; set; }
+        [JsonIgnore]
         public virtual SubjectType? SubjectType { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
         public virtual ICollection<Exam> Exams { get; set; }
