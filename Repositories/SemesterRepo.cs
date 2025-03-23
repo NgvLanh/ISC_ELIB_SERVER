@@ -108,15 +108,15 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<object> GetCourseOfSemesters(int userId)
         {
             var dayOfWeekMapping = new Dictionary<DayOfWeek, string>
-    {
-        { DayOfWeek.Sunday, "Chủ Nhật" },
-        { DayOfWeek.Monday, "Thứ 2" },
-        { DayOfWeek.Tuesday, "Thứ 3" },
-        { DayOfWeek.Wednesday, "Thứ 4" },
-        { DayOfWeek.Thursday, "Thứ 5" },
-        { DayOfWeek.Friday, "Thứ 6" },
-        { DayOfWeek.Saturday, "Thứ 7" }
-    };
+            {
+                { DayOfWeek.Sunday, "Chủ Nhật" },
+                { DayOfWeek.Monday, "Thứ 2" },
+                { DayOfWeek.Tuesday, "Thứ 3" },
+                { DayOfWeek.Wednesday, "Thứ 4" },
+                { DayOfWeek.Thursday, "Thứ 5" },
+                { DayOfWeek.Friday, "Thứ 6" },
+                { DayOfWeek.Saturday, "Thứ 7" }
+            };
 
             var rawData = (from ta in _context.TeachingAssignments
                            where ta.UserId == userId
