@@ -48,5 +48,13 @@ namespace ISC_ELIB_SERVER.Controllers
             var result = _service.DeleteTestAnswer(id);
             return Ok(result);
         }
+
+       [HttpPost("import-excel")]
+        public async Task<IActionResult> ImportExcel([FromForm] ImportQuestionExcelRequest request)
+        {
+            var result = await _service.ImportFromExcelAsync(request.File, request.TestId, request.QuestionType);
+            return Ok(result);
+        }
+
     }
 }

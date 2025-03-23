@@ -4,8 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
+    
     public partial class TestQuestion
-    {
+    {    public enum QuestionTypeEnum
+        {
+            TracNghiem = 0,
+            TuLuan = 1
+        }
         public TestQuestion()
         {
             TestAnswers = new HashSet<TestAnswer>();
