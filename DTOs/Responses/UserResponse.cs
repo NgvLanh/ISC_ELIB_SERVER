@@ -23,7 +23,5 @@
         public int DistrictCode { get; set; }
         public int WardCode { get; set; }
         public string? Street { get; set; }
-        public bool Active { get; set; }
-        public string? AvatarUrl { get; set; }
     }
 }

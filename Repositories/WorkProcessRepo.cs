@@ -14,24 +14,25 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<WorkProcess> GetWorkProcess()
         {
-            return _context.WorkProcesses.Where(wp => wp.Active).ToList();
+            return _context.WorkProcesses.ToList();
         }
 
-        public WorkProcess? GetWorkProcessById(long id)
+        public WorkProcess GetWorkProcessById(long id)
         {
-            return _context.WorkProcesses.FirstOrDefault(s => s.Id == id && s.Active);
+            return _context.WorkProcesses.FirstOrDefault(s => s.Id == id);
         }
 
-        public WorkProcess CreateWorkProcess(WorkProcess workProcess)
+        public WorkProcess CreateWorkProcess(WorkProcess WorkProcess)
         {
-            _context.WorkProcesses.Add(workProcess);
+            _context.WorkProcesses.Add(WorkProcess);
             _context.SaveChanges();
-            return workProcess;
+            return WorkProcess;
         }
 
-        public WorkProcess? UpdateWorkProcess(long id, WorkProcessRequest workProcess)
+        public WorkProcess UpdateWorkProcess(long id, WorkProcessRequest workProcess)
         {
             var existingWorkProcess = GetWorkProcessById(id);
+
 
             if (existingWorkProcess == null)
             {
@@ -50,13 +51,13 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingWorkProcess;
         }
 
+
         public bool DeleteWorkProcess(long id)
         {
-            var workProcess = GetWorkProcessById(id);
-            if (workProcess != null)
+            var WorkProcess = GetWorkProcessById(id);
+            if (WorkProcess != null)
             {
-                workProcess.Active = false;
-                _context.WorkProcesses.Update(workProcess);
+                _context.WorkProcesses.Remove(WorkProcess);
                 return _context.SaveChanges() > 0;
             }
             return false;

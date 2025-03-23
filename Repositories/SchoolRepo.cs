@@ -15,22 +15,13 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.Schools
                 .Include(s => s.EducationLevel)
-                .Include(s => s.User)
-                .Include(s => s.Campuses)
-                .Include(s => s.AcademicYears)
                 .Where(s => s.Active)
                 .ToList();
         }
 
         public School GetSchoolById(long id)
         {
-            return _context.Schools
-                .Include(s => s.User)
-                .Include(s => s.EducationLevel)
-                .Include(s => s.Campuses)
-                .Include(s => s.AcademicYears)
-                .Where(s => s.Active)
-                .FirstOrDefault(s => s.Id == id);
+            return _context.Schools.Where(s => s.Active).FirstOrDefault(s => s.Id == id);
         }
 
         public School CreateSchool(School school)

@@ -21,25 +21,14 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         // Lấy tất cả Attachment
-        public ApiResponse<ICollection<TestsAttachmentResponse>> GetTestsAttachments(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<TestsAttachment>> GetTestsAttachments()
         {
-            var query = _repository.GetTestsAttachments().AsQueryable();
-
-            query = sortColumn switch
+            var attachments = _repository.GetTestsAttachments();
+            if (attachments.Count == 0)
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Id) : query.OrderBy(ts => ts.Id),
-                _ => query.OrderBy(ts => ts.Id)
-            };
-
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var response = _mapper.Map<ICollection<TestsAttachmentResponse>>(result);
-
-            return result.Any()
-                 ? ApiResponse<ICollection<TestsAttachmentResponse>>.Success(response, page, pageSize, totalItems)
-                 : ApiResponse<ICollection<TestsAttachmentResponse>>.NotFound("Không có dữ liệu");
+                return ApiResponse<ICollection<TestsAttachment>>.NotFound("No attachment found.");
+            }
+            return ApiResponse<ICollection<TestsAttachment>>.Success(attachments);
         }
 
         // Lấy Attachment theo ID
@@ -48,7 +37,7 @@ namespace ISC_ELIB_SERVER.Services
             var attachment = _repository.GetTestsAttachmentById(id);
             if (attachment == null)
             {
-                return ApiResponse<TestsAttachmentResponse>.NotFound("Không tồn tại.");
+                return ApiResponse<TestsAttachmentResponse>.NotFound("Attachment not found.");
             }
             var response = _mapper.Map<TestsAttachmentResponse>(attachment);
             return ApiResponse<TestsAttachmentResponse>.Success(response);
@@ -61,7 +50,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
                 {
-                    { "FileUrl", new[] { "File URL không được bỏ trống" } }
+                    { "FileUrl", new[] { "File URL cannot be empty" } }
                 });
             }
 
@@ -72,7 +61,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
                 {
-                    { "Database", new[] { "Thêm mới thất bại" } }
+                    { "Database", new[] { "Failed to create attachment." } }
                 });
             }
 
@@ -87,7 +76,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
                 {
-                    { "Request", new[] { "Không thể là bỏ trống" } }
+                    { "Request", new[] { "Request data cannot be null" } }
                 });
             }
 
@@ -95,7 +84,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
                 {
-                    { "FileUrl", new[] { "File URL không được bỏ trống" } }
+                    { "FileUrl", new[] { "File URL cannot be empty" } }
                 });
             }
 
@@ -103,7 +92,7 @@ namespace ISC_ELIB_SERVER.Services
             var existingAttachment = _repository.GetTestsAttachmentById(id);
             if (existingAttachment == null)
             {
-                return ApiResponse<TestsAttachmentResponse>.NotFound("Không tồn tại.");
+                return ApiResponse<TestsAttachmentResponse>.NotFound("Attachment not found.");
             }
 
             try
@@ -119,7 +108,7 @@ namespace ISC_ELIB_SERVER.Services
                 {
                     return ApiResponse<TestsAttachmentResponse>.Error(new Dictionary<string, string[]>
                     {
-                        { "Database", new[] { "Cập nhật thất bại" } }
+                        { "Database", new[] { "Failed to update attachment." } }
                     });
                 }
 
@@ -143,7 +132,7 @@ namespace ISC_ELIB_SERVER.Services
             var existingAttachment = _repository.GetTestsAttachmentById(id);
             if (existingAttachment == null)
             {
-                return ApiResponse<TestsAttachmentResponse>.NotFound("Không tồn tại.");
+                return ApiResponse<TestsAttachmentResponse>.NotFound("Attachment not found.");
             }
 
             try

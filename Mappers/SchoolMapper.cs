@@ -9,10 +9,6 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public SchoolMapper()
         {
-            CreateMap<Campus, CampusResponse>()
-                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User != null ? src.User : null));
-            CreateMap<User, UserResponseSchool>();
-            CreateMap<EducationLevel, EducationLevelResponseSchool>();
             CreateMap<School, SchoolResponse>();
             CreateMap<SchoolRequest, School>();
         }

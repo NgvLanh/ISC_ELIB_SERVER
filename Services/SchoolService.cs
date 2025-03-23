@@ -4,7 +4,6 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using ISC_ELIB_SERVER.Utils;
-using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -12,22 +11,14 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly SchoolRepo _repository;
         private readonly IMapper _mapper;
-        private readonly UserRepo _userRepository;
-        private readonly EducationLevelRepo _educationLevelRepository;
 
-        private readonly GhnService _ghnService;
-
-        public SchoolService(SchoolRepo repository, IMapper mapper, UserRepo userRepository,
-         EducationLevelRepo educationLevelRepository, GhnService ghnService)
+        public SchoolService(SchoolRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _userRepository = userRepository;
-            _educationLevelRepository = educationLevelRepository;
-            _ghnService = ghnService;
         }
 
-        public async Task<ApiResponse<ICollection<SchoolResponse>>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<SchoolResponse>> GetSchools(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetSchools().AsQueryable();
 
@@ -48,53 +39,29 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
-            var responses = new List<SchoolResponse>();
 
-            foreach (var school in result)
-            {
-                var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(school.ProvinceId ?? 0, school.DistrictId ?? 0, school.WardId?.ToString() ?? "");
-                var response = _mapper.Map<SchoolResponse>(school);
-                response.ProvinceName = provinceName;
-                response.DistrictName = districtName;
-                response.WardName = wardName;
-                responses.Add(response);
-            }
+            var response = _mapper.Map<ICollection<SchoolResponse>>(result);
 
-            return responses.Any() ? ApiResponse<ICollection<SchoolResponse>>
-                .Success(responses, page, pageSize, _repository.GetSchools().Count)
-                : ApiResponse<ICollection<SchoolResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<SchoolResponse>>
+            .Success(response, page, pageSize, _repository.GetSchools().Count)
+            : ApiResponse<ICollection<SchoolResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public async Task<ApiResponse<SchoolResponse>> GetSchoolById(long id)
+        public ApiResponse<SchoolResponse> GetSchoolById(long id)
         {
             var school = _repository.GetSchoolById(id);
-            if (school == null)
-                return ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
-
-            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(school.ProvinceId ?? 0, school.DistrictId ?? 0, school.WardId?.ToString() ?? "");
-            var response = _mapper.Map<SchoolResponse>(school);
-            response.ProvinceName = provinceName;
-            response.DistrictName = districtName;
-            response.WardName = wardName;
-            return ApiResponse<SchoolResponse>.Success(response);
+            return school != null
+                ? ApiResponse<SchoolResponse>.Success(_mapper.Map<SchoolResponse>(school))
+                : ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
         }
 
         public ApiResponse<SchoolResponse> CreateSchool(SchoolRequest schoolRequest)
         {
-            //if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
-            //{
-            //    return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
-            //}
-
-            if (_educationLevelRepository.GetEducationLevelById((long)schoolRequest.EducationLevelId) == null)
-            {
-                return ApiResponse<SchoolResponse>.BadRequest("Mã cấp giáo dục không tồn tại");
-            }
-
             string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
+
             if (!Enum.IsDefined(typeof(TrainingModel), trainingModel))
             {
-                return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'");
+                return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'" + trainingModel);
             }
 
             if (_repository.IsSchoolNameExists(schoolRequest.Name))
@@ -138,21 +105,16 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SchoolResponse>.NotFound($"Không tìm thấy trường #{id}");
             }
-
-            if (_userRepository.GetUserById(schoolRequest.UserId ?? 0) == null)
-            {
-                return ApiResponse<SchoolResponse>.BadRequest("Mã người dùng không tồn tại");
-            }
-
-            if (_educationLevelRepository.GetEducationLevelById((long)schoolRequest.EducationLevelId) == null)
-            {
-                return ApiResponse<SchoolResponse>.BadRequest("Mã cấp giáo dục không tồn tại");
-            }
-
             string trainingModel = schoolRequest.TrainingModel.ToLower().Replace(" ", "");
+
             if (!Enum.IsDefined(typeof(TrainingModel), trainingModel))
             {
                 return ApiResponse<SchoolResponse>.BadRequest("Mô hình đào tạo không hợp lệ, chỉ chấp nhận 'Công lập' hoặc 'Dân lập'");
+            }
+
+            if (_repository.IsSchoolNameExists(schoolRequest.Name, id))
+            {
+                return ApiResponse<SchoolResponse>.BadRequest("Tên trường đã tồn tại");
             }
 
             existing.Code = schoolRequest.Code;
@@ -180,6 +142,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<SchoolResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
             }
         }
+
         public ApiResponse<object> DeleteSchool(long id)
         {
             var success = _repository.DeleteSchool(id);

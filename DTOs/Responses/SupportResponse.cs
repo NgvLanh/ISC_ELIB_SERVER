@@ -8,6 +8,5 @@
         public string? Type { get; set; }
         public DateTime? CreateAt { get; set; }
         public int UserId { get; set; }
-        public bool Active { get; set; }
     }
 }

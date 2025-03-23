@@ -16,11 +16,10 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Create: Thêm mới TeacherInfo vào database
-        public TeacherInfo CreateTeacherInfo(TeacherInfo teacherInfo)
+        public void AddTeacherInfo(TeacherInfo teacherInfo)
         {
             _context.TeacherInfos.Add(teacherInfo);
             _context.SaveChanges();
-            return teacherInfo;
         }
 
         // Read: Lấy tất cả TeacherInfos từ database

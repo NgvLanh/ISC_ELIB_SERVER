@@ -16,10 +16,10 @@ namespace ISC_ELIB_SERVER.Controllers
 
         [HttpGet]
         public IActionResult GetAcademicYears(
-            [FromQuery] int? page = null,
-            [FromQuery] int? pageSize = null,
-            [FromQuery] string? sortColumn = null,
-            [FromQuery] string? sortOrder = null
+            [FromQuery] int? page = 1,
+            [FromQuery] int? pageSize = 10,
+            [FromQuery] string? sortColumn = "Id",
+            [FromQuery] string? sortOrder = "asc"
             )
         {
             var response = _service.GetAcademicYears(page, pageSize, sortColumn, sortOrder);
