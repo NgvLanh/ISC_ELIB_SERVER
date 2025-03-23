@@ -216,13 +216,24 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<User>.NotFound("Không tìm thấy người dùng để xóa");
         }
 
-        public async Task UpdateUserPassword(int userId, string newPassword)
+        public ApiResponse<UserResponse> UpdateUserPassword(int userId, string newPassword)
         {
             var user = _userRepo.GetUserById(userId);
-            if (user != null)
+            if (user == null)
             {
-                user.Password = ComputeSha256(newPassword);
-                await Task.Run(() => _userRepo.UpdateUser(user));
+                return ApiResponse<UserResponse>.NotFound("Không tìm thấy người dùng để cập nhật mật khẩu");
+            }
+
+            user.Password = ComputeSha256(newPassword);
+
+            try
+            {
+                var updatedUser = _userRepo.UpdateUser(user);
+                return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<UserResponse>.BadRequest(ex.Message);
             }
         }
 

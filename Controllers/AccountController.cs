@@ -1,4 +1,6 @@
-﻿using ISC_ELIB_SERVER.Services.Interfaces;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,15 +30,25 @@ public class AccountController : ControllerBase
         var user = await _passwordResetService.GetUserByEmailAsync(request.Email);
         if (user == null)
         {
-            return NotFound("Email không đúng");
+            return new ObjectResult(ApiResponse<string>.NotFound("Email không đúng"))
+            {
+                StatusCode = 404
+            };
         }
 
         var otp = new Random().Next(100000, 999999).ToString();
         await _passwordResetService.SaveOtpAsync(user.Id, otp);
 
-        await _emailService.SendEmailAsync(user.Email, "Mã OTP", otp);
+        var emailSent = await _emailService.SendEmailAsync(user.Email, "Mã OTP", otp);
+        if (!emailSent)
+        {
+            return new ObjectResult(ApiResponse<string>.Fail("Gửi email thất bại"))
+            {
+                StatusCode = 500
+            };
+        }
 
-        return Ok("OTP đã được gửi đến email của bạn");
+        return Ok(ApiResponse<string>.Success("OTP đã được gửi đến email của bạn"));
     }
 
     [HttpPost("verify-otp")]
@@ -46,25 +58,69 @@ public class AccountController : ControllerBase
         var user = await _passwordResetService.GetUserByEmailAsync(request.Email);
         if (user == null)
         {
-            return NotFound("Email không đúng");
+            return new ObjectResult(ApiResponse<string>.NotFound("Email không đúng"))
+            {
+                StatusCode = 404
+            };
         }
 
         var isValidOtp = await _passwordResetService.VerifyOtpAsync(user.Id, request.Otp);
         if (!isValidOtp)
         {
-            return BadRequest("OTP không hợp lệ");
+            return new ObjectResult(ApiResponse<string>.BadRequest("OTP không hợp lệ"))
+            {
+                StatusCode = 400
+            };
         }
 
-        // Tạo mật khẩu tạm thời
         var temporaryPassword = GenerateRandomPassword();
+        var updatePasswordResponse = _userService.UpdateUserPassword(user.Id, temporaryPassword);
+        if (updatePasswordResponse.Code == 1)
+        {
+            return new ObjectResult(updatePasswordResponse)
+            {
+                StatusCode = 400
+            };
+        }
 
-        // Cập nhật mật khẩu tạm thời trong cơ sở dữ liệu
-        await _userService.UpdateUserPassword(user.Id, temporaryPassword);
+        await _passwordResetService.SaveTemporaryPasswordAsync(user.Id, temporaryPassword);
 
-        // Gửi mật khẩu tạm thời qua email
-        await _emailService.SendEmailAsync(user.Email, "Mật khẩu tạm thời của bạn", temporaryPassword);
+        var emailSent = await _emailService.SendEmailAsync(user.Email, "Mật khẩu tạm thời của bạn", temporaryPassword);
+        if (!emailSent)
+        {
+            return new ObjectResult(ApiResponse<string>.Fail("Gửi email thất bại"))
+            {
+                StatusCode = 500
+            };
+        }
 
-        return Ok("Mật khẩu tạm thời đã được gửi đến email của bạn");
+        return Ok(ApiResponse<string>.Success("Mật khẩu tạm thời đã được gửi đến email của bạn"));
+    }
+
+    [HttpPost("update-password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordByEmailRequest request)
+    {
+        var user = await _passwordResetService.VerifyTemporaryPasswordAsync(request.Email, request.TemporaryPassword);
+        if (user == null)
+        {
+            return new ObjectResult(ApiResponse<string>.BadRequest("Mật khẩu tạm thời không hợp lệ hoặc đã hết hạn"))
+            {
+                StatusCode = 400
+            };
+        }
+
+        var updatePasswordResponse = _userService.UpdateUserPassword(user.Id, request.NewPassword);
+        if (updatePasswordResponse.Code == 1)
+        {
+            return new ObjectResult(updatePasswordResponse)
+            {
+                StatusCode = 400
+            };
+        }
+
+        await _passwordResetService.InvalidateTemporaryPasswordAsync(user.Id);
+
+        return Ok(ApiResponse<string>.Success("Mật khẩu đã được cập nhật thành công"));
     }
 
     private string GenerateRandomPassword()
@@ -85,4 +141,5 @@ public class AccountController : ControllerBase
 
         return sb.ToString();
     }
+
 }

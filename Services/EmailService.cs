@@ -1,4 +1,4 @@
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MimeKit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +27,26 @@ public class EmailService : IEmailService
             message.To.Add(new MailboxAddress("", to));
             message.Subject = subject;
 
+            string emailType = subject.Contains("OTP") ? "OTP" : "temporaryPassword";
+            string emailBodyContent = body; 
+            string validityMessage = string.Empty;
+
+            if (emailType == "temporaryPassword")
+            {
+                validityMessage = "Mật khẩu tạm thời chỉ tồn tại được <strong>30 phút</strong>.";
+            }
+            else if (emailType == "OTP")
+            {
+                validityMessage = "OTP chỉ tồn tại được <strong>10 phút</strong>.";
+            }
+
             var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "EmailTemplate.html");
             var template = await File.ReadAllTextAsync(templatePath);
-            var htmlBody = template.Replace("{{subject}}", subject).Replace("{{body}}", body);
+
+            var htmlBody = template
+                .Replace("{{body}}", emailBodyContent)
+                .Replace("{{validityMessage}}", validityMessage)
+                .Replace("{{subject}}", subject); 
 
             message.Body = new TextPart("html")
             {
@@ -48,7 +65,6 @@ public class EmailService : IEmailService
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
                     return false;
                 }
             }
