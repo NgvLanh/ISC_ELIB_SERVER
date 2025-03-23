@@ -1,23 +1,28 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
 public class AccountController : ControllerBase
 {
     private readonly IPasswordResetService _passwordResetService;
     private readonly IEmailService _emailService;
+    private readonly IUserService _userService;
 
-    public AccountController(IPasswordResetService passwordResetService, IEmailService emailService)
+    public AccountController(IPasswordResetService passwordResetService, IEmailService emailService, IUserService userService)
     {
         _passwordResetService = passwordResetService;
         _emailService = emailService;
+        _userService = userService;
     }
 
     [HttpPost("request-password-reset")]
+    [AllowAnonymous]
     public async Task<IActionResult> RequestPasswordReset([FromBody] PasswordResetRequest request)
     {
         var user = await _passwordResetService.GetUserByEmailAsync(request.Email);
@@ -35,6 +40,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("verify-otp")]
+    [AllowAnonymous]
     public async Task<IActionResult> VerifyOtp([FromBody] PasswordResetOtpVerificationRequest request)
     {
         var user = await _passwordResetService.GetUserByEmailAsync(request.Email);
@@ -49,8 +55,34 @@ public class AccountController : ControllerBase
             return BadRequest("OTP không hợp lệ");
         }
 
-        await _emailService.SendEmailAsync(user.Email, "Mật khẩu của bạn", user.Password);
+        // Tạo mật khẩu tạm thời
+        var temporaryPassword = GenerateRandomPassword();
 
-        return Ok("Mật khẩu đã được gửi đến email của bạn");
+        // Cập nhật mật khẩu tạm thời trong cơ sở dữ liệu
+        await _userService.UpdateUserPassword(user.Id, temporaryPassword);
+
+        // Gửi mật khẩu tạm thời qua email
+        await _emailService.SendEmailAsync(user.Email, "Mật khẩu tạm thời của bạn", temporaryPassword);
+
+        return Ok("Mật khẩu tạm thời đã được gửi đến email của bạn");
+    }
+
+    private string GenerateRandomPassword()
+    {
+        const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            byte[] uintBuffer = new byte[sizeof(uint)];
+
+            while (sb.Length < 8)
+            {
+                rng.GetBytes(uintBuffer);
+                uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                sb.Append(validChars[(int)(num % (uint)validChars.Length)]);
+            }
+        }
+
+        return sb.ToString();
     }
 }
