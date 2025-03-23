@@ -1751,7 +1751,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.QuestionText).HasColumnName("question_text");
 
                 entity.Property(e => e.QuestionType)
-                    .HasMaxLength(50)
                     .HasColumnName("question_type");
 
                 entity.Property(e => e.TestId).HasColumnName("test_id");

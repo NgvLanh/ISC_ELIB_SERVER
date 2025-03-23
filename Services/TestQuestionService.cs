@@ -34,12 +34,14 @@ namespace ISC_ELIB_SERVER.Services
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
             var response = _mapper.Map<ICollection<TestQuestionResponse>>(result);
 
             return result.Any()
-                    ? ApiResponse<ICollection<TestQuestionResponse>>.Success(response, page, pageSize, totalItems)
-                    : ApiResponse<ICollection<TestQuestionResponse>>.NotFound("Không có dữ liệu");
+                ? ApiResponse<ICollection<TestQuestionResponse>>.Success(response, page, pageSize, totalItems)
+                : ApiResponse<ICollection<TestQuestionResponse>>.NotFound("Không có dữ liệu");
         }
+
 
         public ApiResponse<TestQuestionResponse> GetTestQuestionById(long id)
         {
