@@ -13,7 +13,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? UserId { get; set; }
         public bool Active { get; set; }
 
-        public virtual School? School { get; set; }
+        // public virtual School? School { get; set; }
         public virtual User? User { get; set; }
     }
 }

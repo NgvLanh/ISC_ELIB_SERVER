@@ -16,7 +16,6 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<Campus> GetCampuses()
         {
             return _context.Campuses
-                .Include(c => c.School)
                 .Include(c => c.User)
                 .Where(c => c.Active)
                 .ToList();
@@ -24,7 +23,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public Campus GetCampusById(long id)
         {
-            return _context.Campuses.Where(c => c.Active).FirstOrDefault(c => c.Id == id);
+            return _context.Campuses
+                .Include(c => c.User)
+                .Where(c => c.Active).FirstOrDefault(c => c.Id == id);
         }
 
         public Campus CreateCampus(Campus campus)
