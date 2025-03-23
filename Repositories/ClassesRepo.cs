@@ -1,11 +1,10 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
     public interface IClassesRepo
     {
-        IQueryable<Class> GetClass();
+        ICollection<Class> GetClass();
         Class GetClassById(int id);
         Class CreateClass(Class classes);
         Class? UpdateClass(Class classes);
@@ -22,82 +21,26 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public IQueryable<Class> GetClass()
+        public ICollection<Class> GetClass()
         {
-            return _context.Classes
-                .AsNoTracking()
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType);
+            return _context.Classes.ToList();
         }
 
-
-
-
-        public Class? GetClassById(int id)
+        public Class GetClassById(int id)
         {
-            return _context.Classes
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == id);
+            return _context.Classes.FirstOrDefault(c => c.Id == id);
         }
-
-
-
-
-
 
         public Class CreateClass(Class newClass)
         {
             _context.Classes.Add(newClass);
             _context.SaveChanges();
-            return _context.Classes
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == newClass.Id);
+            return newClass;
         }
 
         public Class? UpdateClass(Class updatedClass)
         {
-            var existingClass = _context.Classes
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == updatedClass.Id);
+            var existingClass = _context.Classes.Find(updatedClass.Id);
 
             if (existingClass == null)
             {
@@ -112,15 +55,8 @@ namespace ISC_ELIB_SERVER.Repositories
             existingClass.AcademicYearId = updatedClass.AcademicYearId;
 
             _context.SaveChanges();
-
-            return _context.Classes
-                .Include(c => c.GradeLevel)
-                .Include(c => c.AcademicYear)
-                .Include(c => c.User)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == updatedClass.Id);
+            return existingClass;
         }
-
 
         public bool DeleteClass(int id)
         {
