@@ -1,4 +1,4 @@
-﻿namespace ISC_ELIB_SERVER.Models
+﻿namespace ISC_ELIB_SERVER.Enums
 {
     public enum QuestionType
     {
