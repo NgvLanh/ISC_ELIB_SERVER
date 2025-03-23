@@ -2,6 +2,7 @@
 using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -49,6 +50,15 @@ namespace ISC_ELIB_SERVER.Controllers
             }
 
             return Ok(user);
+        }
+
+        [HttpGet("GetAccessToken")]
+        public IActionResult GetAccessToken(string token)
+        {
+
+            var response = _service.AuthRefreshToken(token);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
     }
 }
