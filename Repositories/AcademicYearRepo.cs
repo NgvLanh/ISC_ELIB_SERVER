@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -20,6 +21,7 @@ namespace ISC_ELIB_SERVER.Repositories
         public AcademicYear GetAcademicYearById(long id)
         {
             return _context.AcademicYears
+                .Include(a => a.Semesters)
                 .Where(a => a.Active)
                 .FirstOrDefault(s => s.Id == id);
         }
