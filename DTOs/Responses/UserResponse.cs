@@ -19,9 +19,15 @@
         public int ClassId { get; set; }
         public int EntryType { get; set; }
         public string? AddressFull { get; set; }
-        public int ProvinceCode { get; set; }
-        public int DistrictCode { get; set; }
-        public int WardCode { get; set; }
+        public int? ProvinceCode { get; set; }
+        public int? DistrictCode { get; set; }
+        public int? WardCode { get; set; }      
         public string? Street { get; set; }
+        public bool Active { get; set; }
+        public string? AvatarUrl { get; set; }
+        // Thêm thông tin địa chỉ chi tiết
+        public string? ProvinceName { get; set; }
+        public string? DistrictName { get; set; }
+        public string? WardName { get; set; }
     }
 }

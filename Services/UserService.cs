@@ -11,14 +11,17 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly UserRepo _repository;
         private readonly IMapper _mapper;
+        private readonly GhnService _ghnService;
 
-        public UserService(UserRepo repository, IMapper mapper)
+        public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
+            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
         {
             _repository = repository;
             _mapper = mapper;
+            _ghnService = ghnService;
         }
 
-        public ApiResponse<ICollection<UserResponse>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
             var query = _repository.GetUsers().AsQueryable();
 
@@ -39,29 +42,51 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(u => u.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var result = query.ToList();
+            var responses = new List<UserResponse>();
 
-            var response = _mapper.Map<ICollection<UserResponse>>(result);
+            // Lấy địa chỉ đầy đủ từ GHN API cho từng user
+            foreach (var user in result)
+            {
+                var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+                var response = _mapper.Map<UserResponse>(user);
+                response.ProvinceName = provinceName;
+                response.DistrictName = districtName;
+                response.WardName = wardName;
+                responses.Add(response);
+            }
 
-            return result.Any()
-                ? ApiResponse<ICollection<UserResponse>>.Success(response)
-                : ApiResponse<ICollection<UserResponse>>.NotFound("Không có dữ liệu người dùng");
+            return responses.Any() ? ApiResponse<ICollection<UserResponse>>
+                .Success(responses, page, pageSize, _userRepo.GetUsers().Count)
+                : ApiResponse<ICollection<UserResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public ApiResponse<UserResponse> GetUserById(int id)
+        public async Task<ApiResponse<UserResponse>> GetUserById(int id)
         {
-            var user = _repository.GetUserById(id);
-            return user != null
-                ? ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user))
-                : ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với ID #{id}");
+            var user = _userRepo.GetUserById(id);
+            if (user == null) return ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với ID #{id}");
+
+            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+            var response = _mapper.Map<UserResponse>(user);
+            response.ProvinceName = provinceName;
+            response.DistrictName = districtName;
+            response.WardName = wardName;
+
+            return ApiResponse<UserResponse>.Success(response);
         }
 
-        public ApiResponse<UserResponse> GetUserByCode(string code)
+        public async Task<ApiResponse<UserResponse>> GetUserByCode(string code)
         {
-            var user = _repository.GetUsers().FirstOrDefault(u => u.Code?.ToLower() == code.ToLower());
-            return user != null
-                ? ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user))
-                : ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với mã {code}");
+            var user = _userRepo.GetUsers().FirstOrDefault(u => u.Code?.ToLower() == code.ToLower());
+            if (user == null) return ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với mã {code}");
+
+            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+            var response = _mapper.Map<UserResponse>(user);
+            response.ProvinceName = provinceName;
+            response.DistrictName = districtName;
+            response.WardName = wardName;
+
+            return ApiResponse<UserResponse>.Success(response);
         }
 
         public ApiResponse<UserResponse> CreateUser(UserRequest userRequest)
