@@ -59,6 +59,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual EntryType? EntryTypeNavigation { get; set; }
         public virtual Role? Role { get; set; }
         public virtual UserStatus? UserStatus { get; set; }
+        public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Campus> Campuses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClasses { get; set; }
