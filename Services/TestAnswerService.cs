@@ -1,5 +1,6 @@
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Enums;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using OfficeOpenXml;

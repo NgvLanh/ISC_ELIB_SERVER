@@ -513,7 +513,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
-                    .HasDefaultValueSql("true");
+                    .HasDefaultValue(true);
 
                 entity.Property(e => e.ClassTypeId).HasColumnName("class_type_id");
 
@@ -533,10 +533,11 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
-                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
-
                 entity.Property(e => e.Status)
-                    .HasConversion<string>();
+                    .HasColumnName("status");
+                    
+
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
