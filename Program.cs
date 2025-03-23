@@ -19,6 +19,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BTBackendOnline2.Models;
+using OfficeOpenXml;
 
 Env.Load();
 
@@ -55,6 +56,7 @@ builder.Services.AddHttpClient<GhnService>((sp, httpClient) =>
 
 var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -166,6 +168,15 @@ builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<TestRepo>();
 builder.Services.AddScoped<ITestService, TestService>();
 
+//Tests
+builder.Services.AddScoped<DiscussionImageRepo>();
+builder.Services.AddScoped<IDiscussionImageService, DiscussionImageService>();
+
+//Tests
+builder.Services.AddScoped<DiscussionRepo>();
+builder.Services.AddScoped<IDiscussionsService, DiscussionsService>();
+
+
 //Test-Question
 builder.Services.AddScoped<TestQuestionRepo>();
 builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
@@ -220,6 +231,14 @@ builder.Services.AddScoped<ITestSubmissionAnswerService, TestSubmissionAnswerSer
 // Add services and repositories Test attachment
 builder.Services.AddScoped<ExamRepo>();
 builder.Services.AddScoped<IExamService, ExamService>();
+
+// Add services and repositories ChangeClass
+builder.Services.AddScoped<ChangeClassRepo>();
+builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
+
+// Add services and repositories Chat
+builder.Services.AddScoped<ChatRepo>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 // Add services and repositories Test Answer
 builder.Services.AddScoped<TestAnswerRepo>();
