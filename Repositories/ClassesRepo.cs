@@ -56,13 +56,10 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(c => c.User)
                     .ThenInclude(u => u.Class)
                 .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(c => c.Subject)
                 .FirstOrDefault(c => c.Id == id);
         }
-
-
-
-
-
 
         public Class CreateClass(Class newClass)
         {

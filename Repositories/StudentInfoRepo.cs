@@ -51,5 +51,15 @@ namespace ISC_ELIB_SERVER.Repositories
                 _context.SaveChanges();
             }
         }
+
+        // Lọc theo ClassId
+        public List<StudentInfo> GetStudentInfoByClassId(int classId)
+        {
+            return _context.StudentInfos
+                .Include(si => si.User)  // Đảm bảo lấy dữ liệu User
+                .Where(si => si.User != null && si.User.ClassId == classId)
+                .ToList();
+        }
+
     }
 }

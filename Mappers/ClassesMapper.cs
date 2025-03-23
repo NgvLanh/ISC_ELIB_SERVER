@@ -9,9 +9,9 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public ClassesMapper()
         {
-            // us - res
+            CreateMap<User, ClassUserResponse>();
+            CreateMap<Subject, ClassSubjectResponse>();
             CreateMap<Class, ClassesResponse>();
-            // res - us
             CreateMap<ClassesRequest, Class>();
         }
     }
