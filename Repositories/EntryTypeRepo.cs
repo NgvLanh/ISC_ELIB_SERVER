@@ -1,5 +1,4 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -11,12 +10,7 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             _context = context;
         }
-        public ICollection<EntryType> GetEntryTypes()
-        {
-            return _context.EntryTypes
-                .Where(c => c.Active)
-                .ToList();
-        }
+
         public EntryType GetEntryTypeById(long id)
         {
             return _context.EntryTypes.FirstOrDefault(e => e.Id == id && !e.IsDeleted);

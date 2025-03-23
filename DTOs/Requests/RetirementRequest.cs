@@ -17,7 +17,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         public string? Attachment { get; set; }
 
-        public RetirementStatus Status { get; set; } = RetirementStatus.Working;
+        public RetirementStatus Status { get; set; } = RetirementStatus.DangLamViec;
 
         [Required(ErrorMessage = "LeadershipId là bắt buộc.")]
         public int LeadershipId { get; set; }

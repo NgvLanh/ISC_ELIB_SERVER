@@ -4,9 +4,6 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -55,58 +52,27 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<EducationLevelResponse> CreateEducationLevel(EducationLevelRequest EducationLevelRequest)
         {
-            var ListEducationLevel = _repository.GetEducationLevels();
+            var ListEducationLevel = _repository.GetEducationLevels().Where(item => item.Active);
 
             if(ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name))){
                 return ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
             }
 
-            if (EducationLevelRequest.IsAnnualSystem == true && EducationLevelRequest.IsCredit == true)
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
-            }
-
             var newEducationLevel = new EducationLevel
             {
                 Name = EducationLevelRequest.Name,
-                TrainingType = EducationLevelRequest.TrainingType,
-                IsAnnualSystem = EducationLevelRequest.IsAnnualSystem,
-                IsCredit = EducationLevelRequest.IsCredit,
                 Status = EducationLevelRequest.Status,
                 Description = EducationLevelRequest.Description
             };
-
-            if (EducationLevelRequest.IsAnnualSystem == true)
-            {
-                newEducationLevel.IsAnnualSystem = true;
-                newEducationLevel.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                newEducationLevel.SemesterPerYear = EducationLevelRequest.SemesterPerYear;
-            }
-            else if (EducationLevelRequest.IsCredit == true)
-            {
-                newEducationLevel.IsCredit = true;
-                newEducationLevel.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                newEducationLevel.MandatoryCourse = EducationLevelRequest.MandatoryCourse;
-                newEducationLevel.ElectiveCourse = EducationLevelRequest.ElectiveCourse;
-            }
-
-
             try
             {
-                Console.WriteLine("Dữ liệu trước khi lưu: " + JsonConvert.SerializeObject(newEducationLevel, Formatting.Indented));
-
                 var created = _repository.CreateEducationLevel(newEducationLevel);
                 return ApiResponse<EducationLevelResponse>.Success(_mapper.Map<EducationLevelResponse>(created));
             }
-            catch (DbUpdateException ex)
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Lỗi khi thêm cấp bậc đào tạo: " + ex.InnerException?.Message);
-            }
             catch (Exception ex)
             {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Lỗi khi thêm cấp bậc đào tạo: " + ex.Message);
+                return ApiResponse<EducationLevelResponse>.BadRequest("Lỗi....");
             }
-
         }
 
         public ApiResponse<EducationLevelResponse> UpdateEducationLevel(long id, EducationLevelRequest EducationLevelRequest)
@@ -121,45 +87,22 @@ namespace ISC_ELIB_SERVER.Services
 
             if (ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name) && item.Id != id))
             {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
-            }
-
-            
-            if (EducationLevelRequest.IsAnnualSystem ==true && EducationLevelRequest.IsCredit == true)
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
+                ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
             }
 
             existing.Name = EducationLevelRequest.Name;
-            existing.TrainingType = EducationLevelRequest.TrainingType;
             existing.Status = EducationLevelRequest.Status;
             existing.Description = EducationLevelRequest.Description;
-            existing.IsAnnualSystem = EducationLevelRequest.IsAnnualSystem;
-            existing.IsCredit = EducationLevelRequest.IsCredit;
-
-            if (EducationLevelRequest.IsAnnualSystem == true)
-            {
-                existing.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                existing.SemesterPerYear = EducationLevelRequest.SemesterPerYear;
-                existing.MandatoryCourse = null;
-                existing.ElectiveCourse = null;
-            }
-            else if (EducationLevelRequest.IsCredit == true)
-            {
-                existing.SemesterPerYear =null;
-                existing.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                existing.MandatoryCourse = EducationLevelRequest.MandatoryCourse;
-                existing.ElectiveCourse = EducationLevelRequest.ElectiveCourse;
-            }
-
             try
             {
+
+
                 var updated = _repository.UpdateEducationLevel(existing);
                 return ApiResponse<EducationLevelResponse>.Success(_mapper.Map<EducationLevelResponse>(updated));
             }
             catch (Exception ex)
             {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Lỗi khi cập nhật cấp bậc đào tạo"); 
+                return ApiResponse<EducationLevelResponse>.BadRequest("Lỗi...."); 
             }
 
         }

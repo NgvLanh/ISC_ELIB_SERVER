@@ -79,21 +79,10 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var teacherInfo = _mapper.Map<TeacherInfo>(teacherInfoRequest);
+            _repository.AddTeacherInfo(teacherInfo);
+            var createdTeacherInfo = _mapper.Map<TeacherInfoResponses>(teacherInfo);
 
-            var created = _repository.CreateTeacherInfo(teacherInfo);
-
-            try
-            {
-
-                var createdTeacherInfo = _mapper.Map<TeacherInfoResponses>(created);
-
-                return ApiResponse<TeacherInfoResponses>.Success(createdTeacherInfo);
-            }
-            catch
-            {
-                return ApiResponse<TeacherInfoResponses>.BadRequest("Lỗi, xem lại khóa ngoại");
-            }
-
+            return ApiResponse<TeacherInfoResponses>.Success(createdTeacherInfo);
         }
 
         public ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(int id, TeacherInfoRequest teacherInfoRequest)

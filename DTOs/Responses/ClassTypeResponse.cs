@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
 {
@@ -7,7 +6,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnoreCondition(JsonIgnoreCondition.WhenWritingNull)]
         public bool? Status { get; set; }
         public string? Description { get; set; }
 

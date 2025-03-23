@@ -30,7 +30,6 @@ namespace ISC_ELIB_SERVER.Models
         public int? EducationLevelId { get; set; }
         public bool Active { get; set; }
 
-        public virtual User? User { get; set; }
         public virtual EducationLevel? EducationLevel { get; set; }
         public virtual ICollection<AcademicYear> AcademicYears { get; set; }
         public virtual ICollection<Campus> Campuses { get; set; }

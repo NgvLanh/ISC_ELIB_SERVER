@@ -22,23 +22,39 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<TestSubmissionAnswerResponse>> GetTestSubmissionAnswers(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var query = _repository.GetAllTestSubmissionAnswers().AsQueryable();
+            var testSubmissionAnswers = _repository.GetAllTestSubmissionAnswers().ToList(); // Lấy toàn bộ danh sách
 
-            query = sortColumn switch
+            // Lọc dữ liệu
+            if (!string.IsNullOrEmpty(search))
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Id) : query.OrderBy(ts => ts.Id),
-                _ => query.OrderBy(ts => ts.Id)
+                testSubmissionAnswers = testSubmissionAnswers
+                    .Where(t => t.AnswerText != null && t.AnswerText.Contains(search))
+                    .ToList();
+            }
+
+            // Sắp xếp dữ liệu
+            testSubmissionAnswers = sortColumn?.ToLower() switch
+            {
+                "id" => sortOrder.ToLower() == "desc"
+                    ? testSubmissionAnswers.OrderByDescending(t => t.Id).ToList()
+                    : testSubmissionAnswers.OrderBy(t => t.Id).ToList(),
+
+                "answertext" => sortOrder.ToLower() == "desc"
+                    ? testSubmissionAnswers.OrderByDescending(t => t.AnswerText).ToList()
+                    : testSubmissionAnswers.OrderBy(t => t.AnswerText).ToList(),
+
+                _ => testSubmissionAnswers.OrderBy(t => t.Id).ToList() // Mặc định sắp xếp theo ID
             };
 
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            // Phân trang
+            var paginatedResult = testSubmissionAnswers
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var response = _mapper.Map<ICollection<TestSubmissionAnswerResponse>>(result);
+            var mappedData = _mapper.Map<ICollection<TestSubmissionAnswerResponse>>(paginatedResult);
 
-            return result.Any()
-                 ? ApiResponse<ICollection<TestSubmissionAnswerResponse>>.Success(response, page, pageSize, totalItems)
-                 : ApiResponse<ICollection<TestSubmissionAnswerResponse>>.NotFound("Không có dữ liệu");
+            return ApiResponse<ICollection<TestSubmissionAnswerResponse>>.Success(mappedData);
         }
 
         public ApiResponse<TestSubmissionAnswerResponse> GetTestSubmissionAnswerById(int id)

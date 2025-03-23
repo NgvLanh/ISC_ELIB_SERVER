@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime? Date { get; set; }
         public string? Note { get; set; }
         public string? Attachment { get; set; }
-        public RetirementStatus Status { get; set; } = RetirementStatus.Working;
+        public RetirementStatus Status { get; set; } = RetirementStatus.DangLamViec;
         public int? LeadershipId { get; set; }
         public bool Active { get; set; }
 

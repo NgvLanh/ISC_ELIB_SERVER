@@ -7,7 +7,6 @@ namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
     [Route("api/question-images")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class QuestionImagesQaController : ControllerBase
     {
         private readonly IQuestionImagesQaService _service;

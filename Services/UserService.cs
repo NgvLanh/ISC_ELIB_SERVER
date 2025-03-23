@@ -4,36 +4,26 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace ISC_ELIB_SERVER.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserRepo _userRepo;
-        private readonly RoleRepo _roleRepo;
-        private readonly AcademicYearRepo _academicYearRepo;
-        private readonly UserStatusRepo _userStatusRepo;
-        private readonly ClassRepo _classRepo;
+        private readonly UserRepo _repository;
         private readonly IMapper _mapper;
         private readonly GhnService _ghnService;
 
         public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
             UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
         {
-            _userRepo = userRepo;
-            _roleRepo = roleRepo;
-            _academicYearRepo = academicYearRepo;
-            _userStatusRepo = userStatusRepo;
-            _classRepo = classRepo;
+            _repository = repository;
             _mapper = mapper;
             _ghnService = ghnService;
         }
 
         public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var query = _userRepo.GetUsers().AsQueryable();
+            var query = _repository.GetUsers().AsQueryable();
 
             // Tìm kiếm người dùng theo tên, email, hoặc code
             if (!string.IsNullOrEmpty(search))
@@ -101,155 +91,72 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<UserResponse> CreateUser(UserRequest userRequest)
         {
-            // Kiểm tra RoleId có tồn tại không
-            if (_roleRepo.GetRoleById(userRequest.RoleId) == null)
+            // Kiểm tra nếu người dùng với mã hoặc email đã tồn tại
+            var existing = _repository.GetUsers().FirstOrDefault(u => u.Code?.ToLower() == userRequest.Code?.ToLower() || u.Email?.ToLower() == userRequest.Email?.ToLower());
+            if (existing != null)
             {
-                return ApiResponse<UserResponse>.BadRequest("RoleId không hợp lệ");
+                return ApiResponse<UserResponse>.Conflict("Mã người dùng hoặc email đã tồn tại");
             }
 
-            // Kiểm tra AcademicYearId có tồn tại không (nếu có nhập)
-            if (userRequest.AcademicYearId.HasValue &&
-                _academicYearRepo.GetAcademicYearById(userRequest.AcademicYearId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("AcademicYearId không hợp lệ");
-            }
-
-            // Kiểm tra UserStatusId có tồn tại không (nếu có nhập)
-            if (userRequest.UserStatusId.HasValue &&
-                _userStatusRepo.GetUserStatusById(userRequest.UserStatusId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("UserStatusId không hợp lệ");
-            }
-
-            // Kiểm tra ClassId có tồn tại không (nếu có nhập)
-            if (userRequest.ClassId.HasValue &&
-                _classRepo.GetClassById(userRequest.ClassId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
-            }
-
-            // Nếu tất cả đều hợp lệ, tạo user
-            var newUser = new User
+            var user = new User
             {
                 Code = userRequest.Code,
-                Password = ComputeSha256(userRequest.Password),
                 FullName = userRequest.FullName,
-                Dob = userRequest.Dob,
-                Gender = userRequest.Gender,
                 Email = userRequest.Email,
                 PhoneNumber = userRequest.PhoneNumber,
-                PlaceBirth = userRequest.PlaceBirth,
-                Nation = userRequest.Nation,
-                Religion = userRequest.Religion,
-                EnrollmentDate = userRequest.EnrollmentDate,
+                Dob = userRequest.Dob,
+                Gender = userRequest.Gender,
+                AddressFull = userRequest.AddressFull,
+                ProvinceCode = userRequest.ProvinceCode,
+                DistrictCode = userRequest.DistrictCode,
+                WardCode = userRequest.WardCode,
+                Street = userRequest.Street,
                 RoleId = userRequest.RoleId,
                 AcademicYearId = userRequest.AcademicYearId,
                 UserStatusId = userRequest.UserStatusId,
                 ClassId = userRequest.ClassId,
-                EntryType = userRequest.EntryType,
-                AddressFull = userRequest.AddressFull,
-                Street = userRequest.Street,
-                Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl
+                EntryType = userRequest.EntryType
             };
 
-            try
-            {
-                var createdUser = _userRepo.CreateUser(newUser);
-                return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(createdUser));
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<UserResponse>.BadRequest(ex.Message);
-            }
+            var createdUser = _repository.CreateUser(user);
+            return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(createdUser));
         }
 
         public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
         {
-            var user = _userRepo.GetUserById(id);
+            var user = _repository.GetUserById(id);
             if (user == null)
             {
                 return ApiResponse<UserResponse>.NotFound("Không tìm thấy người dùng để cập nhật");
             }
 
-            // Kiểm tra RoleId có tồn tại không
-            if (_roleRepo.GetRoleById(userRequest.RoleId) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("RoleId không hợp lệ");
-            }
-
-            // Kiểm tra AcademicYearId có tồn tại không (nếu có nhập)
-            if (userRequest.AcademicYearId.HasValue &&
-                _academicYearRepo.GetAcademicYearById(userRequest.AcademicYearId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("AcademicYearId không hợp lệ");
-            }
-
-            // Kiểm tra UserStatusId có tồn tại không (nếu có nhập)
-            if (userRequest.UserStatusId.HasValue &&
-                _userStatusRepo.GetUserStatusById(userRequest.UserStatusId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("UserStatusId không hợp lệ");
-            }
-
-            // Kiểm tra ClassId có tồn tại không (nếu có nhập)
-            if (userRequest.ClassId.HasValue &&
-                _classRepo.GetClassById(userRequest.ClassId.Value) == null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
-            }
-
             // Cập nhật thông tin người dùng
             user.FullName = userRequest.FullName;
             user.Email = userRequest.Email;
-            user.Password = ComputeSha256(userRequest.Password);
             user.PhoneNumber = userRequest.PhoneNumber;
             user.Dob = userRequest.Dob;
             user.Gender = userRequest.Gender;
             user.AddressFull = userRequest.AddressFull;
+            user.ProvinceCode = userRequest.ProvinceCode;
+            user.DistrictCode = userRequest.DistrictCode;
+            user.WardCode = userRequest.WardCode;
             user.Street = userRequest.Street;
             user.RoleId = userRequest.RoleId;
             user.AcademicYearId = userRequest.AcademicYearId;
             user.UserStatusId = userRequest.UserStatusId;
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
-            user.Active = userRequest.Active;
 
-            // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userRequest.Password))
-            {
-                user.Password = ComputeSha256(userRequest.Password);
-            }
-
-            try
-            {
-                var updatedUser = _userRepo.UpdateUser(user);
-                return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<UserResponse>.BadRequest(ex.Message);
-            }
+            var updatedUser = _repository.UpdateUser(user);
+            return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
         }
 
         public ApiResponse<User> DeleteUser(int id)
         {
-            var success = _userRepo.DeleteUser(id);
+            var success = _repository.DeleteUser(id);
             return success
                 ? ApiResponse<User>.Success()
                 : ApiResponse<User>.NotFound("Không tìm thấy người dùng để xóa");
-        }
-
-        public static string ComputeSha256(string? input)
-        {
-            using SHA256 sha256 = SHA256.Create();
-            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
-            StringBuilder builder = new();
-            foreach (byte b in bytes)
-            {
-                builder.Append(b.ToString("x2"));
-            }
-            return builder.ToString();
         }
     }
 }
