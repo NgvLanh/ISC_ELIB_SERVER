@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -17,6 +18,7 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
 
         public virtual TeacherInfo? Teacher { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Subject> Subjects { get; set; }
         public virtual ICollection<WorkProcess> WorkProcesses { get; set; }
     }
