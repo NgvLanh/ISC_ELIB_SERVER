@@ -15,6 +15,8 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.AcademicYears
                 .Where(a => a.Active)
+                .Include(a => a.Semesters)
+                .Where(a => a.Active)
                 .ToList();
         }
 

@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -51,62 +52,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
-
-            var response = result.Select(c => new ClassesResponse
-            {
-                Id = c.Id,
-                Code = c.Code,
-                Name = c.Name,
-                StudentQuantity = c.StudentQuantity,
-                SubjectQuantity = c.SubjectQuantity,
-                Description = c.Description,
-                Active = c.Active,
-                GradeLevel = c.GradeLevel != null ? new GradeLevelResponse
-                {
-                    Id = c.GradeLevel.Id,
-                    Name = c.GradeLevel.Name,
-                    Code = c.GradeLevel.Code,
-                    TeacherId = c.GradeLevel.Teacher?.Id.ToString()
-                } : null,
-
-                AcademicYear = c.AcademicYear != null ? new AcademicYearResponse
-                {
-                    Id = c.AcademicYear.Id,
-                    StartTime = (DateTime)(c.AcademicYear.StartTime != DateTime.MinValue ? c.AcademicYear.StartTime : null),
-                    EndTime = (DateTime)(c.AcademicYear.EndTime != DateTime.MinValue ? c.AcademicYear.EndTime : null),
-                    SchoolId = (int)(c.AcademicYear.School?.Id)
-                } : null,
-
-                User = c.User != null ? new UserResponse
-                {
-                    Id = c.User.Id,
-                    Code = c.User.Code,
-                    FullName = c.User.FullName ?? "",
-                    Gender = c.User.Gender,
-                    Email = string.IsNullOrEmpty(c.User.Email) ? null : c.User.Email,
-                    PhoneNumber = string.IsNullOrEmpty(c.User.PhoneNumber) ? null : c.User.PhoneNumber,
-                    PlaceBirth = string.IsNullOrEmpty(c.User.PlaceBirth) ? null : c.User.PlaceBirth,
-                    Nation = string.IsNullOrEmpty(c.User.Nation) ? null : c.User.Nation,
-                    Religion = string.IsNullOrEmpty(c.User.Religion) ? null : c.User.Religion,
-                    AddressFull = string.IsNullOrEmpty(c.User.AddressFull) ? null : c.User.AddressFull,
-                    Street = string.IsNullOrEmpty(c.User.Street) ? null : c.User.Street,
-                    Dob = c.User.Dob != DateTime.MinValue ? c.User.Dob : null,
-                    EnrollmentDate = c.User.EnrollmentDate != DateTime.MinValue ? c.User.EnrollmentDate : null,
-                    RoleId = (int)(c.User.Role?.Id),
-                    AcademicYearId = (int)(c.User.AcademicYear?.Id),
-                    ClassId = (int)(c.User.Class?.Id),
-                } : null,
-
-                ClassType = c.ClassType != null ? new ClassTypeResponse
-                {
-                    Id = c.ClassType.Id,
-                    Name = c.ClassType.Name,
-                    Description = c.ClassType.Description,
-                    Status = c.ClassType.Status
-                } : null
-
-            }).ToList();
-
+            var response = _mapper.Map<ICollection<ClassesResponse>>(result);
             return result.Any()
                 ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
                 : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
@@ -120,63 +66,9 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
-
-            var response = new ClassesResponse
-            {
-                Id = classData.Id,
-                Code = classData.Code,
-                Name = classData.Name,
-                Active = classData.Active,
-                StudentQuantity = classData.StudentQuantity,
-                SubjectQuantity = classData.SubjectQuantity,
-                Description = classData.Description,
-
-                GradeLevel = classData.GradeLevel != null ? new GradeLevelResponse
-                {
-                    Id = classData.GradeLevel.Id,
-                    Name = classData.GradeLevel.Name,
-                    Code = classData.GradeLevel.Code,
-                    TeacherId = classData.GradeLevel.Teacher?.Id.ToString()
-                } : null,
-
-                AcademicYear = classData.AcademicYear != null ? new AcademicYearResponse
-                {
-                    Id = classData.AcademicYear.Id,
-                    StartTime = (DateTime)(classData.AcademicYear.StartTime != DateTime.MinValue ? classData.AcademicYear.StartTime : null),
-                    EndTime = (DateTime)(classData.AcademicYear.EndTime != DateTime.MinValue ? classData.AcademicYear.EndTime : null),
-                    SchoolId = (int)(classData.AcademicYear.School?.Id)
-                } : null,
-
-                User = classData.User != null ? new UserResponse
-                {
-                    Id = classData.User.Id,
-                    Code = classData.User.Code,
-                    FullName = classData.User.FullName ?? "",
-                    Gender = classData.User.Gender,
-                    Email = string.IsNullOrEmpty(classData.User.Email) ? null : classData.User.Email,
-                    PhoneNumber = string.IsNullOrEmpty(classData.User.PhoneNumber) ? null : classData.User.PhoneNumber,
-                    PlaceBirth = string.IsNullOrEmpty(classData.User.PlaceBirth) ? null : classData.User.PlaceBirth,
-                    Nation = string.IsNullOrEmpty(classData.User.Nation) ? null : classData.User.Nation,
-                    Religion = string.IsNullOrEmpty(classData.User.Religion) ? null : classData.User.Religion,
-                    AddressFull = string.IsNullOrEmpty(classData.User.AddressFull) ? null : classData.User.AddressFull,
-                    Street = string.IsNullOrEmpty(classData.User.Street) ? null : classData.User.Street,
-                    Dob = classData.User.Dob != DateTime.MinValue ? classData.User.Dob : null,
-                    EnrollmentDate = classData.User.EnrollmentDate != DateTime.MinValue ? classData.User.EnrollmentDate : null,
-                    RoleId = (int)(classData.User.Role?.Id),
-                    AcademicYearId = (int)(classData.User.AcademicYear?.Id),
-                    ClassId = (int)(classData.User.Class?.Id),
-
-
-                } : null,
-
-                ClassType = classData.ClassType != null ? new ClassTypeResponse
-                {
-                    Id = classData.ClassType.Id,
-                    Name = classData.ClassType.Name,
-                    Description = classData.ClassType.Description,
-                    Status = classData.ClassType.Status
-                } : null
-            };
+            var subjects = classData.ClassSubjects.Select(cs => cs.Subject).ToList();
+            var response = _mapper.Map<ClassesResponse>(classData);
+            response.Subjects = _mapper.Map<ICollection<ClassSubjectResponse>>(subjects);
 
             return ApiResponse<ClassesResponse>.Success(response);
         }

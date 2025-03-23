@@ -80,6 +80,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
+        public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -535,7 +537,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status");
-                    
+
 
                 entity.Property(e => e.SemesterId).HasColumnName("semester_id");
 
@@ -2203,6 +2205,27 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_refresh_token_user_id");
             });
+
+
+            modelBuilder.Entity<ClassSubject>(entity =>
+        {
+            entity.ToTable("class_subjects");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ClassId).HasColumnName("class_id");
+            entity.Property(e => e.SubjectId).HasColumnName("subject_id");
+
+            entity.HasOne(d => d.Class)
+                .WithMany(p => p.ClassSubjects)
+                .HasForeignKey(d => d.ClassId)
+                .HasConstraintName("fk_class_subject_class_id");
+
+            entity.HasOne(d => d.Subject)
+                .WithMany(p => p.ClassSubjects)
+                .HasForeignKey(d => d.SubjectId)
+                .HasConstraintName("fk_class_subject_subject_id");
+        });
+
 
             OnModelCreatingPartial(modelBuilder);
         }
