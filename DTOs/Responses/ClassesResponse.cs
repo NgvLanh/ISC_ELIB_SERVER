@@ -3,7 +3,7 @@ using ISC_ELIB_SERVER.Models;
 
 public class ClassesResponse
 {
-    public int ? Id { get; set; }
+    public int? Id { get; set; }
     public string? Code { get; set; }
     public string? Name { get; set; }
     public int? StudentQuantity { get; set; }
@@ -14,9 +14,26 @@ public class ClassesResponse
 
     public AcademicYearResponse? AcademicYear { get; set; }
 
-    public UserResponse? User { get; set; }
+    public ClassUserResponse? User { get; set; }
 
     public ClassTypeResponse? ClassType { get; set; }
+
+    public ICollection<ClassSubjectResponse>? Subjects { get; set; }
+}
+
+public class ClassUserResponse
+{
+    public int Id { get; set; }
+    public string FullName { get; set; }
+}
+
+public class ClassSubjectResponse
+{
+    public int Id { get; set; }
+    public string Code { get; set; }
+    public string Name { get; set; }
+    public int HoursSemester1 { get; set; }
+    public int HoursSemester2 { get; set; }
 
 }
 

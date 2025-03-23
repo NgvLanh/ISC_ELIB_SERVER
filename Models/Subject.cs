@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -13,6 +14,8 @@ namespace ISC_ELIB_SERVER.Models
             StudentScores = new HashSet<StudentScore>();
             TeachingAssignments = new HashSet<TeachingAssignment>();
             Tests = new HashSet<Test>();
+            ClassSubjects = new HashSet<ClassSubject>();
+
         }
 
         public int Id { get; set; }
@@ -32,5 +35,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<StudentScore> StudentScores { get; set; }
         public virtual ICollection<TeachingAssignment> TeachingAssignments { get; set; }
         public virtual ICollection<Test> Tests { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<ClassSubject> ClassSubjects { get; set; }
+
     }
 }
