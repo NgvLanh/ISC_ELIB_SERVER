@@ -74,5 +74,12 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(result);
         }
 
+        // Lấy danh sách sinh viên theo UserId
+        [HttpGet("user/{userId}")]
+        public IActionResult GetStudentsByUserId(int userId)
+        {
+            var result = _studentInfoService.GetStudentsByUserId(userId);
+            return Ok(result);
+        }
     }
 }
