@@ -513,7 +513,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Active)
                     .HasColumnName("active")
-                    .HasDefaultValueSql("true");
+                    .HasDefaultValue(true);
 
                 entity.Property(e => e.ClassTypeId).HasColumnName("class_type_id");
 
