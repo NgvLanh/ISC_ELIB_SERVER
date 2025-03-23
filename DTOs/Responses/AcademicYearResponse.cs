@@ -10,6 +10,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        // public int SchoolId { get; set; }
+        public int SchoolId { get; set; }
     }
 }
