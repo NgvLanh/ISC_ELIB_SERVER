@@ -70,5 +70,10 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         {
             return new ApiResponse<T>(1, message);
         }
+
+        public static ApiResponse<T> Unauthorized(string message = "Unauthorized")
+        {
+            return new ApiResponse<T>(1, message);
+        }
     }
 }
