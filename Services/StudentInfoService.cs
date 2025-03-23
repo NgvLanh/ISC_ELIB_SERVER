@@ -91,5 +91,19 @@ namespace ISC_ELIB_SERVER.Services
             _repository.DeleteStudentInfo(id);
             return ApiResponse<StudentInfoResponses>.Success();
         }
+
+        public ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize)
+        {
+            var query = _repository.GetAllStudentInfo()
+                .Where(s => s.User != null && s.User.ClassId == classId)
+                .AsQueryable();
+
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var response = _mapper.Map<ICollection<StudentInfoResponses>>(result);
+
+            return result.Any()
+                ? ApiResponse<ICollection<StudentInfoResponses>>.Success(response)
+                : ApiResponse<ICollection<StudentInfoResponses>>.NotFound("Không có dữ liệu sinh viên cho lớp học này");
+        }
     }
 }

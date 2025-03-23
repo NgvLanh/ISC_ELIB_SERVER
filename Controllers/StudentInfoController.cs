@@ -65,5 +65,14 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             return Ok(_studentInfoService.DeleteStudentInfo(id));
         }
+
+        //Lấy ds sv theo lớp
+        [HttpGet("class/{classId}")]
+        public IActionResult GetStudentsByClass(int classId, int page = 1, int pageSize = 10)
+        {
+            var result = _studentInfoService.GetStudentInfosByClassId(classId, page, pageSize);
+            return Ok(result);
+        }
+
     }
 }
