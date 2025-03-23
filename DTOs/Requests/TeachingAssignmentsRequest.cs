@@ -25,5 +25,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "Vui lòng chọn chủ đề!")]
         public int? TopicsId { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn học kỳ!")]
+        public int? SemesterId { get; set; }
+
     }
 }
