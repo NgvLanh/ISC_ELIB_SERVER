@@ -61,21 +61,24 @@ namespace ISC_ELIB_SERVER.Services
                 SubjectQuantity = c.SubjectQuantity,
                 Description = c.Description,
                 Active = c.Active,
-                GradeLevel = c.GradeLevel != null ? new GradeLevelResponse {
+                GradeLevel = c.GradeLevel != null ? new GradeLevelResponse
+                {
                     Id = c.GradeLevel.Id,
                     Name = c.GradeLevel.Name,
                     Code = c.GradeLevel.Code,
                     TeacherId = c.GradeLevel.Teacher?.Id.ToString()
                 } : null,
 
-                AcademicYear = c.AcademicYear != null ? new AcademicYearResponse {
+                AcademicYear = c.AcademicYear != null ? new AcademicYearResponse
+                {
                     Id = c.AcademicYear.Id,
                     StartTime = (DateTime)(c.AcademicYear.StartTime != DateTime.MinValue ? c.AcademicYear.StartTime : null),
                     EndTime = (DateTime)(c.AcademicYear.EndTime != DateTime.MinValue ? c.AcademicYear.EndTime : null),
                     SchoolId = (int)(c.AcademicYear.School?.Id)
                 } : null,
 
-                User = c.User != null ? new UserResponse {
+                User = c.User != null ? new UserResponse
+                {
                     Id = c.User.Id,
                     Code = c.User.Code,
                     FullName = c.User.FullName ?? "",
@@ -89,12 +92,13 @@ namespace ISC_ELIB_SERVER.Services
                     Street = string.IsNullOrEmpty(c.User.Street) ? null : c.User.Street,
                     Dob = c.User.Dob != DateTime.MinValue ? c.User.Dob : null,
                     EnrollmentDate = c.User.EnrollmentDate != DateTime.MinValue ? c.User.EnrollmentDate : null,
-                    RoleId = (int)( c.User.Role?.Id),
+                    RoleId = (int)(c.User.Role?.Id),
                     AcademicYearId = (int)(c.User.AcademicYear?.Id),
                     ClassId = (int)(c.User.Class?.Id),
                 } : null,
 
-                ClassType = c.ClassType != null ? new ClassTypeResponse {
+                ClassType = c.ClassType != null ? new ClassTypeResponse
+                {
                     Id = c.ClassType.Id,
                     Name = c.ClassType.Name,
                     Description = c.ClassType.Description,
@@ -210,31 +214,16 @@ namespace ISC_ELIB_SERVER.Services
                 UserId = classesRequest?.UserId,
                 ClassTypeId = classesRequest?.ClassTypeId,
             };
-
             try
             {
                 var createdClass = _repository.CreateClass(newClass);
-
-                var fullClass = _repository.GetClass()
-                    .Include(c => c.GradeLevel)
-                        .ThenInclude(g => g.Teacher)
-                    .Include(c => c.AcademicYear)
-                        .ThenInclude(a => a.School)
-                    .Include(c => c.User)
-                        .ThenInclude(u => u.Role)
-                    .Include(c => c.User)
-                        .ThenInclude(u => u.AcademicYear)
-                    .Include(c => c.User)
-                        .ThenInclude(u => u.Class)
-                    .Include(c => c.ClassType)
-                    .FirstOrDefault(c => c.Id == createdClass.Id);
-
-                return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(fullClass));
+                return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
             }
             catch
             {
                 return ApiResponse<ClassesResponse>.BadRequest("Kiểm tra lại các khóa ngoại");
             }
+
         }
 
         public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)
