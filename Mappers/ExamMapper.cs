@@ -10,7 +10,10 @@ namespace ISC_ELIB_SERVER.Mappers
         public ExamMapper()
         {
             // ex - resp
-            CreateMap<Exam, ExamResponse>();
+            CreateMap<Exam, ExamResponse>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+
             // req - ex
             CreateMap<ExamRequest, Exam>();
         }
