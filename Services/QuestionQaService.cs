@@ -127,21 +127,17 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<QuestionQaResponse>.Success(response);
         }
 
-         public async Task<ApiResponse<QuestionQaResponse>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files)
-            {
-                if (string.IsNullOrWhiteSpace(questionRequest.Content))
-                {
-                    return ApiResponse<QuestionQaResponse>.BadRequest("Nội dung câu hỏi không được để trống.");
-                }
+         public async Task<ApiResponse<ApiResponse<string>>> CreateQuestion(QuestionQaRequest questionRequest, List<IFormFile> files, int userId)
+        {
+            if (string.IsNullOrWhiteSpace(questionRequest.Content))
+                return ApiResponse<ApiResponse<string>>.BadRequest("Nội dung câu hỏi không được để trống.");
 
-                //  Kiểm tra lớp học có môn học này không
-                var isValidClassSubject = _context.TeachingAssignments
-                    .Any(t => t.ClassId == questionRequest.ClassId && t.SubjectId == questionRequest.SubjectId && t.Active);
+            var isValidClassSubject = _context.TeachingAssignments
+                .Any(t => t.ClassId == questionRequest.ClassId && t.SubjectId == questionRequest.SubjectId && t.Active);
 
-                if (!isValidClassSubject)
-                {
-                    return ApiResponse<QuestionQaResponse>.BadRequest("Lớp học này không có môn học này.");
-                }
+            if (!isValidClassSubject)
+                return ApiResponse<ApiResponse<string>>.BadRequest("Lớp học này không có môn học này.");
+
 
                 // Chuyển file ảnh thành Base64
                 List<string> imageBase64s = new List<string>();
@@ -154,13 +150,13 @@ namespace ISC_ELIB_SERVER.Services
                         // Kiểm tra định dạng ảnh
                         if (!_allowedImageTypes.Contains(extension))
                         {
-                            return ApiResponse<QuestionQaResponse>.BadRequest($"Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
+                            return ApiResponse<ApiResponse<string>>.BadRequest($"Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
                         }
 
                         // Kiểm tra dung lượng
                         if (file.Length > _maxImageSize)
                         {
-                            return ApiResponse<QuestionQaResponse>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
+                            return ApiResponse<ApiResponse<string>>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
                         }
                         using (var ms = new MemoryStream())
                         {
@@ -174,17 +170,15 @@ namespace ISC_ELIB_SERVER.Services
                 // Chuyển đổi DateTime để tránh lỗi PostgreSQL
                 var createAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
 
-                //  Tạo mới câu hỏi
                 var newQuestion = new QuestionQa
                 {
                     Content = questionRequest.Content,
-                    UserId = questionRequest.UserId,
+                    UserId = userId, //  Gán userId từ token
                     SubjectId = questionRequest.SubjectId,
-                    CreateAt = createAt,  //  Fix lỗi timestamp
+                    CreateAt = createAt,
                     Active = true
                 };
 
-                //  Lưu vào DB
                 var createdQuestion = _repository.CreateQuestion(newQuestion, imageBase64s);
 
                 var response = new QuestionQaResponse
@@ -197,7 +191,7 @@ namespace ISC_ELIB_SERVER.Services
                     UserName = createdQuestion.User?.FullName ?? "Unknown",
                 };
 
-                return ApiResponse<QuestionQaResponse>.Success(response);
+                return ApiResponse<ApiResponse<string>>.Success();
             }
 
         public ApiResponse<QuestionQaResponse> UpdateQuestion(long id, QuestionQaRequest request)
@@ -210,7 +204,7 @@ namespace ISC_ELIB_SERVER.Services
 
             existing.Content = request.Content;
             existing.SubjectId = request.SubjectId;
-            existing.UserId = request.UserId;
+           
             existing.CreateAt = DateTime.Now;
 
             var updated = _repository.UpdateQuestion(existing);

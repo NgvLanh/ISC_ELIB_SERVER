@@ -1,8 +1,10 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using System.Security.Claims;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -17,10 +19,9 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             _service = service;
         }
-
-      [HttpGet]
+        [Authorize]
+        [HttpGet]
         public IActionResult GetQuestions(
-            [FromQuery] int iduser,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "",
@@ -29,31 +30,53 @@ namespace ISC_ELIB_SERVER.Controllers
             [FromQuery] int? classId = null,
             [FromQuery] int? subjectId = null)
         {
+             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+           if (userIdClaim == null)
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Không có quyền truy cập. Vui lòng đăng nhập."));
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Token không chứa thông tin userId hợp lệ."));
+            }
+
             if (!classId.HasValue || !subjectId.HasValue)
             {
                 return BadRequest("Thiếu ClassId hoặc SubjectId");
             }
 
-            var response = _service.GetQuestions(iduser, page, pageSize, search, sortColumn, sortOrder, classId, subjectId);
+            var response = _service.GetQuestions(userId, page, pageSize, search, sortColumn, sortOrder, classId, subjectId);
             return Ok(response);
         }
 
 
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateQuestion([FromForm] QuestionQaRequest questionRequest, [FromForm] List<IFormFile> files)
         {
-            if (questionRequest == null)
+
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+             if (userIdClaim == null)
             {
-                return BadRequest(ApiResponse<QuestionQaResponse>.BadRequest("Dữ liệu không hợp lệ"));
+                return Unauthorized(ApiResponse<string>.Unauthorized("Không có quyền truy cập. Vui lòng đăng nhập."));
             }
 
-            var response = await _service.CreateQuestion(questionRequest, files);
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Token không chứa thông tin userId hợp lệ."));
+            }
+
+            var response = await _service.CreateQuestion(questionRequest, files, userId);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
 
 
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteQuestion(long id)
         {
@@ -63,22 +86,36 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         
-
-       [HttpGet("answered")]
+        [Authorize]
+        [HttpGet("answered")]
         public IActionResult GetAnsweredQuestions(
-            [FromQuery] int iduser,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] int? classId = null,
             [FromQuery] int? subjectId = null)
         {
-            var response = _service.GetAnsweredQuestions(iduser, page, pageSize, classId, subjectId);
+               var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+           if (userIdClaim == null)
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Không có quyền truy cập. Vui lòng đăng nhập."));
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Token không chứa thông tin userId hợp lệ."));
+            }
+            if (!classId.HasValue || !subjectId.HasValue)
+            {
+                return BadRequest("Thiếu ClassId hoặc SubjectId");
+            }
+            var response = _service.GetAnsweredQuestions(userId, page, pageSize, classId, subjectId);
             return Ok(response);
         }
-
+            
+            [Authorize]
             [HttpGet("search")]
             public IActionResult SearchQuestionsByUserName(
-                [FromQuery] int iduser,
                 [FromQuery] string userName,
                 [FromQuery] bool onlyAnswered = false,
                 [FromQuery] int page = 1,
@@ -86,20 +123,49 @@ namespace ISC_ELIB_SERVER.Controllers
                 [FromQuery] int? classId = null,
                 [FromQuery] int? subjectId = null)
             {
-                var response = _service.SearchQuestionsByUserName(iduser, userName, onlyAnswered, page, pageSize, classId, subjectId);
+                 var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+           if (userIdClaim == null)
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Không có quyền truy cập. Vui lòng đăng nhập."));
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Token không chứa thông tin userId hợp lệ."));
+            }
+            if (!classId.HasValue || !subjectId.HasValue)
+            {
+                return BadRequest("Thiếu ClassId hoặc SubjectId");
+            }
+                var response = _service.SearchQuestionsByUserName(userId, userName, onlyAnswered, page, pageSize, classId, subjectId);
                 return Ok(response);
             }
 
-
+        [Authorize]
         [HttpGet("recent")]
         public IActionResult GetRecentQuestions(
-            [FromQuery] int iduser,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] int? classId = null,
             [FromQuery] int? subjectId = null)
         {
-            var response = _service.GetRecentQuestions(iduser, page, pageSize, classId, subjectId);
+             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+           if (userIdClaim == null)
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Không có quyền truy cập. Vui lòng đăng nhập."));
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(ApiResponse<string>.Unauthorized("Token không chứa thông tin userId hợp lệ."));
+            }
+            if (!classId.HasValue || !subjectId.HasValue)
+            {
+                return BadRequest("Thiếu ClassId hoặc SubjectId");
+            }
+            var response = _service.GetRecentQuestions(userId, page, pageSize, classId, subjectId);
             return Ok(response);
         }
 
