@@ -326,7 +326,7 @@ builder.Services.AddScoped<IClassesService, ClassesService>();
 builder.Services.AddScoped<RetirementRepo>();
 builder.Services.AddScoped<IRetirementService, RetirementService>();
 
-//TeacherList
+//TeacherList                       
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
@@ -338,7 +338,6 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 //EntryType
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
-
 
 //RefreshToken
 builder.Services.AddScoped<RefreshTokenRepo>();
@@ -355,6 +354,7 @@ builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 //Reserve
 builder.Services.AddScoped<ReserveRepo>();
 builder.Services.AddScoped<IReserveService, ReserveService>();
+
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -384,6 +384,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     .Where(t => t.Name.EndsWith("Service"))
     .AsImplementedInterfaces()
     .InstancePerLifetimeScope();
+    containerBuilder.RegisterType<TemporaryPasswordService>()
+    .As<ITemporaryPasswordService>()
+    .SingleInstance();
 
 
 });
