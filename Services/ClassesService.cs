@@ -4,21 +4,23 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Services
 {
     public class ClassesService : IClassesService
     {
         private readonly IClassesRepo _repository;
+        private readonly IClassSubjectRepo _classSubjectRepo;
         private readonly IMapper _mapper;
 
-        public ClassesService(IClassesRepo repository, IMapper mapper)
+        public ClassesService(IClassesRepo repository, IClassSubjectRepo classSubjectRepo, IMapper mapper)
         {
             _repository = repository;
+            _classSubjectRepo = classSubjectRepo;
             _mapper = mapper;
         }
 
@@ -29,6 +31,8 @@ namespace ISC_ELIB_SERVER.Services
                 .Include(c => c.AcademicYear)
                 .Include(c => c.User)
                 .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject) 
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(sortColumn))
@@ -53,6 +57,23 @@ namespace ISC_ELIB_SERVER.Services
 
             var result = query.ToList();
             var response = _mapper.Map<ICollection<ClassesResponse>>(result);
+
+            foreach (var classResponse in response)
+            {
+                classResponse.Subjects = result
+                    .FirstOrDefault(c => c.Id == classResponse.Id)?
+                    .ClassSubjects
+                    .Select(cs => new ClassSubjectResponse
+                    {
+                        Id = cs.Id,
+                        Code = cs.Subject.Code,
+                        Name = cs.Subject.Name,
+                        HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                        HoursSemester2 = (int)cs.Subject.HoursSemester2
+                    })
+                    .ToList() ?? new List<ClassSubjectResponse>();
+            }
+
             return result.Any()
                 ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
                 : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
@@ -61,19 +82,31 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ClassesResponse> GetClassById(int id)
         {
-            var classData = _repository.GetClassById(id);
+            var classData = _repository.GetClass()
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefault(c => c.Id == id);
+
             if (classData == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
-            var subjects = classData.ClassSubjects.Select(cs => cs.Subject).ToList();
+
             var response = _mapper.Map<ClassesResponse>(classData);
-            response.Subjects = _mapper.Map<ICollection<ClassSubjectResponse>>(subjects);
+
+            response.Subjects = classData.ClassSubjects
+                .Select(cs => new ClassSubjectResponse
+                {
+                    Id = cs.Id,
+                    Code = cs.Subject.Code,
+                    Name = cs.Subject.Name,
+                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                    HoursSemester2 = (int)cs.Subject.HoursSemester2
+                })
+                .ToList();
 
             return ApiResponse<ClassesResponse>.Success(response);
         }
-
-
 
 
         public ApiResponse<ClassesResponse> GetClassByName(string name)
@@ -84,84 +117,153 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học với tên này");
         }
 
-        public ApiResponse<ClassesResponse> CreateClass(ClassesRequest classesRequest)
+        public async Task<ApiResponse<ClassesResponse>> CreateClassAsync(ClassesRequest classesRequest)
         {
-            var existingClass = _repository.GetClass()
-                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower());
+            bool isNameExist = await _repository.GetClass()
+                .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower());
 
-            if (existingClass != null)
+            if (isNameExist)
             {
                 return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
             }
 
-            var newClass = new Class
-            {
-                Name = classesRequest.Name,
-                Description = classesRequest.Description,
-                Code = classesRequest.Code,
-                StudentQuantity = classesRequest.StudentQuantity,
-                SubjectQuantity = classesRequest.SubjectQuantity,
-                GradeLevelId = classesRequest.GradeLevelId,
-                AcademicYearId = classesRequest.AcademicYearId,
-                UserId = classesRequest?.UserId,
-                ClassTypeId = classesRequest?.ClassTypeId,
-            };
+            var classEntity = _mapper.Map<Class>(classesRequest);
+
             try
             {
-                var createdClass = _repository.CreateClass(newClass);
-                return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
-            }
-            catch
-            {
-                return ApiResponse<ClassesResponse>.BadRequest("Kiểm tra lại các khóa ngoại");
-            }
+                classEntity = await _repository.CreateClassAsync(classEntity);
+                await _repository.SaveChangesAsync();
 
+                if (classEntity.Id == 0)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Không thể tạo lớp học, ID không hợp lệ");
+                }
+
+                await UpdateClassSubjectsAsync(classEntity.Id, classesRequest.Subjects);
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi tải lại lớp học sau khi tạo");
+                }
+
+                var response = _mapper.Map<ClassesResponse>(classEntity);
+
+                response.Subjects = classEntity.ClassSubjects.Select(cs => new ClassSubjectResponse
+                {
+                    Id = cs.Id,
+                    Code = cs.Subject.Code,
+                    Name = cs.Subject.Name,
+                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                    HoursSemester2 = (int)cs.Subject.HoursSemester2
+                }).ToList();
+
+                return ApiResponse<ClassesResponse>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest($"Lỗi khi tạo lớp học: {ex.Message}");
+            }
         }
 
-        public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)
-        {
-            var existingClass = _repository.GetClass()
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == id);
 
-            if (existingClass == null)
+
+
+        public async Task<ApiResponse<ClassesResponse>> UpdateClassAsync(int id, ClassesRequest classesRequest)
+        {
+            bool isNameExist = await _repository.GetClass()
+                .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+
+            if (isNameExist)
+            {
+                return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
+            }
+
+            var classEntity = await _repository.GetClass().FirstOrDefaultAsync(c => c.Id == id);
+            if (classEntity == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
 
-            var duplicate = _repository.GetClass()
-                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+            _mapper.Map(classesRequest, classEntity);
 
-            if (duplicate != null)
+            try
             {
-                return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
+                classEntity = await _repository.UpdateClassAsync(classEntity);
+                await _repository.SaveChangesAsync();
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Không thể cập nhật lớp học");
+                }
+
+                await UpdateClassSubjectsAsync(classEntity.Id, classesRequest.Subjects);
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi tải lại lớp học sau khi cập nhật");
+                }
+
+                var response = _mapper.Map<ClassesResponse>(classEntity);
+
+                response.Subjects = classEntity.ClassSubjects.Select(cs => new ClassSubjectResponse
+                {
+                    Id = cs.Id,
+                    Code = cs.Subject.Code,
+                    Name = cs.Subject.Name,
+                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                    HoursSemester2 = (int)cs.Subject.HoursSemester2
+                }).ToList();
+
+                return ApiResponse<ClassesResponse>.Success(response);
             }
-
-            existingClass.Name = classesRequest.Name;
-            existingClass.Description = classesRequest.Description;
-            existingClass.StudentQuantity = classesRequest.StudentQuantity;
-            existingClass.SubjectQuantity = classesRequest.SubjectQuantity;
-            existingClass.GradeLevelId = classesRequest.GradeLevelId;
-            existingClass.AcademicYearId = classesRequest.AcademicYearId;
-
-            var updatedClass = _repository.UpdateClass(existingClass);
-
-            if (updatedClass == null)
+            catch (Exception ex)
             {
-                return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi cập nhật lớp học");
+                return ApiResponse<ClassesResponse>.BadRequest($"Lỗi khi cập nhật lớp học: {ex.Message}");
             }
+        }
 
-            return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(updatedClass));
+
+        public async Task<ApiResponse<bool>> UpdateClassSubjectsAsync(int classId, List<int> subjectIds)
+        {
+            try
+            {
+                var classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                    .FirstOrDefaultAsync(c => c.Id == classId);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<bool>.NotFound("Không tìm thấy lớp học");
+                }
+
+                await _classSubjectRepo.RemoveClassSubjectsByClassIdAsync(classId);
+
+                if (subjectIds != null && subjectIds.Any())
+                {
+                    await _classSubjectRepo.AddClassSubjectsAsync(classId, subjectIds);
+                }
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .FirstOrDefaultAsync(c => c.Id == classId);
+
+                return ApiResponse<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<bool>.BadRequest($"Lỗi khi cập nhật môn học: {ex.Message}");
+            }
         }
 
 
