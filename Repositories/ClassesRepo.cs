@@ -136,7 +136,7 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 return false;
             }
-
+            existingClass.Active = false;
             _context.Classes.Update(existingClass);
             return _context.SaveChanges() > 0;
         }
