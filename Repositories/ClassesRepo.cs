@@ -114,7 +114,7 @@ namespace ISC_ELIB_SERVER.Repositories
             existingClass.SubjectQuantity = updatedClass.SubjectQuantity;
             existingClass.GradeLevelId = updatedClass.GradeLevelId;
             existingClass.AcademicYearId = updatedClass.AcademicYearId;
-
+           
             _context.SaveChanges();
 
             return _context.Classes
@@ -162,6 +162,7 @@ namespace ISC_ELIB_SERVER.Repositories
             if (existingClass == null) return null;
 
             _context.Entry(existingClass).CurrentValues.SetValues(classEntity);
+            existingClass.Active = true;
             await _context.SaveChangesAsync();
 
             return await _context.Classes

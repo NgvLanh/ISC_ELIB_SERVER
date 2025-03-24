@@ -190,6 +190,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             _mapper.Map(classesRequest, classEntity);
+            classEntity.Active = true;
 
             try
             {
