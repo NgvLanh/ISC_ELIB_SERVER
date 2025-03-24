@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ISC_ELIB_SERVER.Models
 {
     public partial class ClassSubject
@@ -9,7 +11,7 @@ namespace ISC_ELIB_SERVER.Models
 
         public virtual Class? Class { get; set; }
         public virtual Subject? Subject { get; set; }
-        public int HoursSemester1 { get; internal set; }
-        public int HoursSemester2 { get; internal set; }
+        public int? HoursSemester1 { get; set; }
+        public int? HoursSemester2 { get; set; }
     }
 }
