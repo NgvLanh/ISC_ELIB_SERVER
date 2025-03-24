@@ -25,21 +25,30 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateClass([FromBody] ClassesRequest classesRequest)
+        public async Task<IActionResult> CreateClass([FromBody] ClassesRequest classesRequest)
         {
-            var response = _service.CreateClass(classesRequest);
+            if (classesRequest == null)
+            {
+                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ" });
+            }
+
+            var response = await _service.CreateClassAsync(classesRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
-
 
         [HttpPut("{id}")]
-        public IActionResult UpdateClass(int id, [FromBody] ClassesRequest classesRequest)
+        public async Task<IActionResult> UpdateClass([FromRoute] int id, [FromBody] ClassesRequest classesRequest)
         {
+            if (classesRequest == null)
+            {
+                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ" });
+            }
 
-            var response = _service.UpdateClass(id, classesRequest);
-
+            var response = await _service.UpdateClassAsync(id, classesRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteClass(int id)

@@ -17,9 +17,10 @@ namespace ISC_ELIB_SERVER.Services
         private readonly UserStatusRepo _userStatusRepo;
         private readonly ClassRepo _classRepo;
         private readonly IMapper _mapper;
+        private readonly GhnService _ghnService;
 
         public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
-            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper)
+            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
@@ -27,9 +28,10 @@ namespace ISC_ELIB_SERVER.Services
             _userStatusRepo = userStatusRepo;
             _classRepo = classRepo;
             _mapper = mapper;
+            _ghnService = ghnService;
         }
 
-        public ApiResponse<ICollection<UserResponse>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
             var query = _userRepo.GetUsers().AsQueryable();
 
@@ -50,29 +52,51 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(u => u.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var result = query.ToList();
+            var responses = new List<UserResponse>();
 
-            var response = _mapper.Map<ICollection<UserResponse>>(result);
+            // Lấy địa chỉ đầy đủ từ GHN API cho từng user
+            foreach (var user in result)
+            {
+                var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+                var response = _mapper.Map<UserResponse>(user);
+                response.ProvinceName = provinceName;
+                response.DistrictName = districtName;
+                response.WardName = wardName;
+                responses.Add(response);
+            }
 
-            return result.Any()
-                ? ApiResponse<ICollection<UserResponse>>.Success(response)
-                : ApiResponse<ICollection<UserResponse>>.NotFound("Không có dữ liệu người dùng");
+            return responses.Any() ? ApiResponse<ICollection<UserResponse>>
+                .Success(responses, page, pageSize, _userRepo.GetUsers().Count)
+                : ApiResponse<ICollection<UserResponse>>.NotFound("Không có dữ liệu");
         }
 
-        public ApiResponse<UserResponse> GetUserById(int id)
+        public async Task<ApiResponse<UserResponse>> GetUserById(int id)
         {
             var user = _userRepo.GetUserById(id);
-            return user != null
-                ? ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user))
-                : ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với ID #{id}");
+            if (user == null) return ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với ID #{id}");
+
+            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+            var response = _mapper.Map<UserResponse>(user);
+            response.ProvinceName = provinceName;
+            response.DistrictName = districtName;
+            response.WardName = wardName;
+
+            return ApiResponse<UserResponse>.Success(response);
         }
 
-        public ApiResponse<UserResponse> GetUserByCode(string code)
+        public async Task<ApiResponse<UserResponse>> GetUserByCode(string code)
         {
             var user = _userRepo.GetUsers().FirstOrDefault(u => u.Code?.ToLower() == code.ToLower());
-            return user != null
-                ? ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user))
-                : ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với mã {code}");
+            if (user == null) return ApiResponse<UserResponse>.NotFound($"Không tìm thấy người dùng với mã {code}");
+
+            var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
+            var response = _mapper.Map<UserResponse>(user);
+            response.ProvinceName = provinceName;
+            response.DistrictName = districtName;
+            response.WardName = wardName;
+
+            return ApiResponse<UserResponse>.Success(response);
         }
 
         public ApiResponse<UserResponse> CreateUser(UserRequest userRequest)
@@ -108,7 +132,7 @@ namespace ISC_ELIB_SERVER.Services
             var newUser = new User
             {
                 Code = userRequest.Code,
-                Password = ComputeSha256(userRequest.Password),
+                Password = ComputeSha256("a"),
                 FullName = userRequest.FullName,
                 Dob = userRequest.Dob,
                 Gender = userRequest.Gender,
@@ -126,7 +150,7 @@ namespace ISC_ELIB_SERVER.Services
                 AddressFull = userRequest.AddressFull,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl
+                AvatarUrl = userRequest.AvatarUrl  
             };
 
             try
@@ -216,8 +240,34 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<User>.NotFound("Không tìm thấy người dùng để xóa");
         }
 
+        public ApiResponse<UserResponse> UpdateUserPassword(int userId, string newPassword)
+        {
+            var user = _userRepo.GetUserById(userId);
+            if (user == null)
+            {
+                return ApiResponse<UserResponse>.NotFound("Không tìm thấy người dùng để cập nhật mật khẩu");
+            }
+
+            user.Password = ComputeSha256(newPassword);
+
+            try
+            {
+                var updatedUser = _userRepo.UpdateUser(user);
+                return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(updatedUser));
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<UserResponse>.BadRequest(ex.Message);
+            }
+        }
+
         public static string ComputeSha256(string? input)
         {
+            if (String.IsNullOrEmpty(input))
+            {
+                return null;
+            }
+
             using SHA256 sha256 = SHA256.Create();
             byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
             StringBuilder builder = new();

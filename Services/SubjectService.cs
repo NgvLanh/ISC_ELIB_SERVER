@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Newtonsoft.Json;
 using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
@@ -14,13 +15,15 @@ namespace ISC_ELIB_SERVER.Services
         private readonly SubjectGroupRepo _subjectGroupRepo;
         private readonly SubjectTypeRepo _subjectTypeRepo;
         private readonly IMapper _mapper;
+        private readonly ILogger<SubjectService> _logger;
 
-        public SubjectService(SubjectRepo subjectRepo, IMapper mapper, SubjectGroupRepo subjectGroupRepo, SubjectTypeRepo subjectTypeRepo)
+        public SubjectService(SubjectRepo subjectRepo, IMapper mapper, SubjectGroupRepo subjectGroupRepo, SubjectTypeRepo subjectTypeRepo, ILogger<SubjectService> logger)
         {
             _subjectRepo = subjectRepo;
             _mapper = mapper;
             _subjectGroupRepo = subjectGroupRepo;
             _subjectTypeRepo = subjectTypeRepo;
+            _logger = logger;
         }
 
         public ApiResponse<ICollection<SubjectResponse>> GetSubject(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -53,7 +56,7 @@ namespace ISC_ELIB_SERVER.Services
             var result = query.ToList();
 
             var response = _mapper.Map<ICollection<SubjectResponse>>(result);
-
+   
             return result.Any()
                 ? ApiResponse<ICollection<SubjectResponse>>.Success(
                         data: response,
@@ -74,7 +77,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<SubjectResponse> CreateSubject(SubjectRequest request)
         {
-            var existing = _subjectRepo.GetAllSubject().FirstOrDefault(st => st.Name?.ToLower() == request.Name.ToLower());
+            var existing = _subjectRepo.GetAllSubject().ToList().FirstOrDefault(st => st.Name?.ToLower() == request.Name.ToLower());
             if (existing != null)
             {
                 return ApiResponse<SubjectResponse>.Conflict("Tên môn học đã tồn tại");

@@ -1,15 +1,18 @@
 ﻿using ISC_ELIB_SERVER.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace ISC_ELIB_SERVER.Repositories
 {
     public interface IClassesRepo
     {
-        ICollection<Class> GetClass();
+        IQueryable<Class> GetClass();
         Class GetClassById(int id);
         Class CreateClass(Class classes);
         Class? UpdateClass(Class classes);
         bool DeleteClass(int id);
-
+        Task<IDisposable> BeginTransactionAsync();
+        Task<Class> CreateClassAsync(Class classEntity);
+        Task<Class> UpdateClassAsync(Class classEntity);
+        Task SaveChangesAsync();
     }
 
     public class ClassRepo : IClassesRepo
@@ -21,26 +24,84 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public ICollection<Class> GetClass()
+        public IQueryable<Class> GetClass()
         {
-            return _context.Classes.ToList();
+            return _context.Classes
+                .AsNoTracking()
+                .Include(c => c.GradeLevel)
+                    .ThenInclude(g => g.Teacher)
+                .Include(c => c.AcademicYear)
+                    .ThenInclude(a => a.School)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Role)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Class)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(s => s.Subject)
+                .Include(c => c.ClassType);
         }
 
-        public Class GetClassById(int id)
+
+
+
+        public Class? GetClassById(int id)
         {
-            return _context.Classes.FirstOrDefault(c => c.Id == id);
+            return _context.Classes
+                .Include(c => c.GradeLevel)
+                    .ThenInclude(g => g.Teacher)
+                .Include(c => c.AcademicYear)
+                    .ThenInclude(a => a.School)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Role)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Class)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                .FirstOrDefault(c => c.Id == id);
         }
 
         public Class CreateClass(Class newClass)
         {
             _context.Classes.Add(newClass);
             _context.SaveChanges();
-            return newClass;
+            return _context.Classes
+                .Include(c => c.GradeLevel)
+                    .ThenInclude(g => g.Teacher)
+                .Include(c => c.AcademicYear)
+                    .ThenInclude(a => a.School)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Role)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Class)
+                .Include(c => c.ClassType)
+                 .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefault(c => c.Id == newClass.Id);
         }
 
         public Class? UpdateClass(Class updatedClass)
         {
-            var existingClass = _context.Classes.Find(updatedClass.Id);
+            var existingClass = _context.Classes
+                .Include(c => c.GradeLevel)
+                    .ThenInclude(g => g.Teacher)
+                .Include(c => c.AcademicYear)
+                    .ThenInclude(a => a.School)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Role)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Class)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefault(c => c.Id == updatedClass.Id);
 
             if (existingClass == null)
             {
@@ -53,10 +114,19 @@ namespace ISC_ELIB_SERVER.Repositories
             existingClass.SubjectQuantity = updatedClass.SubjectQuantity;
             existingClass.GradeLevelId = updatedClass.GradeLevelId;
             existingClass.AcademicYearId = updatedClass.AcademicYearId;
-
+           
             _context.SaveChanges();
-            return existingClass;
+
+            return _context.Classes
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefault(c => c.Id == updatedClass.Id);
         }
+
 
         public bool DeleteClass(int id)
         {
@@ -66,9 +136,54 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 return false;
             }
-
+            existingClass.Active = false;
             _context.Classes.Update(existingClass);
             return _context.SaveChanges() > 0;
         }
+        public async Task<Class> CreateClassAsync(Class classEntity)
+        {
+            await _context.Classes.AddAsync(classEntity);
+            await _context.SaveChangesAsync();
+
+            return await _context.Classes
+
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+        }
+
+        public async Task<Class?> UpdateClassAsync(Class classEntity)
+        {
+            var existingClass = await _context.Classes.FindAsync(classEntity.Id);
+            if (existingClass == null) return null;
+
+            _context.Entry(existingClass).CurrentValues.SetValues(classEntity);
+            existingClass.Active = true;
+            await _context.SaveChangesAsync();
+
+            return await _context.Classes
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+        }
+
+        async Task<IDisposable> IClassesRepo.BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

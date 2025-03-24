@@ -1,4 +1,4 @@
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MimeKit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -18,36 +18,60 @@ public class EmailService : IEmailService
         _smtpPass = configuration["Smtp:Pass"];
     }
 
-    public async Task SendEmailAsync(string to, string subject, string body)
+    public async Task<bool> SendEmailAsync(string to, string subject, string body)
     {
-        var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("ISC LMS", _smtpUser));
-        message.To.Add(new MailboxAddress("", to));
-        message.Subject = subject;
-
-        var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "EmailTemplate.html");
-        var template = await File.ReadAllTextAsync(templatePath);
-        var htmlBody = template.Replace("{{subject}}", subject).Replace("{{body}}", body);
-
-        message.Body = new TextPart("html")
+        try
         {
-            Text = htmlBody
-        };
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("ISC LMS", _smtpUser));
+            message.To.Add(new MailboxAddress("", to));
+            message.Subject = subject;
 
-        using (var client = new SmtpClient())
+            string emailType = subject.Contains("OTP") ? "OTP" : "temporaryPassword";
+            string emailBodyContent = body; 
+            string validityMessage = string.Empty;
+
+            if (emailType == "temporaryPassword")
+            {
+                validityMessage = "Mật khẩu tạm thời chỉ tồn tại được <strong>30 phút</strong>.";
+            }
+            else if (emailType == "OTP")
+            {
+                validityMessage = "OTP chỉ tồn tại được <strong>10 phút</strong>.";
+            }
+
+            var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "EmailTemplate.html");
+            var template = await File.ReadAllTextAsync(templatePath);
+
+            var htmlBody = template
+                .Replace("{{body}}", emailBodyContent)
+                .Replace("{{validityMessage}}", validityMessage)
+                .Replace("{{subject}}", subject); 
+
+            message.Body = new TextPart("html")
+            {
+                Text = htmlBody
+            };
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(_smtpServer, _smtpPort, false);
+                    await client.AuthenticateAsync(_smtpUser, _smtpPass);
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+        }
+        catch (Exception)
         {
-            try
-            {
-                await client.ConnectAsync(_smtpServer, _smtpPort, false);
-                await client.AuthenticateAsync(_smtpUser, _smtpPass);
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending email: {ex.Message}");
-                throw;
-            }
+            return false;
         }
     }
 }

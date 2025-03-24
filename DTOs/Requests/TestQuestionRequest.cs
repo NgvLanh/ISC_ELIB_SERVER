@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -14,6 +14,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         //[Required(ErrorMessage = "Loại câu hỏi không được để trống.")]
         //[RegularExpression("MultipleChoice|Essay", ErrorMessage = "Loại câu hỏi chỉ có thể là 'MultipleChoice' hoặc 'Essay'.")]
-        public string? QuestionType { get; set; }
+        public QuestionType QuestionType { get; set; }
     }
 }

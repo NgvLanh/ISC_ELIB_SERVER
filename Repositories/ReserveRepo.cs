@@ -1,4 +1,5 @@
 using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -44,5 +45,15 @@ namespace ISC_ELIB_SERVER.Repositories
             }
             return false;
         }
+
+        public ICollection<Reserve> GetActiveReserves()
+        {
+            return _context.Reserves
+                .Include(r => r.Student)
+                .Include(r => r.Class)
+                .Where(r => r.Active == true)
+                .ToList();
+        }
+
     }
 }

@@ -10,6 +10,7 @@
         public int? ClassId { get; set; }
         public int? SubjectId { get; set; }
         public int? TopicsId { get; set; }
+        public int? SemesterId { get; set; }
         public bool Active { get; set; }
     }
 }
