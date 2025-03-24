@@ -18,5 +18,7 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
 
         public virtual User? Student { get; set; }
+        public virtual Class? Class { get; set; }
+
     }
 }

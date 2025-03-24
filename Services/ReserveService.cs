@@ -16,6 +16,7 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<ReserveResponse> CreateReserve(ReserveRequest reserveRequest);
         ApiResponse<Reserve> UpdateReserve(Reserve reserve);
         ApiResponse<Reserve> DeleteReserve(long id);
+        ApiResponse<ICollection<ReserveListResponse>> GetActiveReserves(int page, int pageSize, string search, string sortColumn, string sortOrder);
     }
 
     public class ReserveService : IReserveService
@@ -85,6 +86,16 @@ namespace ISC_ELIB_SERVER.Services
             return success ?
                 ApiResponse<Reserve>.Success() :
                 ApiResponse<Reserve>.NotFound("Không tìm thấy đặt chỗ để xóa");
+        }
+
+        public ApiResponse<ICollection<ReserveListResponse>> GetActiveReserves(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        {
+            var reserves = _repository.GetActiveReserves();
+            var response = _mapper.Map<ICollection<ReserveListResponse>>(reserves);
+
+            return reserves.Any()
+                ? ApiResponse<ICollection<ReserveListResponse>>.Success(response)
+                : ApiResponse<ICollection<ReserveListResponse>>.NotFound("Không có dữ liệu bảo lưu.");
         }
     }
 }
