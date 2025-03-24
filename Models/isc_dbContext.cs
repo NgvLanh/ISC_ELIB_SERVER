@@ -2214,7 +2214,8 @@ namespace ISC_ELIB_SERVER.Models
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ClassId).HasColumnName("class_id");
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-
+            entity.Property(e => e.HoursSemester1).HasColumnName("hours_semester_1");
+            entity.Property(e => e.HoursSemester2).HasColumnName("hours_semester_2");
             entity.HasOne(d => d.Class)
                 .WithMany(p => p.ClassSubjects)
                 .HasForeignKey(d => d.ClassId)

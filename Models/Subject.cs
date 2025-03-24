@@ -22,6 +22,7 @@ namespace ISC_ELIB_SERVER.Models
         public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
+
         [Column("hours_semester_1")] 
         public int? HoursSemester1 { get; set; }
 
