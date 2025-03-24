@@ -2,7 +2,7 @@
 {
     public class StudentInfoUserResponse
     {
-        //public int Id { get; set; }  // ID từ bảng StudentInfo
+        public int Id { get; set; }  // ID từ bảng StudentInfo
         public string? Code { get; set; } // Mã học viên từ bảng user
         public string? FullName { get; set; }  // Tên đầy đủ từ bảng User
         public DateTime? Dob { get; set; }  // Ngày sinh từ bảng User
