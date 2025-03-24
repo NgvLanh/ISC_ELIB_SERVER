@@ -23,7 +23,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetThemes().AsQueryable();
 
-            query = query.Where(us => us.Active == null || us.Active == false);
+            query = query.Where(us => us.Active == true);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -56,7 +56,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ThemesResponse> GetThemesById(long id)
         {
             var themes = _repository.GetThemesById(id);
-            return (themes != null && (themes.Active == false))
+            return (themes != null && (themes.Active == true))
                 ? ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(themes))
                 : ApiResponse<ThemesResponse>.NotFound($"Không tìm thấy chủ đề #{id}");
         }
