@@ -32,7 +32,11 @@ namespace ISC_ELIB_SERVER.Services
                 .Include(c => c.User)
                 .Include(c => c.ClassType)
                 .Include(c => c.ClassSubjects)
-                    .ThenInclude(cs => cs.Subject) 
+                    .ThenInclude(cs => cs.Subject)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.UserStatus) 
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(sortColumn))
@@ -58,20 +62,40 @@ namespace ISC_ELIB_SERVER.Services
             var result = query.ToList();
             var response = _mapper.Map<ICollection<ClassesResponse>>(result);
 
-            foreach (var classResponse in response)
+            var classDict = response.ToDictionary(c => c.Id);
+
+            foreach (var classData in result)
             {
-                classResponse.Subjects = result
-                    .FirstOrDefault(c => c.Id == classResponse.Id)?
-                    .ClassSubjects
-                    .Select(cs => new ClassSubjectResponse
-                    {
-                        Id = cs.Id,
-                        Code = cs.Subject.Code,
-                        Name = cs.Subject.Name,
-                        HoursSemester1 = (int)cs.Subject.HoursSemester1,
-                        HoursSemester2 = (int)cs.Subject.HoursSemester2
-                    })
-                    .ToList() ?? new List<ClassSubjectResponse>();
+                if (classDict.TryGetValue(classData.Id, out var classResponse))
+                {
+                    classResponse.Subjects = classData.ClassSubjects
+                        .Select(cs => new ClassSubjectResponse
+                        {
+                            Id = cs.Id,
+                            Code = cs.Subject.Code,
+                            Name = cs.Subject.Name,
+                            HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                            HoursSemester2 = (int)cs.Subject.HoursSemester2
+                        })
+                        .ToList();
+
+                    classResponse.Student = classData.Users
+                        .Where(u => u.RoleId == 3)
+                        .Select(u => new ClassUserResponse
+                        {
+                            Id = u.Id,
+                            Code = u.Code,
+                            FullName = u.FullName,
+                            EnrollmentDate = u.EnrollmentDate.HasValue
+                                ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                                : null,
+                            Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                                ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                                : null,
+                            UserStatus = u.UserStatus.Name
+                        })
+                        .ToList();
+                }
             }
 
             return result.Any()
@@ -80,11 +104,16 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
+
         public ApiResponse<ClassesResponse> GetClassById(int id)
         {
             var classData = _repository.GetClass()
                 .Include(c => c.ClassSubjects)
                     .ThenInclude(cs => cs.Subject)
+                .Include(c => c.Users) 
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.UserStatus)
                 .FirstOrDefault(c => c.Id == id);
 
             if (classData == null)
@@ -105,8 +134,28 @@ namespace ISC_ELIB_SERVER.Services
                 })
                 .ToList();
 
+            response.Student = classData.Users
+                .Where(u => u.RoleId == 3)
+                .Select(u => new ClassUserResponse
+                {
+                    Id = u.Id,
+                    Code = u.Code,
+                    FullName = u.FullName,
+                    EnrollmentDate = u.EnrollmentDate.HasValue
+                        ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                        : null,
+                    Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                        ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                        : null,
+
+                    UserStatus = u.UserStatus.Name
+                    
+                })
+                .ToList();
+
             return ApiResponse<ClassesResponse>.Success(response);
         }
+
 
 
         public ApiResponse<ClassesResponse> GetClassByName(string name)
@@ -119,6 +168,11 @@ namespace ISC_ELIB_SERVER.Services
 
         public async Task<ApiResponse<ClassesResponse>> CreateClassAsync(ClassesRequest classesRequest)
         {
+            if (classesRequest == null)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
+            }
+
             bool isNameExist = await _repository.GetClass()
                 .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower());
 
@@ -131,7 +185,7 @@ namespace ISC_ELIB_SERVER.Services
 
             try
             {
-                classEntity = await _repository.CreateClassAsync(classEntity);
+                await _repository.CreateClassAsync(classEntity);
                 await _repository.SaveChangesAsync();
 
                 if (classEntity.Id == 0)
@@ -144,6 +198,8 @@ namespace ISC_ELIB_SERVER.Services
                 classEntity = await _repository.GetClass()
                     .Include(c => c.ClassSubjects)
                         .ThenInclude(cs => cs.Subject)
+                    .Include(c => c.Users)
+                        .ThenInclude(u => u.UserStatus)
                     .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
 
                 if (classEntity == null)
@@ -153,14 +209,31 @@ namespace ISC_ELIB_SERVER.Services
 
                 var response = _mapper.Map<ClassesResponse>(classEntity);
 
-                response.Subjects = classEntity.ClassSubjects.Select(cs => new ClassSubjectResponse
+                response.Subjects = classEntity.ClassSubjects?.Select(cs => new ClassSubjectResponse
                 {
                     Id = cs.Id,
                     Code = cs.Subject.Code,
                     Name = cs.Subject.Name,
-                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
-                    HoursSemester2 = (int)cs.Subject.HoursSemester2
-                }).ToList();
+                    HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
+                    HoursSemester2 = cs.Subject.HoursSemester2 ?? 0
+                }).ToList() ?? new List<ClassSubjectResponse>();
+
+               
+                response.Student = classEntity.Users?
+                    .Where(u => u.RoleId == 3)
+                    .Select(u => new ClassUserResponse
+                    {
+                        Id = u.Id,
+                        Code = u.Code,
+                        FullName = u.FullName,
+                        EnrollmentDate = u.EnrollmentDate.HasValue
+                            ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                            : null,
+                        Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                            ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                            : null,
+                        UserStatus = u.UserStatus.Name
+                    }).ToList() ?? new List<ClassUserResponse>();
 
                 return ApiResponse<ClassesResponse>.Success(response);
             }
@@ -173,8 +246,14 @@ namespace ISC_ELIB_SERVER.Services
 
 
 
+
         public async Task<ApiResponse<ClassesResponse>> UpdateClassAsync(int id, ClassesRequest classesRequest)
         {
+            if (classesRequest == null)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
+            }
+
             bool isNameExist = await _repository.GetClass()
                 .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
 
@@ -183,7 +262,12 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
             }
 
-            var classEntity = await _repository.GetClass().FirstOrDefaultAsync(c => c.Id == id);
+            var classEntity = await _repository.GetClass()
+                .Include(c => c.Users)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (classEntity == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
@@ -194,19 +278,16 @@ namespace ISC_ELIB_SERVER.Services
 
             try
             {
-                classEntity = await _repository.UpdateClassAsync(classEntity);
+                await _repository.UpdateClassAsync(classEntity);
                 await _repository.SaveChangesAsync();
-
-                if (classEntity == null)
-                {
-                    return ApiResponse<ClassesResponse>.BadRequest("Không thể cập nhật lớp học");
-                }
 
                 await UpdateClassSubjectsAsync(classEntity.Id, classesRequest.Subjects);
 
                 classEntity = await _repository.GetClass()
                     .Include(c => c.ClassSubjects)
                         .ThenInclude(cs => cs.Subject)
+                    .Include(c => c.Users)
+                        .ThenInclude(u => u.UserStatus)
                     .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
 
                 if (classEntity == null)
@@ -216,14 +297,32 @@ namespace ISC_ELIB_SERVER.Services
 
                 var response = _mapper.Map<ClassesResponse>(classEntity);
 
-                response.Subjects = classEntity.ClassSubjects.Select(cs => new ClassSubjectResponse
-                {
-                    Id = cs.Id,
-                    Code = cs.Subject.Code,
-                    Name = cs.Subject.Name,
-                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
-                    HoursSemester2 = (int)cs.Subject.HoursSemester2
-                }).ToList();
+                response.Subjects = classEntity.ClassSubjects?
+                    .Select(cs => new ClassSubjectResponse
+                    {
+                        Id = cs.Id,
+                        Code = cs.Subject.Code,
+                        Name = cs.Subject.Name,
+                        HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
+                        HoursSemester2 = cs.Subject.HoursSemester2 ?? 0
+                    }).ToList() ?? new List<ClassSubjectResponse>();
+
+                response.Student = classEntity.Users?
+                 .Where(u => u.RoleId == 3)
+                 .Select(u => new ClassUserResponse
+                 {
+                     Id = u.Id,
+                     Code = u.Code,
+                     FullName = u.FullName,
+                     EnrollmentDate = u.EnrollmentDate.HasValue
+                         ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                         : null,
+                     Year = u.AcademicYear != null && u.AcademicYear.StartTime.HasValue && u.AcademicYear.EndTime.HasValue
+                         ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                         : "Không có thông tin", // ✅ Đảm bảo không bị null
+                     UserStatus = u.UserStatus != null ? u.UserStatus.Name : "Không có trạng thái"
+                 }).ToList() ?? new List<ClassUserResponse>();
+
 
                 return ApiResponse<ClassesResponse>.Success(response);
             }
@@ -232,6 +331,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ClassesResponse>.BadRequest($"Lỗi khi cập nhật lớp học: {ex.Message}");
             }
         }
+
 
 
         public async Task<ApiResponse<bool>> UpdateClassSubjectsAsync(int classId, List<int> subjectIds)
