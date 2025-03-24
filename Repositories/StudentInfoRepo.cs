@@ -72,5 +72,29 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Where(s => s.UserId == userId)
                 .ToList();
         }
+
+        // Lấy danh sách học viên theo lớp với thông tin đầy đủ
+        public List<StudentInfo> GetStudentsByClass(int classId)
+        {
+            return _context.StudentInfos
+                .Include(s => s.User)
+                    .ThenInclude(u => u.AcademicYear) // Load AcademicYear từ User
+                .Include(s => s.User)
+                    .ThenInclude(u => u.UserStatus) // Load UserStatus từ User
+                .Where(s => s.User != null && s.User.ClassId == classId)
+                .ToList();
+        }
+
+        // Lấy danh sách học viên theo user figma
+        public List<StudentInfo> GetAllStudents()
+        {
+            return _context.StudentInfos
+                .Include(s => s.User)
+                    .ThenInclude(u => u.Class)
+                .Include(s => s.User)
+                    .ThenInclude(u => u.UserStatus)
+                .ToList();
+        }
+
     }
 }
