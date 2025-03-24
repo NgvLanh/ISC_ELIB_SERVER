@@ -355,6 +355,9 @@ builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 builder.Services.AddScoped<ReserveRepo>();
 builder.Services.AddScoped<IReserveService, ReserveService>();
 
+//TransferSchoolRepo
+builder.Services.AddScoped<TransferSchoolRepo>();
+builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
