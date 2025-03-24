@@ -352,6 +352,9 @@ builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 
+//Reserve
+builder.Services.AddScoped<ReserveRepo>();
+builder.Services.AddScoped<IReserveService, ReserveService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
