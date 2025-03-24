@@ -1,6 +1,8 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -8,6 +10,7 @@ namespace ISC_ELIB_SERVER.Controllers
 {
     [Route("api/teacherlists")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TeacherListController : ControllerBase
     {
         private readonly ITeacherListService _teacherListService;

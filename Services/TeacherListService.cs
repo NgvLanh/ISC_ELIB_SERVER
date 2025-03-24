@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -23,11 +24,15 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<TeacherListResponse>.NotFound($"Không tìm thấy giáo viên với ID #{id}");
         }
 
-        public ApiResponse<ICollection<TeacherListResponse>> GetTeacherLists(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<TeacherListResponse>> GetTeacherLists(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
-            var query = _repository.GetAllTeacherList();
+            // Gán giá trị mặc định nếu tham số null
+            int currentPage = page ?? 1;
+            int currentPageSize = pageSize ?? 10;
 
-            // Tìm kiếm: theo tên (User.FullName) hoặc mã giáo viên (User.Code)
+            var query = _repository.GetAllTeacherList().AsQueryable();
+
+            // Thực hiện tìm kiếm nếu có
             if (!string.IsNullOrEmpty(search))
             {
                 var lowerSearch = search.ToLower();
@@ -39,36 +44,29 @@ namespace ISC_ELIB_SERVER.Services
                 );
             }
 
-            // Sắp xếp
-            switch (sortColumn)
+            // Sắp xếp theo cột được chỉ định
+            query = sortColumn switch
             {
-                case "TeacherCode":
-                    query = sortOrder.ToLower() == "desc"
-                        ? query.OrderByDescending(t => t.User.Code)
-                        : query.OrderBy(t => t.User.Code);
-                    break;
-                case "FullName":
-                    query = sortOrder.ToLower() == "desc"
-                        ? query.OrderByDescending(t => t.User.FullName)
-                        : query.OrderBy(t => t.User.FullName);
-                    break;
-                default:
-                    query = sortOrder.ToLower() == "desc"
-                        ? query.OrderByDescending(t => t.Id)
-                        : query.OrderBy(t => t.Id);
-                    break;
-            }
+                "TeacherCode" => currentPageSize.ToString().ToLower() == "desc" ? query.OrderByDescending(t => t.User.Code) : query.OrderBy(t => t.User.Code),
+                "FullName" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.User.FullName) : query.OrderBy(t => t.User.FullName),
+                _ => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Id) : query.OrderBy(t => t.Id)
+            };
+
+            // Tính tổng số bản ghi
+            var totalItems = query.Count();
 
             // Phân trang
-            var result = query.Skip((page - 1) * pageSize)
-                              .Take(pageSize)
+            var result = query.Skip((currentPage - 1) * currentPageSize)
+                              .Take(currentPageSize)
                               .ToList();
 
             var response = _mapper.Map<ICollection<TeacherListResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<TeacherListResponse>>.Success(response)
-                : ApiResponse<ICollection<TeacherListResponse>>.NotFound("Không có dữ liệu");
+                ? ApiResponse<ICollection<TeacherListResponse>>.Success(response, currentPage, currentPageSize, totalItems)
+                : ApiResponse<ICollection<TeacherListResponse>>.NotFound("No data found for TeacherList");
         }
+
+
     }
 }

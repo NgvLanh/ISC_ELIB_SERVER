@@ -73,6 +73,7 @@ namespace ISC_ELIB_SERVER.Services
             existingAssignment.ClassId = request.ClassId;
             existingAssignment.SubjectId = request.SubjectId;
             existingAssignment.TopicsId = request.TopicsId;
+            existingAssignment.SemesterId = request.SemesterId;
 
             var updatedAssignment = _repository.UpdateTeachingAssignment(existingAssignment);
             return ApiResponse<TeachingAssignmentsResponse>.Success(_mapper.Map<TeachingAssignmentsResponse>(updatedAssignment));
