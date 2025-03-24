@@ -22,7 +22,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetMajor().AsQueryable();
 
-            query = query.Where(us => us.Active == null || us.Active == false);
+            query = query.Where(us => us.Active == true);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -56,7 +56,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<MajorResponse> GetMajorById(long id)
         {
             var major = _repository.GetMajorById(id);
-            return (major != null && (major.Active == false))
+            return (major != null && (major.Active == true))
                 ? ApiResponse<MajorResponse>.Success(_mapper.Map<MajorResponse>(major))
                 : ApiResponse<MajorResponse>.NotFound($"Không tìm thấy chuyên ngành #{id}");
         }
