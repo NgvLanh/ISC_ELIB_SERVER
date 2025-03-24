@@ -232,6 +232,10 @@ builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
@@ -258,6 +262,10 @@ builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -277,6 +285,12 @@ builder.Services.AddScoped<ISemesterService, SemesterService>();
 //GradeLevel
 builder.Services.AddScoped<GradeLevelRepo>();
 builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+
+//
+builder.Services.AddScoped<EntryTypeRepo>();
+
+
+
 
 //EducationLevel
 builder.Services.AddScoped<EducationLevelRepo>();
@@ -360,6 +374,13 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 });
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(TeacherFamilyMapper));
+
+//techerfamily
+builder.Services.AddScoped<TeacherFamilyRepo>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

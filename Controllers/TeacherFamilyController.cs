@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/teacher-families")]
+    [Route("api/teacherfamilies")]
     public class TeacherFamilyController : ControllerBase
     {
         private readonly ITeacherFamilyService _service;

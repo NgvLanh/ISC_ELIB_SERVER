@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,20 +8,27 @@ namespace ISC_ELIB_SERVER.Repositories
     public class TeacherFamilyRepo
     {
         private readonly isc_dbContext _context;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         public TeacherFamilyRepo(isc_dbContext context)
         {
             _context = context;
         }
+<<<<<<< HEAD
 
+        public IQueryable<TeacherFamily> GetTeacherFamilies()
+=======
         public ICollection<TeacherFamily> GetTeacherFamilies()
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         {
-            return _context.TeacherFamilies.Where(tf => tf.Active).ToList();
+            return _context.TeacherFamilies.Where(tf => tf.Active);
         }
 
         public TeacherFamily? GetTeacherFamilyById(long id)
         {
-            return _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && tf.Active);
+            return _context.TeacherFamilies.AsNoTracking().FirstOrDefault(tf => tf.Id == id && tf.Active);
         }
 
         public TeacherFamily CreateTeacherFamily(TeacherFamily teacherFamily)
@@ -32,20 +40,20 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public TeacherFamily? UpdateTeacherFamily(TeacherFamily teacherFamily)
         {
-            var existing = GetTeacherFamilyById(teacherFamily.Id);
+            var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && tf.Active);
             if (existing == null) return null;
 
-            _context.TeacherFamilies.Update(teacherFamily);
+            _context.Entry(existing).CurrentValues.SetValues(teacherFamily);
             _context.SaveChanges();
             return teacherFamily;
         }
 
         public bool DeleteTeacherFamily(long id)
         {
-            var teacherFamily = GetTeacherFamilyById(id);
+            var teacherFamily = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && tf.Active);
             if (teacherFamily == null) return false;
 
-            teacherFamily.Active = true;
+            teacherFamily.Active = false; // Xóa mềm: đặt Active = false
             _context.TeacherFamilies.Update(teacherFamily);
             return _context.SaveChanges() > 0;
         }
