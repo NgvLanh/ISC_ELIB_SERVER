@@ -11,6 +11,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<StudentInfoResponses> UpdateStudentInfo(int id, StudentInfoRequest studentInfoRequest);
         ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id);
         ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize);
+        ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId);
 
     }
 }
