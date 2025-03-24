@@ -44,6 +44,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return entryType;
         }
 
+
         public bool DeactivateEntryType(long id)
         {
             var entryType = _context.EntryTypes.FirstOrDefault(e => e.Id == id);
