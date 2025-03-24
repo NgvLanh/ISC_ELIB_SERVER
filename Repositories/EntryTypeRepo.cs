@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
+<<<<<<< HEAD
     public class EntryTypeRepo
     {
         private readonly isc_dbContext _context;
@@ -11,12 +12,35 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             _context = context;
         }
+<<<<<<< HEAD
         public ICollection<EntryType> GetEntryTypes()
         {
             return _context.EntryTypes
                 .Where(c => c.Active)
                 .ToList();
         }
+=======
+
+=======
+
+    public class EntryTypeRepo
+
+    {
+
+        private readonly isc_dbContext _context;
+    public EntryTypeRepo(isc_dbContext context)
+    {
+        _context = context;
+    }
+
+    public ICollection<EntryType> GetEntryTypes()
+        {
+            return _context.EntryTypes.Where(et => !et.IsDeleted).ToList();
+        }
+
+
+>>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
+>>>>>>> edb656565ea3de65bf591db2b4886da5d981dd1b
         public EntryType GetEntryTypeById(long id)
         {
             return _context.EntryTypes.FirstOrDefault(e => e.Id == id && !e.IsDeleted);
