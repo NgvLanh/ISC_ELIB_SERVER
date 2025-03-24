@@ -26,7 +26,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetTrainingProgram().AsQueryable();
 
-            query = query.Where(us => us.Active == null || us.Active == false);
+            query = query.Where(us => us.Active == true);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -58,7 +58,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
         {
             var trainingProgram = _repository.GetTrainingProgramById(id);
-            return (trainingProgram != null && (trainingProgram.Active == false))
+            return (trainingProgram != null && (trainingProgram.Active == true))
                 ? ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(trainingProgram))
                 : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
         }

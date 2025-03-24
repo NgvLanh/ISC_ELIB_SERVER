@@ -26,7 +26,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetNotifications().AsQueryable();
 
-            query = query.Where(us => us.Active == null || us.Active == false);
+            query = query.Where(us => us.Active == true);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -59,7 +59,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<NotificationResponse> GetNotificationById(long id)
         {
             var notification = _repository.GetNotificationById(id);
-            return (notification != null && (notification.Active == false))
+            return (notification != null && (notification.Active == true))
                 ? ApiResponse<NotificationResponse>.Success(_mapper.Map<NotificationResponse>(notification))
                 : ApiResponse<NotificationResponse>.NotFound($"Không tìm thông báo #{id}");
         }
