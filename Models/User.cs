@@ -55,13 +55,14 @@ namespace ISC_ELIB_SERVER.Models
         public string? Street { get; set; }
         public bool Active { get; set; }
         [Column("avatar_url")]
-        public string? AvatarUrl { get; set; } 
+        public string? AvatarUrl { get; set; }
 
         public virtual AcademicYear? AcademicYear { get; set; }
         public virtual Class? Class { get; set; }
         public virtual EntryType? EntryTypeNavigation { get; set; }
         public virtual Role? Role { get; set; }
         public virtual UserStatus? UserStatus { get; set; }
+        public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Campus> Campuses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClasses { get; set; }

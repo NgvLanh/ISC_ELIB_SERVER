@@ -6,8 +6,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     {
         [Required(ErrorMessage = "Mã người dùng không được để trống")]
         public string? Code { get; set; }
-
-        [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string? Password { get; set; }
 
         [Required(ErrorMessage = "Tên đầy đủ không được để trống")]

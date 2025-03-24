@@ -3,8 +3,11 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -21,36 +24,57 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? sortColumn, string? sortOrder)
         {
-            var query = _repository.GetClass().AsQueryable();
+            var query = _repository.GetClass()
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .AsQueryable();
 
-            query = sortColumn switch
+            if (!string.IsNullOrEmpty(sortColumn))
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
-            };
+                bool isDesc = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
 
+                query = sortColumn.ToLower() switch
+                {
+                    "code" => isDesc ? query.OrderByDescending(c => c.Code) : query.OrderBy(c => c.Code),
+                    "name" => isDesc ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name),
+                    "studentquantity" => isDesc ? query.OrderByDescending(c => c.StudentQuantity) : query.OrderBy(c => c.StudentQuantity),
+                    _ => query.OrderBy(c => c.Code)
+                };
+            }
 
-            if (page.HasValue && pageSize.HasValue)
+            int totalCount = query.Count();
+
+            if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
             {
                 query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
             }
 
             var result = query.ToList();
-
             var response = _mapper.Map<ICollection<ClassesResponse>>(result);
-
-            return result.Any() ? ApiResponse<ICollection<ClassesResponse>>
-            .Success(response, page, pageSize, _repository.GetClass().Count)
-             : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
+            return result.Any()
+                ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
+                : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
         }
+
 
         public ApiResponse<ClassesResponse> GetClassById(int id)
         {
             var classData = _repository.GetClassById(id);
-            return classData != null
-                ? ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(classData))
-                : ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
+            if (classData == null)
+            {
+                return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
+            }
+            var subjects = classData.ClassSubjects.Select(cs => cs.Subject).ToList();
+            var response = _mapper.Map<ClassesResponse>(classData);
+            response.Subjects = _mapper.Map<ICollection<ClassSubjectResponse>>(subjects);
+
+            return ApiResponse<ClassesResponse>.Success(response);
         }
+
+
+
 
         public ApiResponse<ClassesResponse> GetClassByName(string name)
         {
@@ -62,7 +86,9 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ClassesResponse> CreateClass(ClassesRequest classesRequest)
         {
-            var existingClass = _repository.GetClass().FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower());
+            var existingClass = _repository.GetClass()
+                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower());
+
             if (existingClass != null)
             {
                 return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
@@ -94,13 +120,28 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)
         {
-            var existingClass = _repository.GetClassById(id);
+            var existingClass = _repository.GetClass()
+                .Include(c => c.GradeLevel)
+                    .ThenInclude(g => g.Teacher)
+                .Include(c => c.AcademicYear)
+                    .ThenInclude(a => a.School)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Role)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.Class)
+                .Include(c => c.ClassType)
+                .FirstOrDefault(c => c.Id == id);
+
             if (existingClass == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
 
-            var duplicate = _repository.GetClass().FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+            var duplicate = _repository.GetClass()
+                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+
             if (duplicate != null)
             {
                 return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
@@ -108,10 +149,21 @@ namespace ISC_ELIB_SERVER.Services
 
             existingClass.Name = classesRequest.Name;
             existingClass.Description = classesRequest.Description;
+            existingClass.StudentQuantity = classesRequest.StudentQuantity;
+            existingClass.SubjectQuantity = classesRequest.SubjectQuantity;
+            existingClass.GradeLevelId = classesRequest.GradeLevelId;
+            existingClass.AcademicYearId = classesRequest.AcademicYearId;
 
             var updatedClass = _repository.UpdateClass(existingClass);
+
+            if (updatedClass == null)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi cập nhật lớp học");
+            }
+
             return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(updatedClass));
         }
+
 
         public ApiResponse<bool> DeleteClass(int id)
         {

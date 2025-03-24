@@ -14,14 +14,27 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<School> GetSchools()
         {
             return _context.Schools
+                .Include(s => s.User)
                 .Include(s => s.EducationLevel)
+                .Include(s => s.Campuses)
+                .ThenInclude(s => s.User)
+                .Include(s => s.AcademicYears)
+                .ThenInclude(s => s.Semesters)
                 .Where(s => s.Active)
                 .ToList();
         }
 
         public School GetSchoolById(long id)
         {
-            return _context.Schools.Where(s => s.Active).FirstOrDefault(s => s.Id == id);
+            return _context.Schools
+                .Include(s => s.User)
+                .Include(s => s.EducationLevel)
+                .Include(s => s.Campuses)
+                .ThenInclude(s => s.User)
+                .Include(s => s.AcademicYears)
+                .ThenInclude(s => s.Semesters)
+                .Where(s => s.Active)
+                .FirstOrDefault(s => s.Id == id);
         }
 
         public School CreateSchool(School school)

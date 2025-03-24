@@ -16,7 +16,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSchools(
+        public async Task<IActionResult> GetSchools(
             [FromQuery] int? page = null,
                 [FromQuery] int? pageSize = null,
                 [FromQuery] string? sortColumn = null,
@@ -24,14 +24,14 @@ namespace ISC_ELIB_SERVER.Controllers
                 [FromQuery] string? search = ""
         )
         {
-            var response = _service.GetSchools(page, pageSize, search, sortColumn, sortOrder);
+            var response = await _service.GetSchools(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSchoolById(long id)
+        public async Task<IActionResult> GetSchoolById(long id)
         {
-            var response = _service.GetSchoolById(id);
+            var response = await _service.GetSchoolById(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 

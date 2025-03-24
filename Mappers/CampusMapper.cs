@@ -9,6 +9,7 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public CampusMapper()
         {
+            CreateMap<User, UserCampusResponse>();
             CreateMap<Campus, CampusResponse>();
             CreateMap<CampusRequest, Campus>();
         }

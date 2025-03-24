@@ -22,21 +22,23 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/users
         [HttpGet]
-        public ActionResult<ApiResponse<ICollection<UserResponse>>> GetUsers(
+        public async Task<ActionResult<ApiResponse<ICollection<UserResponse>>>> GetUsers(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "",
             [FromQuery] string sortColumn = "id",
             [FromQuery] string sortOrder = "asc")
         {
-            return Ok(_userService.GetUsers(page, pageSize, search, sortColumn, sortOrder));
+            var result = await _userService.GetUsers(page, pageSize, search, sortColumn, sortOrder);
+            return Ok(result);
         }
 
         // GET: api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> GetUserById(int id)
+        public async Task<ActionResult<ApiResponse<UserResponse>>> GetUserById(int id)
         {
-            return Ok(_userService.GetUserById(id));
+            var result = await _userService.GetUserById(id);
+            return Ok(result);
         }
 
         // POST: api/users
