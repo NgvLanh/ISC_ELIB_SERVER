@@ -26,9 +26,10 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         // Thêm lượt xem nếu chưa có
-        public void AddView(QuestionViewRequest request)
+        public void AddView(int questionId, int userId)
         {
-            _repository.AddView(request.QuestionId, request.UserId);
+            _repository.AddView(questionId, userId);
         }
+
     }
 }
