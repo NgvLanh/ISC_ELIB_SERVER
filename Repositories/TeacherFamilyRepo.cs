@@ -8,27 +8,24 @@ namespace ISC_ELIB_SERVER.Repositories
     public class TeacherFamilyRepo
     {
         private readonly isc_dbContext _context;
-<<<<<<< HEAD
 
-=======
->>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         public TeacherFamilyRepo(isc_dbContext context)
         {
             _context = context;
         }
-<<<<<<< HEAD
 
-        public IQueryable<TeacherFamily> GetTeacherFamilies()
-=======
         public ICollection<TeacherFamily> GetTeacherFamilies()
->>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
         {
-            return _context.TeacherFamilies.Where(tf => tf.Active);
+            return _context.TeacherFamilies
+                .Where(tf => !tf.IsDeleted) // Chỉ lấy những bản ghi chưa bị xóa mềm
+                .ToList();
         }
 
         public TeacherFamily? GetTeacherFamilyById(long id)
         {
-            return _context.TeacherFamilies.AsNoTracking().FirstOrDefault(tf => tf.Id == id && tf.Active);
+            return _context.TeacherFamilies
+                .AsNoTracking()
+                .FirstOrDefault(tf => tf.Id == id && !tf.IsDeleted);
         }
 
         public TeacherFamily CreateTeacherFamily(TeacherFamily teacherFamily)
@@ -40,7 +37,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public TeacherFamily? UpdateTeacherFamily(TeacherFamily teacherFamily)
         {
-            var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && tf.Active);
+            var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && !tf.IsDeleted);
             if (existing == null) return null;
 
             _context.Entry(existing).CurrentValues.SetValues(teacherFamily);
@@ -50,10 +47,10 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteTeacherFamily(long id)
         {
-            var teacherFamily = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && tf.Active);
+            var teacherFamily = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && !tf.IsDeleted);
             if (teacherFamily == null) return false;
 
-            teacherFamily.Active = false; // Xóa mềm: đặt Active = false
+            teacherFamily.IsDeleted = true; // Xóa mềm bằng cách đặt IsDeleted = true
             _context.TeacherFamilies.Update(teacherFamily);
             return _context.SaveChanges() > 0;
         }

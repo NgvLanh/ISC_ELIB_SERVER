@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ISC_ELIB_SERVER",
-    "version": "1.0"
+    "title": "API",
+    "version": "v1"
   },
   "paths": {
     "/api/academic-years": {
@@ -16,8 +16,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -25,24 +24,21 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
             }
           },
           {
             "name": "sortColumn",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "Id"
+              "type": "string"
             }
           },
           {
             "name": "sortOrder",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "asc"
+              "type": "string"
             }
           }
         ],
@@ -176,51 +172,31 @@
         }
       }
     },
-    "/api/answer-images": {
-      "get": {
-        "tags": [
-          "AnswerImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "answerId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
+    "/api/Account/request-password-reset": {
       "post": {
         "tags": [
-          "AnswerImagesQa"
+          "Account"
         ],
         "requestBody": {
           "content": {
             "application/json-patch+json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetRequest"
               }
             },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetRequest"
               }
             }
           }
@@ -232,63 +208,31 @@
         }
       }
     },
-    "/api/answer-images/{id}": {
-      "get": {
+    "/api/Account/verify-otp": {
+      "post": {
         "tags": [
-          "AnswerImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "AnswerImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
+          "Account"
         ],
         "requestBody": {
           "content": {
             "application/json-patch+json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetOtpVerificationRequest"
               }
             },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetOtpVerificationRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetOtpVerificationRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerImagesQaRequest"
+                "$ref": "#/components/schemas/PasswordResetOtpVerificationRequest"
               }
             }
           }
@@ -298,22 +242,37 @@
             "description": "Success"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Account/update-password": {
+      "post": {
         "tags": [
-          "AnswerImagesQa"
+          "Account"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordByEmailRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordByEmailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordByEmailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordByEmailRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -348,24 +307,41 @@
         ],
         "requestBody": {
           "content": {
-            "application/json-patch+json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
+                "required": [
+                  "Content",
+                  "QuestionId"
+                ],
+                "type": "object",
+                "properties": {
+                  "Content": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "QuestionId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Content": {
+                  "style": "form"
+                },
+                "QuestionId": {
+                  "style": "form"
+                },
+                "Files": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -378,72 +354,6 @@
       }
     },
     "/api/answers-qa/{id}": {
-      "get": {
-        "tags": [
-          "AnswersQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "AnswersQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AnswersQaRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "AnswersQa"
@@ -466,6 +376,75 @@
         }
       }
     },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/verify-token": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/GetAccessToken": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/campuses": {
       "get": {
         "tags": [
@@ -477,8 +456,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -486,8 +464,21 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -496,22 +487,6 @@
             "schema": {
               "type": "string",
               "default": ""
-            }
-          },
-          {
-            "name": "sortColumn",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": "Id"
-            }
-          },
-          {
-            "name": "sortOrder",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": "asc"
             }
           }
         ],
@@ -997,14 +972,6 @@
             }
           },
           {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          {
             "name": "sortColumn",
             "in": "query",
             "schema": {
@@ -1074,7 +1041,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1119,7 +1086,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1140,7 +1107,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1173,14 +1140,6 @@
               "type": "integer",
               "format": "int32",
               "default": 10
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
             }
           },
           {
@@ -1253,7 +1212,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1298,7 +1257,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1319,7 +1278,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -1343,6 +1302,30 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/dashboard/overview": {
+      "get": {
+        "tags": [
+          "DashboardTeacher"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/dashboard/student-statistics": {
+      "get": {
+        "tags": [
+          "DashboardTeacher"
         ],
         "responses": {
           "200": {
@@ -1659,6 +1642,177 @@
       "delete": {
         "tags": [
           "Discussions"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/education-levels": {
+      "get": {
+        "tags": [
+          "EducationLevel"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EducationLevel"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/education-levels/{id}": {
+      "get": {
+        "tags": [
+          "EducationLevel"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EducationLevel"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationLevelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EducationLevel"
         ],
         "parameters": [
           {
@@ -2995,6 +3149,244 @@
         }
       }
     },
+    "/api/grade-levels/GetGradeLevels": {
+      "get": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/grade-levels": {
+      "get": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "parameters": [
+          {
+            "name": "schoolName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startYear",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "endYear",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/grade-levels/{id}": {
+      "get": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeLevelRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "GradeLevel"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/major": {
       "get": {
         "tags": [
@@ -3305,22 +3697,22 @@
           "content": {
             "application/json-patch+json": {
               "schema": {
-                "$ref": "#/components/schemas/Notification"
+                "$ref": "#/components/schemas/NotificationRequest"
               }
             },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Notification"
+                "$ref": "#/components/schemas/NotificationRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Notification"
+                "$ref": "#/components/schemas/NotificationRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Notification"
+                "$ref": "#/components/schemas/NotificationRequest"
               }
             }
           }
@@ -3532,151 +3924,6 @@
         }
       }
     },
-    "/api/question-images": {
-      "get": {
-        "tags": [
-          "QuestionImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "questionId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "QuestionImagesQa"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/question-images/{id}": {
-      "get": {
-        "tags": [
-          "QuestionImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "QuestionImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionImagesQaRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "QuestionImagesQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/api/question-qa": {
       "get": {
         "tags": [
@@ -3724,6 +3971,22 @@
               "type": "string",
               "default": "asc"
             }
+          },
+          {
+            "name": "classId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
@@ -3738,24 +4001,49 @@
         ],
         "requestBody": {
           "content": {
-            "application/json-patch+json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
+                "required": [
+                  "ClassId",
+                  "Content",
+                  "SubjectId"
+                ],
+                "type": "object",
+                "properties": {
+                  "Content": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "SubjectId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "ClassId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Content": {
+                  "style": "form"
+                },
+                "SubjectId": {
+                  "style": "form"
+                },
+                "ClassId": {
+                  "style": "form"
+                },
+                "files": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -3768,72 +4056,6 @@
       }
     },
     "/api/question-qa/{id}": {
-      "get": {
-        "tags": [
-          "QuestionQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "QuestionQa"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/QuestionQaRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "QuestionQa"
@@ -3849,6 +4071,201 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/question-qa/answered": {
+      "get": {
+        "tags": [
+          "QuestionQa"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "classId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/question-qa/search": {
+      "get": {
+        "tags": [
+          "QuestionQa"
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "onlyAnswered",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "classId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/question-qa/recent": {
+      "get": {
+        "tags": [
+          "QuestionQa"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "classId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "subjectId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/question-view": {
+      "post": {
+        "tags": [
+          "QuestionView"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionViewRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionViewRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionViewRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionViewRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -4025,6 +4442,62 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/reserves/active": {
+      "get": {
+        "tags": [
+          "Reserve"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
             }
           }
         ],
@@ -4226,6 +4699,29 @@
         }
       }
     },
+    "/api/Resignation/getbyteacherid/{id}": {
+      "get": {
+        "tags": [
+          "Resignation"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/retirement": {
       "get": {
         "tags": [
@@ -4316,7 +4812,7 @@
         }
       }
     },
-    "/api/retirement/getRetirementnopaging": {
+    "/api/retirement/get-Retirement-no-paging": {
       "get": {
         "tags": [
           "Retirement"
@@ -4396,6 +4892,29 @@
         }
       },
       "delete": {
+        "tags": [
+          "Retirement"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/retirement/get-by-teacherid/{id}": {
+      "get": {
         "tags": [
           "Retirement"
         ],
@@ -4786,8 +5305,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -4795,8 +5313,21 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -4805,22 +5336,6 @@
             "schema": {
               "type": "string",
               "default": ""
-            }
-          },
-          {
-            "name": "sortColumn",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": "Id"
-            }
-          },
-          {
-            "name": "sortOrder",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": "asc"
             }
           }
         ],
@@ -4954,10 +5469,421 @@
         }
       }
     },
-    "/api/subjects": {
+    "/api/score-type": {
       "get": {
         "tags": [
-          "Subject"
+          "ScoreType"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ScoreType"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/score-type/{id}": {
+      "get": {
+        "tags": [
+          "ScoreType"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ScoreType"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScoreTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ScoreType"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/score-type/by-name": {
+      "get": {
+        "tags": [
+          "ScoreType"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/semesters": {
+      "get": {
+        "tags": [
+          "Semester"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Semester"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/semesters/course": {
+      "get": {
+        "tags": [
+          "Semester"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/semesters/{id}": {
+      "get": {
+        "tags": [
+          "Semester"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Semester"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Semester"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "tags": [
+          "Session"
         ],
         "parameters": [
           {
@@ -5000,6 +5926,679 @@
             "schema": {
               "type": "string",
               "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/sessions/{id}": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Session"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Session"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/studentinfos": {
+      "get": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesICollectionApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesICollectionApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesICollectionApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/studentinfos/{id}": {
+      "get": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentInfoResponsesApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/studentinfos/class/{classId}": {
+      "get": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/studentinfos/user/{userId}": {
+      "get": {
+        "tags": [
+          "StudentInfo"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/studen-score": {
+      "get": {
+        "tags": [
+          "StudentScore"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentScore"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/studen-score/{id}": {
+      "get": {
+        "tags": [
+          "StudentScore"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "StudentScore"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentScoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "StudentScore"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/subjects": {
+      "get": {
+        "tags": [
+          "Subject"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -5144,8 +6743,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -5153,32 +6751,28 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
             }
           },
           {
             "name": "search",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sortColumn",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "Id"
+              "type": "string"
             }
           },
           {
             "name": "sortOrder",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "asc"
+              "type": "string"
             }
           }
         ],
@@ -5323,8 +6917,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -5332,32 +6925,28 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
             }
           },
           {
             "name": "search",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sortColumn",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "Id"
+              "type": "string"
             }
           },
           {
             "name": "sortOrder",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "asc"
+              "type": "string"
             }
           }
         ],
@@ -5516,14 +7105,6 @@
             }
           },
           {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          {
             "name": "sortColumn",
             "in": "query",
             "schema": {
@@ -5670,37 +7251,19 @@
         }
       }
     },
-    "/api/system-settings": {
+    "/api/system-settings/user": {
       "get": {
         "tags": [
           "SystemSetting"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            }
-          }
         ],
         "responses": {
           "200": {
             "description": "Success"
           }
         }
-      },
+      }
+    },
+    "/api/system-settings": {
       "post": {
         "tags": [
           "SystemSetting"
@@ -5729,18 +7292,6 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/system-settings/user": {
-      "get": {
-        "tags": [
-          "SystemSetting"
-        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -5771,7 +7322,7 @@
         }
       }
     },
-    "/api/teacher-families": {
+    "/api/teacherfamilies": {
       "get": {
         "tags": [
           "TeacherFamily"
@@ -5817,7 +7368,7 @@
         }
       }
     },
-    "/api/teacher-families/{id}": {
+    "/api/teacherfamilies/{id}": {
       "get": {
         "tags": [
           "TeacherFamily"
@@ -6209,10 +7760,10 @@
         }
       }
     },
-    "/api/teaching-assignments": {
+    "/api/teacherlists": {
       "get": {
         "tags": [
-          "TeachingAssignments"
+          "TeacherList"
         ],
         "parameters": [
           {
@@ -6239,6 +7790,111 @@
             "schema": {
               "type": "string",
               "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseICollectionApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseICollectionApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseICollectionApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teacherlists/{id}": {
+      "get": {
+        "tags": [
+          "TeacherList"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherListResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teaching-assignments": {
+      "get": {
+        "tags": [
+          "TeachingAssignments"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
             }
           },
           {
@@ -6311,7 +7967,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -6332,7 +7988,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -6377,7 +8033,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -6578,8 +8234,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 1
+              "format": "int32"
             }
           },
           {
@@ -6587,32 +8242,28 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "default": 10
+              "format": "int32"
             }
           },
           {
             "name": "search",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sortColumn",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "Id"
+              "type": "string"
             }
           },
           {
             "name": "sortOrder",
             "in": "query",
             "schema": {
-              "type": "string",
-              "default": "asc"
+              "type": "string"
             }
           }
         ],
@@ -6739,6 +8390,213 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/quiz/by-question/{questionId}": {
+      "get": {
+        "tags": [
+          "TestAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/quiz/create": {
+      "post": {
+        "tags": [
+          "TestAnswer"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "AnswerText",
+                  "IsCorrect",
+                  "QuestionId"
+                ],
+                "type": "object",
+                "properties": {
+                  "QuestionId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "AnswerText": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "IsCorrect": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "encoding": {
+                "QuestionId": {
+                  "style": "form"
+                },
+                "AnswerText": {
+                  "style": "form"
+                },
+                "IsCorrect": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/quiz/update/{id}": {
+      "put": {
+        "tags": [
+          "TestAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "AnswerText",
+                  "IsCorrect",
+                  "QuestionId"
+                ],
+                "type": "object",
+                "properties": {
+                  "QuestionId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "AnswerText": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "IsCorrect": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "encoding": {
+                "QuestionId": {
+                  "style": "form"
+                },
+                "AnswerText": {
+                  "style": "form"
+                },
+                "IsCorrect": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/quiz/delete/{id}": {
+      "delete": {
+        "tags": [
+          "TestAnswer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/quiz/import-excel": {
+      "post": {
+        "tags": [
+          "TestAnswer"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "File",
+                  "QuestionType",
+                  "TestId"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "TestId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "QuestionType": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                },
+                "TestId": {
+                  "style": "form"
+                },
+                "QuestionType": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -6929,6 +8787,50 @@
       "get": {
         "tags": [
           "TestsAttachment"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -7591,6 +9493,364 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/topics": {
+      "get": {
+        "tags": [
+          "Topic"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Topic"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/topics/{id}": {
+      "get": {
+        "tags": [
+          "Topic"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Topic"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Topic"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/TopicsFile": {
+      "get": {
+        "tags": [
+          "TopicsFile"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TopicsFile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/TopicsFile/{id}": {
+      "get": {
+        "tags": [
+          "TopicsFile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TopicsFile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopicsFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TopicsFile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -8672,11 +10932,11 @@
         "properties": {
           "startTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "endTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "schoolId": {
             "maximum": 2147483647,
@@ -8754,25 +11014,6 @@
         },
         "additionalProperties": false
       },
-      "AnswerImagesQaRequest": {
-        "required": [
-          "answerId",
-          "imageUrl"
-        ],
-        "type": "object",
-        "properties": {
-          "answerId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "imageUrl": {
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          }
-        },
-        "additionalProperties": false
-      },
       "AnswersQa": {
         "type": "object",
         "properties": {
@@ -8811,30 +11052,9 @@
               "$ref": "#/components/schemas/AnswerImagesQa"
             },
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "AnswersQaRequest": {
-        "required": [
-          "content",
-          "questionId",
-          "userId"
-        ],
-        "type": "object",
-        "properties": {
-          "content": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "type": "string"
           },
-          "questionId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
         },
         "additionalProperties": false
@@ -8870,9 +11090,6 @@
           },
           "active": {
             "type": "boolean"
-          },
-          "school": {
-            "$ref": "#/components/schemas/School"
           },
           "user": {
             "$ref": "#/components/schemas/User"
@@ -9274,6 +11491,49 @@
               "$ref": "#/components/schemas/User"
             },
             "nullable": true
+          },
+          "classSubjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassSubject"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ClassSubject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "classId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "subjectId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "class": {
+            "$ref": "#/components/schemas/Class"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Subject"
+          },
+          "hoursSemester1": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hoursSemester2": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9345,8 +11605,7 @@
           "academicYearId",
           "classTypeId",
           "gradeLevelId",
-          "name",
-          "userId"
+          "name"
         ],
         "type": "object",
         "properties": {
@@ -9389,11 +11648,20 @@
           },
           "userId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "classTypeId": {
             "type": "integer",
             "format": "int32"
+          },
+          "subjects": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9521,6 +11789,38 @@
             "type": "string",
             "nullable": true
           },
+          "trainingType": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAnnualSystem": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "trainingDuration": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "semesterPerYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isCredit": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "mandatoryCourse": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "electiveCourse": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "status": {
             "type": "boolean",
             "nullable": true
@@ -9531,12 +11831,70 @@
           },
           "active": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EducationLevelRequest": {
+        "required": [
+          "name",
+          "trainingType"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
           },
-          "schools": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/School"
-            },
+          "trainingType": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "isAnnualSystem": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "trainingDuration": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "semesterPerYear": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isCredit": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "mandatoryCourse": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "electiveCourse": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "status": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "description": {
+            "maxLength": 255,
+            "type": "string",
             "nullable": true
           }
         },
@@ -9554,9 +11912,6 @@
             "nullable": true
           },
           "active": {
-            "type": "boolean"
-          },
-          "isDeleted": {
             "type": "boolean"
           },
           "users": {
@@ -9896,6 +12251,26 @@
               "nullable": true
             },
             "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -9952,6 +12327,26 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -10163,6 +12558,47 @@
         },
         "additionalProperties": false
       },
+      "GradeLevelRequest": {
+        "required": [
+          "code",
+          "name",
+          "teacherId"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "teacherId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginReq": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "MajorRequest": {
         "required": [
           "name"
@@ -10187,7 +12623,8 @@
         "properties": {
           "id": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "title": {
             "type": "string",
@@ -10217,7 +12654,8 @@
             "nullable": true
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "nullable": true
           },
           "sender": {
             "$ref": "#/components/schemas/User"
@@ -10231,7 +12669,6 @@
       "NotificationRequest": {
         "required": [
           "content",
-          "senderId",
           "title",
           "type",
           "userId"
@@ -10252,10 +12689,6 @@
             "maxLength": 50,
             "minLength": 1,
             "type": "string"
-          },
-          "senderId": {
-            "type": "integer",
-            "format": "int32"
           },
           "userId": {
             "type": "integer",
@@ -10287,6 +12720,50 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PasswordResetOtpVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "otp": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PasswordResetRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -10359,25 +12836,6 @@
         },
         "additionalProperties": false
       },
-      "QuestionImagesQaRequest": {
-        "required": [
-          "imageUrl",
-          "questionId"
-        ],
-        "type": "object",
-        "properties": {
-          "questionId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "imageUrl": {
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          }
-        },
-        "additionalProperties": false
-      },
       "QuestionQa": {
         "type": "object",
         "properties": {
@@ -10407,6 +12865,9 @@
           "active": {
             "type": "boolean"
           },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
           "subject": {
             "$ref": "#/components/schemas/Subject"
           },
@@ -10427,24 +12888,51 @@
         },
         "additionalProperties": false
       },
-      "QuestionQaRequest": {
+      "QuestionType": {
+        "enum": [
+          "TracNghiem",
+          "TuLuan"
+        ],
+        "type": "string"
+      },
+      "QuestionViewRequest": {
         "required": [
-          "content"
+          "questionId"
         ],
         "type": "object",
         "properties": {
-          "content": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "type": "string"
+          "questionId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
           },
           "userId": {
             "type": "integer",
             "format": "int32"
           },
-          "subjectId": {
-            "type": "integer",
-            "format": "int32"
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "expireDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
         },
         "additionalProperties": false
@@ -10502,6 +12990,9 @@
           },
           "student": {
             "$ref": "#/components/schemas/User"
+          },
+          "class": {
+            "$ref": "#/components/schemas/Class"
           }
         },
         "additionalProperties": false
@@ -10599,6 +13090,9 @@
           },
           "teacher": {
             "$ref": "#/components/schemas/TeacherInfo"
+          },
+          "leadership": {
+            "$ref": "#/components/schemas/User"
           }
         },
         "additionalProperties": false
@@ -10643,6 +13137,52 @@
         },
         "additionalProperties": false
       },
+      "Retirement": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teacherId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachment": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "leadershipId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "teacher": {
+            "$ref": "#/components/schemas/TeacherInfo"
+          },
+          "leadership": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
       "RetirementRequest": {
         "required": [
           "date",
@@ -10670,8 +13210,8 @@
             "nullable": true
           },
           "status": {
-            "type": "boolean",
-            "nullable": true
+            "type": "integer",
+            "format": "int32"
           },
           "leadershipId": {
             "type": "integer",
@@ -10870,6 +13410,9 @@
           "active": {
             "type": "boolean"
           },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
           "educationLevel": {
             "$ref": "#/components/schemas/EducationLevel"
           },
@@ -11014,12 +13557,51 @@
         },
         "additionalProperties": false
       },
+      "ScoreTypeRequest": {
+        "required": [
+          "name",
+          "weight"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "weight": {
+            "maximum": 3,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "qtyScoreSemester1": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "qtyScoreSemester2": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "Semester": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
           },
           "startTime": {
             "type": "string",
@@ -11062,6 +13644,44 @@
               "$ref": "#/components/schemas/StudentScore"
             },
             "nullable": true
+          },
+          "teachingAssignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeachingAssignment"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SemesterRequest": {
+        "required": [
+          "academicYearId",
+          "endTime",
+          "name",
+          "startTime"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "academicYearId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -11145,6 +13765,72 @@
         },
         "additionalProperties": false
       },
+      "SessionRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "durationTime": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "autoOpen": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "shareCodeUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "isExam": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "teachingAssignmentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "examId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "StudentInfo": {
         "type": "object",
         "properties": {
@@ -11187,6 +13873,181 @@
           },
           "user": {
             "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentInfoRequest": {
+        "type": "object",
+        "properties": {
+          "guardianName": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianJob": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianDob": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "guardianAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianRole": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentInfoResponses": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "guardianName": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianJob": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianDob": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "guardianAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianRole": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentInfoResponsesApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/StudentInfoResponses"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentInfoResponsesICollectionApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentInfoResponses"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -11237,6 +14098,41 @@
           },
           "user": {
             "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentScoreRequest": {
+        "required": [
+          "score",
+          "scoreTypeId",
+          "semesterId",
+          "subjectId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "score": {
+            "maximum": 10,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "scoreTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subjectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "semesterId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -11326,6 +14222,13 @@
               "$ref": "#/components/schemas/Test"
             },
             "nullable": true
+          },
+          "classSubjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassSubject"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -11352,10 +14255,10 @@
           "teacher": {
             "$ref": "#/components/schemas/TeacherInfo"
           },
-          "subjects": {
+          "workProcesses": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Subject"
+              "$ref": "#/components/schemas/WorkProcess"
             },
             "nullable": true
           }
@@ -11437,13 +14340,6 @@
           },
           "active": {
             "type": "boolean"
-          },
-          "subjects": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Subject"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -11512,7 +14408,7 @@
       "SupportRequest": {
         "required": [
           "title",
-          "userId"
+          "type"
         ],
         "type": "object",
         "properties": {
@@ -11527,21 +14423,19 @@
             "nullable": true
           },
           "type": {
-            "maxLength": 50,
-            "type": "string",
-            "nullable": true
-          },
-          "createAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
+            "$ref": "#/components/schemas/SupportType"
           }
         },
         "additionalProperties": false
+      },
+      "SupportType": {
+        "enum": [
+          "Training",
+          "Academic",
+          "Account",
+          "Other"
+        ],
+        "type": "string"
       },
       "SystemSetting": {
         "type": "object",
@@ -11578,15 +14472,10 @@
       },
       "SystemSettingRequest": {
         "required": [
-          "themeId",
-          "userId"
+          "themeId"
         ],
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "themeId": {
             "type": "integer",
             "format": "int32"
@@ -11637,10 +14526,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "isDeleted": {
+          "active": {
             "type": "boolean"
           },
-          "active": {
+          "isDeleted": {
             "type": "boolean"
           },
           "teacher": {
@@ -11780,6 +14669,13 @@
             },
             "nullable": true
           },
+          "retirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Retirement"
+            },
+            "nullable": true
+          },
           "subjectGroups": {
             "type": "array",
             "items": {
@@ -11805,6 +14701,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TemporaryLeave"
+            },
+            "nullable": true
+          },
+          "workProcesses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkProcess"
             },
             "nullable": true
           }
@@ -11869,6 +14772,9 @@
           "wardCode": {
             "type": "integer",
             "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -11935,6 +14841,9 @@
           "wardCode": {
             "type": "integer",
             "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -11962,6 +14871,26 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -11994,6 +14923,164 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TeacherListResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teacherCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "subjectGroupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TeacherListResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/TeacherListResponse"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TeacherListResponseICollectionApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeacherListResponse"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -12057,6 +15144,11 @@
             "format": "int32",
             "nullable": true
           },
+          "semesterId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "active": {
             "type": "boolean"
           },
@@ -12072,6 +15164,9 @@
           "user": {
             "$ref": "#/components/schemas/User"
           },
+          "semester": {
+            "$ref": "#/components/schemas/Semester"
+          },
           "sessions": {
             "type": "array",
             "items": {
@@ -12085,7 +15180,7 @@
       "TeachingAssignmentsRequest": {
         "required": [
           "classId",
-          "endDate",
+          "semesterId",
           "startDate",
           "subjectId",
           "topicsId",
@@ -12099,7 +15194,8 @@
           },
           "endDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "description": {
             "maxLength": 500,
@@ -12122,8 +15218,9 @@
             "type": "integer",
             "format": "int32"
           },
-          "active": {
-            "type": "boolean"
+          "semesterId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -12372,9 +15469,6 @@
             "type": "boolean",
             "nullable": true
           },
-          "active": {
-            "type": "boolean"
-          },
           "question": {
             "$ref": "#/components/schemas/TestQuestion"
           },
@@ -12430,8 +15524,7 @@
             "nullable": true
           },
           "questionType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/QuestionType"
           },
           "active": {
             "type": "boolean"
@@ -12469,15 +15562,16 @@
             "nullable": true
           },
           "questionType": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/QuestionType"
           }
         },
         "additionalProperties": false
       },
       "TestRequest": {
         "required": [
-          "name"
+          "name",
+          "semesterId",
+          "subjectId"
         ],
         "type": "object",
         "properties": {
@@ -12523,18 +15617,11 @@
           },
           "semesterId": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int64"
           },
           "subjectId": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int64"
           }
         },
         "additionalProperties": false
@@ -12710,6 +15797,14 @@
             "type": "boolean",
             "nullable": true
           },
+          "userId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
           "student": {
             "$ref": "#/components/schemas/User"
           },
@@ -12872,6 +15967,36 @@
         },
         "additionalProperties": false
       },
+      "TopicRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "file": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "TopicsFile": {
         "type": "object",
         "properties": {
@@ -12902,6 +16027,31 @@
           },
           "topic": {
             "$ref": "#/components/schemas/Topic"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TopicsFileRequest": {
+        "required": [
+          "fileUrl",
+          "topicId"
+        ],
+        "type": "object",
+        "properties": {
+          "topicId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileUrl": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -13153,6 +16303,24 @@
         },
         "additionalProperties": false
       },
+      "UpdatePasswordByEmailRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "temporaryPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -13257,6 +16425,10 @@
           "active": {
             "type": "boolean"
           },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "academicYear": {
             "$ref": "#/components/schemas/AcademicYear"
           },
@@ -13271,6 +16443,13 @@
           },
           "userStatus": {
             "$ref": "#/components/schemas/UserStatus"
+          },
+          "refreshTokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefreshToken"
+            },
+            "nullable": true
           },
           "achievements": {
             "type": "array",
@@ -13339,6 +16518,20 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Reserve"
+            },
+            "nullable": true
+          },
+          "resignations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resignation"
+            },
+            "nullable": true
+          },
+          "retirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Retirement"
             },
             "nullable": true
           },
@@ -13432,24 +16625,49 @@
               "nullable": true
             },
             "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
       "UserRequest": {
+        "required": [
+          "code",
+          "email",
+          "fullName"
+        ],
         "type": "object",
         "properties": {
           "code": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "password": {
             "type": "string",
             "nullable": true
           },
           "fullName": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "dob": {
             "type": "string",
@@ -13461,8 +16679,9 @@
             "nullable": true
           },
           "email": {
+            "minLength": 1,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "phoneNumber": {
             "type": "string",
@@ -13491,15 +16710,18 @@
           },
           "academicYearId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "userStatusId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "classId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "entryType": {
             "type": "integer",
@@ -13522,6 +16744,13 @@
             "format": "int32"
           },
           "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "avatarUrl": {
             "type": "string",
             "nullable": true
           }
@@ -13601,19 +16830,26 @@
             "type": "string",
             "nullable": true
           },
-          "provinceCode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "districtCode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "wardCode": {
-            "type": "integer",
-            "format": "int32"
-          },
           "street": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "provinceName": {
+            "type": "string",
+            "nullable": true
+          },
+          "districtName": {
+            "type": "string",
+            "nullable": true
+          },
+          "wardName": {
             "type": "string",
             "nullable": true
           }
@@ -13643,6 +16879,26 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -13675,6 +16931,26 @@
               },
               "nullable": true
             },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
@@ -13717,6 +16993,55 @@
             "maxLength": 100,
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkProcess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teacherId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "organization": {
+            "type": "string",
+            "nullable": true
+          },
+          "subjectGroupsId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isCurrent": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "teacher": {
+            "$ref": "#/components/schemas/TeacherInfo"
+          },
+          "subjectGroup": {
+            "$ref": "#/components/schemas/SubjectGroup"
           }
         },
         "additionalProperties": false
@@ -13772,6 +17097,18 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Enter AccessToken",
+        "scheme": "Bearer"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }

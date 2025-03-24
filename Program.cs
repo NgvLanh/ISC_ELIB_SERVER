@@ -251,10 +251,7 @@ builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-<<<<<<< HEAD
-=======
 
->>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
@@ -281,10 +278,7 @@ builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();

@@ -1,9 +1,9 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
-<<<<<<< HEAD
     public class EntryTypeRepo
     {
         private readonly isc_dbContext _context;
@@ -12,52 +12,46 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             _context = context;
         }
-<<<<<<< HEAD
+
         public ICollection<EntryType> GetEntryTypes()
         {
             return _context.EntryTypes
-                .Where(c => c.Active)
+                .Where(e => e.Active) // Chỉ lấy các bản ghi đang hoạt động
                 .ToList();
         }
-=======
 
-=======
-
-    public class EntryTypeRepo
-
-    {
-
-        private readonly isc_dbContext _context;
-    public EntryTypeRepo(isc_dbContext context)
-    {
-        _context = context;
-    }
-
-    public ICollection<EntryType> GetEntryTypes()
+        public EntryType? GetEntryTypeById(long id)
         {
-            return _context.EntryTypes.Where(et => !et.IsDeleted).ToList();
-        }
-
-
->>>>>>> 30ea54130e2f90c7eb7720bf35ca70328b23fbb4
->>>>>>> edb656565ea3de65bf591db2b4886da5d981dd1b
-        public EntryType GetEntryTypeById(long id)
-        {
-            return _context.EntryTypes.FirstOrDefault(e => e.Id == id && !e.IsDeleted);
+            return _context.EntryTypes
+                .FirstOrDefault(e => e.Id == id && e.Active);
         }
 
         public EntryType CreateEntryType(EntryType entryType)
         {
+            entryType.Active = true; // Mặc định dữ liệu mới là đang hoạt động
             _context.EntryTypes.Add(entryType);
             _context.SaveChanges();
             return entryType;
         }
 
-        public EntryType UpdateEntryType(EntryType entryType)
+        public EntryType? UpdateEntryType(EntryType entryType)
         {
+            var existingEntry = GetEntryTypeById(entryType.Id);
+            if (existingEntry == null) return null;
+
             _context.EntryTypes.Update(entryType);
             _context.SaveChanges();
             return entryType;
+        }
+
+        public bool DeactivateEntryType(long id)
+        {
+            var entryType = _context.EntryTypes.FirstOrDefault(e => e.Id == id);
+            if (entryType == null) return false;
+
+            entryType.Active = false; // Đánh dấu là không hoạt động
+            _context.EntryTypes.Update(entryType);
+            return _context.SaveChanges() > 0;
         }
     }
 }
