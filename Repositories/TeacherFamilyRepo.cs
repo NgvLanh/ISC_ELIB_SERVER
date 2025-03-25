@@ -3,11 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace ISC_ELIB_SERVER.Repositories
 {
     public class TeacherFamilyRepo
-
     {
         private readonly isc_dbContext _context;
 
@@ -19,7 +17,7 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<TeacherFamily> GetTeacherFamilies()
         {
             return _context.TeacherFamilies
-                .Where(tf => !tf.IsDeleted) // Chỉ lấy những bản ghi chưa bị xóa mềm
+                .Where(tf => tf.Active) // Chỉ lấy những bản ghi đang hoạt động
                 .ToList();
         }
 
@@ -27,28 +25,27 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.TeacherFamilies
                 .AsNoTracking()
-                .FirstOrDefault(tf => tf.Id == id && !tf.IsDeleted);
+                .FirstOrDefault(tf => tf.Id == id && tf.Active);
         }
 
-        public TeacherFamily CreateTeacherFamily(TeacherFamily teacherFamily)
+        public TeacherFamily? CreateTeacherFamily(TeacherFamily teacherFamily)
         {
-            try
+            // Kiểm tra teacher_id có tồn tại trong TeacherInfo
+            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == teacherFamily.TeacherId);
+            if (!teacherExists)
             {
-                _context.TeacherFamilies.Add(teacherFamily);
-                _context.SaveChanges();
-                return teacherFamily;
+                throw new Exception($"TeacherId {teacherFamily.TeacherId} không tồn tại.");
             }
-            catch (DbUpdateException ex)
-            {
-                // Log lỗi chi tiết để debug
-                Console.WriteLine($"Lỗi DbUpdateException: {ex.InnerException?.Message}");
-                throw;
-            }
+
+            _context.TeacherFamilies.Add(teacherFamily);
+            _context.SaveChanges();
+            return teacherFamily;
         }
+
 
         public TeacherFamily? UpdateTeacherFamily(TeacherFamily teacherFamily)
         {
-            var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && !tf.IsDeleted);
+            var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && tf.Active);
             if (existing == null) return null;
 
             _context.Entry(existing).CurrentValues.SetValues(teacherFamily);
@@ -58,10 +55,10 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteTeacherFamily(long id)
         {
-            var teacherFamily = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && !tf.IsDeleted);
+            var teacherFamily = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == id && tf.Active);
             if (teacherFamily == null) return false;
 
-            teacherFamily.IsDeleted = true; // Xóa mềm bằng cách đặt IsDeleted = true
+            teacherFamily.Active = false; // Xóa mềm bằng cách đặt Active = false
             _context.TeacherFamilies.Update(teacherFamily);
             return _context.SaveChanges() > 0;
         }

@@ -15,6 +15,7 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
+        // Lấy danh sách TeacherFamily
         [HttpGet]
         public IActionResult GetTeacherFamilies()
         {
@@ -22,32 +23,55 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
+        // Lấy thông tin TeacherFamily theo ID
         [HttpGet("{id}")]
         public IActionResult GetTeacherFamilyById(long id)
         {
             var response = _service.GetTeacherFamilyById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            if (response == null)
+                return NotFound(new { Code = 1, Message = "Không tìm thấy bản ghi." });
+
+            return Ok(response);
         }
 
+        // Thêm mới TeacherFamily
         [HttpPost]
         public IActionResult CreateTeacherFamily([FromBody] TeacherFamilyRequest request)
         {
+            if (request == null)
+                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ." });
+
             var response = _service.CreateTeacherFamily(request);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+
+            if (response.Code == 1)
+                return BadRequest(response);
+
+            return CreatedAtAction(nameof(GetTeacherFamilyById), new { id = response.Data.Id }, response);
         }
 
+        // Cập nhật TeacherFamily
         [HttpPut("{id}")]
         public IActionResult UpdateTeacherFamily(long id, [FromBody] TeacherFamilyRequest request)
         {
+            if (request == null)
+                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ." });
+
             var response = _service.UpdateTeacherFamily(id, request);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            if (response == null)
+                return NotFound(new { Code = 1, Message = "Không tìm thấy bản ghi để cập nhật." });
+
+            return Ok(response);
         }
 
+        // Xóa mềm TeacherFamily
         [HttpDelete("{id}")]
         public IActionResult DeleteTeacherFamily(long id)
         {
             var response = _service.DeleteTeacherFamily(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            if (response == null)
+                return NotFound(new { Code = 1, Message = "Không tìm thấy bản ghi để xóa." });
+
+            return Ok(response);
         }
     }
 }
