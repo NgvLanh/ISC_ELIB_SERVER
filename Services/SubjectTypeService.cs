@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, string? startDate, string? endDate)
         {
             var query = _subjectTypeRepo.GetAllSubjectType().AsQueryable();
 
@@ -38,6 +38,24 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
             query = query.Where(qr => qr.Active == true);
+
+            if (startDate != null && endDate != null)
+            {
+                DateTime startDateValue;
+                DateTime endDateValue;
+                var checkStart = DateTime.TryParse(startDate, out startDateValue);
+                var checkEnd = DateTime.TryParse(endDate, out endDateValue);
+                if (!checkStart)
+                {
+                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"startDate không đúng định dạng!!!");
+                }
+                if (!checkEnd)
+                {
+                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"endDate không đúng định dạng!!!");
+                }
+
+                query = query.Where(qr => qr.Date.HasValue && qr.Date.Value.Date.Year >= startDateValue.Date.Year && qr.Date.Value.Year <= endDateValue.Date.Year);             
+            }
 
             var total = query.Count();
 
@@ -75,7 +93,10 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectTypeResponse>.Conflict("Tên loại môn học đã tồn tại");
             }
-            var create = _subjectTypeRepo.CreateSubjectType(_mapper.Map<SubjectType>(subjectTypeRequest));
+            var subjectType = _mapper.Map<SubjectType>(subjectTypeRequest);
+            subjectType.Date = DateTime.Now;
+
+            var create = _subjectTypeRepo.CreateSubjectType(subjectType);
             return ApiResponse<SubjectTypeResponse>.Success(_mapper.Map<SubjectTypeResponse>(create));
         }
 

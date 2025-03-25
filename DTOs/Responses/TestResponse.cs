@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
 {
@@ -15,7 +16,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? ClassIds { get; set; }
         public bool? FileSubmit { get; set; }
         public SubjectResponse? Subject { get; set; }
-        public UserResponse? User { get; set; }
+        public UserResponse? Teacher { get; set; }
         public GradeLevelResponse? GradeLevel { get; set; }
     }
 }
