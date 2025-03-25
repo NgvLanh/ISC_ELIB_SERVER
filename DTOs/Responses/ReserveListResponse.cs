@@ -2,7 +2,8 @@
 {
     public class ReserveListResponse
     {
-        public int StudentId { get; set; }  // Student ID (Mã hồ sơ bảo lưu)
+        public int Id { get; set; } // ID
+        public string? Code { get; set; } // Mã học viên từ bảng user
         public string? FullName { get; set; }  // Tên đầy đủ từ bảng User
         public DateTime? Dob { get; set; }  // Ngày sinh từ bảng User
         public string? Gender { get; set; }  // Giới tính từ bảng User
