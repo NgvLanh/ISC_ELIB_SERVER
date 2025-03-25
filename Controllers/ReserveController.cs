@@ -17,8 +17,8 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        // GET: api/reserves/active
-        [HttpGet("active")]
+        // GET: api/reserves
+        [HttpGet]
         public IActionResult GetActiveReserves([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
@@ -42,6 +42,7 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+        //Post: api/reserves
         [HttpPost]
         public IActionResult CreateReserve([FromBody] ReserveRequest reserveRequest)
         {
