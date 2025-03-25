@@ -17,15 +17,16 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
+        // GET: api/reserves
         [HttpGet]
-        public IActionResult GetReserves([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+        public IActionResult GetActiveReserves([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetReserves(page, pageSize, search, sortColumn, sortOrder);
-
+            var response = _service.GetActiveReserves(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
+        // GET: api/reserves/{id}
         [HttpGet("{id}")]
         public IActionResult GetReserveById(long id)
         {
@@ -33,6 +34,15 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+        // GET: api/reserves/student/{studentId}
+        [HttpGet("student/{studentId}")]
+        public IActionResult GetReserveByStudentId(int studentId)
+        {
+            var response = _service.GetReserveByStudentId(studentId);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        //Post: api/reserves
         [HttpPost]
         public IActionResult CreateReserve([FromBody] ReserveRequest reserveRequest)
         {
@@ -55,15 +65,5 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.DeleteReserve(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-
-        // GET: api/reserves/active
-        [HttpGet("active")]
-        public IActionResult GetActiveReserves([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
-        {
-            var response = _service.GetActiveReserves(page, pageSize, search, sortColumn, sortOrder);
-            return Ok(response);
-        }
-
     }
 }
