@@ -1384,6 +1384,10 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
+                entity.Property(e => e.Date)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("date");
+
                 entity.Property(e => e.Status).HasColumnName("status");
             });
 

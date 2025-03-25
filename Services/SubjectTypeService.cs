@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, string? date)
         {
             var query = _subjectTypeRepo.GetAllSubjectType().AsQueryable();
 
@@ -38,6 +38,20 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
             query = query.Where(qr => qr.Active == true);
+
+            if (date != null)
+            {
+                DateTime dateValue;
+                var check = DateTime.TryParse(date, out dateValue);
+                if (check)
+                {
+                    query = query.Where(qr => qr.Date.HasValue && qr.Date.Value.Date.Year == dateValue.Date.Year);
+                }
+                else
+                {
+                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"Date không đúng định dạng!!!");
+                }
+            }
 
             var total = query.Count();
 
@@ -75,7 +89,10 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectTypeResponse>.Conflict("Tên loại môn học đã tồn tại");
             }
-            var create = _subjectTypeRepo.CreateSubjectType(_mapper.Map<SubjectType>(subjectTypeRequest));
+            var subjectType = _mapper.Map<SubjectType>(subjectTypeRequest);
+            subjectType.Date = DateTime.Now;
+
+            var create = _subjectTypeRepo.CreateSubjectType(subjectType);
             return ApiResponse<SubjectTypeResponse>.Success(_mapper.Map<SubjectTypeResponse>(create));
         }
 
