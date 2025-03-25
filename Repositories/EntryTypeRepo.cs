@@ -22,8 +22,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public EntryType? GetEntryTypeById(long id)
         {
-            return _context.EntryTypes
-                .FirstOrDefault(e => e.Id == id && e.Active);
+            return _context.EntryTypes.FirstOrDefault(e => e.Id == id && e.Active);
         }
 
         public EntryType CreateEntryType(EntryType entryType)
