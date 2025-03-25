@@ -33,7 +33,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         [Authorize]
         [HttpGet("verify-token")]
-        public IActionResult VerifyToken()
+        public async Task<IActionResult> VerifyTokenAsync()
         {
             var userId = User.FindFirst("Id")?.Value;
 
@@ -42,14 +42,14 @@ namespace ISC_ELIB_SERVER.Controllers
                 return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy ID trong token"));
             }
 
-            var user = _userService.GetUserById(int.Parse(userId));
-            
-            if(user == null)
+            var response = await _userService.GetUserById(int.Parse(userId));
+
+            if (response == null || response.Data == null)
             {
-                return BadRequest();
+                return NotFound(ApiResponse<string>.Fail($"Không tìm thấy người dùng với ID {userId}"));
             }
 
-            return Ok(user);
+            return Ok(response);
         }
 
         [HttpGet("GetAccessToken")]
