@@ -83,7 +83,7 @@ namespace ISC_ELIB_SERVER.Models
 
 
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
-
+        public virtual DbSet<TestUser> TestUsers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -1384,6 +1384,10 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
+                entity.Property(e => e.Date)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("date");
+
                 entity.Property(e => e.Status).HasColumnName("status");
             });
 
@@ -2233,6 +2237,24 @@ namespace ISC_ELIB_SERVER.Models
                 .HasForeignKey(d => d.SubjectId)
                 .HasConstraintName("fk_class_subject_subject_id");
         });
+            modelBuilder.Entity<TestUser>(entity =>
+            {
+                entity.ToTable("test_users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.TestId).HasColumnName("test_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.HasOne(d => d.Test)
+                    .WithMany(p => p.TestUsers)
+                    .HasForeignKey(d => d.TestId)
+                    .HasConstraintName("fk_test_users_test_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.TestUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_test_users_user_id");
+            });
 
 
             OnModelCreatingPartial(modelBuilder);
