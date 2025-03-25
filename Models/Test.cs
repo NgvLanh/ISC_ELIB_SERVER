@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -34,5 +35,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<TestFile> TestFiles { get; set; }
         public virtual ICollection<TestQuestion> TestQuestions { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<TestUser> TestUsers { get; set; }
     }
 }

@@ -71,42 +71,53 @@ namespace ISC_ELIB_SERVER.Services
                         : ApiResponse<ICollection<TestResponse>>.NotFound("Không có dữ liệu");
             }
 
-        public ApiResponse<ICollection<TestResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectId, long? gradeLevelsId, string? date)
+        public ApiResponse<ICollection<TestByStudentResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectId, long? gradeLevelsId, string? date, string? idUser)
         {
-            var query = _testRepo.GetTests().AsQueryable();
+            if (string.IsNullOrEmpty(idUser))
+            {
+                return ApiResponse<ICollection<TestByStudentResponse>>.Fail("Không tìm thấy ID trong token");
+            }
 
-            query = query.Where(qr => qr.Active.HasValue && qr.Active.Value);
+            if (!int.TryParse(idUser, out int userId))
+            {
+                return ApiResponse<ICollection<TestByStudentResponse>>.Fail("ID trong token không hợp lệ");
+            }
+
+            var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ts => ts.Name.ToLower().Contains(search.ToLower()));
+                query = query.Where(ts => ts.Test.Name.ToLower().Contains(search.ToLower()));
             }
 
             query = sortColumn?.ToLower() switch
             {
-                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Name) : query.OrderBy(ts => ts.Name),
-                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Id) : query.OrderBy(ts => ts.Id),
-                _ => query.OrderBy(us => us.Id)
+                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Test.Name) : query.OrderBy(ts => ts.Test.Name),
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Test.Id) : query.OrderBy(ts => ts.Test.Id),
+                _ => query.OrderBy(us => us.Test.Id)
             };
-            query = query.Where(qr => qr.Active == true);
 
-            if(status == 1) // Trạng thái sắp tới
+            if (status == 1) // Trạng thái sắp tới
             {
                 var now = DateTime.Now;
-                query = query.Where(qr => qr.EndTime > now);
-            } else if (status == 2){ // Trạng thái đã hoàn thành
+                query = query.Where(qr => qr.Test.EndTime > now);
+            }
+            else if (status == 2)
+            { // Trạng thái đã hoàn thành
                 var now = DateTime.Now;
-                query = query.Where(qr => qr.EndTime <= now);
+                query = query.Where(qr => qr.Test.EndTime <= now);
             }
 
             if (subjectId != null || subjectId.HasValue)
             {
-                var subject = _subjectRepo.GetSubjectById( subjectId.Value);
-                if (subject == null) {
-                    return ApiResponse<ICollection<TestResponse>>.NotFound($"Môn học có {subjectId} không tồn tại!!!");
-                } else
+                var subject = _subjectRepo.GetSubjectById(subjectId.Value);
+                if (subject == null)
                 {
-                    query = query.Where(qr => qr.SubjectId == subjectId.Value);
+                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Môn học có {subjectId} không tồn tại!!!");
+                }
+                else
+                {
+                    query = query.Where(qr => qr.Test.Subject.Id == subjectId.Value);
                 }
             }
 
@@ -115,27 +126,28 @@ namespace ISC_ELIB_SERVER.Services
                 var gradeLevel = _subjectRepo.GetSubjectById(gradeLevelsId.Value);
                 if (gradeLevel == null)
                 {
-                    return ApiResponse<ICollection<TestResponse>>.NotFound($"Khoa khối có {gradeLevelsId} không tồn tại!!!");
+                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Khoa khối có {gradeLevelsId} không tồn tại!!!");
                 }
                 else
                 {
-                    query = query.Where(qr => qr.GradeLevelsId == gradeLevelsId.Value);
+                    query = query.Where(qr => qr.Test.GradeLevel.Id == gradeLevelsId.Value);
                 }
             }
 
-            if(date != null)
+            if (date != null)
             {
                 DateTime dateValue;
                 var check = DateTime.TryParse(date, out dateValue);
                 if (check)
                 {
-                    query = query.Where(qr => qr.StartTime.HasValue && qr.StartTime.Value.Date == dateValue.Date);
-                } else
+                    query = query.Where(qr => qr.Test.StartTime.HasValue && qr.Test.StartTime.Value.Date == dateValue.Date);
+                }
+                else
                 {
-                    return ApiResponse<ICollection<TestResponse>>.BadRequest($"Date không đúng định dạng!!!");
+                    return ApiResponse<ICollection<TestByStudentResponse>>.BadRequest($"Date không đúng định dạng!!!");
                 }
             }
-                
+
             var total = query.Count();
 
             if (page.HasValue && pageSize.HasValue)
@@ -144,16 +156,16 @@ namespace ISC_ELIB_SERVER.Services
             }
             var result = query.ToList();
 
-            var response = _mapper.Map<ICollection<TestResponse>>(result);
+            var response = _mapper.Map<ICollection<TestByStudentResponse>>(result);
 
             return result.Any()
-                    ? ApiResponse<ICollection<TestResponse>>.Success(
+                    ? ApiResponse<ICollection<TestByStudentResponse>>.Success(
                             data: response,
                             totalItems: total,
                             pageSize: pageSize,
                             page: page
                         )
-                    : ApiResponse<ICollection<TestResponse>>.NotFound("Không có dữ liệu");
+                    : ApiResponse<ICollection<TestByStudentResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<TestResponse> GetTestById(long id)
@@ -263,11 +275,11 @@ namespace ISC_ELIB_SERVER.Services
 
     public ApiResponse<Test> DeleteTest(long id)
          {
-                var success = _testRepo.DeleteTest(id);
-                return success
+            var success = _testRepo.DeleteTest(id);
+            return success
                     ? ApiResponse<Test>.Success()
                     : ApiResponse<Test>.NotFound("Không tìm thấy bài kiểm tra để xóa");
          }
-    } 
+    }
 }
 
