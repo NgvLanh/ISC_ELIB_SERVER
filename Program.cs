@@ -401,6 +401,12 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 
 });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<SwaggerFileUploadOperationFilter>(); // Gắn filter
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -420,6 +426,7 @@ builder.Services.AddSwaggerGen(c =>
         Format = "int32"
     });
 });
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var app = builder.Build();
 
