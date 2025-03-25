@@ -1,4 +1,6 @@
-﻿namespace ISC_ELIB_SERVER.DTOs.Responses
+﻿using ISC_ELIB_SERVER.Models;
+
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class TestResponse
     {
@@ -12,8 +14,8 @@
         public string? Description { get; set; }
         public string? ClassIds { get; set; }
         public bool? FileSubmit { get; set; }
-        public int? SemesterId { get; set; }
-        public int? SubjectId { get; set; }
-        public int? UserId { get; set; }
+        public SubjectResponse? Subject { get; set; }
+        public UserResponse? User { get; set; }
+        public GradeLevelResponse? GradeLevel { get; set; }
     }
 }

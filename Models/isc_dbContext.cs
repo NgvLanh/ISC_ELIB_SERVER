@@ -1685,7 +1685,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
-                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
+                entity.Property(e => e.GradeLevelsId).HasColumnName("grade_levels_id");
 
                 entity.Property(e => e.StartTime)
                     .HasColumnType("timestamp without time zone")
@@ -1708,6 +1708,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Tests)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_tests_user_id");
+
+                entity.HasOne(d => d.GradeLevel)
+                    .WithMany(p => p.Tests)
+                    .HasForeignKey(d => d.GradeLevelsId)
+                    .HasConstraintName("fk_tests_grade_levels");
             });
 
             modelBuilder.Entity<TestAnswer>(entity =>
