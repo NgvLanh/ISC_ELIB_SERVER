@@ -3,6 +3,7 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -11,12 +12,15 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly AcademicYearRepo _academicYearRepo;
         private readonly SchoolRepo _schoolRepo;
+        private readonly SemesterRepo _semesterRepo;
         private readonly IMapper _mapper;
 
-        public AcademicYearService(AcademicYearRepo academicYearRepo, SchoolRepo schoolRepo, IMapper mapper)
+        public AcademicYearService(AcademicYearRepo academicYearRepo, SchoolRepo schoolRepo,
+        SemesterRepo semesterRepo, IMapper mapper)
         {
             _academicYearRepo = academicYearRepo;
             _schoolRepo = schoolRepo;
+            _semesterRepo = semesterRepo;
             _mapper = mapper;
         }
 
@@ -93,7 +97,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-        public ApiResponse<AcademicYearResponse> UpdateAcademicYear(long id, AcademicYearRequest academicYearRequest)
+        public ApiResponse<AcademicYearResponse> UpdateAcademicYear(long id, ICollection<AcademicYearSemesterRequest> semesterRequests)
         {
             var existing = _academicYearRepo.GetAcademicYearById(id);
             if (existing == null)
@@ -101,38 +105,54 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<AcademicYearResponse>.NotFound($"Không tìm thấy năm học #{id}");
             }
 
-            if (academicYearRequest.StartTime >= academicYearRequest.EndTime)
-            {
-                return ApiResponse<AcademicYearResponse>.BadRequest("Ngày bắt đầu phải trước ngày kết thúc");
-            }
-
-            var duration = (academicYearRequest.EndTime - academicYearRequest.StartTime).TotalDays / 365;
-
-            if (duration < 1 || duration > 5)
-            {
-                return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa phải kéo dài ít nhất 1 năm và nhiều nhất 5 năm");
-            }
-            var school = _schoolRepo.GetSchoolById((long)academicYearRequest.SchoolId);
-
-            if (school == null)
-            {
-                return ApiResponse<AcademicYearResponse>.BadRequest("Mã trường không chính xác");
-            }
-
-            existing.StartTime = DateTime.SpecifyKind(academicYearRequest.StartTime, DateTimeKind.Unspecified);
-            existing.EndTime = DateTime.SpecifyKind(academicYearRequest.EndTime, DateTimeKind.Unspecified);
-            existing.SchoolId = academicYearRequest.SchoolId;
             try
             {
-                var updated = _academicYearRepo.UpdateAcademicYear(existing);
-                return ApiResponse<AcademicYearResponse>.Success(_mapper.Map<AcademicYearResponse>(updated));
+                var semesters = _semesterRepo.GetSemestersByAcademicYearId(id).ToList();
+                if (semesterRequests.Count > semesters.Count)
+                {
+                    var missingSemesters = semesterRequests.Skip(semesters.Count).ToList();
+                    foreach (var newSemester in missingSemesters)
+                    {
+                        _semesterRepo.CreateSemester(new Semester
+                        {
+                            AcademicYearId = (int)id,
+                            Name = newSemester.Name,
+                            StartTime = newSemester.StartTime,
+                            EndTime = newSemester.EndTime
+                        });
+                    }
+                }
+                else if (semesterRequests.Count == semesters.Count)
+                {
+                    foreach (var existingSemester in semesters)
+                    {
+                        var updatedSemester = semesterRequests.FirstOrDefault(s => s.Id == existingSemester.Id);
+                        if (updatedSemester != null)
+                        {
+                            existingSemester.Name = updatedSemester.Name;
+                            existingSemester.StartTime = updatedSemester.StartTime;
+                            existingSemester.EndTime = updatedSemester.EndTime;
+                            _semesterRepo.UpdateSemester(existingSemester);
+                        }
+                    }
+                }
+                else
+                {
+                    var semestersToDelete = semesters.Where(s => !semesterRequests.Any(r => r.Id == s.Id)).ToList();
+                    foreach (var semester in semestersToDelete)
+                    {
+                        _semesterRepo.DeleteSemester(semester.Id);
+                    }
+                }
+
+                return ApiResponse<AcademicYearResponse>.Success();
             }
             catch (Exception ex)
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest(ex.Message);
             }
-
         }
+
 
         public ApiResponse<object> DeleteAcademicYear(long id)
         {

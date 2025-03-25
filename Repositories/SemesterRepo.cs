@@ -223,5 +223,12 @@ namespace ISC_ELIB_SERVER.Repositories
             }
             return false;
         }
+
+
+        // Lành -- Cần học kỳ theo niên khoá
+        public ICollection<Semester> GetSemestersByAcademicYearId(long academicYearId)
+        {
+            return _context.Semesters.Where(s => s.Active && s.AcademicYearId == academicYearId).ToList();
+        }
     }
 }
