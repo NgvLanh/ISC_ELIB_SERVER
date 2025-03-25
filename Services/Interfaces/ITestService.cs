@@ -7,10 +7,13 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ITestService
     {
         ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
+        ApiResponse<ICollection<TestResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectId, long? gradeLevelsId, string? date);
         ApiResponse<TestResponse> GetTestById(long id);
         ApiResponse<TestResponse> GetTestByName(string name);
         ApiResponse<TestResponse> CreateTest(TestRequest TestRequest, string? userId);
         ApiResponse<TestResponse> UpdateTest(long id, TestRequest Test, string? userId);
         ApiResponse<Test> DeleteTest(long id);
+
+        
     }
 }

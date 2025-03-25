@@ -26,6 +26,16 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
+        [HttpGet("get-by-students")]
+        public IActionResult GetTestesByStudent([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
+            [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null,
+            [FromQuery] int status = 0, [FromQuery] long? subjectId = null, [FromQuery] long? gradeLevels = null,
+            [FromQuery] string? date = null)
+        {
+            var response = _service.GetTestesByStudent(page, pageSize, search, sortColumn, sortOrder, status, subjectId, gradeLevels, date);
+            return Ok(response);
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetTestById(long id)
         {
