@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,12 +53,34 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetClassTypeById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-        [HttpGet("by-name")]
-        public IActionResult GetClassTypeByName([FromQuery] string name)
+        [HttpPost("by-name")]
+        public IActionResult GetClassTypeByName([FromBody] NameRequest request)
         {
-            var response = _service.GetClassTypeByName(name);
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return BadRequest(ApiResponse<ClassTypeResponse>.BadRequest("Tên không được để trống"));
+            }
+
+            var response = _service.GetClassTypeByName(request);
             return StatusCode(response.Code, response);
         }
+
+        [HttpPost("by-school-year")]
+        public IActionResult GetClassTypesBySchoolYear([FromBody] YearRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Year))
+            {
+                return BadRequest(ApiResponse<ICollection<ClassTypeResponse>>.BadRequest("Niên khóa không được để trống"));
+            }
+
+            var response = _service.GetClassTypesBySchoolYear(request);
+
+            return StatusCode(response.Code, response);
+        }
+
+
+
+
 
     }
 }

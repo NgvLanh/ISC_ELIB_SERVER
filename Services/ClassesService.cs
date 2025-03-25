@@ -4,20 +4,23 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Services
 {
     public class ClassesService : IClassesService
     {
         private readonly IClassesRepo _repository;
+        private readonly IClassSubjectRepo _classSubjectRepo;
         private readonly IMapper _mapper;
 
-        public ClassesService(IClassesRepo repository, IMapper mapper)
+        public ClassesService(IClassesRepo repository, IClassSubjectRepo classSubjectRepo, IMapper mapper)
         {
             _repository = repository;
+            _classSubjectRepo = classSubjectRepo;
             _mapper = mapper;
         }
 
@@ -28,6 +31,12 @@ namespace ISC_ELIB_SERVER.Services
                 .Include(c => c.AcademicYear)
                 .Include(c => c.User)
                 .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.UserStatus) 
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(sortColumn))
@@ -51,61 +60,43 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
+            var response = _mapper.Map<ICollection<ClassesResponse>>(result);
 
-            var response = result.Select(c => new ClassesResponse
+            var classDict = response.ToDictionary(c => c.Id);
+
+            foreach (var classData in result)
             {
-                Id = c.Id,
-                Code = c.Code,
-                Name = c.Name,
-                StudentQuantity = c.StudentQuantity,
-                SubjectQuantity = c.SubjectQuantity,
-                Description = c.Description,
-                Active = c.Active,
-                GradeLevel = c.GradeLevel != null ? new GradeLevelResponse
+                if (classDict.TryGetValue(classData.Id, out var classResponse))
                 {
-                    Id = c.GradeLevel.Id,
-                    Name = c.GradeLevel.Name,
-                    Code = c.GradeLevel.Code,
-                    TeacherId = c.GradeLevel.Teacher?.Id.ToString()
-                } : null,
+                    classResponse.Subjects = classData.ClassSubjects
+                        .Select(cs => new ClassSubjectResponse
+                        {
+                            Id = cs.Id,
+                            Code = cs.Subject.Code,
+                            Name = cs.Subject.Name,
+                            HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                            HoursSemester2 = (int)cs.Subject.HoursSemester2
+                        })
+                        .ToList();
 
-                AcademicYear = c.AcademicYear != null ? new AcademicYearResponse
-                {
-                    Id = c.AcademicYear.Id,
-                    StartTime = (DateTime)(c.AcademicYear.StartTime != DateTime.MinValue ? c.AcademicYear.StartTime : null),
-                    EndTime = (DateTime)(c.AcademicYear.EndTime != DateTime.MinValue ? c.AcademicYear.EndTime : null),
-                    SchoolId = (int)(c.AcademicYear.School?.Id)
-                } : null,
-
-                User = c.User != null ? new UserResponse
-                {
-                    Id = c.User.Id,
-                    Code = c.User.Code,
-                    FullName = c.User.FullName ?? "",
-                    Gender = c.User.Gender,
-                    Email = string.IsNullOrEmpty(c.User.Email) ? null : c.User.Email,
-                    PhoneNumber = string.IsNullOrEmpty(c.User.PhoneNumber) ? null : c.User.PhoneNumber,
-                    PlaceBirth = string.IsNullOrEmpty(c.User.PlaceBirth) ? null : c.User.PlaceBirth,
-                    Nation = string.IsNullOrEmpty(c.User.Nation) ? null : c.User.Nation,
-                    Religion = string.IsNullOrEmpty(c.User.Religion) ? null : c.User.Religion,
-                    AddressFull = string.IsNullOrEmpty(c.User.AddressFull) ? null : c.User.AddressFull,
-                    Street = string.IsNullOrEmpty(c.User.Street) ? null : c.User.Street,
-                    Dob = c.User.Dob != DateTime.MinValue ? c.User.Dob : null,
-                    EnrollmentDate = c.User.EnrollmentDate != DateTime.MinValue ? c.User.EnrollmentDate : null,
-                    RoleId = (int)(c.User.Role?.Id),
-                    AcademicYearId = (int)(c.User.AcademicYear?.Id),
-                    ClassId = (int)(c.User.Class?.Id),
-                } : null,
-
-                ClassType = c.ClassType != null ? new ClassTypeResponse
-                {
-                    Id = c.ClassType.Id,
-                    Name = c.ClassType.Name,
-                    Description = c.ClassType.Description,
-                    Status = c.ClassType.Status
-                } : null
-
-            }).ToList();
+                    classResponse.Student = classData.Users
+                        .Where(u => u.RoleId == 3)
+                        .Select(u => new ClassUserResponse
+                        {
+                            Id = u.Id,
+                            Code = u.Code,
+                            FullName = u.FullName,
+                            EnrollmentDate = u.EnrollmentDate.HasValue
+                                ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                                : null,
+                            Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                                ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                                : null,
+                            UserStatus = u.UserStatus.Name
+                        })
+                        .ToList();
+                }
+            }
 
             return result.Any()
                 ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
@@ -113,74 +104,57 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
+
         public ApiResponse<ClassesResponse> GetClassById(int id)
         {
-            var classData = _repository.GetClassById(id);
+            var classData = _repository.GetClass()
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .Include(c => c.Users) 
+                    .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.Users)
+                    .ThenInclude(u => u.UserStatus)
+                .FirstOrDefault(c => c.Id == id);
+
             if (classData == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
 
-            var response = new ClassesResponse
-            {
-                Id = classData.Id,
-                Code = classData.Code,
-                Name = classData.Name,
-                Active = classData.Active,
-                StudentQuantity = classData.StudentQuantity,
-                SubjectQuantity = classData.SubjectQuantity,
-                Description = classData.Description,
+            var response = _mapper.Map<ClassesResponse>(classData);
 
-                GradeLevel = classData.GradeLevel != null ? new GradeLevelResponse
+            response.Subjects = classData.ClassSubjects
+                .Select(cs => new ClassSubjectResponse
                 {
-                    Id = classData.GradeLevel.Id,
-                    Name = classData.GradeLevel.Name,
-                    Code = classData.GradeLevel.Code,
-                    TeacherId = classData.GradeLevel.Teacher?.Id.ToString()
-                } : null,
+                    Id = cs.Id,
+                    Code = cs.Subject.Code,
+                    Name = cs.Subject.Name,
+                    HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                    HoursSemester2 = (int)cs.Subject.HoursSemester2
+                })
+                .ToList();
 
-                AcademicYear = classData.AcademicYear != null ? new AcademicYearResponse
+            response.Student = classData.Users
+                .Where(u => u.RoleId == 3)
+                .Select(u => new ClassUserResponse
                 {
-                    Id = classData.AcademicYear.Id,
-                    StartTime = (DateTime)(classData.AcademicYear.StartTime != DateTime.MinValue ? classData.AcademicYear.StartTime : null),
-                    EndTime = (DateTime)(classData.AcademicYear.EndTime != DateTime.MinValue ? classData.AcademicYear.EndTime : null),
-                    SchoolId = (int)(classData.AcademicYear.School?.Id)
-                } : null,
+                    Id = u.Id,
+                    Code = u.Code,
+                    FullName = u.FullName,
+                    EnrollmentDate = u.EnrollmentDate.HasValue
+                        ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                        : null,
+                    Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                        ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                        : null,
 
-                User = classData.User != null ? new UserResponse
-                {
-                    Id = classData.User.Id,
-                    Code = classData.User.Code,
-                    FullName = classData.User.FullName ?? "",
-                    Gender = classData.User.Gender,
-                    Email = string.IsNullOrEmpty(classData.User.Email) ? null : classData.User.Email,
-                    PhoneNumber = string.IsNullOrEmpty(classData.User.PhoneNumber) ? null : classData.User.PhoneNumber,
-                    PlaceBirth = string.IsNullOrEmpty(classData.User.PlaceBirth) ? null : classData.User.PlaceBirth,
-                    Nation = string.IsNullOrEmpty(classData.User.Nation) ? null : classData.User.Nation,
-                    Religion = string.IsNullOrEmpty(classData.User.Religion) ? null : classData.User.Religion,
-                    AddressFull = string.IsNullOrEmpty(classData.User.AddressFull) ? null : classData.User.AddressFull,
-                    Street = string.IsNullOrEmpty(classData.User.Street) ? null : classData.User.Street,
-                    Dob = classData.User.Dob != DateTime.MinValue ? classData.User.Dob : null,
-                    EnrollmentDate = classData.User.EnrollmentDate != DateTime.MinValue ? classData.User.EnrollmentDate : null,
-                    RoleId = (int)(classData.User.Role?.Id),
-                    AcademicYearId = (int)(classData.User.AcademicYear?.Id),
-                    ClassId = (int)(classData.User.Class?.Id),
-
-
-                } : null,
-
-                ClassType = classData.ClassType != null ? new ClassTypeResponse
-                {
-                    Id = classData.ClassType.Id,
-                    Name = classData.ClassType.Name,
-                    Description = classData.ClassType.Description,
-                    Status = classData.ClassType.Status
-                } : null
-            };
+                    UserStatus = u.UserStatus.Name
+                    
+                })
+                .ToList();
 
             return ApiResponse<ClassesResponse>.Success(response);
         }
-
 
 
 
@@ -192,84 +166,205 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học với tên này");
         }
 
-        public ApiResponse<ClassesResponse> CreateClass(ClassesRequest classesRequest)
+        public async Task<ApiResponse<ClassesResponse>> CreateClassAsync(ClassesRequest classesRequest)
         {
-            var existingClass = _repository.GetClass()
-                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower());
+            if (classesRequest == null)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
+            }
 
-            if (existingClass != null)
+            bool isNameExist = await _repository.GetClass()
+                .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower());
+
+            if (isNameExist)
             {
                 return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
             }
 
-            var newClass = new Class
-            {
-                Name = classesRequest.Name,
-                Description = classesRequest.Description,
-                Code = classesRequest.Code,
-                StudentQuantity = classesRequest.StudentQuantity,
-                SubjectQuantity = classesRequest.SubjectQuantity,
-                GradeLevelId = classesRequest.GradeLevelId,
-                AcademicYearId = classesRequest.AcademicYearId,
-                UserId = classesRequest?.UserId,
-                ClassTypeId = classesRequest?.ClassTypeId,
-            };
+            var classEntity = _mapper.Map<Class>(classesRequest);
+
             try
             {
-                var createdClass = _repository.CreateClass(newClass);
-                return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(createdClass));
-            }
-            catch
-            {
-                return ApiResponse<ClassesResponse>.BadRequest("Kiểm tra lại các khóa ngoại");
-            }
+                await _repository.CreateClassAsync(classEntity);
+                await _repository.SaveChangesAsync();
 
+                if (classEntity.Id == 0)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Không thể tạo lớp học, ID không hợp lệ");
+                }
+
+                await UpdateClassSubjectsAsync(classEntity.Id, classesRequest.Subjects);
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .Include(c => c.Users)
+                        .ThenInclude(u => u.UserStatus)
+                    .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi tải lại lớp học sau khi tạo");
+                }
+
+                var response = _mapper.Map<ClassesResponse>(classEntity);
+
+                response.Subjects = classEntity.ClassSubjects?.Select(cs => new ClassSubjectResponse
+                {
+                    Id = cs.Id,
+                    Code = cs.Subject.Code,
+                    Name = cs.Subject.Name,
+                    HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
+                    HoursSemester2 = cs.Subject.HoursSemester2 ?? 0
+                }).ToList() ?? new List<ClassSubjectResponse>();
+
+               
+                response.Student = classEntity.Users?
+                    .Where(u => u.RoleId == 3)
+                    .Select(u => new ClassUserResponse
+                    {
+                        Id = u.Id,
+                        Code = u.Code,
+                        FullName = u.FullName,
+                        EnrollmentDate = u.EnrollmentDate.HasValue
+                            ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                            : null,
+                        Year = (u.AcademicYear?.StartTime.HasValue == true && u.AcademicYear?.EndTime.HasValue == true)
+                            ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                            : null,
+                        UserStatus = u.UserStatus.Name
+                    }).ToList() ?? new List<ClassUserResponse>();
+
+                return ApiResponse<ClassesResponse>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest($"Lỗi khi tạo lớp học: {ex.Message}");
+            }
         }
 
-        public ApiResponse<ClassesResponse> UpdateClass(int id, ClassesRequest classesRequest)
-        {
-            var existingClass = _repository.GetClass()
-                .Include(c => c.GradeLevel)
-                    .ThenInclude(g => g.Teacher)
-                .Include(c => c.AcademicYear)
-                    .ThenInclude(a => a.School)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Role)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.AcademicYear)
-                .Include(c => c.User)
-                    .ThenInclude(u => u.Class)
-                .Include(c => c.ClassType)
-                .FirstOrDefault(c => c.Id == id);
 
-            if (existingClass == null)
+
+
+
+        public async Task<ApiResponse<ClassesResponse>> UpdateClassAsync(int id, ClassesRequest classesRequest)
+        {
+            if (classesRequest == null)
+            {
+                return ApiResponse<ClassesResponse>.BadRequest("Dữ liệu đầu vào không hợp lệ");
+            }
+
+            bool isNameExist = await _repository.GetClass()
+                .AnyAsync(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+
+            if (isNameExist)
+            {
+                return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
+            }
+
+            var classEntity = await _repository.GetClass()
+                .Include(c => c.Users)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (classEntity == null)
             {
                 return ApiResponse<ClassesResponse>.NotFound("Không tìm thấy lớp học");
             }
 
-            var duplicate = _repository.GetClass()
-                .FirstOrDefault(c => c.Name.ToLower() == classesRequest.Name.ToLower() && c.Id != id);
+            _mapper.Map(classesRequest, classEntity);
+            classEntity.Active = true;
 
-            if (duplicate != null)
+            try
             {
-                return ApiResponse<ClassesResponse>.Conflict("Tên lớp học đã tồn tại");
+                await _repository.UpdateClassAsync(classEntity);
+                await _repository.SaveChangesAsync();
+
+                await UpdateClassSubjectsAsync(classEntity.Id, classesRequest.Subjects);
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .Include(c => c.Users)
+                        .ThenInclude(u => u.UserStatus)
+                    .FirstOrDefaultAsync(c => c.Id == classEntity.Id);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi tải lại lớp học sau khi cập nhật");
+                }
+
+                var response = _mapper.Map<ClassesResponse>(classEntity);
+
+                response.Subjects = classEntity.ClassSubjects?
+                    .Select(cs => new ClassSubjectResponse
+                    {
+                        Id = cs.Id,
+                        Code = cs.Subject.Code,
+                        Name = cs.Subject.Name,
+                        HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
+                        HoursSemester2 = cs.Subject.HoursSemester2 ?? 0
+                    }).ToList() ?? new List<ClassSubjectResponse>();
+
+                response.Student = classEntity.Users?
+                 .Where(u => u.RoleId == 3)
+                 .Select(u => new ClassUserResponse
+                 {
+                     Id = u.Id,
+                     Code = u.Code,
+                     FullName = u.FullName,
+                     EnrollmentDate = u.EnrollmentDate.HasValue
+                         ? u.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                         : null,
+                     Year = u.AcademicYear != null && u.AcademicYear.StartTime.HasValue && u.AcademicYear.EndTime.HasValue
+                         ? $"{u.AcademicYear.StartTime.Value.Year}-{u.AcademicYear.EndTime.Value.Year}"
+                         : "Không có thông tin", // ✅ Đảm bảo không bị null
+                     UserStatus = u.UserStatus != null ? u.UserStatus.Name : "Không có trạng thái"
+                 }).ToList() ?? new List<ClassUserResponse>();
+
+
+                return ApiResponse<ClassesResponse>.Success(response);
             }
-
-            existingClass.Name = classesRequest.Name;
-            existingClass.Description = classesRequest.Description;
-            existingClass.StudentQuantity = classesRequest.StudentQuantity;
-            existingClass.SubjectQuantity = classesRequest.SubjectQuantity;
-            existingClass.GradeLevelId = classesRequest.GradeLevelId;
-            existingClass.AcademicYearId = classesRequest.AcademicYearId;
-
-            var updatedClass = _repository.UpdateClass(existingClass);
-
-            if (updatedClass == null)
+            catch (Exception ex)
             {
-                return ApiResponse<ClassesResponse>.BadRequest("Lỗi khi cập nhật lớp học");
+                return ApiResponse<ClassesResponse>.BadRequest($"Lỗi khi cập nhật lớp học: {ex.Message}");
             }
+        }
 
-            return ApiResponse<ClassesResponse>.Success(_mapper.Map<ClassesResponse>(updatedClass));
+
+
+        public async Task<ApiResponse<bool>> UpdateClassSubjectsAsync(int classId, List<int> subjectIds)
+        {
+            try
+            {
+                var classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                    .FirstOrDefaultAsync(c => c.Id == classId);
+
+                if (classEntity == null)
+                {
+                    return ApiResponse<bool>.NotFound("Không tìm thấy lớp học");
+                }
+
+                await _classSubjectRepo.RemoveClassSubjectsByClassIdAsync(classId);
+
+                if (subjectIds != null && subjectIds.Any())
+                {
+                    await _classSubjectRepo.AddClassSubjectsAsync(classId, subjectIds);
+                }
+
+                classEntity = await _repository.GetClass()
+                    .Include(c => c.ClassSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                    .FirstOrDefaultAsync(c => c.Id == classId);
+
+                return ApiResponse<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<bool>.BadRequest($"Lỗi khi cập nhật môn học: {ex.Message}");
+            }
         }
 
 

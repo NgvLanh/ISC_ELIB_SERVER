@@ -20,6 +20,7 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult GetEntryTypes([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
+            search ??= ""; // Nếu search là null, thay bằng chuỗi rỗng
             var response = _service.GetEntryTypes(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
@@ -44,6 +45,7 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.UpdateEntryType(id, entryTypeRequest);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteEntryType(long id)

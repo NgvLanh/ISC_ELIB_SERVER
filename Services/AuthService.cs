@@ -10,7 +10,7 @@ using System.Text;
 using System.Security.Cryptography;
 using DotNetEnv;
 using Autofac.Core;
-using ISC_ELIB_SERVER.Migrations;
+//using ISC_ELIB_SERVER.Migrations;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -71,7 +71,7 @@ namespace ISC_ELIB_SERVER.Services
 
                 var response = _refreshTokenService.Create(refreshToken);
 
-                if(response.Code == 1)
+                if (response.Code == 1)
                 {
                     return ApiResponse<LoginResponse>.Fail("Lỗi khi xác thực người dùng");
                 }
@@ -88,7 +88,7 @@ namespace ISC_ELIB_SERVER.Services
                         FullName = user.FullName,
                         // Avatar = user.Avatar,
                         Role = roleName.ToUpper(),
-                        
+
                     }
                 });
             }
@@ -104,19 +104,19 @@ namespace ISC_ELIB_SERVER.Services
             {
                 var refreshToken = _context.RefreshTokens.FirstOrDefault(a => a.Token == request);
 
-                if(refreshToken == null || refreshToken.ExpireDate < DateTime.UtcNow)
+                if (refreshToken == null || refreshToken.ExpireDate < DateTime.UtcNow)
                 {
                     return ApiResponse<LoginResponse>.Fail("Refresh Token không hợp lệ hoặc đã hết hạn");
                 }
 
                 var user = _context.Users.FirstOrDefault(u => u.Id == refreshToken.UserId);
 
-                if(user == null)
+                if (user == null)
                 {
                     return ApiResponse<LoginResponse>.Fail("Không tìm thấy refreshtoken của user");
                 }
 
-                
+
 
                 var token = GenerateTokens(user, refreshToken);
 
@@ -130,7 +130,7 @@ namespace ISC_ELIB_SERVER.Services
                     return ApiResponse<LoginResponse>.Fail("Không thể tạo RefreshToken");
                 }
 
-                var response = _refreshTokenService.Update(refreshToken.Id , refreshToken);
+                var response = _refreshTokenService.Update(refreshToken.Id, refreshToken);
 
                 if (response.Code == 1)
                 {
