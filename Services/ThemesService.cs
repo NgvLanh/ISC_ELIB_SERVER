@@ -69,14 +69,14 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ThemesResponse>.Conflict("Tên chủ đề đã tồn tại");
             }
 
-            var created = _repository.CreateThemes(new Theme() { Name = themesRequest.Name, Active = false });
+            var created = _repository.CreateThemes(new Theme() { Name = themesRequest.Name, Active = true });
             return ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(created));
         }
 
         public ApiResponse<ThemesResponse> UpdateThemes(long id, ThemesRequest themesRequest)
         {
             var existingTheme = _repository.GetThemesById(id);
-            if (existingTheme == null || existingTheme.Active == true)
+            if (existingTheme == null || existingTheme.Active == false)
             {
                 return ApiResponse<ThemesResponse>.NotFound("Không tìm thấy chủ đề.");
             }
@@ -89,7 +89,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             existingTheme.Name = themesRequest.Name;
-            existingTheme.Active = false;
+            //existingTheme.Active = false;
             _repository.UpdateThemes(existingTheme);
             return ApiResponse<ThemesResponse>.Success(_mapper.Map<ThemesResponse>(existingTheme));
         }
@@ -102,12 +102,12 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<Theme>.NotFound("Không tìm thấy chủ đề.");
             }
 
-            if (existingTheme.Active == true)
+            if (existingTheme.Active == false)
             {
                 return ApiResponse<Theme>.Conflict("chủ đề không tồn tại.");
             }
 
-            existingTheme.Active = true;
+            existingTheme.Active = false;
             _repository.DeleteThemes(existingTheme);
 
             return ApiResponse<Theme>.Success();

@@ -93,7 +93,7 @@ namespace ISC_ELIB_SERVER.Services
                 EndDate = DateTime.SpecifyKind(trainingProgramsRequest.EndDate, DateTimeKind.Utc),
                 //EndDate = trainingProgramsRequest.EndDate,
                 TrainingForm = trainingProgramsRequest.TrainingForm,
-                Active = false,
+                Active = true,
                 FileName = trainingProgramsRequest.FileName,
                 FilePath = trainingProgramsRequest.FilePath,
                 Degree = trainingProgramsRequest.Degree
@@ -104,7 +104,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest)
         {
             var existingTrainingPrograms = _repository.GetTrainingProgramById(id);
-            if (existingTrainingPrograms == null || existingTrainingPrograms.Active == true)
+            if (existingTrainingPrograms == null || existingTrainingPrograms.Active == false)
             {
                 return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy chương trình đào tạo.");
             }
@@ -130,7 +130,7 @@ namespace ISC_ELIB_SERVER.Services
             existingTrainingPrograms.StartDate = DateTime.SpecifyKind(trainingProgramsRequest.StartDate, DateTimeKind.Utc);
             existingTrainingPrograms.EndDate = DateTime.SpecifyKind(trainingProgramsRequest.EndDate, DateTimeKind.Utc);
             existingTrainingPrograms.TrainingForm = trainingProgramsRequest.TrainingForm;
-            existingTrainingPrograms.Active = false;
+            //existingTrainingPrograms.Active = false;
             existingTrainingPrograms.FileName = trainingProgramsRequest.FileName;
             existingTrainingPrograms.FilePath = trainingProgramsRequest.FilePath;
             _repository.UpdateTrainingProgram(existingTrainingPrograms);
@@ -145,12 +145,12 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TrainingProgram>.NotFound("Không tìm thấy Chương trình đào tạo.");
             }
 
-            if (existingTrainingProgram.Active == true)
+            if (existingTrainingProgram.Active == false)
             {
                 return ApiResponse<TrainingProgram>.Conflict("Chương trình đào tạo không tồn tại.");
             }
 
-            existingTrainingProgram.Active = true;
+            existingTrainingProgram.Active = false;
             _repository.DeleteTrainingProgram(existingTrainingProgram);
 
             return ApiResponse<TrainingProgram>.Success();
