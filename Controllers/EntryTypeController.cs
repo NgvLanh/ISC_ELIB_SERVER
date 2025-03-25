@@ -46,6 +46,7 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+
         [HttpDelete("{id}")]
         public IActionResult DeleteEntryType(long id)
         {

@@ -30,10 +30,20 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public TeacherFamily CreateTeacherFamily(TeacherFamily teacherFamily)
         {
-            _context.TeacherFamilies.Add(teacherFamily);
-            _context.SaveChanges();
-            return teacherFamily;
+            try
+            {
+                _context.TeacherFamilies.Add(teacherFamily);
+                _context.SaveChanges();
+                return teacherFamily;
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log lỗi chi tiết để debug
+                Console.WriteLine($"Lỗi DbUpdateException: {ex.InnerException?.Message}");
+                throw;
+            }
         }
+
 
         public TeacherFamily? UpdateTeacherFamily(TeacherFamily teacherFamily)
         {
