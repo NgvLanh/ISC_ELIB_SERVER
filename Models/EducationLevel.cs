@@ -5,10 +5,10 @@ namespace ISC_ELIB_SERVER.Models
 {
     public partial class EducationLevel
     {
-        public EducationLevel()
-        {
-            Schools = new HashSet<School>();
-        }
+        // public EducationLevel()
+        // {
+        //     Schools = new HashSet<School>();
+        // }
 
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -23,6 +23,6 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public bool Active { get; set; }
 
-        public virtual ICollection<School> Schools { get; set; }
+        // public virtual ICollection<School> Schools { get; set; }
     }
 }

@@ -1,28 +1,22 @@
-﻿using System.Text.Json.Serialization;
+﻿using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
 
-namespace ISC_ELIB_SERVER.DTOs.Responses
+public class ClassesResponse
 {
-    public class ClassesResponse
-    {
+    public int ? Id { get; set; }
+    public string? Code { get; set; }
+    public string? Name { get; set; }
+    public int? StudentQuantity { get; set; }
+    public int? SubjectQuantity { get; set; }
+    public string? Description { get; set; }
+    public bool Active { get; set; }
+    public GradeLevelResponse? GradeLevel { get; set; }
 
-        public string? Code { get; set; }
+    public AcademicYearResponse? AcademicYear { get; set; }
 
-        public string? Name { get; set; }
+    public UserResponse? User { get; set; }
 
-        public int? StudentQuantity { get; set; }
+    public ClassTypeResponse? ClassType { get; set; }
 
-        public int? SubjectQuantity { get; set; }
-
-        public string? Description { get; set; }
-
-        public int GradeLevelId { get; set; }
-
-        public int AcademicYearId { get; set; }
-
-        public int UserId { get; set; }
-
-        public int ClassTypeId { get; set; }
-
-
-    }
 }
+

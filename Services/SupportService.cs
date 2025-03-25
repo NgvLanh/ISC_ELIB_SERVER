@@ -3,61 +3,77 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
+using ISC_ELIB_SERVER.Services.Interfaces;
+using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface ISupportService
-    {
-        ApiResponse<ICollection<SupportResponse>> GetSupports(int page, int pageSize, string search, string sortColumn, string sortOrder);
-        ApiResponse<SupportResponse> GetSupportById(long id);
-        ApiResponse<SupportResponse> CreateSupport(SupportRequest SupportRequest);
-        ApiResponse<Support> UpdateSupport(Support Support);
-        ApiResponse<Support> DeleteSupport(long id);
-    }
 
     public class SupportService : ISupportService
     {
         private readonly SupportRepo _repository;
         private readonly IMapper _mapper;
-
-        public SupportService(SupportRepo repository, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public SupportService(SupportRepo repository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public ApiResponse<ICollection<SupportResponse>> GetSupports(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public ApiResponse<ICollection<SupportResponse>> GetSupports(int? page, int? pageSize, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetSupports().AsQueryable();
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(n => n.Title.Contains(search) || n.Content.Contains(search));
-            }
+
+            sortColumn = string.IsNullOrWhiteSpace(sortColumn) ? "Id" : sortColumn;
+            sortOrder = sortOrder?.ToLower() ?? "asc";
 
             query = sortColumn switch
             {
-                "CreateAt" => sortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase) ? query.OrderByDescending(n => n.CreateAt) : query.OrderBy(n => n.CreateAt),
-                "Id" => sortOrder.Equals("desc", StringComparison.OrdinalIgnoreCase) ? query.OrderByDescending(n => n.Id) : query.OrderBy(n => n.Id),
-                _ => query.OrderBy(n => n.Id)
+                "Id" => sortOrder == "desc" ? query.OrderByDescending(s => s.Id) : query.OrderBy(s => s.Id),
+                _ => query.OrderBy(s => s.Id)
             };
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            int totalRecords = query.Count();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
             var response = _mapper.Map<ICollection<SupportResponse>>(result);
-            return result.Any() ? ApiResponse<ICollection<SupportResponse>>.Success(response) : ApiResponse<ICollection<SupportResponse>>.NotFound("Không có dữ liệu");
+
+            return result.Any()
+                ? ApiResponse<ICollection<SupportResponse>>.Success(response, page, pageSize, totalRecords)
+                : ApiResponse<ICollection<SupportResponse>>.NotFound("Không có dữ liệu");
         }
+
 
         public ApiResponse<SupportResponse> GetSupportById(long id)
         {
             var Support = _repository.GetSupportById(id);
             return Support != null ? ApiResponse<SupportResponse>.Success(_mapper.Map<SupportResponse>(Support)) : ApiResponse<SupportResponse>.NotFound($"Không tìm thấy thông báo #{id}");
         }
-
-        public ApiResponse<SupportResponse> CreateSupport(SupportRequest SupportRequest)
+        private int? GetUserIdFromToken()
         {
-            var Support = _mapper.Map<Support>(SupportRequest);
-            var created = _repository.CreateSupport(Support);
+            var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("Id")?.Value;
+            return int.TryParse(userIdClaim, out var userId) ? userId : (int?)null;
+        }
+        public ApiResponse<SupportResponse> CreateSupport(SupportRequest supportRequest)
+        {
+            var userId = GetUserIdFromToken();
+            if (userId == null)
+                return ApiResponse<SupportResponse>.Unauthorized("Người dùng chưa đăng nhập.");
+
+            var support = _mapper.Map<Support>(supportRequest);
+            support.UserId = userId.Value;
+            support.CreateAt = DateTime.Now;
+
+            var created = _repository.CreateSupport(support);
             return ApiResponse<SupportResponse>.Success(_mapper.Map<SupportResponse>(created));
         }
+
 
         public ApiResponse<Support> UpdateSupport(Support Support)
         {

@@ -79,8 +79,6 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<WorkProcess> WorkProcesses { get; set; } = null!;
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
-        
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -231,7 +229,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
-                entity.HasOne(d => d.School)
+                entity.HasOne<School>()
                     .WithMany(p => p.Campuses)
                     .HasForeignKey(d => d.SchoolId)
                     .HasConstraintName("fk_campuses_school_id");
@@ -863,25 +861,25 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.SubjectId)
                     .HasConstraintName("fk_question_qa_subject_id");
             });
-          modelBuilder.Entity<QuestionView>(entity =>
-            {
-                entity.ToTable("question_views");
+            modelBuilder.Entity<QuestionView>(entity =>
+              {
+                  entity.ToTable("question_views");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.QuestionId).HasColumnName("question_id");
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-                entity.Property(e => e.ViewedAt).HasColumnName("viewed_at").HasColumnType("timestamp without time zone");
+                  entity.Property(e => e.Id).HasColumnName("id");
+                  entity.Property(e => e.QuestionId).HasColumnName("question_id");
+                  entity.Property(e => e.UserId).HasColumnName("user_id");
+                  entity.Property(e => e.ViewedAt).HasColumnName("viewed_at").HasColumnType("timestamp without time zone");
 
-                entity.HasOne(d => d.Question)
-                    .WithMany()
-                    .HasForeignKey(d => d.QuestionId)
-                    .HasConstraintName("fk_question_views_question_id");
+                  entity.HasOne(d => d.Question)
+                      .WithMany()
+                      .HasForeignKey(d => d.QuestionId)
+                      .HasConstraintName("fk_question_views_question_id");
 
-                entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("fk_question_views_user_id");
-            });
+                  entity.HasOne(d => d.User)
+                      .WithMany()
+                      .HasForeignKey(d => d.UserId)
+                      .HasConstraintName("fk_question_views_user_id");
+              });
 
 
             modelBuilder.Entity<Reserve>(entity =>
@@ -954,7 +952,7 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Resignations)
                     .HasForeignKey(d => d.TeacherId)
                     .HasConstraintName("fk_resignation_teacher_id");
-                
+
                 entity.HasOne(d => d.Leadership)
                     .WithMany(p => p.Resignations)
                     .HasForeignKey(d => d.LeadershipId)
@@ -1100,8 +1098,13 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(100)
                     .HasColumnName("website_url");
 
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_schools_user_id");
+
                 entity.HasOne(d => d.EducationLevel)
-                    .WithMany(p => p.Schools)
+                    .WithMany()
                     .HasForeignKey(d => d.EducationLevelId)
                     .HasConstraintName("fk_schools_education_level_id");
             });
@@ -1755,7 +1758,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.QuestionText).HasColumnName("question_text");
 
                 entity.Property(e => e.QuestionType)
-                    .HasMaxLength(50)
                     .HasColumnName("question_type");
 
                 entity.Property(e => e.TestId).HasColumnName("test_id");
