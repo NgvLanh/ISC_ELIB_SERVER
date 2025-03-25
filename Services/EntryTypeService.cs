@@ -4,7 +4,6 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 
-
 namespace ISC_ELIB_SERVER.Services
 {
     public class EntryTypeService : IEntryTypeService

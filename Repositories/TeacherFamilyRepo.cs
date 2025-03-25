@@ -44,7 +44,6 @@ namespace ISC_ELIB_SERVER.Repositories
             }
         }
 
-
         public TeacherFamily? UpdateTeacherFamily(TeacherFamily teacherFamily)
         {
             var existing = _context.TeacherFamilies.FirstOrDefault(tf => tf.Id == teacherFamily.Id && !tf.IsDeleted);
