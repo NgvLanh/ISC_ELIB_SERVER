@@ -93,7 +93,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<object>.NotFound("Không tìm thấy loại đầu vào để xóa");
             }
 
-            entryType.IsDeleted = true; // Xóa mềm
+            entryType.Active = false; // Xóa mềm
             _repository.UpdateEntryType(entryType);
 
             return ApiResponse<object>.Success("Xóa thành công");
