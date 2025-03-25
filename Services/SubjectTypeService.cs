@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, string? date)
+        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, string? startDate, string? endDate)
         {
             var query = _subjectTypeRepo.GetAllSubjectType().AsQueryable();
 
@@ -39,18 +39,22 @@ namespace ISC_ELIB_SERVER.Services
             };
             query = query.Where(qr => qr.Active == true);
 
-            if (date != null)
+            if (startDate != null && endDate != null)
             {
-                DateTime dateValue;
-                var check = DateTime.TryParse(date, out dateValue);
-                if (check)
+                DateTime startDateValue;
+                DateTime endDateValue;
+                var checkStart = DateTime.TryParse(startDate, out startDateValue);
+                var checkEnd = DateTime.TryParse(endDate, out endDateValue);
+                if (!checkStart)
                 {
-                    query = query.Where(qr => qr.Date.HasValue && qr.Date.Value.Date.Year == dateValue.Date.Year);
+                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"startDate không đúng định dạng!!!");
                 }
-                else
+                if (!checkEnd)
                 {
-                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"Date không đúng định dạng!!!");
+                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"endDate không đúng định dạng!!!");
                 }
+
+                query = query.Where(qr => qr.Date.HasValue && qr.Date.Value.Date.Year >= startDateValue.Date.Year && qr.Date.Value.Year <= endDateValue.Date.Year);             
             }
 
             var total = query.Count();

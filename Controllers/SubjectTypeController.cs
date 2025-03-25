@@ -21,9 +21,9 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpGet]
         public IActionResult GetSubjectType([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
             [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null,
-            [FromQuery] string? date = null)
+            [FromQuery] string? startDate = null, [FromQuery] string? endDate = null)
         {
-            var response = _service.GetSubjectType(page, pageSize, search, sortColumn, sortOrder, date);
+            var response = _service.GetSubjectType(page, pageSize, search, sortColumn, sortOrder, startDate, endDate);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
