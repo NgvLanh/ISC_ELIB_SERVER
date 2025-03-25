@@ -69,14 +69,14 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<MajorResponse>.Conflict("Tên chuyên ngành đã tồn tại");
             }
 
-            var created = _repository.CreateMajor(new Major() { Name = majorRequest.Name, Description = majorRequest.Description, Active = false });
+            var created = _repository.CreateMajor(new Major() { Name = majorRequest.Name, Description = majorRequest.Description, Active = true });
             return ApiResponse<MajorResponse>.Success(_mapper.Map<MajorResponse>(created));
         }
 
         public ApiResponse<MajorResponse> UpdateMajor(long id, MajorRequest majorRequest)
         {
             var existingMajor = _repository.GetMajorById(id);
-            if (existingMajor == null || existingMajor.Active == true)
+            if (existingMajor == null || existingMajor.Active == false)
             {
                 return ApiResponse<MajorResponse>.NotFound("Không tìm thấy chuyên ngành.");
             }
@@ -91,7 +91,7 @@ namespace ISC_ELIB_SERVER.Services
 
             existingMajor.Name = majorRequest.Name;
             existingMajor.Description = majorRequest.Description;
-            existingMajor.Active = false;
+            //existingMajor.Active = false;
             _repository.UpdateMajor(existingMajor);
             return ApiResponse<MajorResponse>.Success(_mapper.Map<MajorResponse>(existingMajor));
         }
@@ -104,12 +104,12 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<Major>.NotFound("Không tìm thấy chuyên ngành.");
             }
 
-            if (existingMajor.Active == true)
+            if (existingMajor.Active == false)
             {
                 return ApiResponse<Major>.Conflict("chuyên ngành không tồn tại.");
             }
 
-            existingMajor.Active = true;
+            existingMajor.Active = false;
             _repository.DeleteMajor(existingMajor);
 
             return ApiResponse<Major>.Success();
