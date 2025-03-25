@@ -19,14 +19,19 @@ public class ClassesResponse
     public ClassTypeResponse? ClassType { get; set; }
 
     public ICollection<ClassSubjectResponse>? Subjects { get; set; }
+
+    public ICollection<ClassUserResponse>? Student { get; set; }
 }
 
 public class ClassUserResponse
 {
     public int Id { get; set; }
+    public string? Code { get; set; }
     public string FullName { get; set; }
+    public string? Year { get; set; }
+    public string? EnrollmentDate { get; set; }
+    public string? UserStatus { get; set; }
 }
-
 public class ClassSubjectResponse
 {
     public int Id { get; set; }
