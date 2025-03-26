@@ -4,11 +4,7 @@
     using ISC_ELIB_SERVER.Models;
     using ISC_ELIB_SERVER.Repositories;
     using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
-using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
+    using OfficeOpenXml;
 
     namespace ISC_ELIB_SERVER.Services
     {
@@ -388,18 +384,29 @@ using System;
 
 
 
-            public ApiResponse<bool> DeleteClass(List<int> ids)
+        public ApiResponse<bool> DeleteClass(List<int> ids)
+        {
+            if (ids == null || !ids.Any())
             {
-                if (ids == null || !ids.Any())
-                {
-                    return ApiResponse<bool>.BadRequest("Danh sách ID lớp học không được để trống");
-                }
+                return ApiResponse<bool>.BadRequest("Danh sách ID lớp học không được để trống");
+            }
 
-                var deleted = _repository.DeleteClasses(ids);
+            try
+            {
+                bool deleted = _repository.DeleteClasses(ids);
                 return deleted
                     ? ApiResponse<bool>.Success(true)
                     : ApiResponse<bool>.NotFound("Không tìm thấy lớp học để xóa");
             }
+            catch (DbUpdateException ex)
+            {
+                return ApiResponse<bool>.BadRequest("Không thể xóa lớp học do ràng buộc dữ liệu");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<bool>.Error("Lỗi máy chủ: " + ex.Message);
+            }
+        }
 
         public async Task<ApiResponse<bool>> ImportClassesAsync(IFormFile file)
         {

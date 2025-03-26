@@ -133,18 +133,28 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteClasses(List<int> ids)
         {
-            var classes = _context.Classes.Where(c => ids.Contains(c.Id)).ToList();
-
-            if (!classes.Any()) return false;
-
-            foreach (var classEntity in classes)
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                classEntity.Active = false;
-            }
+                var classes = _context.Classes.Where(c => ids.Contains(c.Id)).ToList();
+                if (!classes.Any()) return false;
 
-            _context.SaveChanges();
-            return true;
+                foreach (var classItem in classes)
+                {
+                    classItem.Active = false;
+                }
+
+                _context.SaveChanges();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
+
 
         public async Task<Class> CreateClassAsync(Class classEntity)
         {
