@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
@@ -102,7 +103,7 @@ namespace ISC_ELIB_SERVER.Services
 
             if (!string.IsNullOrWhiteSpace(searchName))
             {
-                query = query.Where(ct => ct.Name.Contains(searchName));
+                query = query.Where(st => st.Name.ToLower().Contains(searchName.ToLower()));
             }
 
             query = sortColumn switch
