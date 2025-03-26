@@ -130,10 +130,6 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
-
                 entity.Property(e => e.Content)
                     .HasMaxLength(255)
                     .HasColumnName("content");

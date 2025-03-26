@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ISC_ELIB_SERVER.Enums;
 
-namespace ISC_ELIB_SERVER.Models
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
-    public partial class Achievement
+    public class AchivementResponse
     {
         public int Id { get; set; }
         public string? Content { get; set; }
@@ -11,8 +10,6 @@ namespace ISC_ELIB_SERVER.Models
         public string? File { get; set; }
         public int? UserId { get; set; }
         public int? TypeId { get; set; }
-
-        public virtual Type? Type { get; set; }
-        public virtual User? User { get; set; }
+        public string? TypeValue  { get; set; }
     }
 }
