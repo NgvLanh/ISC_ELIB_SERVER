@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,13 +14,6 @@ namespace ISC_ELIB_SERVER.Controllers
         public ClassTypeController(IClassTypeService service)
         {
             _service = service;
-        }
-
-        [HttpGet]
-        public IActionResult GetClassType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
-        {
-            var response = _service.GetClassTypes(page, pageSize, sortColumn, sortOrder);
-            return Ok(response);
         }
 
         [HttpPost]
@@ -52,12 +46,22 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetClassTypeById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-        [HttpGet("by-name")]
-        public IActionResult GetClassTypeByName([FromQuery] string name)
+        [HttpGet]
+        public IActionResult GetClassTypesBySchoolYear(
+            [FromQuery] int? searchYear = null,
+            [FromQuery] string? searchName = null, 
+            [FromQuery] int? page = 1,
+            [FromQuery] int? pageSize = 10,
+            [FromQuery] string? sortColumn = "Id",
+            [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetClassTypeByName(name);
+
+            var response = _service.GetClassTypes(page, pageSize, searchYear, searchName, sortColumn, sortOrder);
+
             return StatusCode(response.Code, response);
         }
+
+
 
     }
 }

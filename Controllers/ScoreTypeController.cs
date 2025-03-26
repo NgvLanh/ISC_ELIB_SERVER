@@ -16,9 +16,9 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetScoreType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetScoreType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? search = null,[FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetScoreTypes(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetScoreTypes(page, pageSize,search, sortColumn, sortOrder);
             return Ok(response);
         }
 
@@ -52,13 +52,6 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.DeleteScoreType(id);
 
             return response.Code == 0 ? Ok(response) : NotFound(response);
-        }
-
-        [HttpGet("by-name")]
-        public IActionResult GetScoreTypeByName([FromQuery] string name)
-        {
-            var response = _service.GetScoreTypeByName(name);
-            return StatusCode(response.Code, response);
         }
 
     }

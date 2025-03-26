@@ -1,5 +1,6 @@
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Enums;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using OfficeOpenXml;
@@ -90,30 +91,59 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<bool>.Error(new Dictionary<string, string[]> { { "message", new[] { "Xóa câu trả lời thất bại." } } });
         }
 
-             public async Task<ApiResponse<string>> ImportFromExcelAsync(IFormFile file, int testId, string questionType)
+           public async Task<ApiResponse<string>> ImportFromExcelAsync(IFormFile file, int testId, string questionType)
             {
                 if (file == null || file.Length == 0)
                     return ApiResponse<string>.BadRequest("File không hợp lệ");
 
-                // Parse enum
                 if (!Enum.TryParse<QuestionType>(questionType, out var parsedType))
                     return ApiResponse<string>.BadRequest("Giá trị QuestionType không hợp lệ");
 
-                // XÓA TOÀN BỘ CÂU HỎI VÀ ĐÁP ÁN CỦA TEST NÀY
-                var questionsToRemove = _context.TestQuestions
-                    .Where(q => q.TestId == testId)
-                    .ToList();
-
+                //  XÓA toàn bộ câu hỏi và đáp án của testId
+                var questionsToRemove = _context.TestQuestions.Where(q => q.TestId == testId).ToList();
                 var questionIds = questionsToRemove.Select(q => q.Id).ToList();
-                var answersToRemove = _context.TestAnswers
-                    .Where(a => questionIds.Contains(a.QuestionId ?? 0))
-                    .ToList();
+
+                var answersToRemove = _context.TestAnswers.Where(a => questionIds.Contains(a.QuestionId ?? 0)).ToList();
 
                 _context.TestAnswers.RemoveRange(answersToRemove);
                 _context.TestQuestions.RemoveRange(questionsToRemove);
                 await _context.SaveChangesAsync();
 
-                //  TIẾP TỤC IMPORT FILE
+                //  TẠO THƯ MỤC nếu chưa có
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "TestFiles");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                //  Lưu file vào thư mục
+               var originalFileName = Path.GetFileNameWithoutExtension(file.FileName);
+                var extension = Path.GetExtension(file.FileName);
+                var safeFileName = $"{originalFileName}{extension}";
+                var filePath = Path.Combine(uploadsFolder, safeFileName);
+                int counter = 1;
+
+                // Nếu file đã tồn tại, thêm số đếm vào tên file
+                while (System.IO.File.Exists(filePath))
+                {
+                    safeFileName = $"{originalFileName}-{counter}{extension}";
+                    filePath = Path.Combine(uploadsFolder, safeFileName);
+                    counter++;
+                }
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                //  Lưu vào bảng test_file
+                var testFile = new TestFile
+                {
+                    TestId = testId,
+                    FileUrl = $"/Uploads/TestFiles/{safeFileName}",
+                    Active = true
+                };
+                _context.TestFiles.Add(testFile);
+                await _context.SaveChangesAsync();
+
+                //  Đọc nội dung Excel
                 using var stream = new MemoryStream();
                 await file.CopyToAsync(stream);
                 using var package = new ExcelPackage(stream);
@@ -174,6 +204,7 @@ namespace ISC_ELIB_SERVER.Services
 
                 return ApiResponse<string>.Success("Import thành công");
             }
+
 
 
 

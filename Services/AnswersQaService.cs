@@ -77,7 +77,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<AnswersQaResponse>.Success(response);
         }
 
-         public async Task<ApiResponse<AnswersQaResponse>> CreateAnswer(AnswersQaRequest answerRequest)
+       public async Task<ApiResponse<string>> CreateAnswer(AnswersQaRequest answerRequest, int userId)
         {
             List<string> imageBase64List = new List<string>();
 
@@ -85,20 +85,20 @@ namespace ISC_ELIB_SERVER.Services
             {
                 foreach (var file in answerRequest.Files)
                 {
-                     var extension = Path.GetExtension(file.FileName).ToLower();
+                    var extension = Path.GetExtension(file.FileName).ToLower();
 
                     // Kiểm tra định dạng ảnh
                     if (!_allowedImageTypes.Contains(extension))
                     {
-                        return ApiResponse<AnswersQaResponse>.BadRequest($"Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
+                        return ApiResponse<string>.BadRequest("Chỉ cho phép định dạng ảnh: JPG, JPEG, PNG, WEBP");
                     }
 
                     // Kiểm tra dung lượng
                     if (file.Length > _maxImageSize)
                     {
-                        return ApiResponse<AnswersQaResponse>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
+                        return ApiResponse<string>.BadRequest("Ảnh vượt quá kích thước tối đa 2MB");
                     }
-                    
+
                     using (var ms = new MemoryStream())
                     {
                         await file.CopyToAsync(ms);
@@ -112,9 +112,9 @@ namespace ISC_ELIB_SERVER.Services
             var newAnswer = new AnswersQa
             {
                 Content = answerRequest.Content,
-                UserId = answerRequest.UserId,
+                UserId = userId, // Gán userId từ token
                 QuestionId = answerRequest.QuestionId,
-                CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified), // Sửa lỗi DateTime
+                CreateAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
                 Active = true
             };
 
@@ -130,10 +130,10 @@ namespace ISC_ELIB_SERVER.Services
                 UserAvatar = createdAnswer.User?.AvatarUrl ?? "https://via.placeholder.com/40",
                 UserName = createdAnswer.User?.FullName ?? "Unknown",
                 UserRole = createdAnswer.User?.Role?.Name ?? "Người dùng",
-                ImageUrls = imageBase64List // Trả về danh sách ảnh
+                ImageUrls = imageBase64List
             };
 
-            return ApiResponse<AnswersQaResponse>.Success(response);
+             return ApiResponse<string>.Success("Thêm thành công");
         }
 
 

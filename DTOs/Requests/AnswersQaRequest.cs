@@ -11,8 +11,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "QuestionId là bắt buộc")]
         public int QuestionId { get; set; }
 
-        [Required(ErrorMessage = "UserId là bắt buộc")]
-        public int UserId { get; set; }
        public List<IFormFile>? Files { get; set; }
     }
 }

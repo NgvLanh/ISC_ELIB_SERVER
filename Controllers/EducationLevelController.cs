@@ -17,7 +17,10 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetEducationLevels([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetEducationLevels([FromQuery] int? page = 1, 
+                                                [FromQuery] int? pageSize = 10, 
+                                                [FromQuery] string? sortColumn = "Id", 
+                                                [FromQuery] string? sortOrder = "asc")
         {
             var response = _service.GetEducationLevels(page, pageSize, sortColumn, sortOrder);
             return Ok(response);

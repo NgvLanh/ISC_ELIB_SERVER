@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<EntryTypeResponse>> GetEntryTypes(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-             var query = _repository.GetEntryTypes().AsQueryable();
+            var query = _repository.GetEntryTypes().AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -95,7 +95,6 @@ namespace ISC_ELIB_SERVER.Services
 
             entryType.Active = false; // Xóa mềm
             _repository.UpdateEntryType(entryType);
-
             return ApiResponse<object>.Success("Xóa thành công");
         }
     }
