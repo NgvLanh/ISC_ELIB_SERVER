@@ -12,5 +12,6 @@
         public int ClassId { get; set; }
         public int SemesterId { get; set; }
         public int LeadershipId { get; set; }
+        public bool Active { get; set; }
     }
 }

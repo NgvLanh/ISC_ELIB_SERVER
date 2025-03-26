@@ -15,9 +15,10 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<ReserveListResponse> GetReserveById(long id);
         ApiResponse<ReserveListResponse> GetReserveByStudentId(int studentId);
         ApiResponse<ReserveResponse> CreateReserve(ReserveRequest reserveRequest);
-        ApiResponse<Reserve> UpdateReserve(Reserve reserve);
-        ApiResponse<Reserve> DeleteReserve(long id);
+        ApiResponse<ReserveResponse> UpdateReserve(long id,ReserveRequest reserveRequest);
+        ApiResponse<ReserveResponse> DeleteReserve(long id);
         ApiResponse<ICollection<ReserveListResponse>> GetActiveReserves(int page, int pageSize, string search, string sortColumn, string sortOrder);
+
     }
 
     public class ReserveService : IReserveService
@@ -67,24 +68,33 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ReserveResponse> CreateReserve(ReserveRequest reserveRequest)
         {
             var reserve = _mapper.Map<Reserve>(reserveRequest);
-            var created = _repository.CreateReserve(reserve); // Sử dụng reserve đã map, không tạo mới empty Reserve()
+
+            var created = _repository.CreateReserve(reserve);
             return ApiResponse<ReserveResponse>.Success(_mapper.Map<ReserveResponse>(created));
         }
 
-        public ApiResponse<Reserve> UpdateReserve(Reserve reserve)
+
+        public ApiResponse<ReserveResponse> UpdateReserve(long id, ReserveRequest reserveRequest)
         {
-            var updated = _repository.UpdateReserve(reserve);
-            return updated != null ?
-                ApiResponse<Reserve>.Success(updated) :
-                ApiResponse<Reserve>.NotFound("Không tìm thấy đặt chỗ để cập nhật");
+            var existingReserve = _repository.GetReserveById(id);
+            if (existingReserve == null)
+            {
+                return ApiResponse<ReserveResponse>.NotFound($"Không tìm thấy đặt chỗ có ID {id}");
+            }
+
+            _mapper.Map(reserveRequest, existingReserve);
+            _repository.UpdateReserve(existingReserve);
+
+            var response = _mapper.Map<ReserveResponse>(existingReserve);
+            return ApiResponse<ReserveResponse>.Success(response);
         }
 
-        public ApiResponse<Reserve> DeleteReserve(long id)
+        public ApiResponse<ReserveResponse> DeleteReserve(long id)
         {
             var success = _repository.DeleteReserve(id);
             return success ?
-                ApiResponse<Reserve>.Success() :
-                ApiResponse<Reserve>.NotFound("Không tìm thấy đặt chỗ để xóa");
+                ApiResponse<ReserveResponse>.Success() :
+                ApiResponse<ReserveResponse>.NotFound("Không tìm thấy đặt chỗ để xóa");
         }       
     }
 }
