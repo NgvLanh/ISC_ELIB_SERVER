@@ -5,13 +5,14 @@ namespace ISC_ELIB_SERVER.Services
 {
     public interface IClassesService
     {
-        ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? sortColumn, string? sortOrder);
+        ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
         ApiResponse<ClassesResponse> GetClassById(int id);
-        ApiResponse<ClassesResponse> GetClassByName(string name);
-        ApiResponse<bool> DeleteClass(int id);
+        ApiResponse<bool> DeleteClass(List<int> ids);
 
         Task<ApiResponse<bool>> UpdateClassSubjectsAsync(int classId, List<int> subjectIds);
         Task<ApiResponse<ClassesResponse>> CreateClassAsync(ClassesRequest classesRequest);
         Task<ApiResponse<ClassesResponse>> UpdateClassAsync(int id, ClassesRequest classesRequest);
+
+        Task<ApiResponse<bool>> ImportClassesAsync(IFormFile file);
     }
 }
