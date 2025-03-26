@@ -90,7 +90,7 @@ namespace ISC_ELIB_SERVER.Services
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(st => st.Name.Contains(search));
+                query = query.Where(st => st.Name.ToLower().Contains(search.ToLower()));
             }
 
             query = sortColumn switch
