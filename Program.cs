@@ -352,6 +352,9 @@ builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 
+//Achivemenet
+builder.Services.AddScoped<AchivementRepo>();
+builder.Services.AddScoped<IAchivementService, AchivementService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
