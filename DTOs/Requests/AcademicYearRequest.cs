@@ -16,4 +16,15 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Range(1, int.MaxValue, ErrorMessage = "ID trường học không hợp lệ")]
         public int? SchoolId { get; set; }
     }
+
+    public class AcademicYearSemesterRequest
+    {
+
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+    }
+
 }

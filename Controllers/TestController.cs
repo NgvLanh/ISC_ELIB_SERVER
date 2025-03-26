@@ -3,10 +3,12 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/test")]
     public class TestController : ControllerBase
@@ -23,6 +25,17 @@ namespace ISC_ELIB_SERVER.Controllers
             [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null)
         {
             var response = _service.GetTestes(page, pageSize, search, sortColumn, sortOrder);
+            return Ok(response);
+        }
+
+        [HttpGet("get-by-students")]
+        public IActionResult GetTestesByStudent([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
+            [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null,
+            [FromQuery] int status = 0, [FromQuery] long? subjectId = null, [FromQuery] long? gradeLevelsId = null,
+            [FromQuery] string? date = null)
+        {
+            var userId = User.FindFirst("Id")?.Value;
+            var response = _service.GetTestesByStudent(page, pageSize, search, sortColumn, sortOrder, status, subjectId, gradeLevelsId, date, userId);
             return Ok(response);
         }
 

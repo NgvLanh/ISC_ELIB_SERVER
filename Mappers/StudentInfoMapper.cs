@@ -17,7 +17,7 @@ namespace ISC_ELIB_SERVER.Mappers
 
             // Mapping từ StudentInfo -> StudentInfoUserResponse (lấy thêm thông tin từ User, Class, UserStatus)
             CreateMap<StudentInfo, StudentInfoUserResponse>()
-                 .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.User != null ? src.User.Code : null))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.User != null ? src.User.Code : null))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : null))
                 .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.User != null ? src.User.Dob : null))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User != null ? (src.User.Gender == true ? "Nam" : "Nữ") : null))
