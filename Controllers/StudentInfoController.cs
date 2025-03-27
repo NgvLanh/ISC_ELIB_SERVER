@@ -74,15 +74,7 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(_studentInfoService.DeleteStudentInfo(id));
         }
 
-        //Lấy danh sách học sinh theo lớp
-        //[HttpGet("class/{classId}")]
-        //public IActionResult GetStudentsByClass(int classId, int page = 1, int pageSize = 10)
-        //{
-        //    var result = _studentInfoService.GetStudentInfosByClassId(classId, page, pageSize);
-        //    return Ok(result);
-        //}
-
-        // Lấy danh sách sinh viên theo UserId
+        // Lấy danh sách sinh viên theo thông tin bảng UserId
         [HttpGet("user/{userId}")]
         public IActionResult GetStudentsByUserId(int userId)
         {

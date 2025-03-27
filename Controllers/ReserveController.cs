@@ -1,4 +1,5 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using Autofac;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
@@ -47,15 +48,16 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult CreateReserve([FromBody] ReserveRequest reserveRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            reserveRequest.ReserveDate = DateTimeUtils.ConvertToUnspecified(reserveRequest.ReserveDate) ?? throw new InvalidOperationException("ReserveDate không được để trống");
             var response = _service.CreateReserve(reserveRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateReserve(long id, [FromBody] Reserve reserve)
+        public IActionResult UpdateReserve(long id, [FromBody] ReserveRequest reserveRequest)
         {
-
-            var response = _service.UpdateReserve(reserve);
+            reserveRequest.ReserveDate = DateTimeUtils.ConvertToUnspecified(reserveRequest.ReserveDate) ?? throw new InvalidOperationException("ReserveDate không được để trống");
+            var response = _service.UpdateReserve(id, reserveRequest);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
