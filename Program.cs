@@ -367,6 +367,8 @@ builder.Services.AddScoped<IReserveService, ReserveService>();
 builder.Services.AddScoped<TransferSchoolRepo>();
 builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
+
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>

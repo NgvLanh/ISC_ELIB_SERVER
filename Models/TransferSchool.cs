@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -13,9 +14,13 @@ namespace ISC_ELIB_SERVER.Models
         public string? Reason { get; set; }
         public string? AttachmentName { get; set; }
         public string? AttachmentPath { get; set; }
+
+        [Column("semester_id")]  // Chỉ định tên cột đúng trong PostgreSQL
+        public int SemesterId { get; set; }
         public int? LeadershipId { get; set; }
         public bool Active { get; set; }
 
-        public virtual User? Student { get; set; }
+        public virtual StudentInfo? Student { get; set; } // Liên kết đến StudentInfo
+        public virtual Semester? Semester  { get; set; } // Liên kết đến Semester
     }
 }
