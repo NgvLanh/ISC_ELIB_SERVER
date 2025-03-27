@@ -1,7 +1,9 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using DotNetEnv;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -10,7 +12,6 @@ namespace ISC_ELIB_SERVER.Controllers
     public class AchivementController : ControllerBase
     {
         private readonly IAchivementService _service;
-
         public AchivementController(IAchivementService service)
         {
             _service = service;
@@ -39,9 +40,10 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAchivement(int id, [FromBody] AchivementRequest AchivementRequest)
-        {
-            var response = _service.UpdateAchivement(id, AchivementRequest);
+        public IActionResult UpdateAchivement(int id, [FromBody] AchivementRequest achivementRequest)
+        {    
+            var response = _service.UpdateAchivement(id, achivementRequest);
+
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
@@ -50,6 +52,61 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = _service.DeleteAchivement(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadFile(int id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Vui lòng chọn file hợp lệ.");
+            }
+
+            var data = _service.GetAchivementById(id);
+            if (data.Code != 0 || data.Data == null)
+            {
+                return NotFound("Không tìm thấy thành tích.");
+            }
+
+            try
+            {
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                string fileName = Path.GetFileName(file.FileName);
+
+                string filePath = Path.Combine(uploadFolder, fileName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await file.CopyToAsync(stream);
+                }
+                else
+                {
+                    using var stream = new FileStream(filePath, FileMode.CreateNew);
+                    await file.CopyToAsync(stream);
+                }
+
+                var request = new AchivementRequest
+                {
+                    TypeId = data.Data.TypeId,
+                    UserId = data.Data.Users?.Id ?? null,
+                    File = fileName,
+                    Content = data.Data.Content ?? "Nội dung trống",
+                    DateAwarded = data.Data.DateAwarded ?? DateTime.Now
+                };
+
+                var response = _service.UpdateAchivement(id, request);
+                return response.Code == 0 ? Ok(response) : BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Lỗi khi lưu file: " + ex.Message);
+            }
         }
     }
 }

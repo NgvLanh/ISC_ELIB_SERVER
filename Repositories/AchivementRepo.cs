@@ -1,6 +1,7 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -11,30 +12,43 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             _context = context;
         }
-        public ICollection<Achievement> GetAchievements()
+        public IQueryable<Achievement> GetAchievements()
         {
-            return _context.Achievements.ToList();
+            return _context.Achievements
+                .Include(a => a.User);
         }
 
         public Achievement? GetAchivementById(int id)
         {
 
-            return _context.Achievements.FirstOrDefault(s => s.Id == id);
+            return _context.Achievements
+                .Include(a => a.User)
+                .FirstOrDefault(s => s.Id == id);
         }
 
         public Achievement CreateAchivement(Achievement achivement)
         {
             _context.Achievements.Add(achivement);
             _context.SaveChanges();
-            return achivement;
+
+            var result = _context.Achievements
+                                 .Include(a => a.User)
+                                 .FirstOrDefault(a => a.Id == achivement.Id);
+
+            return result ?? throw new Exception("Không thể lấy dữ liệu thành tích vừa tạo.");
         }
+
 
         public Achievement? UpdateAchivement(Achievement updatedAchivement)
         {
             _context.Achievements.Update(updatedAchivement);
             _context.SaveChanges();
 
-            return updatedAchivement;
+            var result = _context.Achievements
+                                 .Include(a => a.User)
+                                 .FirstOrDefault(a => a.Id == updatedAchivement.Id);
+
+            return result;
         }
 
 
