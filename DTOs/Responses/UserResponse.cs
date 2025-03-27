@@ -13,11 +13,11 @@
         public string? Nation { get; set; }
         public string? Religion { get; set; }
         public DateTime? EnrollmentDate { get; set; }
-        public int RoleId { get; set; }
-        public int AcademicYearId { get; set; }
-        public int UserStatusId { get; set; }
-        public int ClassId { get; set; }
-        public int EntryType { get; set; }
+        public int? RoleId { get; set; }
+        public int? AcademicYearId { get; set; }
+        public int? UserStatusId { get; set; }
+        public int? ClassId { get; set; }
+        public int? EntryType { get; set; }
         public string? AddressFull { get; set; }
         public int? ProvinceCode { get; set; }
         public int? DistrictCode { get; set; }

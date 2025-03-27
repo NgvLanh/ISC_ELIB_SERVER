@@ -142,11 +142,6 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Achievements)
-                    .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("fk_achievement_type_id");
-
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Achievements)
                     .HasForeignKey(d => d.UserId)
@@ -2013,10 +2008,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.ToTable("types");
 
                 entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
