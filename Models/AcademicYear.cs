@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -19,7 +20,6 @@ namespace ISC_ELIB_SERVER.Models
         public DateTime? EndTime { get; set; }
         public int? SchoolId { get; set; }
         public bool Active { get; set; }
-
         public virtual School? School { get; set; }
         public virtual ICollection<Class> Classes { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
