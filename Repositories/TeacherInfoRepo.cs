@@ -16,11 +16,10 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Create: Thêm mới TeacherInfo vào database
-        public TeacherInfo CreateTeacherInfo(TeacherInfo teacherInfo)
+        public void AddTeacherInfo(TeacherInfo teacherInfo)
         {
             _context.TeacherInfos.Add(teacherInfo);
             _context.SaveChanges();
-            return teacherInfo;
         }
 
         // Read: Lấy tất cả TeacherInfos từ database
@@ -30,7 +29,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Read: Lấy TeacherInfo theo Id
-        public TeacherInfo GetTeacherInfoById(int id)
+        public TeacherInfo GetTeacherInfoById(long id)
         {
             return _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
         }
@@ -43,7 +42,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Delete: Xóa TeacherInfo theo Id
-        public void DeleteTeacherInfo(int id)
+        public void DeleteTeacherInfo(long id)
         {
             var teacherInfo = _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
             if (teacherInfo != null)

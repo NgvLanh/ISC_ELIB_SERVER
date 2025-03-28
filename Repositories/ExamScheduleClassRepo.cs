@@ -1,6 +1,6 @@
-﻿using System;
-using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using ISC_ELIB_SERVER.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -13,67 +13,61 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public PagedResult<ExamScheduleClass> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder)
+        public ICollection<ExamScheduleClass> GetExamScheduleClasses()
         {
-            var query = _context.ExamScheduleClasses
-                .Include(esc => esc.Class)
-                .Include(esc => esc.SupervisoryTeacher)
-                    .ThenInclude(t => t.User)
-                .Include(esc => esc.ExampleScheduleNavigation)
-                    .ThenInclude(es => es.Semester)
-                .Include(esc => esc.ExampleScheduleNavigation)
-                    .ThenInclude(es => es.GradeLevels)
-                .Include(esc => esc.ExampleScheduleNavigation)
-                    .ThenInclude(es => es.Exam) // Include Exam để lấy ExamGraders
-                        .ThenInclude(e => e.ExamGraders)
-                            .ThenInclude(eg => eg.User)
-                .AsNoTracking();
+            return _context.ExamScheduleClasses.ToList();
+        }
 
-            if (!string.IsNullOrEmpty(searchTerm))
+        public ExamScheduleClass GetExamScheduleClassById(int id)
+        {
+            return _context.ExamScheduleClasses.FirstOrDefault(esc => esc.Id == id);
+        }
+
+        public ICollection<ExamScheduleClass> GetExamScheduleClassesByFilter(int? classId, int? exampleSchedule, int? supervisoryTeacherId)
+        {
+            var query = _context.ExamScheduleClasses.AsQueryable();
+
+            if (classId.HasValue)
+                query = query.Where(esc => esc.ClassId == classId);
+
+            if (exampleSchedule.HasValue)
+                query = query.Where(esc => esc.ExampleSchedule == exampleSchedule);
+
+            if (supervisoryTeacherId.HasValue)
+                query = query.Where(esc => esc.SupervisoryTeacherId == supervisoryTeacherId);
+
+            return query.ToList();
+        }
+
+        public ExamScheduleClass CreateExamScheduleClass(ExamScheduleClass examScheduleClass)
+        {
+            _context.ExamScheduleClasses.Add(examScheduleClass);
+            _context.SaveChanges();
+            return examScheduleClass;
+        }
+
+        public ExamScheduleClass UpdateExamScheduleClass(ExamScheduleClass examScheduleClass)
+        {
+            _context.ExamScheduleClasses.Update(examScheduleClass);
+            _context.SaveChanges();
+            return examScheduleClass;
+        }
+
+        public bool DeleteExamScheduleClass(int id)
+        {
+            var examScheduleClass = GetExamScheduleClassById(id);
+            if (examScheduleClass != null)
             {
-                query = query.Where(x => x.Class.Name.Contains(searchTerm));
+                // Xoá mềm: thay đổi Active
+                examScheduleClass.Active = !examScheduleClass.Active;
+                return _context.SaveChanges() > 0;
             }
-
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                bool isDescending = sortOrder?.ToLower() == "desc";
-                query = sortBy.ToLower() switch
-                {
-                    "id" => isDescending ? query.OrderByDescending(x => x.Id) : query.OrderBy(x => x.Id),
-                    _ => query.OrderBy(x => x.Id)
-                };
-            }
-
-            int totalItems = query.Count();
-            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return new PagedResult<ExamScheduleClass>(items, totalItems, page, pageSize);
-        }
-        public ExamScheduleClass? GetById(long id)
-        {
-            return _context.ExamScheduleClasses.Find(id);
+            return false;
         }
 
-        public void Create(ExamScheduleClass entity)
+        public void Detach<T>(T entity) where T : class
         {
-            _context.ExamScheduleClasses.Add(entity);
-            _context.SaveChanges();
-        }
-
-        public void Update(ExamScheduleClass entity)
-        {
-            _context.ExamScheduleClasses.Update(entity);
-            _context.SaveChanges();
-        }
-
-        public bool Delete(long id)
-        {
-            var entity = _context.ExamScheduleClasses.Find(id);
-            if (entity == null) return false;
-
-            _context.ExamScheduleClasses.Remove(entity);
-            _context.SaveChanges();
-            return true;
+            _context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
         }
     }
 }

@@ -8,12 +8,7 @@ namespace ISC_ELIB_SERVER.Mappers
     public class SubjectMapper: Profile
     {
         public SubjectMapper() {
-            CreateMap<Subject, SubjectResponse>()
-                .AfterMap((src, dest, context) =>
-                {
-                    dest.SubjectGroup = context.Mapper.Map<SubjectGroupResponse>(src.SubjectGroup);
-                    dest.SubjectType = context.Mapper.Map<SubjectTypeResponse>(src.SubjectType);
-                });
+            CreateMap<Subject, SubjectResponse>();
             CreateMap<SubjectRequest, Subject>();
         }
     }

@@ -16,22 +16,16 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSchools(
-            [FromQuery] int? page = null,
-                [FromQuery] int? pageSize = null,
-                [FromQuery] string? sortColumn = null,
-                [FromQuery] string? sortOrder = null,
-                [FromQuery] string? search = ""
-        )
+        public IActionResult GetSchools([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? search = "", [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = await _service.GetSchools(page, pageSize, search, sortColumn, sortOrder);
+            var response = _service.GetSchools(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSchoolById(long id)
+        public IActionResult GetSchoolById(long id)
         {
-            var response = await _service.GetSchoolById(id);
+            var response = _service.GetSchoolById(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 

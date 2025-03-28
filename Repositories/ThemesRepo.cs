@@ -5,7 +5,6 @@ namespace ISC_ELIB_SERVER.Repositories
     public class ThemesRepo
     {
         private readonly isc_dbContext _context;
-
         public ThemesRepo(isc_dbContext context)
         {
             _context = context;
@@ -34,6 +33,17 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.SaveChanges();
             return theme;
         }
+
+        //public bool DeleteThemes(long id)
+        //{
+        //    var themes = GetThemesById(id);
+        //    if (themes != null)
+        //    {
+        //        _context.Themes.Remove(themes);
+        //        return _context.SaveChanges() > 0;
+        //    }
+        //    return false;
+        //}
 
         public bool DeleteThemes(Theme theme)
         {

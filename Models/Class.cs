@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -14,7 +13,6 @@ namespace ISC_ELIB_SERVER.Models
             Exemptions = new HashSet<Exemption>();
             TeachingAssignments = new HashSet<TeachingAssignment>();
             Users = new HashSet<User>();
-            ClassSubjects = new HashSet<ClassSubject>();
         }
 
         public int Id { get; set; }
@@ -39,7 +37,5 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Exemption> Exemptions { get; set; }
         public virtual ICollection<TeachingAssignment> TeachingAssignments { get; set; }
         public virtual ICollection<User> Users { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<ClassSubject> ClassSubjects { get; set; }
     }
 }

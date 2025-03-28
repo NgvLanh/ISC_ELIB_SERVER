@@ -16,9 +16,10 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetClassType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetClassType([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetClassTypes(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetClassTypes(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
@@ -30,7 +31,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateClassType(int id, [FromBody] ClassTypeRequest classTypeRequest)
+        public IActionResult UpdateClassType(long id, [FromBody] ClassTypeRequest classTypeRequest)
         {
 
             var response = _service.UpdateClassType(id, classTypeRequest);
@@ -39,7 +40,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteClassType(int id)
+        public IActionResult DeleteClassType(long id)
         {
             var response = _service.DeleteClassType(id);
 
@@ -47,7 +48,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetClassTypeById(int id)
+        public IActionResult GetClassTypeById(long id)
         {
             var response = _service.GetClassTypeById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);

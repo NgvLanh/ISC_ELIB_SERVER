@@ -1,5 +1,4 @@
-﻿using ISC_ELIB_SERVER.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -17,7 +16,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         public string? Attachment { get; set; }
 
-        public RetirementStatus Status { get; set; } = RetirementStatus.Working;
+        public bool? Status { get; set; }
 
         [Required(ErrorMessage = "LeadershipId là bắt buộc.")]
         public int LeadershipId { get; set; }

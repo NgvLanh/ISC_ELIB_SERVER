@@ -5,7 +5,6 @@ using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Mappers
 {
-
     public class UserStatusMapper : Profile
     {
         public UserStatusMapper()

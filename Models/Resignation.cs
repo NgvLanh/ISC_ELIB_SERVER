@@ -15,6 +15,5 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
 
         public virtual TeacherInfo? Teacher { get; set; }
-        public User Leadership { get; set; }
     }
 }

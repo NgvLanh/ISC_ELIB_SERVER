@@ -1,6 +1,11 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services.Interfaces;
+using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
+using static ISC_ELIB_SERVER.Services.ScoreTypeService;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -16,15 +21,16 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetScoreType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetScoreType([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetScoreTypes(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetScoreTypes(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetScoreTypeById(int id)
+        public IActionResult GetScoreTypeById(long id)
         {
             var response = _service.GetScoreTypeById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
@@ -38,7 +44,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateScoreType(int id, [FromBody] ScoreTypeRequest scoreTypeRequest)
+        public IActionResult UpdateScoreType(long id, [FromBody] ScoreTypeRequest scoreTypeRequest)
         {
 
             var response = _service.UpdateScoreType(id, scoreTypeRequest);
@@ -47,7 +53,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteScoreType(int id)
+        public IActionResult DeleteScoreType(long id)
         {
             var response = _service.DeleteScoreType(id);
 

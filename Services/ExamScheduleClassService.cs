@@ -1,21 +1,17 @@
-﻿using AutoMapper;
-using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Services.Interfaces;
+using AutoMapper;
+using System.Collections.Generic;
+using System.Linq;
+using ISC_ELIB_SERVER.Requests;
+using ISC_ELIB_SERVER.Responses;
 
 namespace ISC_ELIB_SERVER.Services
 {
-    public interface IExamScheduleClassService
-    {
-        ApiResponse<PagedResult<ExamScheduleClassResponse>> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder);
-        ApiResponse<ExamScheduleClassResponse> GetById(long id);
-        ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request);
-        ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request);
-        ApiResponse<object> Delete(long id);
-
-    }
-    public class ExamScheduleClassService: IExamScheduleClassService
+    public class ExamScheduleClassService : IExamScheduleClassService
     {
         private readonly ExamScheduleClassRepo _repository;
         private readonly IMapper _mapper;
@@ -26,52 +22,129 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<PagedResult<ExamScheduleClassResponse>> GetAll(int page, int pageSize, string? searchTerm, string? sortBy, string? sortOrder)
+        public ApiResponse<ICollection<ExamScheduleClassResponse>> GetExamScheduleClasses(
+            int page,
+            int pageSize,
+            int? classId,
+            int? exampleSchedule,
+            int? supervisoryTeacherId,
+            string sortColumn,
+            string sortOrder)
         {
-            var entities = _repository.GetAll(page, pageSize, searchTerm, sortBy, sortOrder);
-            var responses = _mapper.Map<ICollection<ExamScheduleClassResponse>>(entities.Items);
-            var result = new PagedResult<ExamScheduleClassResponse>(responses, entities.TotalItems, page, pageSize);
+            // Lấy toàn bộ dữ liệu
+            var examScheduleClasses = _repository.GetExamScheduleClasses();
 
-            return ApiResponse<PagedResult<ExamScheduleClassResponse>>.Success(result);
+            // Áp dụng lọc nếu có điều kiện
+            if (classId.HasValue || exampleSchedule.HasValue || supervisoryTeacherId.HasValue)
+            {
+                examScheduleClasses = _repository.GetExamScheduleClassesByFilter(classId, exampleSchedule, supervisoryTeacherId);
+            }
+
+            // Sắp xếp
+            examScheduleClasses = sortColumn?.ToLower() switch
+            {
+                "id" => sortOrder.ToLower() == "desc"
+                            ? examScheduleClasses.OrderByDescending(esc => esc.Id).ToList()
+                            : examScheduleClasses.OrderBy(esc => esc.Id).ToList(),
+                "classid" => sortOrder.ToLower() == "desc"
+                            ? examScheduleClasses.OrderByDescending(esc => esc.ClassId).ToList()
+                            : examScheduleClasses.OrderBy(esc => esc.ClassId).ToList(),
+                "exampleschedule" => sortOrder.ToLower() == "desc"
+                            ? examScheduleClasses.OrderByDescending(esc => esc.ExampleSchedule).ToList()
+                            : examScheduleClasses.OrderBy(esc => esc.ExampleSchedule).ToList(),
+                "supervisoryteacherid" => sortOrder.ToLower() == "desc"
+                            ? examScheduleClasses.OrderByDescending(esc => esc.SupervisoryTeacherId).ToList()
+                            : examScheduleClasses.OrderBy(esc => esc.SupervisoryTeacherId).ToList(),
+                _ => examScheduleClasses.OrderBy(esc => esc.Id).ToList()
+            };
+
+            // Phân trang
+            var paginatedResult = examScheduleClasses
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var mappedResult = _mapper.Map<ICollection<ExamScheduleClassResponse>>(paginatedResult);
+            return ApiResponse<ICollection<ExamScheduleClassResponse>>.Success(mappedResult);
         }
 
-
-        public ApiResponse<ExamScheduleClassResponse> GetById(long id)
+        public ApiResponse<ExamScheduleClassResponse> GetExamScheduleClassById(int id)
         {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamScheduleClassResponse>.NotFound("ExamScheduleClass không tồn tại");
-
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
+            var examScheduleClass = _repository.GetExamScheduleClassById(id);
+            if (examScheduleClass == null)
+                return ApiResponse<ExamScheduleClassResponse>.NotFound();
+            var response = _mapper.Map<ExamScheduleClassResponse>(examScheduleClass);
             return ApiResponse<ExamScheduleClassResponse>.Success(response);
         }
 
-        public ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request)
+        public ApiResponse<ICollection<ExamScheduleClassResponse>> GetExamScheduleClassByFilter(
+            int? classId,
+            int? exampleSchedule,
+            int? supervisoryTeacherId)
         {
-            var entity = _mapper.Map<ExamScheduleClass>(request);
-            _repository.Create(entity);
-
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
-            return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            var examScheduleClasses = _repository.GetExamScheduleClassesByFilter(classId, exampleSchedule, supervisoryTeacherId);
+            if (examScheduleClasses == null || !examScheduleClasses.Any())
+                return ApiResponse<ICollection<ExamScheduleClassResponse>>.NotFound();
+            var response = _mapper.Map<ICollection<ExamScheduleClassResponse>>(examScheduleClasses);
+            return ApiResponse<ICollection<ExamScheduleClassResponse>>.Success(response);
         }
 
-        public ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request)
+        public ApiResponse<ExamScheduleClassResponse> CreateExamScheduleClass(ExamScheduleClassRequest request)
         {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamScheduleClassResponse>.NotFound("ExamScheduleClass không tồn tại");
-
-            _mapper.Map(request, entity);
-            _repository.Update(entity);
-
-            var response = _mapper.Map<ExamScheduleClassResponse>(entity);
-            return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            var examScheduleClass = _mapper.Map<ExamScheduleClass>(request);
+            var created = _repository.CreateExamScheduleClass(examScheduleClass);
+            if (created != null)
+            {
+                var response = _mapper.Map<ExamScheduleClassResponse>(created);
+                return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            }
+            return ApiResponse<ExamScheduleClassResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new [] { "Failed to create exam schedule class" } }
+            });
         }
 
-        public ApiResponse<object> Delete(long id)
+        public ApiResponse<ExamScheduleClassResponse> UpdateExamScheduleClass(int id, ExamScheduleClassRequest request)
         {
-            var result = _repository.Delete(id);
-            return result
-                ? ApiResponse<object>.Success("Xóa thành công")
-                : ApiResponse<object>.NotFound("ExamScheduleClass không tồn tại");
+            var existing = _repository.GetExamScheduleClassById(id);
+            if (existing == null)
+            {
+                return ApiResponse<ExamScheduleClassResponse>.Error(new Dictionary<string, string[]>
+                {
+                    { "Error", new [] { "Exam schedule class not found" } }
+                });
+            }
+
+            _mapper.Map(request, existing);
+            var updated = _repository.UpdateExamScheduleClass(existing);
+            if (updated != null)
+            {
+                var response = _mapper.Map<ExamScheduleClassResponse>(updated);
+                return ApiResponse<ExamScheduleClassResponse>.Success(response);
+            }
+            return ApiResponse<ExamScheduleClassResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new [] { "Failed to update exam schedule class" } }
+            });
+        }
+
+        public ApiResponse<ExamScheduleClassResponse> DeleteExamScheduleClass(int id)
+        {
+            var existing = _repository.GetExamScheduleClassById(id);
+            if (existing == null)
+            {
+                return ApiResponse<ExamScheduleClassResponse>.NotFound("Exam schedule class not found.");
+            }
+
+            var success = _repository.DeleteExamScheduleClass(id);
+            if (success)
+            {
+                return ApiResponse<ExamScheduleClassResponse>.Success();
+            }
+            return ApiResponse<ExamScheduleClassResponse>.Error(new Dictionary<string, string[]>
+            {
+                { "Error", new [] { "No changes were made." } }
+            });
         }
     }
 }

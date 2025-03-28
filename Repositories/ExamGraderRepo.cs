@@ -1,5 +1,6 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -12,62 +13,56 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public PagedResult<ExamGrader> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
+        // Lấy toàn bộ ExamGraders
+        public ICollection<ExamGrader> GetExamGraders()
         {
-            var query = _context.ExamGraders.AsQueryable();
-
-            // 🔍 Tìm kiếm theo `UserId` hoặc `ExamId`
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(e =>
-                    e.UserId.ToString().Contains(search) ||
-                    e.ExamId.ToString().Contains(search));
-            }
-
-            // 🔄 Sắp xếp động
-            if (!string.IsNullOrEmpty(sortBy))
-            {
-                query = isDescending
-                    ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
-                    : query.OrderBy(e => EF.Property<object>(e, sortBy));
-            }
-
-            // 📌 Tổng số bản ghi
-            var totalCount = query.Count();
-
-            // ⏳ Phân trang
-            var items = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return new PagedResult<ExamGrader>(items, totalCount, page, pageSize);
-        }
-        public ExamGrader? GetById(long id)
-        {
-            return _context.ExamGraders.FirstOrDefault(e => e.Id == id);
+            return _context.ExamGraders.ToList();
         }
 
-        public ExamGrader Create(ExamGrader examGrader)
+        // Lấy ExamGrader theo Id
+        public ExamGrader GetExamGraderById(int id)
+        {
+            return _context.ExamGraders.FirstOrDefault(eg => eg.Id == id);
+        }
+
+        // Lấy danh sách ExamGraders theo ExamId (có thể mở rộng thêm các điều kiện khác nếu cần)
+        public ICollection<ExamGrader> GetExamGradersByExamId(int examId)
+        {
+            return _context.ExamGraders.Where(eg => eg.ExamId == examId).ToList();
+        }
+
+        // Thêm mới ExamGrader
+        public ExamGrader CreateExamGrader(ExamGrader examGrader)
         {
             _context.ExamGraders.Add(examGrader);
             _context.SaveChanges();
             return examGrader;
         }
 
-        public ExamGrader? Update(ExamGrader examGrader)
+        // Cập nhật ExamGrader
+        public ExamGrader UpdateExamGrader(ExamGrader examGrader)
         {
             _context.ExamGraders.Update(examGrader);
             _context.SaveChanges();
             return examGrader;
         }
 
-        public bool Delete(long id)
+        // Xoá mềm: thay đổi Active và lưu thay đổi
+        public bool DeleteExamGrader(int id)
         {
-            var entity = GetById(id);
-            if (entity != null)
+            var examGrader = GetExamGraderById(id);
+            if (examGrader != null)
             {
-                _context.ExamGraders.Remove(entity);
+                examGrader.Active = !examGrader.Active;
                 return _context.SaveChanges() > 0;
             }
             return false;
+        }
+
+        // Phương thức hỗ trợ tách entity khỏi context nếu cần
+        public void Detach<T>(T entity) where T : class
+        {
+            _context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
         }
     }
 }

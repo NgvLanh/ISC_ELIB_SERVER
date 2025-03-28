@@ -36,15 +36,6 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteTrainingProgram(TrainingProgram trainingProgram)
         {
-            if (trainingProgram.StartDate.Kind != DateTimeKind.Utc)
-            {
-                trainingProgram.StartDate = trainingProgram.StartDate.ToUniversalTime();
-            }
-            if (trainingProgram.EndDate.Kind != DateTimeKind.Utc)
-            {
-                trainingProgram.EndDate = trainingProgram.EndDate.ToUniversalTime();
-            }
-
             _context.TrainingPrograms.Update(trainingProgram);
             _context.SaveChanges();
             return true;

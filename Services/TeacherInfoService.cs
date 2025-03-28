@@ -3,13 +3,22 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface ITeacherInfoService
+    {
+        ApiResponse<ICollection<TeacherInfoResponses>> GetTeacherInfos(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<TeacherInfoResponses> GetTeacherInfoById(long id);
+        ApiResponse<TeacherInfoResponses> GetTeacherInfoByCode(string code);
+        ApiResponse<TeacherInfoResponses> CreateTeacherInfo(TeacherInfoRequest teacherInfoRequest);
+        ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(TeacherInfoRequest teacherInfoRequest);
+        ApiResponse<TeacherInfoResponses> DeleteTeacherInfo(long id);
+    }
+
     public class TeacherInfoService : ITeacherInfoService
     {
         private readonly TeacherInfoRepo _repository;
@@ -50,7 +59,7 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<TeacherInfoResponses>>.NotFound("Không có dữ liệu TeacherInfo");
         }
 
-        public ApiResponse<TeacherInfoResponses> GetTeacherInfoById(int id)
+        public ApiResponse<TeacherInfoResponses> GetTeacherInfoById(long id)
         {
             var teacherInfo = _repository.GetTeacherInfoById(id);
             return teacherInfo != null
@@ -79,26 +88,15 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var teacherInfo = _mapper.Map<TeacherInfo>(teacherInfoRequest);
+            _repository.AddTeacherInfo(teacherInfo);
+            var createdTeacherInfo = _mapper.Map<TeacherInfoResponses>(teacherInfo);
 
-            var created = _repository.CreateTeacherInfo(teacherInfo);
-
-            try
-            {
-
-                var createdTeacherInfo = _mapper.Map<TeacherInfoResponses>(created);
-
-                return ApiResponse<TeacherInfoResponses>.Success(createdTeacherInfo);
-            }
-            catch
-            {
-                return ApiResponse<TeacherInfoResponses>.BadRequest("Lỗi, xem lại khóa ngoại");
-            }
-
+            return ApiResponse<TeacherInfoResponses>.Success(createdTeacherInfo, "Tạo TeacherInfo thành công");
         }
 
-        public ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(int id, TeacherInfoRequest teacherInfoRequest)
+        public ApiResponse<TeacherInfoResponses> UpdateTeacherInfo(TeacherInfoRequest teacherInfoRequest)
         {
-            var teacherInfo = _repository.GetTeacherInfoById(id);
+            var teacherInfo = _repository.GetTeacherInfoById(teacherInfoRequest.Id);
             if (teacherInfo == null)
             {
                 return ApiResponse<TeacherInfoResponses>.NotFound("Không tìm thấy TeacherInfo để cập nhật");
@@ -108,10 +106,10 @@ namespace ISC_ELIB_SERVER.Services
             _repository.UpdateTeacherInfo(teacherInfo);
             var updatedTeacherInfo = _mapper.Map<TeacherInfoResponses>(teacherInfo);
 
-            return ApiResponse<TeacherInfoResponses>.Success(updatedTeacherInfo);
+            return ApiResponse<TeacherInfoResponses>.Success(updatedTeacherInfo, "Cập nhật TeacherInfo thành công");
         }
 
-        public ApiResponse<TeacherInfoResponses> DeleteTeacherInfo(int id)
+        public ApiResponse<TeacherInfoResponses> DeleteTeacherInfo(long id)
         {
             var teacherInfo = _repository.GetTeacherInfoById(id);
             if (teacherInfo == null)
@@ -120,7 +118,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             _repository.DeleteTeacherInfo(id);
-            return ApiResponse<TeacherInfoResponses>.Success();
+            return ApiResponse<TeacherInfoResponses>.Success(null, "Xóa TeacherInfo thành công");
         }
     }
 }

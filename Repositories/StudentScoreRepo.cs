@@ -5,10 +5,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface IStudentScoreRepo
     {
         ICollection<StudentScore> GetStudentScores();
-        StudentScore GetStudentScoreById(int id);
+        StudentScore GetStudentScoreById(long id);
         StudentScore CreateStudentScore(StudentScore studentScore);
         StudentScore UpdateStudentScore(StudentScore studentScore);
-        bool DeleteStudentScore(int id);
+        bool DeleteStudentScore(long id);
     }
 
     public class StudentScoreRepo : IStudentScoreRepo
@@ -25,7 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.StudentScores.ToList();
         }
 
-        public StudentScore GetStudentScoreById(int id)
+        public StudentScore GetStudentScoreById(long id)
         {
             return _context.StudentScores.FirstOrDefault(s => s.Id == id);
         }
@@ -55,7 +55,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingStudentScore;
         }
 
-        public bool DeleteStudentScore(int id)
+        public bool DeleteStudentScore(long id)
         {
             var studentScore = _context.StudentScores.Find(id);
 

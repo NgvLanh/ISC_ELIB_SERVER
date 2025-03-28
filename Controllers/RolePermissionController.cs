@@ -1,14 +1,14 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+using ISC_ELIB_SERVER.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [Route("api/role-permission")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RolePermissionController : ControllerBase
     {
         private readonly IRolePermissionService _service;

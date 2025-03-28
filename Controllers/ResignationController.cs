@@ -1,6 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +29,6 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetResignationNoPaging();
             return Ok(response);
         }
-
         [HttpPost]
         public IActionResult CreateResignation([FromBody] ResignationRequest ResignationRequest)
         {
@@ -45,14 +43,6 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetResignationById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-
-        [HttpGet("getbyteacherid/{id}")]
-        public IActionResult GetResignationByTeacherId(long id)
-        {
-            var respose = _service.GetResignationByTeacherId(id);
-            return respose.Code ==0 ? Ok(respose) : NotFound(respose);
-        }
-
         [HttpPut("{id}")]
         public IActionResult UpdateResignation(long id, [FromBody] ResignationRequest Resignation_UpdateRequest)
         {

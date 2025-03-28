@@ -10,10 +10,10 @@ namespace ISC_ELIB_SERVER.Repositories
     public interface ISystemSettingsRepo
     {
         ICollection<SystemSetting> GetAll();
-        SystemSetting GetById(int id);
+        SystemSetting GetById(long id);
         SystemSetting Create(SystemSetting systemSetting);
         SystemSetting? Update(SystemSetting systemSetting);
-        bool Delete(int id);
+        bool Delete(long id);
     }
 
     public class SystemSettingsRepo : ISystemSettingsRepo
@@ -33,7 +33,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 .ToList();
         }
 
-        public SystemSetting GetById(int id)
+        public SystemSetting GetById(long id)
         {
             return _context.SystemSettings
                 .Include(s => s.User)
@@ -65,7 +65,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingSetting;
         }
 
-        public bool Delete(int id)
+        public bool Delete(long id)
         {
             var setting = _context.SystemSettings.Find(id);
 

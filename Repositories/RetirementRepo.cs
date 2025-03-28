@@ -12,44 +12,20 @@ namespace ISC_ELIB_SERVER.Repositories
         }
         public ICollection<Retirement> GetRetirement()
         {
-            return _context.Retirements.Where(r => r.Active).ToList();
+            return _context.Retirements.ToList();
         }
 
-        public Retirement? GetRetirementById(long id)
+        public Retirement GetRetirementById(long id)
         {
-            return _context.Retirements.FirstOrDefault(r => r.Id == id && r.Active);
+            return _context.Retirements.FirstOrDefault(s => s.Id == id);
         }
 
-        public ICollection<Retirement> GetRetirementByTeacherId(long id)
+        public Retirement CreateRetirement(Retirement Retirement)
         {
-            return _context.Retirements
-                .Where(s => s.TeacherId == id)
-                .ToList();
-        }
-
-        public Retirement CreateRetirement(Retirement retirement)
-        {
-            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId);
-            if (!teacherExists)
-            {
-                return null;
-            }
-
-            if (retirement.LeadershipId.HasValue)
-            {
-                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId.Value);
-                if (!leadershipExists)
-                {
-                    return null;
-                }
-            }
-
-            _context.Retirements.Add(retirement);
+            _context.Retirements.Add(Retirement);
             _context.SaveChanges();
-
-            return retirement;
+            return Retirement;
         }
-
 
         public Retirement UpdateRetirement(long id, RetirementRequest Retirement)
         {
@@ -78,8 +54,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var Retirement = GetRetirementById(id);
             if (Retirement != null)
             {
-                Retirement.Active = false;
-                _context.Retirements.Update(Retirement);
+                _context.Retirements.Remove(Retirement);
                 return _context.SaveChanges() > 0;
             }
             return false;

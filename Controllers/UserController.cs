@@ -2,7 +2,6 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -22,23 +21,21 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/users
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<ICollection<UserResponse>>>> GetUsers(
+        public ActionResult<ApiResponse<ICollection<UserResponse>>> GetUsers(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = "",
             [FromQuery] string sortColumn = "id",
             [FromQuery] string sortOrder = "asc")
         {
-            var result = await _userService.GetUsers(page, pageSize, search, sortColumn, sortOrder);
-            return Ok(result);
+            return Ok(_userService.GetUsers(page, pageSize, search, sortColumn, sortOrder));
         }
 
         // GET: api/users/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<UserResponse>>> GetUserById(int id)
+        public ActionResult<ApiResponse<UserResponse>> GetUserById(long id)
         {
-            var result = await _userService.GetUserById(id);
-            return Ok(result);
+            return Ok(_userService.GetUserById(id));
         }
 
         // POST: api/users
@@ -46,8 +43,9 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<UserResponse>> CreateUser([FromBody] UserRequest userRequest)
         {
             if (userRequest == null)
-                return BadRequest("Dữ liệu người dùng không hợp lệ.");
+                return BadRequest("Invalid user data.");
 
+            // Convert DateTime fields to Unspecified kind before saving
             userRequest.Dob = DateTimeUtils.ConvertToUnspecified(userRequest.Dob);
             userRequest.EnrollmentDate = DateTimeUtils.ConvertToUnspecified(userRequest.EnrollmentDate);
 
@@ -56,22 +54,21 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserRequest userRequest)
+        public ActionResult<ApiResponse<UserResponse>> UpdateUser(long id, [FromBody] UserRequest userRequest)
         {
-            if (userRequest == null)
-                return BadRequest("Dữ liệu không hợp lệ.");
+            if (userRequest == null || id != userRequest.Id)
+                return BadRequest("User ID mismatch.");
 
-            // Chuyển đổi DateTime thành Unspecified trước khi cập nhật
+            // Convert DateTime fields to Unspecified kind before updating
             userRequest.Dob = DateTimeUtils.ConvertToUnspecified(userRequest.Dob);
             userRequest.EnrollmentDate = DateTimeUtils.ConvertToUnspecified(userRequest.EnrollmentDate);
 
-            // Gửi ID và request đến service
-            return Ok(_userService.UpdateUser(id, userRequest));
+            return Ok(_userService.UpdateUser(userRequest));
         }
 
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<User>> DeleteUser(int id)
+        public ActionResult<ApiResponse<User>> DeleteUser(long id)
         {
             return Ok(_userService.DeleteUser(id));
         }

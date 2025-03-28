@@ -3,10 +3,18 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface ITestQuestionService
+    {
+        ApiResponse<ICollection<TestQuestionResponse>> GetTestQuestiones(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<TestQuestionResponse> GetTestQuestionById(long id);
+        //ApiResponse<TestQuestionResponse> GetTestQuestionByName(string name);
+        ApiResponse<TestQuestionResponse> CreateTestQuestion(TestQuestionRequest TestQuestionRequest);
+        ApiResponse<TestQuestion> UpdateTestQuestion(long id, TestQuestionRequest TestQuestion);
+        ApiResponse<TestQuestion> DeleteTestQuestion(long id);
+    }
 
 
     public class TestQuestionService : ITestQuestionService
@@ -30,18 +38,14 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
 
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<TestQuestionResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<TestQuestionResponse>>.Success(response, page, pageSize, totalItems)
-                : ApiResponse<ICollection<TestQuestionResponse>>.NotFound("Không có dữ liệu");
+                    ? ApiResponse<ICollection<TestQuestionResponse>>.Success(response)
+                    : ApiResponse<ICollection<TestQuestionResponse>>.NotFound("Không có dữ liệu");
         }
-
 
         public ApiResponse<TestQuestionResponse> GetTestQuestionById(long id)
         {
@@ -76,14 +80,14 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<TestQuestionResponse>.Success(_mapper.Map<TestQuestionResponse>(created));
         }
 
-        public ApiResponse<TestQuestionResponse> UpdateTestQuestion(long id, TestQuestionRequest TestQuestionRequest)
+        public ApiResponse<TestQuestion> UpdateTestQuestion(long id, TestQuestionRequest TestQuestionRequest)
         {
 
             // Tìm bản ghi cần cập nhật trong database
             var existingTestQuestion = _repository.GetTestQuestionById(id);
             if (existingTestQuestion == null)
             {
-                return ApiResponse<TestQuestionResponse>.NotFound($"Không tìm thấy thông tin với Id = {id}");
+                return ApiResponse<TestQuestion>.NotFound($"Không tìm thấy thông tin với Id = {id}");
             }
 
             // Ánh xạ dữ liệu từ request sang entity, chỉ cập nhật các trường cần thiết
@@ -91,7 +95,7 @@ namespace ISC_ELIB_SERVER.Services
 
             // Thực hiện cập nhật bản ghi
             var updated = _repository.UpdateTestQuestion(existingTestQuestion);
-            return ApiResponse<TestQuestionResponse>.Success(_mapper.Map<TestQuestionResponse>(updated));
+            return ApiResponse<TestQuestion>.Success(updated);
         }
 
         public ApiResponse<TestQuestion> DeleteTestQuestion(long id)
@@ -101,6 +105,5 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<TestQuestion>.Success()
                 : ApiResponse<TestQuestion>.NotFound("Không tìm thấy");
         }
-        
     }
 }

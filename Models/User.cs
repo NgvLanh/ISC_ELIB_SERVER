@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -18,8 +17,6 @@ namespace ISC_ELIB_SERVER.Models
             NotificationSenders = new HashSet<Notification>();
             NotificationUsers = new HashSet<Notification>();
             Reserves = new HashSet<Reserve>();
-            Resignations = new HashSet<Resignation>();
-            Retirements = new HashSet<Retirement>();
             StudentInfos = new HashSet<StudentInfo>();
             StudentScores = new HashSet<StudentScore>();
             Supports = new HashSet<Support>();
@@ -54,15 +51,12 @@ namespace ISC_ELIB_SERVER.Models
         public int? WardCode { get; set; }
         public string? Street { get; set; }
         public bool Active { get; set; }
-        [Column("avatar_url")]
-        public string? AvatarUrl { get; set; }
 
         public virtual AcademicYear? AcademicYear { get; set; }
         public virtual Class? Class { get; set; }
         public virtual EntryType? EntryTypeNavigation { get; set; }
         public virtual Role? Role { get; set; }
         public virtual UserStatus? UserStatus { get; set; }
-        public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Campus> Campuses { get; set; }
         public virtual ICollection<ChangeClass> ChangeClasses { get; set; }
@@ -73,8 +67,6 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Notification> NotificationSenders { get; set; }
         public virtual ICollection<Notification> NotificationUsers { get; set; }
         public virtual ICollection<Reserve> Reserves { get; set; }
-        public virtual ICollection<Resignation> Resignations { get; set; }
-        public virtual ICollection<Retirement> Retirements { get; set; }
         public virtual ICollection<StudentInfo> StudentInfos { get; set; }
         public virtual ICollection<StudentScore> StudentScores { get; set; }
         public virtual ICollection<Support> Supports { get; set; }

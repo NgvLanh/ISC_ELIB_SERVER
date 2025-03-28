@@ -12,12 +12,8 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<Test> GetTests()
         {
-
-
-                return _context.Tests.ToList();
-           
+            return _context.Tests.ToList();
         }
-
 
         public Test GetTestById(long id)
         {
@@ -44,8 +40,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var test = GetTestById(id);
             if (test != null)
             {
-                test.Active = false;
-                _context.Tests.Update(test);
+                _context.Tests.Remove(test);
                 return _context.SaveChanges() > 0;
             }
             return false;

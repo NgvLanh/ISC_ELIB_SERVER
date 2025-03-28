@@ -3,67 +3,57 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services.Interfaces;
-using Newtonsoft.Json;
-using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface ISubjectService
+    {
+        ApiResponse<ICollection<SubjectResponse>> GetSubject(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<SubjectResponse> GetSubjectById(long id);
+        ApiResponse<SubjectResponse> CreateSubject(SubjectRequest request);
+        ApiResponse<SubjectResponse> UpdateSubject(long id, SubjectRequest request);
+        ApiResponse<string> DeleteSubject(long id);
+    }
     public class SubjectService : ISubjectService
     {
         private readonly SubjectRepo _subjectRepo;
         private readonly SubjectGroupRepo _subjectGroupRepo;
         private readonly SubjectTypeRepo _subjectTypeRepo;
         private readonly IMapper _mapper;
-        private readonly ILogger<SubjectService> _logger;
 
-        public SubjectService(SubjectRepo subjectRepo, IMapper mapper, SubjectGroupRepo subjectGroupRepo, SubjectTypeRepo subjectTypeRepo, ILogger<SubjectService> logger)
+        public SubjectService(SubjectRepo subjectRepo, IMapper mapper, SubjectGroupRepo subjectGroupRepo, SubjectTypeRepo subjectTypeRepo)
         {
             _subjectRepo = subjectRepo;
             _mapper = mapper;
             _subjectGroupRepo = subjectGroupRepo;
             _subjectTypeRepo = subjectTypeRepo;
-            _logger = logger;
         }
 
-        public ApiResponse<ICollection<SubjectResponse>> GetSubject(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<SubjectResponse>> GetSubject(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
             var query = _subjectRepo.GetAllSubject().AsQueryable();
-
-            query = query.Where(qr => qr.Active);
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
             }
 
-            query = sortColumn?.ToLower() switch
+            query = sortColumn switch
             {
-                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                "code" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Code) : query.OrderBy(us => us.Code),
-                "hourssemester1" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester1) : query.OrderBy(us => us.HoursSemester1),
-                "hourssemester2" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
+                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "Code" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Code) : query.OrderBy(us => us.Code),
+                "HoursSemester1" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester1) : query.OrderBy(us => us.HoursSemester1),
+                "HoursSemester2" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
                 _ => query.OrderBy(us => us.Id)
             };
 
-            var total = query.Count();
-
-            if (page.HasValue && pageSize.HasValue)
-            {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-            }
-            var result = query.ToList();
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<SubjectResponse>>(result);
-   
+
             return result.Any()
-                ? ApiResponse<ICollection<SubjectResponse>>.Success(
-                        data: response,
-                        totalItems: total,
-                        pageSize: pageSize,
-                        page: page
-                    )
+                ? ApiResponse<ICollection<SubjectResponse>>.Success(response)
                 : ApiResponse<ICollection<SubjectResponse>>.NotFound("Không có dữ liệu");
         }
 
@@ -77,7 +67,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<SubjectResponse> CreateSubject(SubjectRequest request)
         {
-            var existing = _subjectRepo.GetAllSubject().ToList().FirstOrDefault(st => st.Name?.ToLower() == request.Name.ToLower());
+            var existing = _subjectRepo.GetAllSubject().FirstOrDefault(st => st.Name?.ToLower() == request.Name.ToLower());
             if (existing != null)
             {
                 return ApiResponse<SubjectResponse>.Conflict("Tên môn học đã tồn tại");

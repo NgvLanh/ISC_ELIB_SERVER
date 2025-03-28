@@ -1,5 +1,4 @@
 ﻿using ISC_ELIB_SERVER.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -10,16 +9,15 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             _context = context;
         }
+
         public ICollection<TestQuestion> GetTestQuestions()
         {
-            return _context.TestQuestions.Include(tq => tq.TestAnswers).ToList();
+            return _context.TestQuestions.ToList();
         }
 
         public TestQuestion GetTestQuestionById(long id)
         {
-            return _context.TestQuestions
-                    .Include(tq => tq.TestAnswers)
-                    .FirstOrDefault(s => s.Id == id);
+            return _context.TestQuestions.FirstOrDefault(s => s.Id == id);
         }
 
         public TestQuestion CreateTestQuestion(TestQuestion TestQuestion)

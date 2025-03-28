@@ -1,4 +1,4 @@
-using DotNetEnv;
+﻿using DotNetEnv;
 using ISC_ELIB_SERVER.Configurations;
 using ISC_ELIB_SERVER.Mappers;
 using ISC_ELIB_SERVER.Models;
@@ -12,117 +12,12 @@ using System.Reflection;
 using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using Autofac.Core;
-using CloudinaryDotNet;
-using Microsoft.OpenApi.Models;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using BTBackendOnline2.Models;
-using OfficeOpenXml;
-
-Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
 var databaseUrl = Env.GetString("DATABASE_URL");
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000") // Cho phép React truy cập API
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                      });
-});
-
-var jwtSettings = new TokenRequiment
-{
-    SecretKey = Env.GetString("JWT_SECRET_KEY"),
-    Issuer = Env.GetString("JWT_ISSUER"),
-    Audience = Env.GetString("JWT_AUDIENCE"),
-    Subject = Env.GetString("JWT_SUBJECT")
-};
-
-var ghnToken = Env.GetString("GHN_TOKEN") ?? throw new Exception("GHN_TOKEN Không tìm thấy");
-builder.Services.AddHttpClient<GhnService>((sp, httpClient) =>
-{
-    httpClient.DefaultRequestHeaders.Add("Token", ghnToken);
-});
-
-var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
-
-ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                        ValidateAudience = true,
-                        ValidateIssuer = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidAudience = jwtSettings.Audience,
-                        ValidIssuer = jwtSettings.Issuer,
-                        ClockSkew = TimeSpan.Zero
-                    };
-
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnAuthenticationFailed = context =>
-                        {
-                            context.Response.Headers.Add("Token-Validation-Error", context.Exception.Message);
-                            return Task.CompletedTask;
-                        },
-                        OnChallenge = context =>
-                        {
-                            if (!context.Response.Headers.ContainsKey("Token-Validation-Error"))
-                            {
-                                context.Response.Headers.Add("Token-Validation-Error", context.ErrorDescription);
-                            }
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "Enter AccessToken",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-builder.Services.AddAuthorization();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -137,6 +32,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -161,41 +57,21 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserStatusRepo>();
 
-
+//Khai bao task cua Nam :>>
 builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
-//Tests
 builder.Services.AddScoped<TestRepo>();
 builder.Services.AddScoped<ITestService, TestService>();
-
-//Tests
-builder.Services.AddScoped<DiscussionImageRepo>();
-builder.Services.AddScoped<IDiscussionImageService, DiscussionImageService>();
-
-//Tests
-builder.Services.AddScoped<DiscussionRepo>();
-builder.Services.AddScoped<IDiscussionsService, DiscussionsService>();
-
-
-//Test-Question
 builder.Services.AddScoped<TestQuestionRepo>();
 builder.Services.AddScoped<ITestQuestionService, TestQuestionService>();
-//Test-submisstion
-builder.Services.AddScoped<TestsSubmissionRepo>();
-builder.Services.AddScoped<ITestsSubmissionService, TestsSubmissionService>();
-
-//Test-Answer
-builder.Services.AddScoped<TestAnswerRepo>();
-builder.Services.AddScoped<TestAnswerService>();
-
 builder.Services.AddScoped<SubjectTypeRepo>();
 builder.Services.AddScoped<ISubjectTypeService, SubjectTypeService>();
 builder.Services.AddScoped<SubjectGroupRepo>();
 builder.Services.AddScoped<ISubjectGroupService, SubjectGroupService>();
 builder.Services.AddScoped<SubjectRepo>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
-builder.Services.AddScoped<ExamGraderRepo>();
-builder.Services.AddScoped<IExamGraderService, ExamGraderService>();
+//builder.Services.AddScoped<ExamGraderRepo>();
+//builder.Services.AddScoped<IExamGraderService, ExamGraderService>();
 builder.Services.AddScoped<ExamScheduleRepo>();
 builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
 builder.Services.AddScoped<ExamScheduleClassRepo>();
@@ -207,16 +83,6 @@ builder.Services.AddScoped<QuestionImagesQaRepo>();
 //builder.Services.AddScoped<IQuestionImagesQaService>();
 builder.Services.AddScoped<AnswerImagesQaRepo>();
 //builder.Services.AddScoped<IAnswerImagesQaService>();
-
-builder.Services.AddScoped<IQuestionImagesQaService, QuestionImagesQaService>();
-builder.Services.AddScoped<AnswerImagesQaRepo>();
-builder.Services.AddScoped<IAnswerImagesQaService, AnswerImagesQaService>();
-builder.Services.AddScoped<IQuestionQaService, QuestionQaService>();
-builder.Services.AddScoped<QuestionViewRepo>();
-// Đăng ký QuestionView Repository và Service
-builder.Services.AddScoped<QuestionViewRepo>();
-builder.Services.AddScoped<IQuestionViewService, QuestionViewService>();
-
 
 
 
@@ -232,26 +98,15 @@ builder.Services.AddScoped<ITestSubmissionAnswerService, TestSubmissionAnswerSer
 builder.Services.AddScoped<ExamRepo>();
 builder.Services.AddScoped<IExamService, ExamService>();
 
-// Add services and repositories ChangeClass
-builder.Services.AddScoped<ChangeClassRepo>();
-builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
-
-// Add services and repositories Chat
-builder.Services.AddScoped<ChatRepo>();
-builder.Services.AddScoped<IChatService, ChatService>();
-
 // Add services and repositories Test Answer
 builder.Services.AddScoped<TestAnswerRepo>();
 
-
 builder.Services.AddScoped<ThemesRepo>();
 builder.Services.AddScoped<IThemesService, ThemesService>();
-builder.Services.AddScoped<NotificationRepo>();
-builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
-builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
+builder.Services.AddScoped<ITrainingProgramsService, TrainingProgramsService>();
 
 //
 builder.Services.AddScoped<AcademicYearRepo>();
@@ -272,11 +127,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TeacherInfoRepo>();
 builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 
-
-//StudentInfo
-builder.Services.AddScoped<StudentInfoRepo>();
-builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
-
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -289,71 +139,38 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<RolePermissionRepo>();
 builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
 
-//Semester
-builder.Services.AddScoped<SemesterRepo>();
-builder.Services.AddScoped<ISemesterService, SemesterService>();
+//Temporary
+builder.Services.AddScoped<TemporaryLeaveRepo>();
+builder.Services.AddScoped<ITemporaryLeaveService, TemporaryLeaveService>();
 
-//GradeLevel
-builder.Services.AddScoped<GradeLevelRepo>();
-builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+//Change_Class
+builder.Services.AddScoped<ChangeClassRepo>();
+builder.Services.AddScoped<IChangeClassService, ChangeClassService>();
 
-//EducationLevel
-builder.Services.AddScoped<EducationLevelRepo>();
-builder.Services.AddScoped<IEducationLevelService, EducationLevelService>();
+//Exemption
+builder.Services.AddScoped<ExemptionRepo>();
+builder.Services.AddScoped<IExemptionService, ExemptionService>();
 
-//WorkProcess
+//Transfer_School
+builder.Services.AddScoped<TransferSchoolRepo>();
+builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
+
+
+// Student_Info
+builder.Services.AddScoped<StudentInfoRepo>();
+builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
+
+//WorkProcessRepo
 builder.Services.AddScoped<WorkProcessRepo>();
 builder.Services.AddScoped<IWorkProcessService, WorkProcessService>();
+
+//RetirementReppo
+builder.Services.AddScoped<RetirementRepo>();
+builder.Services.AddScoped<IRetirementService, RetirementService>();
 
 //Resignation
 builder.Services.AddScoped<ResignationRepo>();
 builder.Services.AddScoped<IResignationService, ResignationService>();
-
-//Authentication
-builder.Services.AddScoped<ILoginService, AuthService>();
-
-builder.Services.AddScoped<TopicRepo>();
-builder.Services.AddScoped<TopicsFileRepo>();
-builder.Services.AddAutoMapper(typeof(SessionMapper));
-builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<SessionRepo>();
-
-//class
-builder.Services.AddScoped<ClassRepo>();
-builder.Services.AddScoped<IClassesService, ClassesService>();
-
-//Retirement
-builder.Services.AddScoped<RetirementRepo>();
-builder.Services.AddScoped<IRetirementService, RetirementService>();
-
-//TeacherList                       
-builder.Services.AddScoped<TeacherListRepo>();
-builder.Services.AddScoped<ITeacherListService, TeacherListService>();
-
-
-//ForgotPassword
-builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-
-//EntryType
-builder.Services.AddScoped<EntryTypeRepo>();
-builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
-
-//RefreshToken
-builder.Services.AddScoped<RefreshTokenRepo>();
-builder.Services.AddScoped<IRefreshToken, RefreshTokeService>();
-
-
-builder.Services.AddScoped<SupportRepo>();
-builder.Services.AddScoped<ISupportService, SupportService>();
-
-//DashboardTeacher
-builder.Services.AddScoped<DashboardTeacherRepo>();
-builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
-
-//Reserve
-builder.Services.AddScoped<ReserveRepo>();
-builder.Services.AddScoped<IReserveService, ReserveService>();
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -384,35 +201,22 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     .Where(t => t.Name.EndsWith("Service"))
     .AsImplementedInterfaces()
     .InstancePerLifetimeScope();
-    containerBuilder.RegisterType<TemporaryPasswordService>()
-    .As<ITemporaryPasswordService>()
-    .SingleInstance();
 
 
 });
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    // Map RetirementStatus enum thành kiểu int
-    c.MapType<RetirementStatus>(() => new OpenApiSchema
-    {
-        Type = "integer",
-        Format = "int32"
-    });
-});
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseCors(MyAllowSpecificOrigins);
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.Run();

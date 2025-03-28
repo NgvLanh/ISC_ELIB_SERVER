@@ -1,13 +1,13 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Requests;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [Route("api/exam-schedule-classes")]
     [ApiController]
-    public class ExamScheduleClassController : ControllerBase
+    public class ExamScheduleClassController : Controller
     {
         private readonly IExamScheduleClassService _service;
 
@@ -17,45 +17,65 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ApiResponse<PagedResult<ExamScheduleClassResponse>>> GetAll(
-      [FromQuery] int page = 1,
-      [FromQuery] int pageSize = 10,
-      [FromQuery] string? searchTerm = null,
-      [FromQuery] string? sortBy = null,
-      [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetAllExamScheduleClasses(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int? classId = null,
+            [FromQuery] int? exampleSchedule = null,
+            [FromQuery] int? supervisoryTeacherId = null,
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc"
+        )
         {
-            return Ok(_service.GetAll(page, pageSize, searchTerm, sortBy, sortOrder));
+            var response = _service.GetExamScheduleClasses(page, pageSize, classId, exampleSchedule, supervisoryTeacherId, sortColumn, sortOrder);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> GetById(long id)
+        public IActionResult GetExamScheduleClassById(int id)
         {
-            var response = _service.GetById(id);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var response = _service.GetExamScheduleClassById(id);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
+        }
+
+        [HttpGet("filter")]
+        public IActionResult GetExamScheduleClassByFilter(
+            [FromQuery] int? classId = null,
+            [FromQuery] int? exampleSchedule = null,
+            [FromQuery] int? supervisoryTeacherId = null
+        )
+        {
+            var response = _service.GetExamScheduleClassByFilter(classId, exampleSchedule, supervisoryTeacherId);
+            if (response.Code == 0)
+                return Ok(response);
+            return NotFound(response);
         }
 
         [HttpPost]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> Create([FromBody] ExamScheduleClassRequest request)
+        public IActionResult CreateExamScheduleClass([FromBody] ExamScheduleClassRequest request)
         {
-            var response = _service.Create(request);
-            return CreatedAtAction(nameof(GetById), new { id = response.Data?.Id }, response);
+            var response = _service.CreateExamScheduleClass(request);
+            if (response.Code == 0)
+                return CreatedAtAction(nameof(GetExamScheduleClassById), new { id = response.Data.Id }, response);
+            return BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<ExamScheduleClassResponse>> Update(long id, [FromBody] ExamScheduleClassRequest request)
+        public IActionResult UpdateExamScheduleClass(int id, [FromBody] ExamScheduleClassRequest request)
         {
-            var response = _service.Update(id, request);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var response = _service.UpdateExamScheduleClass(id, request);
+            if (response.Code == 0)
+                return Ok(response);
+            return BadRequest(response);
         }
 
-        [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<object>> Delete(long id)
+        [HttpPut("{id}/toggle-active")]
+        public IActionResult DeleteExamScheduleClass(int id)
         {
-            var response = _service.Delete(id);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var response = _service.DeleteExamScheduleClass(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }
 }

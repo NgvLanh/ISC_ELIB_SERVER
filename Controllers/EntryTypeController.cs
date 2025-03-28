@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/entrytype")]
+    [Route("api/entry-types")]
     public class EntryTypeController : ControllerBase
     {
         private readonly IEntryTypeService _service;
@@ -41,15 +41,13 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateEntryType(long id, [FromBody] EntryTypeRequest entryTypeRequest)
         {
-            var response = _service.UpdateEntryType(id, entryTypeRequest);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            return Ok(ApiResponse<object>.Success("Chưa làm"));
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteEntryType(long id)
         {
-            var response = _service.DeleteEntryType(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            return Ok(ApiResponse<object>.Success("Chưa làm"));
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     public class TeacherInfoRequest
     {
+        public int Id { get; set; }
         public string? Cccd { get; set; }
         public DateTime? IssuedDate { get; set; }
         public string? IssuedPlace { get; set; }
@@ -15,6 +16,6 @@
         public int ProvinceCode { get; set; }
         public int DistrictCode { get; set; }
         public int WardCode { get; set; }
-        public bool Active { get; set; }
+
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Autofac.Core;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -10,9 +9,9 @@ namespace ISC_ELIB_SERVER.Controllers
     [Route("api/training-program")]
     public class TrainingProgramsController : ControllerBase
     {
-        private readonly ITrainingProgramService _service;
+        private readonly ITrainingProgramsService _service;
 
-        public TrainingProgramsController(ITrainingProgramService service)
+        public TrainingProgramsController(ITrainingProgramsService service)
         {
             _service = service;
         }

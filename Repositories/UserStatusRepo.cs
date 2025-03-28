@@ -4,7 +4,6 @@ namespace ISC_ELIB_SERVER.Repositories
 {
     public class UserStatusRepo
     {
-
         private readonly isc_dbContext _context;
         public UserStatusRepo(isc_dbContext context)
         {
@@ -13,10 +12,10 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<UserStatus> GetUserStatuses()
         {
-            return _context.UserStatuses.Where(us => !us.IsDeleted).ToList();
+            return _context.UserStatuses.ToList();
         }
 
-        public UserStatus? GetUserStatusById(long id)
+        public UserStatus GetUserStatusById(long id)
         {
             return _context.UserStatuses.FirstOrDefault(s => s.Id == id);
         }
@@ -33,6 +32,17 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.UserStatuses.Update(userStatus);
             _context.SaveChanges();
             return userStatus;
+        }
+
+        public bool DeleteUserStatus(long id)
+        {
+            var userStatus = GetUserStatusById(id);
+            if (userStatus != null)
+            {
+                _context.UserStatuses.Remove(userStatus);
+                return _context.SaveChanges() > 0;
+            }
+            return false;
         }
     }
 }

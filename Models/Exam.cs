@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.Models
 {

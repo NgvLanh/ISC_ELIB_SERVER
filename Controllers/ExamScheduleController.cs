@@ -1,12 +1,12 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services;
+using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exam-schedules")]
     [ApiController]
-    public class ExamScheduleController : ControllerBase
+    public class ExamScheduleController : Controller
     {
         private readonly IExamScheduleService _service;
 
@@ -16,47 +16,67 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll(
-     [FromQuery] int page = 1,
-     [FromQuery] int pageSize = 10,
-     [FromQuery] string? search = null,
-     [FromQuery] string? sortBy = "Id",
-     [FromQuery] bool isDescending = false,
-     [FromQuery] int? academicYearId = null,
-     [FromQuery] int? semesterId = null)
+        public IActionResult GetAllExamSchedules(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "",
+            [FromQuery] string sortColumn = "id",
+            [FromQuery] string sortOrder = "asc"
+        )
         {
-            var response = _service.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId);
-            return StatusCode(response.Code == 0 ? 200 : 400, response);
+            var response = _service.GetExamSchedules(page, pageSize, search, sortColumn, sortOrder);
+            return Ok(response);
         }
 
-
-
         [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        public IActionResult GetExamScheduleById(int id)
         {
-            var response = _service.GetById(id);
-            return StatusCode(response.Code == 0 ? 200 : 404, response);
+            var response = _service.GetExamScheduleById(id);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
+        }
+
+        [HttpGet("name/{name}")]
+        public IActionResult GetExamScheduleByName(string name)
+        {
+            var response = _service.GetExamScheduleByName(name);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ExamScheduleRequest request)
+        public IActionResult CreateExamSchedule([FromBody] ExamScheduleRequest request)
         {
-            var response = _service.Create(request);
-            return StatusCode(response.Code == 0 ? 201 : 400, response);
+            var response = _service.CreateExamSchedule(request);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] ExamScheduleRequest request)
+        public IActionResult UpdateExamSchedule(int id, [FromBody] ExamScheduleRequest request)
         {
-            var response = _service.Update(id, request);
-            return StatusCode(response.Code == 0 ? 200 : 404, response);
+            var response = _service.UpdateExamSchedule(id, request);
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        [HttpPut("{id}/toggle-active")]
+        public IActionResult DeleteExamSchedule(int id)
         {
-            var response = _service.Delete(id);
-            return StatusCode(response.Code == 0 ? 200 : 404, response);
+            var response = _service.DeleteExamSchedule(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }
 }

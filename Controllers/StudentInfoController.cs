@@ -2,7 +2,6 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // GET: api/studentinfos/{id}
         [HttpGet("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> GetStudentInfoById(int id)
+        public ActionResult<ApiResponse<StudentInfoResponses>> GetStudentInfoById(long id)
         {
             return Ok(_studentInfoService.GetStudentInfoById(id));
         }
@@ -44,42 +43,26 @@ namespace ISC_ELIB_SERVER.Controllers
         public ActionResult<ApiResponse<StudentInfoResponses>> CreateStudentInfo([FromBody] StudentInfoRequest studentInfoRequest)
         {
             if (studentInfoRequest == null)
-                return BadRequest("Dữ liệu thông tin học sinh không hợp lệ.");
+                return BadRequest("Invalid student info data.");
 
             return Ok(_studentInfoService.CreateStudentInfo(studentInfoRequest));
         }
 
         // PUT: api/studentinfos/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> UpdateStudentInfo(int id, [FromBody] StudentInfoRequest studentInfoRequest)
+        public ActionResult<ApiResponse<StudentInfoResponses>> UpdateStudentInfo(long id, [FromBody] StudentInfoRequest studentInfoRequest)
         {
-            if (studentInfoRequest == null)
-                return BadRequest("Dữ liệu không hợp lệ.");
+            if (studentInfoRequest == null || id != studentInfoRequest.Id)
+                return BadRequest("StudentInfo ID mismatch.");
 
-            return Ok(_studentInfoService.UpdateStudentInfo(id, studentInfoRequest));
+            return Ok(_studentInfoService.UpdateStudentInfo(studentInfoRequest));
         }
 
         // DELETE: api/studentinfos/{id}
         [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<StudentInfoResponses>> DeleteStudentInfo(int id)
+        public ActionResult<ApiResponse<StudentInfoResponses>> DeleteStudentInfo(long id)
         {
             return Ok(_studentInfoService.DeleteStudentInfo(id));
-        }
-
-        //Lấy danh sách học sinh theo lớp
-        [HttpGet("class/{classId}")]
-        public IActionResult GetStudentsByClass(int classId, int page = 1, int pageSize = 10)
-        {
-            var result = _studentInfoService.GetStudentInfosByClassId(classId, page, pageSize);
-            return Ok(result);
-        }
-
-        // Lấy danh sách sinh viên theo UserId
-        [HttpGet("user/{userId}")]
-        public IActionResult GetStudentsByUserId(int userId)
-        {
-            var result = _studentInfoService.GetStudentsByUserId(userId);
-            return Ok(result);
         }
     }
 }

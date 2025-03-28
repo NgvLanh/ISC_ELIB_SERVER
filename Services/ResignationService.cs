@@ -3,12 +3,19 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services.Interfaces;
-using Sprache;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface IResignationService
+    {
+        ApiResponse<ICollection<ResignationResponse>> GetResignation(int page, int pageSize, string search, string sortColumn, string sortOrder);
 
+        ApiResponse<ICollection<ResignationResponse>> GetResignationNoPaging();
+        ApiResponse<ResignationResponse> GetResignationById(long id);
+        ApiResponse<ResignationResponse> CreateResignation(ResignationRequest Resignation_AddRequest);
+        ApiResponse<Resignation> UpdateResignation(long id, ResignationRequest Resignation_UpdateRequest);
+        ApiResponse<Resignation> DeleteResignation(long id);
+    }
     public class ResignationService : IResignationService
     {
         private readonly ResignationRepo _repository;
@@ -79,29 +86,6 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ResignationResponse>.NotFound($"Không tìm thấy trạng từ chức #{id}");
         }
 
-        public ApiResponse<ICollection<ResignationResponse>> GetResignationByTeacherId(long id)
-        {
-
-            var resignations = _repository.GetResignationsByTeacherId(id);
-
-            if (resignations == null || !resignations.Any())
-            {
-                return ApiResponse<ICollection<ResignationResponse>>.NotFound("Không có dữ liệu");
-            }
-
-            var response = resignations.Select(r => new ResignationResponse
-            {
-                Id = r.Id,
-                TeacherId = (int)r.TeacherId,
-                Date = r.Date,
-                Note = r.Note,
-                Attachment = r.Attachment,
-                Status = r.Status
-            }).ToList();
-
-            return ApiResponse<ICollection<ResignationResponse>>.Success(response);
-        }
-
         public ApiResponse<Resignation> UpdateResignation(long id, ResignationRequest ResignationRequest)
         {
             if (ResignationRequest.Date.HasValue)
@@ -116,8 +100,5 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<Resignation>.NotFound("Không tìm thấy trạng thái từ chức để cập nhật");
         }
 
-        
-
-    
     }
 }

@@ -2,14 +2,21 @@
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
-using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface IStudentScoreService
+    {
+        ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int page, int pageSize, string search, string sortColumn, string sortOrder);
+        ApiResponse<StudentScoreResponse> GetStudentScoreById(long id);
+        ApiResponse<StudentScoreResponse> CreateStudentScore(StudentScoreRequest studentScoreRequest);
+        ApiResponse<StudentScoreResponse> UpdateStudentScore(long id, StudentScoreRequest studentScoreRequest);
+        ApiResponse<StudentScore> DeleteStudentScore(long id);
+    }
+
     public class StudentScoreService : IStudentScoreService
     {
         private readonly IStudentScoreRepo _repository;
@@ -21,7 +28,31 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<StudentScoreResponse> GetStudentScoreById(int id)
+        public ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        {
+            var query = _repository.GetStudentScores().AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ss => ss.UserId.ToString().Contains(search));
+            }
+
+            query = sortColumn switch
+            {
+                "ScoreValue" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ss => ss.SubjectId) : query.OrderBy(ss => ss.SubjectId),
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(ss => ss.Id) : query.OrderBy(ss => ss.Id),
+                _ => query.OrderBy(ss => ss.Id)
+            };
+
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var response = _mapper.Map<ICollection<StudentScoreResponse>>(result);
+
+            return result.Any()
+                ? ApiResponse<ICollection<StudentScoreResponse>>.Success(response)
+                : ApiResponse<ICollection<StudentScoreResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public ApiResponse<StudentScoreResponse> GetStudentScoreById(long id)
         {
             var studentScore = _repository.GetStudentScoreById(id);
             return studentScore != null
@@ -43,7 +74,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentScoreResponse>.Success(_mapper.Map<StudentScoreResponse>(created));
         }
 
-        public ApiResponse<StudentScoreResponse> UpdateStudentScore(int id, StudentScoreRequest studentScoreRequest)
+        public ApiResponse<StudentScoreResponse> UpdateStudentScore(long id, StudentScoreRequest studentScoreRequest)
         {
             var existingStudentScore = _repository.GetStudentScoreById(id);
 
@@ -62,37 +93,12 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentScoreResponse>.Success(_mapper.Map<StudentScoreResponse>(updated));
         }
 
-        public ApiResponse<StudentScore> DeleteStudentScore(int id)
+        public ApiResponse<StudentScore> DeleteStudentScore(long id)
         {
             var success = _repository.DeleteStudentScore(id);
             return success
                 ? ApiResponse<StudentScore>.Success()
                 : ApiResponse<StudentScore>.NotFound("Không tìm thấy để xóa");
-        }
-
-        public ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int? page, int? pageSize, string? sortColumn, string? sortOrder)
-        {
-            var query = _repository.GetStudentScores().AsQueryable();
-
-            query = sortColumn switch
-            {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
-            };
-
-
-            if (page.HasValue && pageSize.HasValue)
-            {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-            }
-
-            var result = query.ToList();
-
-            var response = _mapper.Map<ICollection<StudentScoreResponse>>(result);
-
-            return result.Any() ? ApiResponse<ICollection<StudentScoreResponse>>
-            .Success(response, page, pageSize, _repository.GetStudentScores().Count)
-             : ApiResponse<ICollection<StudentScoreResponse>>.NotFound("Không có dữ liệu");
         }
     }
 }

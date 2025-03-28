@@ -1,12 +1,11 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/test-question")]
+    [Route("api/testQuestion")]
     public class TestQuestionController : ControllerBase
     {
         private readonly ITestQuestionService _service;
@@ -17,12 +16,8 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTestes(
-            [FromQuery] int page = 1, 
-            [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", 
-            [FromQuery] string sortColumn = "Id", 
-            [FromQuery] string sortOrder = "asc")
+        public IActionResult GetTestes([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
             var response = _service.GetTestQuestiones(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
@@ -46,18 +41,15 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult UpdateTest(long id, [FromBody] TestQuestionRequest Test)
         {
             var response = _service.UpdateTestQuestion(id, Test);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            return response.Code == 0 ? Ok("Cập nhật thành công") : BadRequest("Cập nhật thất bại");
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteTest(long id)
         {
             var response = _service.DeleteTestQuestion(id);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            return response.Code == 0 ? Ok("Xóa thành công") : BadRequest("Xóa thất bại");
         }
-
-      
-
 
     }
 }

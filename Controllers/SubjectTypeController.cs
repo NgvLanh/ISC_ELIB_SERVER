@@ -2,7 +2,6 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -19,8 +18,8 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSubjectType([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
-            [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null)
+        public IActionResult GetSubjectType([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
             var response = _service.GetSubjectType(page, pageSize, search, sortColumn, sortOrder);
             return response.Code == 0 ? Ok(response) : NotFound(response);

@@ -3,11 +3,19 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services.Interfaces;
 
 namespace ISC_ELIB_SERVER.Services
 {
+    public interface IWorkProcessService
+    {
+        ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcess(int page, int pageSize, string search, string sortColumn, string sortOrder);
 
+        ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcessNoPaging();
+        ApiResponse<WorkProcessResponse> GetWorkProcessById(long id);
+        ApiResponse<WorkProcessResponse> CreateWorkProcess(WorkProcessRequest workProcess_AddRequest);
+        ApiResponse<WorkProcess> UpdateWorkProcess(long id, WorkProcessRequest workProcess_UpdateRequest);
+        ApiResponse<WorkProcess> DeleteWorkProcess(long id);
+    }
 
     public class WorkProcessService : IWorkProcessService
     {
@@ -24,6 +32,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<WorkProcessResponse> CreateWorkProcess(WorkProcessRequest workProcess_AddRequest)
         {
+
             var workProcess = _mapper.Map<WorkProcess>(workProcess_AddRequest);
             var created = _repository.CreateWorkProcess(workProcess);
             return ApiResponse<WorkProcessResponse>.Success(_mapper.Map<WorkProcessResponse>(created));
@@ -40,6 +49,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcess(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
             var query = _repository.GetWorkProcess().AsQueryable();
+
 
             query = sortColumn switch
             {
@@ -58,12 +68,13 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcessNoPaging()
         {
-            var existing = _repository.GetWorkProcess();
-            var response = _mapper.Map<ICollection<WorkProcessResponse>>(existing);
-            return existing.Any()
+            var exsting = _repository.GetWorkProcess();
+            var response = _mapper.Map<ICollection<WorkProcessResponse>>(exsting);
+            return exsting.Any()
                 ? ApiResponse<ICollection<WorkProcessResponse>>.Success(response)
                 : ApiResponse<ICollection<WorkProcessResponse>>.NotFound("Không có dữ liệu");
         }
+
 
         public ApiResponse<WorkProcessResponse> GetWorkProcessById(long id)
         {
@@ -81,6 +92,8 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<WorkProcess>.Success(updated)
                 : ApiResponse<WorkProcess>.NotFound("Không tìm thấy trạng thái quá trình công tác để cập nhật");
         }
+
+
     }
 
 }

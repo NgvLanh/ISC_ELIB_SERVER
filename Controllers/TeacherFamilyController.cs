@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
+    [Route("api/teacher-family")]
     [ApiController]
-    [Route("api/teacher-families")]
     public class TeacherFamilyController : ControllerBase
     {
         private readonly ITeacherFamilyService _service;
@@ -16,38 +16,40 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTeacherFamilies()
+        public async Task<IActionResult> GetAll()
         {
-            var response = _service.GetTeacherFamilies();
-            return Ok(response);
+            var result = await _service.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTeacherFamilyById(long id)
+        public async Task<IActionResult> GetById(long id)
         {
-            var response = _service.GetTeacherFamilyById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult CreateTeacherFamily([FromBody] TeacherFamilyRequest request)
+        public async Task<IActionResult> Create([FromBody] TeacherFamilyRequest request)
         {
-            var response = _service.CreateTeacherFamily(request);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            await _service.AddAsync(request);
+            return CreatedAtAction(nameof(GetAll), new { });
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTeacherFamily(long id, [FromBody] TeacherFamilyRequest request)
+        public async Task<IActionResult> Update(long id, [FromBody] TeacherFamilyRequest request)
         {
-            var response = _service.UpdateTeacherFamily(id, request);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            await _service.UpdateAsync(id, request);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTeacherFamily(long id)
+        public async Task<IActionResult> Delete(long id)
         {
-            var response = _service.DeleteTeacherFamily(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            await _service.DeleteAsync(id);
+            return NoContent();
         }
     }
+
 }

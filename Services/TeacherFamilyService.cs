@@ -1,58 +1,70 @@
-﻿using AutoMapper;
-using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Mappers;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services;
 
-public class TeacherFamilyService : ITeacherFamilyService
+namespace ISC_ELIB_SERVER.Services
 {
-    private readonly TeacherFamilyRepo _repository;
-    private readonly IMapper _mapper;
-
-    public TeacherFamilyService(TeacherFamilyRepo repository, IMapper mapper)
+    public class TeacherFamilyService : ITeacherFamilyService
     {
-        _repository = repository;
-        _mapper = mapper;
+        private readonly ITeacherFamilyRepository _repository;
+
+        public TeacherFamilyService(ITeacherFamilyRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<IEnumerable<TeacherFamilyResponse>> GetAllAsync()
+        {
+            var entities = await _repository.GetAllAsync();
+            return entities.Select(e => e.ToResponse());
+        }
+
+        public async Task<TeacherFamilyResponse?> GetByIdAsync(long id)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            return entity?.ToResponse();
+        }
+
+        public async Task AddAsync(TeacherFamilyRequest request)
+        {
+            var entity = new TeacherFamily
+            {
+                TeacherId = request.TeacherId,
+                GuardianName = request.GuardianName,
+                GuardianPhone = request.GuardianPhone,
+                GuardianAddressDetail = request.GuardianAddressDetail,
+                GuardianAddressFull = request.GuardianAddressFull,
+                ProvinceCode = request.ProvinceCode,
+                DistrictCode = request.DistrictCode,
+                WardCode = request.WardCode
+            };
+
+            await _repository.AddAsync(entity);
+        }
+
+        public async Task UpdateAsync(long id, TeacherFamilyRequest request)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null) throw new KeyNotFoundException("TeacherFamily not found");
+
+            entity.TeacherId = request.TeacherId;
+            entity.GuardianName = request.GuardianName;
+            entity.GuardianPhone = request.GuardianPhone;
+            entity.GuardianAddressDetail = request.GuardianAddressDetail;
+            entity.GuardianAddressFull = request.GuardianAddressFull;
+            entity.ProvinceCode = request.ProvinceCode;
+            entity.DistrictCode = request.DistrictCode;
+            entity.WardCode = request.WardCode;
+
+            await _repository.UpdateAsync(entity);
+        }
+
+        public async Task DeleteAsync(long id)
+        {
+            await _repository.DeleteAsync(id);
+        }
     }
 
-    public ApiResponse<ICollection<TeacherFamilyResponse>> GetTeacherFamilies()
-    {
-        var teacherFamilies = _repository.GetTeacherFamilies();
-        var response = _mapper.Map<ICollection<TeacherFamilyResponse>>(teacherFamilies);
-        return ApiResponse<ICollection<TeacherFamilyResponse>>.Success(response);
-    }
-
-    public ApiResponse<TeacherFamilyResponse> GetTeacherFamilyById(long id)
-    {
-        var teacherFamily = _repository.GetTeacherFamilyById(id);
-        return teacherFamily != null
-            ? ApiResponse<TeacherFamilyResponse>.Success(_mapper.Map<TeacherFamilyResponse>(teacherFamily))
-            : ApiResponse<TeacherFamilyResponse>.NotFound("Không tìm thấy thông tin gia đình giáo viên");
-    }
-
-    public ApiResponse<TeacherFamilyResponse> CreateTeacherFamily(TeacherFamilyRequest request)
-    {
-        var teacherFamily = _mapper.Map<TeacherFamily>(request);
-        var created = _repository.CreateTeacherFamily(teacherFamily);
-        return ApiResponse<TeacherFamilyResponse>.Success(_mapper.Map<TeacherFamilyResponse>(created));
-    }
-
-    public ApiResponse<TeacherFamilyResponse> UpdateTeacherFamily(long id, TeacherFamilyRequest request)
-    {
-        var teacherFamily = _repository.GetTeacherFamilyById(id);
-        if (teacherFamily == null) return ApiResponse<TeacherFamilyResponse>.NotFound("Không tìm thấy bản ghi");
-
-        _mapper.Map(request, teacherFamily);
-        _repository.UpdateTeacherFamily(teacherFamily);
-
-        return ApiResponse<TeacherFamilyResponse>.Success(_mapper.Map<TeacherFamilyResponse>(teacherFamily));
-    }
-
-    public ApiResponse<object> DeleteTeacherFamily(long id)
-    {
-        return _repository.DeleteTeacherFamily(id)
-            ? ApiResponse<object>.Success()
-            : ApiResponse<object>.NotFound("Không tìm thấy thông tin gia đình giáo viên để xóa");
-    }
 }

@@ -15,37 +15,16 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.AcademicYears
                 .Where(a => a.Active)
-                .Include(a => a.Semesters)
-                .Where(a => a.Active)
                 .ToList();
         }
 
         public AcademicYear GetAcademicYearById(long id)
         {
-            return _context.AcademicYears
-                .Include(a => a.Semesters)
-                .Where(a => a.Active)
-                .FirstOrDefault(s => s.Id == id);
-        }
-
-        public bool IsDuplicateAcademicYear(long schoolId, DateTime startTime, DateTime endTime, long? excludeId = null)
-        {
-            return _context.AcademicYears.Any(a =>
-                a.SchoolId == schoolId &&
-                a.Active &&
-                a.StartTime == startTime &&
-                a.EndTime == endTime &&
-                (!excludeId.HasValue || a.Id != excludeId.Value));
+            return _context.AcademicYears.Where(a => a.Active).FirstOrDefault(s => s.Id == id);
         }
 
         public AcademicYear CreateAcademicYear(AcademicYear academicYear)
         {
-            if (IsDuplicateAcademicYear(academicYear.SchoolId ?? 0,
-             academicYear.StartTime ?? DateTime.Now, academicYear.EndTime ?? DateTime.Now))
-            {
-                throw new Exception("Niên khóa này đã tồn tại trong trường.");
-            }
-
             _context.AcademicYears.Add(academicYear);
             _context.SaveChanges();
             return academicYear;
@@ -53,12 +32,6 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public AcademicYear UpdateAcademicYear(AcademicYear academicYear)
         {
-            if (IsDuplicateAcademicYear(academicYear.SchoolId ?? 0,
-             academicYear.StartTime ?? DateTime.Now, academicYear.EndTime ?? DateTime.Now))
-            {
-                throw new Exception("Niên khóa này đã tồn tại trong trường.");
-            }
-
             _context.AcademicYears.Update(academicYear);
             _context.SaveChanges();
             return academicYear;

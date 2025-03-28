@@ -18,47 +18,39 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpGet]
-        public IActionResult GetClass([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetClass([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetClass(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetClass(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateClass([FromBody] ClassesRequest classesRequest)
+        public IActionResult CreateClass([FromBody] ClassesRequest classesRequest)
         {
-            if (classesRequest == null)
-            {
-                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ" });
-            }
-
-            var response = await _service.CreateClassAsync(classesRequest);
+            var response = _service.CreateClass(classesRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClass([FromRoute] int id, [FromBody] ClassesRequest classesRequest)
+        public IActionResult UpdateClass(long id, [FromBody] ClassesRequest classesRequest)
         {
-            if (classesRequest == null)
-            {
-                return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ" });
-            }
 
-            var response = await _service.UpdateClassAsync(id, classesRequest);
+            var response = _service.UpdateClass(id, classesRequest);
+
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
-
-
         [HttpDelete("{id}")]
-        public IActionResult DeleteClass(int id)
+        public IActionResult DeleteClass(long id)
         {
             var response = _service.DeleteClass(id);
 
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
         [HttpGet("{id}")]
-        public IActionResult GetClassById(int id)
+        public IActionResult GetClassById(long id)
         {
             var response = _service.GetClassById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
