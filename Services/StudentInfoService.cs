@@ -92,18 +92,6 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentInfoResponses>.Success();
         }
 
-        //public ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize)
-        //{
-        //    var query = _repository.GetStudentInfoByClassId(classId).AsQueryable();
-
-        //    var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-        //    var response = _mapper.Map<ICollection<StudentInfoResponses>>(result);
-
-        //    return result.Any()
-        //        ? ApiResponse<ICollection<StudentInfoResponses>>.Success(response)
-        //        : ApiResponse<ICollection<StudentInfoResponses>>.NotFound("Không có dữ liệu sinh viên cho lớp học này");
-        //}
-
         // Thêm phương thức lấy danh sách học viên theo UserId
         public ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId)
         {

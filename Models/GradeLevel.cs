@@ -22,5 +22,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Class> Classes { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
         public virtual ICollection<Exam> Exams { get; set; }
+
+        public virtual ICollection<Test> Tests { get; set; }
     }
 }

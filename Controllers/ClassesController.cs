@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpGet]
-        public IActionResult GetClass([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        public IActionResult GetClass([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? search = null, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetClass(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetClass(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
         }
 
@@ -50,18 +51,30 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteClass(int id)
+        [HttpDelete]
+        public IActionResult DeleteClass([FromQuery] List<int> ids)
         {
-            var response = _service.DeleteClass(id);
+            if (ids == null || !ids.Any())
+            {
+                return BadRequest(ApiResponse<bool>.BadRequest("Danh sách ID lớp học không được để trống"));
+            }
 
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
+            var response = _service.DeleteClass(ids);
+            return StatusCode(response.Code, response);
         }
+
         [HttpGet("{id}")]
         public IActionResult GetClassById(int id)
         {
             var response = _service.GetClassById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
-            }
         }
+
+            [HttpPost("import")]
+            public async Task<IActionResult> ImportClasses([FromForm] IFormFile file)
+            {
+                var response = await _service.ImportClassesAsync(file);
+                return response.Code == 0 ? Ok(response) : NotFound(response);
+                    }
+            }
     }
