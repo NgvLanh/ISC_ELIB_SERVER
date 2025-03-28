@@ -87,5 +87,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<TransferSchool> TransferSchools { get; set; }
         [JsonIgnore]
         public virtual ICollection<TestUser> TestUsers { get; set; }
+
+        public virtual ICollection<ClassUser> ClassUsers { get; set; }
     }
 }
