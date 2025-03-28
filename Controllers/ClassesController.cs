@@ -25,6 +25,14 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
+        [HttpGet("by-grade")]
+        public IActionResult GetClassByGradeLevelId([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] int? gradeLevelId = null, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        {
+            var response = _service.GetClassByGradeLevelId(page, pageSize, gradeLevelId, sortColumn, sortOrder);
+            return Ok(response);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> CreateClass([FromBody] ClassesRequest classesRequest)
         {
@@ -60,7 +68,7 @@ namespace ISC_ELIB_SERVER.Controllers
             }
 
             var response = _service.DeleteClass(ids);
-            return StatusCode(response.Code, response);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpGet("{id}")]

@@ -1,12 +1,12 @@
-﻿using ISC_ELIB_SERVER.Models;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
     public interface ITeachingAssignmentsRepo
     {
-        ICollection<TeachingAssignment> GetTeachingAssignments();
+        IQueryable<TeachingAssignment> GetTeachingAssignments();
         TeachingAssignment GetTeachingAssignmentById(int id);
         TeachingAssignment CreateTeachingAssignment(TeachingAssignment teachingAssignment);
         TeachingAssignment UpdateTeachingAssignment(TeachingAssignment teachingAssignment);
@@ -22,10 +22,6 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public ICollection<TeachingAssignment> GetTeachingAssignments()
-        {
-            return _context.TeachingAssignments.ToList();
-        }
 
         public TeachingAssignment GetTeachingAssignmentById(int id)
         {
@@ -69,6 +65,15 @@ namespace ISC_ELIB_SERVER.Repositories
             teachingAssignment.Active = false;
             _context.TeachingAssignments.Update(teachingAssignment);
             return _context.SaveChanges() > 0;
+        }
+        public IQueryable<TeachingAssignment> GetTeachingAssignments()
+        {
+            return _context.TeachingAssignments
+                .Include(t => t.User)
+                .Include(t => t.Class)
+                .Include(t => t.Subject)
+                .Include(t => t.Topics)
+                .Include(t => t.Sessions);
         }
     }
 }

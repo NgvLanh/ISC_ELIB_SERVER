@@ -90,5 +90,7 @@ namespace ISC_ELIB_SERVER.Models
         // public virtual School? School { get; set; }  // Liên kết tới School || 
         [JsonIgnore]
         public virtual ICollection<TestUser> TestUsers { get; set; }
+
+        public virtual ICollection<ClassUser> ClassUsers { get; set; }
     }
 }

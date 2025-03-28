@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -18,29 +19,226 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignments(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignmentsClassStatusTrue(
+            int? page, int? pageSize, string? sortColumn, string? sortOrder,
+            string? searchSubject, int? subjectId, int? subjectGroupId)
         {
-            var query = _repository.GetTeachingAssignments().AsQueryable();
-
-            query = sortColumn switch
+            try
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
-            };
+                var query = _repository.GetTeachingAssignments()
+                    .Include(ta => ta.User)
+                    .Include(ta => ta.Class)
+                    .Include(ta => ta.Subject)
+                    .Include(ta => ta.Subject.SubjectGroup)
+                    .Include(ta => ta.Topics)
+                    .Include(ta => ta.Sessions)
+                    .Where(ta => ta.Class != null && ta.Class.Active)
+                    .AsQueryable()
+                    .AsNoTracking();
 
+                if (subjectId.HasValue)
+                {
+                    query = query.Where(us => us.SubjectId == subjectId.Value);
+                }
 
-            if (page.HasValue && pageSize.HasValue)
-            {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+                if (subjectGroupId.HasValue)
+                {
+                    query = query.Where(us => us.Subject.SubjectGroupId == subjectGroupId.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(searchSubject))
+                {
+                    query = query.Where(us => us.Subject.Name.Contains(searchSubject));
+                }
+
+                int totalRecords = query.Count();
+
+                sortColumn = string.IsNullOrEmpty(sortColumn) ? "Id" : sortColumn;
+                sortOrder = sortOrder?.ToLower() ?? "asc";
+
+                query = sortColumn switch
+                {
+                    "Id" => sortOrder == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                    "SubjectName" => sortOrder == "desc" ? query.OrderByDescending(us => us.Subject.Name) : query.OrderBy(us => us.Subject.Name),
+                    _ => query.OrderBy(us => us.Id)
+                };
+
+                if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
+                {
+                    query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+                }
+
+                var result = query.ToList();
+                var response = _mapper.Map<ICollection<TeachingAssignmentsResponse>>(result);
+
+                var assignmentsDict = response.ToDictionary(ta => ta.Id);
+
+                foreach (var assignment in result)
+                {
+                    if (assignmentsDict.TryGetValue(assignment.Id, out var assignmentResponse))
+                    {
+                        assignmentResponse.User = new TeachingAssignmentsResponse.TeachingAssignmentsUserResponse
+                        {
+                            Id = assignment.User.Id,
+                            Code = assignment.User.Code,
+                            FullName = assignment.User.FullName
+                        };
+
+                        assignmentResponse.Class = new TeachingAssignmentsResponse.TeachingAssignmentsClassResponse
+                        {
+                            Id = assignment.Class.Id,
+                            Code = assignment.Class.Code,
+                            Name = assignment.Class.Name
+                        };
+
+                        assignmentResponse.Subject = new TeachingAssignmentsResponse.TeachingAssignmentsSubjectResponse
+                        {
+                            Id = assignment.Subject.Id,
+                            Name = assignment.Subject.Name
+                        };
+
+                        assignmentResponse.SubjectGroup = new SubjectGroupResponse
+                        {
+                            Id = assignment.Subject.SubjectGroup.Id,
+                            Name = assignment.Subject.SubjectGroup.Name
+                        };
+
+                        assignmentResponse.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
+                        {
+                            Id = assignment.Topics.Id,
+                            Name = assignment.Topics.Name
+                        };
+
+                        assignmentResponse.Sessions = assignment.Sessions
+                            .Select(s => new TeachingAssignmentsResponse.TeachingAssignmentsSessionsResponse
+                            {
+                                Id = s.Id,
+                                Name = s.Name
+                            }).ToList();
+
+                    }
+                }
+
+                return result.Any()
+                    ? ApiResponse<ICollection<TeachingAssignmentsResponse>>.Success(response, page, pageSize, totalRecords)
+                    : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
             }
+            catch (Exception ex)
+            {
+                return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi:" +ex.Message);
 
-            var result = query.ToList();
+            }
+        }
 
-            var response = _mapper.Map<ICollection<TeachingAssignmentsResponse>>(result);
+        public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignmentsClassStatusFalse(
+            int? page, int? pageSize, string? sortColumn, string? sortOrder,
+            string? searchSubject, int? subjectId, int? subjectGroupId)
+        {
+            try
+            {
+                var query = _repository.GetTeachingAssignments()
+                    .Include(ta => ta.User)
+                    .Include(ta => ta.Class)
+                    .Include(ta => ta.Subject)
+                    .Include(ta => ta.Subject.SubjectGroup)
+                    .Include(ta => ta.Topics)
+                    .Include(ta => ta.Sessions)
+                    .Where(ta => ta.Class != null && !ta.Class.Active)
+                    .AsQueryable()
+                    .AsNoTracking();
 
-            return result.Any() ? ApiResponse<ICollection<TeachingAssignmentsResponse>>
-            .Success(response, page, pageSize, _repository.GetTeachingAssignments().Count)
-             : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
+                if (subjectId.HasValue)
+                {
+                    query = query.Where(us => us.SubjectId == subjectId.Value);
+                }
+
+                if (subjectGroupId.HasValue)
+                {
+                    query = query.Where(us => us.Subject.SubjectGroupId == subjectGroupId.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(searchSubject))
+                {
+                    query = query.Where(us => us.Subject.Name.Contains(searchSubject));
+                }
+
+                int totalRecords = query.Count();
+
+                sortColumn = string.IsNullOrEmpty(sortColumn) ? "Id" : sortColumn;
+                sortOrder = sortOrder?.ToLower() ?? "asc";
+
+                query = sortColumn switch
+                {
+                    "Id" => sortOrder == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                    "SubjectName" => sortOrder == "desc" ? query.OrderByDescending(us => us.Subject.Name) : query.OrderBy(us => us.Subject.Name),
+                    _ => query.OrderBy(us => us.Id)
+                };
+
+                if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
+                {
+                    query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+                }
+
+                var result = query.ToList();
+                var response = _mapper.Map<ICollection<TeachingAssignmentsResponse>>(result);
+
+                var assignmentsDict = response.ToDictionary(ta => ta.Id);
+
+                foreach (var assignment in result)
+                {
+                    if (assignmentsDict.TryGetValue(assignment.Id, out var assignmentResponse))
+                    {
+                        assignmentResponse.User = new TeachingAssignmentsResponse.TeachingAssignmentsUserResponse
+                        {
+                            Id = assignment.User.Id,
+                            Code = assignment.User.Code,
+                            FullName = assignment.User.FullName
+                        };
+
+                        assignmentResponse.Class = new TeachingAssignmentsResponse.TeachingAssignmentsClassResponse
+                        {
+                            Id = assignment.Class.Id,
+                            Code = assignment.Class.Code,
+                            Name = assignment.Class.Name
+                        };
+
+                        assignmentResponse.Subject = new TeachingAssignmentsResponse.TeachingAssignmentsSubjectResponse
+                        {
+                            Id = assignment.Subject.Id,
+                            Name = assignment.Subject.Name
+                        };
+
+                        assignmentResponse.SubjectGroup = new SubjectGroupResponse
+                        {
+                            Id = assignment.Subject.SubjectGroup.Id,
+                            Name = assignment.Subject.SubjectGroup.Name
+                        };
+
+                        assignmentResponse.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
+                        {
+                            Id = assignment.Topics.Id,
+                            Name = assignment.Topics.Name
+                        };
+
+                        assignmentResponse.Sessions = assignment.Sessions
+                            .Select(s => new TeachingAssignmentsResponse.TeachingAssignmentsSessionsResponse
+                            {
+                                Id = s.Id,
+                                Name = s.Name
+                            }).ToList();
+
+                    }
+                }
+
+                return result.Any()
+                    ? ApiResponse<ICollection<TeachingAssignmentsResponse>>.Success(response, page, pageSize, totalRecords)
+                    : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi:" + ex.Message);
+
+            }
         }
 
         public ApiResponse<TeachingAssignmentsResponse> GetTeachingAssignmentById(int id)

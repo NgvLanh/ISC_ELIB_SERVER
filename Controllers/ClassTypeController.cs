@@ -58,7 +58,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
             var response = _service.GetClassTypes(page, pageSize, searchYear, searchName, sortColumn, sortOrder);
 
-            return StatusCode(response.Code, response);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
 
