@@ -5,11 +5,26 @@ namespace ISC_ELIB_SERVER.Services.Interfaces;
 
 public interface ISessionService
 {
-    ApiResponse<ICollection<SessionResponse>> GetSessions(int page, int pageSize, string search, string sortColumn, string sortOrder);
     ApiResponse<SessionResponse> GetSessionById(int id);
     ApiResponse<SessionResponse> CreateSession(SessionRequest request);
     ApiResponse<SessionResponse> UpdateSession(int id, SessionRequest request);
     ApiResponse<string> DeleteSession(int id);
+
+    /// <summary>
+    /// Allows a user to join an existing session.
+    /// </summary>
+    /// <param name="request">The request object containing the details needed to join the session.</param>
+    /// <returns>An ApiResponse object containing the session response details.</returns>
+    ApiResponse<SessionResponse> JoinSession(JoinSessionRequest request);
+
+    ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(int page, int pageSize,SessionStudentFilterRequest request);
+
+    ApiResponse<ICollection<SessionResponse>> GetSessions(int page, int pageSize, string search, string sortColumn, string sortOrder);
+
+
+    // ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(SessionStudentFilterRequest filter);
+
+
 }
 
 
