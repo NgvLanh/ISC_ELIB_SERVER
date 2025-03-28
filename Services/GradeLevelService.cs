@@ -73,6 +73,14 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<GradeLevelResponse>.NotFound($"Không tìm thấy khoa - khối #{id}");
         }
 
+        public ApiResponse<object> GetClassOfGradeLevel(long id)
+        {
+            var GradeLevel = _repository.GetClassesByGradeLevel(id);
+            return GradeLevel != null
+                ? ApiResponse<object>.Success(GradeLevel)
+                : ApiResponse<object>.NotFound($"Không có dữ liệu");
+        }
+
         public ApiResponse<GradeLevelResponse> CreateGradeLevel(GradeLevelRequest GradeLevelRequest)
         {
             var ListGradeLevel = _repository.GetGradeLevels().Where(item => item.Active);

@@ -47,6 +47,35 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.GradeLevels.Where(a => a.Active).FirstOrDefault(s => s.Id == id);
         }
 
+        public object GetClassesByGradeLevel(long gradeLevelId)
+        {
+            var result = _context.GradeLevels
+                .Where(gl => gl.Active && gl.Id == gradeLevelId) 
+                .Select(gl => new
+                {
+                    gl.Id,
+                    gl.Code,
+                    gl.Name,
+                    gl.TeacherId,
+                    Classes = _context.Classes
+                        .Where(c => c.Active && c.GradeLevelId == gl.Id) 
+                        .Select(c => new
+                        {
+                            c.Id,
+                            c.Code,
+                            c.Name,
+                            c.StudentQuantity,
+                            c.SubjectQuantity,
+                            c.Description
+                        }).ToList()
+                })
+                .FirstOrDefault(); 
+
+            return result;
+        }
+
+
+
         public GradeLevel CreateGradeLevel(GradeLevel GradeLevel)
         {
             _context.GradeLevels.Add(GradeLevel);

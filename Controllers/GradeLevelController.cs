@@ -1,6 +1,7 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Reflection.Emit;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -15,7 +16,7 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        [HttpGet("GetGradeLevels")]
+        [HttpGet]
         public IActionResult GetGradeLevels(
                 [FromQuery] int? page = null,
                 [FromQuery] int? pageSize = null,
@@ -28,7 +29,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("search")]
         public IActionResult GetGradeLevelsByAyAndSc(
                 [FromQuery] string schoolName,
                 [FromQuery] int? startYear,
@@ -47,6 +48,13 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult GetGradeLevelById(long id)
         {
             var response = _service.GetGradeLevelById(id);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpGet("class/{id}")]
+        public IActionResult GetClassOfGradeLevel(long id)
+        {
+            var response = _service.GetClassOfGradeLevel(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
