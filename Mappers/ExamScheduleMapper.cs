@@ -9,8 +9,22 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public ExamScheduleMapper()
         {
-            CreateMap<ExamSchedule, ExamScheduleResponse>();
-            CreateMap<ExamScheduleRequest, ExamSchedule>();
+            CreateMap<ExamSchedule, ExamScheduleResponse>()
+                .ForMember(dest => dest.AcademicYear,
+                    opt => opt.MapFrom(src => src.AcademicYear != null
+                        ? $"{src.AcademicYear.StartTime:yyyy} - {src.AcademicYear.EndTime:yyyy}"
+                        : null))
+                .ForMember(dest => dest.SubjectName,
+                    opt => opt.MapFrom(src => src.SubjectNavigation != null ? src.SubjectNavigation.Name : null))
+                .ForMember(dest => dest.Semester,
+                    opt => opt.MapFrom(src => src.Semester != null ? src.Semester.Name : null))
+                .ForMember(dest => dest.GradeLevel,
+                    opt => opt.MapFrom(src => src.GradeLevels != null ? src.GradeLevels.Name : null))
+                .ForMember(dest => dest.TeacherNames,
+                    opt => opt.MapFrom(src =>
+                        src.Exam != null && src.Exam.ExamGraders != null
+                            ? src.Exam.ExamGraders.Select(eg => eg.User.FullName).ToList()
+                            : new List<string>()));
         }
     }
 }
