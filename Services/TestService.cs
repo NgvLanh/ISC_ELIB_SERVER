@@ -7,25 +7,30 @@ using ISC_ELIB_SERVER.Services.Interfaces;
 using Sprache;
 using System.Xml.Linq;
 using System.Security.Claims;
+using System;
 
 namespace ISC_ELIB_SERVER.Services
 {
        
     public class TestService : ITestService
     {
+            private readonly GradeLevelRepo _gradeLevelRepo;
             private readonly TestRepo _testRepo;
             private readonly SemesterRepo _semesterRepo;
-        private readonly SubjectRepo _subjectRepo;
+            private readonly SubjectRepo _subjectRepo;
             private readonly UserRepo _userRepo;
+            private readonly SubjectGroupRepo _subjectGroupRepo;
             private readonly IMapper _mapper;
 
-            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo)
+            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo)
             {
                 _testRepo = testRepo;
                 _userRepo = userRepo;
-            _semesterRepo = semesterRepo;
-            _subjectRepo = subjectRepo;
+                _semesterRepo = semesterRepo;
+                _subjectRepo = subjectRepo;
                 _mapper = mapper;
+                _gradeLevelRepo = gradeLevelRepo;
+                _subjectGroupRepo = subjectGroupRepo;
             }
 
             public ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -68,7 +73,104 @@ namespace ISC_ELIB_SERVER.Services
                         : ApiResponse<ICollection<TestResponse>>.NotFound("Không có dữ liệu");
             }
 
-            public ApiResponse<TestResponse> GetTestById(long id)
+        public ApiResponse<ICollection<TestByStudentResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectGroupId, long? gradeLevelsId, string? date, string? idUser)
+        {
+            if (string.IsNullOrEmpty(idUser))
+            {
+                return ApiResponse<ICollection<TestByStudentResponse>>.Fail("Không tìm thấy ID trong token");
+            }
+
+            if (!int.TryParse(idUser, out int userId))
+            {
+                return ApiResponse<ICollection<TestByStudentResponse>>.Fail("ID trong token không hợp lệ");
+            }
+
+            var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ts => ts.Test.Name.ToLower().Contains(search.ToLower()));
+            }
+
+            query = sortColumn?.ToLower() switch
+            {
+                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Test.Name) : query.OrderBy(ts => ts.Test.Name),
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ts => ts.Test.Id) : query.OrderBy(ts => ts.Test.Id),
+                _ => query.OrderBy(us => us.Test.Id)
+            };
+
+            if (status == 1) // Trạng thái sắp tới
+            {
+                var now = DateTime.Now;
+                query = query.Where(qr => qr.Test.EndTime > now);
+            }
+            else if (status == 2)
+            { // Trạng thái đã hoàn thành
+                var now = DateTime.Now;
+                query = query.Where(qr => qr.Test.EndTime <= now);
+            }
+
+            if (subjectGroupId != null || subjectGroupId.HasValue)
+            {
+                var subjectGroup = _subjectGroupRepo.GetSubjectGroupById(subjectGroupId.Value);
+                if (subjectGroup == null)
+                {
+                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Môn học có {subjectGroupId} không tồn tại!!!");
+                }
+                else
+                {
+                    query = query.Where(qr => qr.Test.Subject.SubjectGroup.Id == subjectGroupId.Value);
+                }
+            }
+
+            if (gradeLevelsId != null || gradeLevelsId.HasValue)
+            {
+                var gradeLevel = _subjectRepo.GetSubjectById(gradeLevelsId.Value);
+                if (gradeLevel == null)
+                {
+                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Khoa khối có {gradeLevelsId} không tồn tại!!!");
+                }
+                else
+                {
+                    query = query.Where(qr => qr.Test.GradeLevel.Id == gradeLevelsId.Value);
+                }
+            }
+
+            if (date != null)
+            {
+                DateTime dateValue;
+                var check = DateTime.TryParse(date, out dateValue);
+                if (check)
+                {
+                    query = query.Where(qr => qr.Test.StartTime.HasValue && qr.Test.StartTime.Value.Date == dateValue.Date);
+                }
+                else
+                {
+                    return ApiResponse<ICollection<TestByStudentResponse>>.BadRequest($"Date không đúng định dạng!!!");
+                }
+            }
+
+            var total = query.Count();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<TestByStudentResponse>>(result);
+
+            return result.Any()
+                    ? ApiResponse<ICollection<TestByStudentResponse>>.Success(
+                            data: response,
+                            totalItems: total,
+                            pageSize: pageSize,
+                            page: page
+                        )
+                    : ApiResponse<ICollection<TestByStudentResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public ApiResponse<TestResponse> GetTestById(long id)
             {
                 var Test = _testRepo.GetTestById(id);
                 return Test != null
@@ -80,7 +182,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 
 
-                var Test = _testRepo.GetTests().FirstOrDefault(ts => ts.Name?.ToLower() == name.ToLower());
+                var Test = _testRepo.GetTests().ToList().FirstOrDefault(ts => ts.Name?.ToLower() == name.ToLower());
                 return Test != null
                     ? ApiResponse<TestResponse>.Success(_mapper.Map<TestResponse>(Test))
                     : ApiResponse<TestResponse>.NotFound($"Không tìm thấy bài kiểm tra có tên: {name}");
@@ -98,10 +200,10 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.Fail("ID trong token không hợp lệ");
             }
 
-            var semester = _semesterRepo.GetSemesterById(testRequest.SemesterId);
-            if( semester == null)
+            var grade_levels = _gradeLevelRepo.GetGradeLevelById(testRequest.GradeLevelsId);
+            if(grade_levels == null)
             {
-                return ApiResponse<TestResponse>.NotFound($"Học kỳ có id {testRequest.SemesterId} không tồn tạ!!!");
+                return ApiResponse<TestResponse>.NotFound($"Học kỳ có id {testRequest.GradeLevelsId} không tồn tạ!!!");
             }
             var subject = _subjectRepo.GetSubjectById(testRequest.SubjectId);
             if (subject == null)
@@ -146,10 +248,10 @@ namespace ISC_ELIB_SERVER.Services
                     return ApiResponse<TestResponse>.NotFound($"Bài kiểm tra có id {id} không tồn tạ!!!");
                 }
 
-            var semester = _semesterRepo.GetSemesterById(testRequest.SemesterId);
-            if (semester == null)
+            var gradeLevelsId = _gradeLevelRepo.GetGradeLevelById(testRequest.GradeLevelsId);
+            if (gradeLevelsId == null)
             {
-                return ApiResponse<TestResponse>.NotFound($"Học kỳ có id {testRequest.SemesterId} không tồn tạ!!!");
+                return ApiResponse<TestResponse>.NotFound($"Học kỳ có id {testRequest.GradeLevelsId} không tồn tạ!!!");
             }
             var subject = _subjectRepo.GetSubjectById(testRequest.SubjectId);
             if (subject == null)
@@ -175,11 +277,11 @@ namespace ISC_ELIB_SERVER.Services
 
     public ApiResponse<Test> DeleteTest(long id)
          {
-                var success = _testRepo.DeleteTest(id);
-                return success
+            var success = _testRepo.DeleteTest(id);
+            return success
                     ? ApiResponse<Test>.Success()
                     : ApiResponse<Test>.NotFound("Không tìm thấy bài kiểm tra để xóa");
          }
-    } 
+    }
 }
 

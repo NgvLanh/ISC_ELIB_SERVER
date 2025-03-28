@@ -92,16 +92,44 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<StudentInfoResponses>.Success();
         }
 
-        public ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize)
+        // Thêm phương thức lấy danh sách học viên theo UserId
+        public ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId)
         {
-            var query = _repository.GetStudentInfoByClassId(classId).AsQueryable();
+            var studentInfos = _repository.GetStudentInfosByUserId(userId);
+            if (studentInfos == null || !studentInfos.Any())
+            {
+                return ApiResponse<ICollection<StudentInfoUserResponse>>.NotFound($"Không tìm thấy thông tin học viên với UserId #{userId}");
+            }
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var response = _mapper.Map<ICollection<StudentInfoResponses>>(result);
+            var response = _mapper.Map<ICollection<StudentInfoUserResponse>>(studentInfos);
+            return ApiResponse<ICollection<StudentInfoUserResponse>>.Success(response);
+        }
 
-            return result.Any()
-                ? ApiResponse<ICollection<StudentInfoResponses>>.Success(response)
-                : ApiResponse<ICollection<StudentInfoResponses>>.NotFound("Không có dữ liệu sinh viên cho lớp học này");
+        // Thêm phương thức lấy danh sách học viên theo lớp với thông tin đầy đủ
+        public ApiResponse<ICollection<StudentInfoClassResponse>> GetStudentsByClass(int classId)
+        {
+            var studentInfos = _repository.GetStudentsByClass(classId);
+
+            if (studentInfos == null || !studentInfos.Any())
+            {
+                return ApiResponse<ICollection<StudentInfoClassResponse>>.NotFound($"Không tìm thấy sinh viên cho lớp ID #{classId}");
+            }
+
+            var response = _mapper.Map<ICollection<StudentInfoClassResponse>>(studentInfos);
+            return ApiResponse<ICollection<StudentInfoClassResponse>>.Success(response);
+        }
+
+        // Thêm phương thức lấy danh sách học viên theo user figma
+        public ApiResponse<ICollection<StudentInfoUserResponse>> GetAllStudents()
+        {
+            var studentInfos = _repository.GetAllStudents();
+            if (studentInfos == null || !studentInfos.Any())
+            {
+                return ApiResponse<ICollection<StudentInfoUserResponse>>.NotFound("Không có học viên nào.");
+            }
+
+            var response = _mapper.Map<ICollection<StudentInfoUserResponse>>(studentInfos);
+            return ApiResponse<ICollection<StudentInfoUserResponse>>.Success(response);
         }
 
     }

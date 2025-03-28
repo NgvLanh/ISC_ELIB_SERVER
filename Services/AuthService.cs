@@ -10,7 +10,6 @@ using System.Text;
 using System.Security.Cryptography;
 using DotNetEnv;
 using Autofac.Core;
-//using ISC_ELIB_SERVER.Migrations;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -161,7 +160,7 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         public (string, RefreshToken?) GenerateTokens(User user,
-                                                            int accessExpire = 15,
+                                                            int accessExpire = 75,
                                                             int refreshExpire = 600)
         {
 
@@ -211,7 +210,7 @@ namespace ISC_ELIB_SERVER.Services
 
         public (string?, RefreshToken?) GenerateTokens(User user,
                                                             RefreshToken comparedToken,
-                                                            int accessExpire = 15,
+                                                            int accessExpire = 75,
                                                             int refreshExpire = 600)
         {
             if (comparedToken == null || comparedToken.ExpireDate < DateTime.UtcNow)

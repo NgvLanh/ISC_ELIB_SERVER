@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Models
@@ -21,7 +22,11 @@ namespace ISC_ELIB_SERVER.Models
         public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
+
+        [Column("hours_semester_1")] 
         public int? HoursSemester1 { get; set; }
+
+        [Column("hours_semester_2")]
         public int? HoursSemester2 { get; set; }
         public int? SubjectGroupId { get; set; }
         public int? SubjectTypeId { get; set; }

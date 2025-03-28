@@ -36,6 +36,7 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
         public virtual User? User { get; set; }
 
+
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }
         public virtual ICollection<GradeLevel> GradeLevels { get; set; }
         public virtual ICollection<Resignation> Resignations { get; set; }

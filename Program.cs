@@ -251,6 +251,7 @@ builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
+
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
 //
@@ -277,6 +278,7 @@ builder.Services.AddScoped<ITeacherInfoService, TeacherInfoService>();
 builder.Services.AddScoped<StudentInfoRepo>();
 builder.Services.AddScoped<IStudentInfoService, StudentInfoService>();
 
+
 //Role
 builder.Services.AddScoped<RoleRepo>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -296,6 +298,12 @@ builder.Services.AddScoped<ISemesterService, SemesterService>();
 //GradeLevel
 builder.Services.AddScoped<GradeLevelRepo>();
 builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
+
+//
+builder.Services.AddScoped<EntryTypeRepo>();
+
+
+
 
 //EducationLevel
 builder.Services.AddScoped<EducationLevelRepo>();
@@ -326,7 +334,7 @@ builder.Services.AddScoped<IClassesService, ClassesService>();
 builder.Services.AddScoped<RetirementRepo>();
 builder.Services.AddScoped<IRetirementService, RetirementService>();
 
-//TeacherList
+//TeacherList                       
 builder.Services.AddScoped<TeacherListRepo>();
 builder.Services.AddScoped<ITeacherListService, TeacherListService>();
 
@@ -339,7 +347,6 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<EntryTypeRepo>();
 builder.Services.AddScoped<IEntryTypeService, EntryTypeService>();
 
-
 //RefreshToken
 builder.Services.AddScoped<RefreshTokenRepo>();
 builder.Services.AddScoped<IRefreshToken, RefreshTokeService>();
@@ -351,6 +358,19 @@ builder.Services.AddScoped<ISupportService, SupportService>();
 //DashboardTeacher
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
+
+
+//Achivemenet
+builder.Services.AddScoped<AchivementRepo>();
+builder.Services.AddScoped<IAchivementService, AchivementService>();
+
+//Reserve
+builder.Services.AddScoped<ReserveRepo>();
+builder.Services.AddScoped<IReserveService, ReserveService>();
+
+//TransferSchoolRepo
+builder.Services.AddScoped<TransferSchoolRepo>();
+builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -381,10 +401,26 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     .Where(t => t.Name.EndsWith("Service"))
     .AsImplementedInterfaces()
     .InstancePerLifetimeScope();
+    containerBuilder.RegisterType<TemporaryPasswordService>()
+    .As<ITemporaryPasswordService>()
+    .SingleInstance();
 
 
 });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<SwaggerFileUploadOperationFilter>(); // Gắn filter
+});
+
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(TeacherFamilyMapper));
+
+//techerfamily
+builder.Services.AddScoped<TeacherFamilyRepo>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -396,6 +432,7 @@ builder.Services.AddSwaggerGen(c =>
         Format = "int32"
     });
 });
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var app = builder.Build();
 

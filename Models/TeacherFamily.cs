@@ -2,6 +2,7 @@
 
 namespace ISC_ELIB_SERVER.Models
 {
+
         public partial class TeacherFamily
         {
                 public int Id { get; set; }
@@ -15,6 +16,7 @@ namespace ISC_ELIB_SERVER.Models
                 public int WardCode { get; set; }
                 public bool Active { get; set; }
 
-                public virtual TeacherInfo? Teacher { get; set; }
+      
+        public virtual TeacherInfo? Teacher { get; set; }
         }
 }

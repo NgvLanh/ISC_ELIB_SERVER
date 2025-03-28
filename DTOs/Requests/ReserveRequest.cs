@@ -27,7 +27,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public int ClassId { get; set; }
 
         [Required(ErrorMessage = "Mã học kỳ không được để trống")]
-        public int SemesterId { get; set; } // Corrected property name
+        public int? SemestersId { get; set; }
 
         [Required(ErrorMessage = "Mã lãnh đạo không được để trống")]
         public int LeadershipId { get; set; }

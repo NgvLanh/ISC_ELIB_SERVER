@@ -80,8 +80,10 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
-        public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
 
+
+        public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
+        public virtual DbSet<TestUser> TestUsers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -128,10 +130,6 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
-
                 entity.Property(e => e.Content)
                     .HasMaxLength(255)
                     .HasColumnName("content");
@@ -147,11 +145,6 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.TypeId).HasColumnName("type_id");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Achievements)
-                    .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("fk_achievement_type_id");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Achievements)
@@ -1382,6 +1375,10 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
+                entity.Property(e => e.Date)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("date");
+
                 entity.Property(e => e.Status).HasColumnName("status");
             });
 
@@ -1685,7 +1682,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
-                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
+                entity.Property(e => e.GradeLevelsId).HasColumnName("grade_levels_id");
 
                 entity.Property(e => e.StartTime)
                     .HasColumnType("timestamp without time zone")
@@ -1708,6 +1705,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Tests)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_tests_user_id");
+
+                entity.HasOne(d => d.GradeLevel)
+                    .WithMany(p => p.Tests)
+                    .HasForeignKey(d => d.GradeLevelsId)
+                    .HasConstraintName("fk_tests_grade_levels");
             });
 
             modelBuilder.Entity<TestAnswer>(entity =>
@@ -2021,10 +2023,6 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
-
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
@@ -2214,7 +2212,8 @@ namespace ISC_ELIB_SERVER.Models
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ClassId).HasColumnName("class_id");
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-
+            entity.Property(e => e.HoursSemester1).HasColumnName("hours_semester_1");
+            entity.Property(e => e.HoursSemester2).HasColumnName("hours_semester_2");
             entity.HasOne(d => d.Class)
                 .WithMany(p => p.ClassSubjects)
                 .HasForeignKey(d => d.ClassId)
@@ -2225,6 +2224,42 @@ namespace ISC_ELIB_SERVER.Models
                 .HasForeignKey(d => d.SubjectId)
                 .HasConstraintName("fk_class_subject_subject_id");
         });
+            modelBuilder.Entity<TestUser>(entity =>
+            {
+                entity.ToTable("test_users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.TestId).HasColumnName("test_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.HasOne(d => d.Test)
+                    .WithMany(p => p.TestUsers)
+                    .HasForeignKey(d => d.TestId)
+                    .HasConstraintName("fk_test_users_test_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.TestUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_test_users_user_id");
+            });
+
+            modelBuilder.Entity<ClassUser>(entity =>
+            {
+                entity.ToTable("class_users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.ClassId).HasColumnName("class_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.ClassUsers)
+                    .HasForeignKey(d => d.ClassId)
+                    .HasConstraintName("fk_test_users_class_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ClassUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_test_users_user_id");
+            });
 
 
             OnModelCreatingPartial(modelBuilder);

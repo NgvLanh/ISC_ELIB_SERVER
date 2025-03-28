@@ -11,9 +11,6 @@ namespace ISC_ELIB_SERVER.Models
         public string? File { get; set; }
         public int? UserId { get; set; }
         public int? TypeId { get; set; }
-        public bool Active { get; set; }
-
-        public virtual Type? Type { get; set; }
         public virtual User? User { get; set; }
     }
 }
