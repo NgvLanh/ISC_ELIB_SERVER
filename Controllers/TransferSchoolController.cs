@@ -1,63 +1,80 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Sprache;
+using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Models;
 
-
-namespace ISC_ELIB_SERVER.Controllers
+[Route("api/transfer-school")]
+[ApiController]
+public class TransferSchoolController : ControllerBase
 {
-    [ApiController]
-    [Route("api/TransferSchool")]
-    public class TransferSchoolController : ControllerBase
+    private readonly TransferSchoolRepo _transferSchoolRepo;
+
+    public TransferSchoolController(TransferSchoolRepo transferSchoolRepo)
     {
-        private readonly ITransferSchoolService _service;
+        _transferSchoolRepo = transferSchoolRepo;
+    }
 
-        public TransferSchoolController(ITransferSchoolService service)
+    /// <summary>
+    /// 1️⃣ Lấy danh sách học sinh đã chuyển trường
+    /// </summary>
+    [HttpGet("list")]
+    public IActionResult GetTransferSchoolList()
+    {
+        var result = _transferSchoolRepo.GetTransferSchoolList();
+        return Ok(new { message = "Lấy danh sách học sinh chuyển trường thành công", data = result });
+    }
+
+    /// <summary>
+    /// 2️⃣ Lấy thông tin chuyển trường của một học sinh theo ID
+    /// </summary>
+    [HttpGet("student/{studentInfoId}")]
+    public IActionResult GetTransferSchoolByStudentId(int studentInfoId)
+    {
+        var result = _transferSchoolRepo.GetTransferSchoolByStudentId(studentInfoId);
+        if (result == null)
         {
-            _service = service;
+            return NotFound(new { message = "Không tìm thấy thông tin chuyển trường cho học sinh này" });
+        }
+        return Ok(new { message = "Lấy thông tin chi tiết chuyển trường thành công", data = result });
+    }
+
+    /// <summary>
+    /// 3️⃣ Thêm mới thông tin chuyển trường
+    /// </summary>
+/*    [HttpPost("add/{studentId}")]
+    public IActionResult PostTransferSchool(int studentId, [FromBody] TransferSchool transferSchool)
+    {
+        if (transferSchool == null)
+        {
+            return BadRequest(new { message = "Dữ liệu không hợp lệ" });
         }
 
-        [HttpGet]
-        public IActionResult GetTransferSchools([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
+        var result = _transferSchoolRepo.PostTransferSchool(studentId, transferSchool);
+        if (result == null)
         {
-            var response = _service.GetTransferSchools(page, pageSize, search, sortColumn, sortOrder);
-            return Ok(response);
+            return BadRequest(new { message = "Thêm thông tin chuyển trường thất bại" });
+        }
+        return Ok(new { message = "Thêm thông tin chuyển trường thành công", data = result });
+    }
+*/
+
+    /// <summary>
+    /// 4️⃣ Cập nhật thông tin chuyển trường
+    /// </summary>
+    [HttpPut("update/{id}")]
+    public IActionResult UpdateTransferSchool(int id, [FromBody] TransferSchool transferSchool)
+    {
+        if (transferSchool == null)
+        {
+            return BadRequest(new { message = "Dữ liệu cập nhật không hợp lệ" });
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetTransferSchoolById(long id)
+        var result = _transferSchoolRepo.UpdateTransferSchool(id, transferSchool);
+        if (result == null)
         {
-            var response = _service.GetTransferSchoolById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            return NotFound(new { message = "Không tìm thấy thông tin chuyển trường để cập nhật" });
         }
-
-        [HttpPost]
-        public IActionResult CreateTransferSchool([FromBody] TransferSchool_AddRequest TransferSchoolRequest)
-        {
-            var response = _service.CreateTransferSchool(TransferSchoolRequest);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateTransferSchool(long id, [FromBody] TransferSchool_UpdateRequest TransferSchool)
-        {
-            var response = _service.UpdateTransferSchool(id , TransferSchool);
-
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTransferSchool(long id)
-        {
-            var response = _service.DeleteTransferSchool(id);
-            var result = _service.GetTransferSchoolsNormal();
-            return response.Code == 0 ? Ok(result) : BadRequest(result);
-        }
-
+        return Ok(new { message = "Cập nhật thông tin chuyển trường thành công", data = result });
     }
 }
