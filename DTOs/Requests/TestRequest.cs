@@ -31,9 +31,11 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool? FileSubmit { get; set; }
 
         [Required(ErrorMessage = "Không được để trống.")]
-        public long SemesterId { get; set; }
+        public long GradeLevelsId { get; set; }
 
         [Required(ErrorMessage = "Không được để trống.")]
         public long SubjectId { get; set; }
+        [Required(ErrorMessage = "Không được để trống.")]
+        public int? TeacherId { get; set; }
     }
 }

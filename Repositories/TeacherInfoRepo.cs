@@ -26,13 +26,13 @@ namespace ISC_ELIB_SERVER.Repositories
         // Read: Lấy tất cả TeacherInfos từ database
         public List<TeacherInfo> GetAllTeacherInfo()
         {
-            return _context.TeacherInfos.ToList();
+            return _context.TeacherInfos.Where(t => t.Active).ToList();
         }
 
         // Read: Lấy TeacherInfo theo Id
         public TeacherInfo GetTeacherInfoById(int id)
         {
-            return _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
+            return _context.TeacherInfos.FirstOrDefault(t => t.Id == id && t.Active);
         }
 
         // Update: Cập nhật thông tin TeacherInfo
@@ -48,7 +48,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var teacherInfo = _context.TeacherInfos.FirstOrDefault(t => t.Id == id);
             if (teacherInfo != null)
             {
-                _context.TeacherInfos.Remove(teacherInfo);
+                teacherInfo.Active = false; // Xóa mềm
                 _context.SaveChanges();
             }
         }

@@ -8,11 +8,14 @@ namespace ISC_ELIB_SERVER.Repositories
         Class GetClassById(int id);
         Class CreateClass(Class classes);
         Class? UpdateClass(Class classes);
-        bool DeleteClass(int id);
+        bool DeleteClasses(List<int> ids);
         Task<IDisposable> BeginTransactionAsync();
         Task<Class> CreateClassAsync(Class classEntity);
         Task<Class> UpdateClassAsync(Class classEntity);
         Task SaveChangesAsync();
+
+        IQueryable<Subject> GetSubjects();
+        Task AddRangeAsync(List<Class> newClasses);
     }
 
     public class ClassRepo : IClassesRepo
@@ -128,18 +131,31 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-        public bool DeleteClass(int id)
+        public bool DeleteClasses(List<int> ids)
         {
-            var existingClass = _context.Classes.Find(id);
-
-            if (existingClass == null)
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                return false;
+                var classes = _context.Classes.Where(c => ids.Contains(c.Id)).ToList();
+                if (!classes.Any()) return false;
+
+                foreach (var classItem in classes)
+                {
+                    classItem.Active = false;
+                }
+
+                _context.SaveChanges();
+                transaction.Commit();
+                return true;
             }
-            existingClass.Active = false;
-            _context.Classes.Update(existingClass);
-            return _context.SaveChanges() > 0;
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
+
+
         public async Task<Class> CreateClassAsync(Class classEntity)
         {
             await _context.Classes.AddAsync(classEntity);
@@ -182,6 +198,20 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public async Task SaveChangesAsync()
         {
+            await _context.SaveChangesAsync();
+        }
+
+        public IQueryable<Subject> GetSubjects()
+        {
+            return _context.Subjects.AsQueryable();
+        }
+
+        public async Task AddRangeAsync(List<Class> newClasses)
+        {
+            if (newClasses == null || !newClasses.Any())
+                return; 
+
+            await _context.Classes.AddRangeAsync(newClasses);
             await _context.SaveChangesAsync();
         }
 

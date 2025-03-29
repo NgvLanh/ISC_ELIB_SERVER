@@ -16,13 +16,6 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public IActionResult GetClassType([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
-        {
-            var response = _service.GetClassTypes(page, pageSize, sortColumn, sortOrder);
-            return Ok(response);
-        }
-
         [HttpPost]
         public IActionResult CreateClassType([FromBody] ClassTypeRequest classTypeRequest)
         {
@@ -53,32 +46,20 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetClassTypeById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
-        [HttpPost("by-name")]
-        public IActionResult GetClassTypeByName([FromBody] NameRequest request)
+        [HttpGet]
+        public IActionResult GetClassTypesBySchoolYear(
+            [FromQuery] int? searchYear = null,
+            [FromQuery] string? searchName = null, 
+            [FromQuery] int? page = 1,
+            [FromQuery] int? pageSize = 10,
+            [FromQuery] string? sortColumn = "Id",
+            [FromQuery] string? sortOrder = "asc")
         {
-            if (string.IsNullOrWhiteSpace(request.Name))
-            {
-                return BadRequest(ApiResponse<ClassTypeResponse>.BadRequest("Tên không được để trống"));
-            }
 
-            var response = _service.GetClassTypeByName(request);
-            return StatusCode(response.Code, response);
-        }
-
-        [HttpPost("by-school-year")]
-        public IActionResult GetClassTypesBySchoolYear([FromBody] YearRequest request)
-        {
-            if (request == null || string.IsNullOrWhiteSpace(request.Year))
-            {
-                return BadRequest(ApiResponse<ICollection<ClassTypeResponse>>.BadRequest("Niên khóa không được để trống"));
-            }
-
-            var response = _service.GetClassTypesBySchoolYear(request);
+            var response = _service.GetClassTypes(page, pageSize, searchYear, searchName, sortColumn, sortOrder);
 
             return StatusCode(response.Code, response);
         }
-
-
 
 
 

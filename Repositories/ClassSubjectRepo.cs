@@ -13,6 +13,7 @@ namespace ISC_ELIB_SERVER.Repositories
         Task<bool> AddClassSubjectsAsync(int classId, List<int> subjectIds);
         Task<bool> RemoveClassSubjectsByClassIdAsync(int classId, List<int> subjectIds);
         Task<bool> RemoveClassSubjectsByClassIdAsync(int classId); // Sửa trả về Task<bool>
+        Task AddClassSubjectsAsync(List<ClassSubject> classSubjects);
     }
 
     public class ClassSubjectRepo : IClassSubjectRepo
@@ -58,7 +59,7 @@ namespace ISC_ELIB_SERVER.Repositories
             try
             {
                 var classSubjects = await _context.ClassSubjects
-                    .Where(cs => cs.ClassId == classId && subjectIds.Contains(cs.Id)) // Sửa chỗ này
+                    .Where(cs => cs.ClassId == classId && subjectIds.Contains(cs.Id))
                     .ToListAsync();
 
                 if (classSubjects.Any())
@@ -96,5 +97,15 @@ namespace ISC_ELIB_SERVER.Repositories
                 return false;
             }
         }
+
+        public async Task AddClassSubjectsAsync(List<ClassSubject> classSubjects)
+        {
+            if (classSubjects == null || !classSubjects.Any())
+                throw new ArgumentException("Danh sách môn học không được rỗng");
+
+            await _context.ClassSubjects.AddRangeAsync(classSubjects);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

@@ -47,21 +47,12 @@ namespace ISC_ELIB_SERVER.Repositories
             var studentInfo = _context.StudentInfos.FirstOrDefault(s => s.Id == id);
             if (studentInfo != null)
             {
-                _context.StudentInfos.Remove(studentInfo);
+                studentInfo.Active = false;
                 _context.SaveChanges();
             }
         }
 
-        // Lọc theo ClassId
-        public List<StudentInfo> GetStudentInfoByClassId(int classId)
-        {
-            return _context.StudentInfos
-                .Include(si => si.User)  // Đảm bảo lấy dữ liệu User
-                .Where(si => si.User != null && si.User.ClassId == classId)
-                .ToList();
-        }
-
-        // Lọc theo UserId
+        // Lọc theo thông tin bảng UserId
         public List<StudentInfo> GetStudentInfosByUserId(int userId)
         {
             return _context.StudentInfos

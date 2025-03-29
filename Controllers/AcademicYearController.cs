@@ -41,7 +41,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAcademicYear(long id, [FromBody] AcademicYearRequest request)
+        public IActionResult UpdateAcademicYear(long id, [FromBody] ICollection<AcademicYearSemesterRequest> request)
         {
             var response = _service.UpdateAcademicYear(id, request);
             return response.Code == 0 ? Ok(response) : BadRequest(response);

@@ -359,6 +359,11 @@ builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<DashboardTeacherRepo>();
 builder.Services.AddScoped<IDashboardTeacherService, DashboardTeacherService>();
 
+
+//Achivemenet
+builder.Services.AddScoped<AchivementRepo>();
+builder.Services.AddScoped<IAchivementService, AchivementService>();
+
 //Reserve
 builder.Services.AddScoped<ReserveRepo>();
 builder.Services.AddScoped<IReserveService, ReserveService>();
@@ -366,7 +371,6 @@ builder.Services.AddScoped<IReserveService, ReserveService>();
 //TransferSchoolRepo
 builder.Services.AddScoped<TransferSchoolRepo>();
 builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
-
 
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -403,6 +407,12 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 
 });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<SwaggerFileUploadOperationFilter>(); // Gắn filter
+});
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -422,6 +432,7 @@ builder.Services.AddSwaggerGen(c =>
         Format = "int32"
     });
 });
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var app = builder.Build();
 

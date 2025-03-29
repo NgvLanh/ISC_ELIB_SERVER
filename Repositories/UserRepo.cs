@@ -16,13 +16,13 @@ namespace ISC_ELIB_SERVER.Repositories
         // Lấy tất cả các User
         public ICollection<User> GetUsers()
         {
-            return _context.Users.ToList();
+            return _context.Users.Where( u => u.Active).ToList();
         }
 
         // Lấy User theo Id
         public User GetUserById(int id)
         {
-            return _context.Users.FirstOrDefault(u => u.Id == id);
+            return _context.Users.FirstOrDefault(u => u.Id == id && u.Active);
         }
 
         // Tạo mới một User
@@ -47,7 +47,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var user = GetUserById(id);
             if (user != null)
             {
-                _context.Users.Remove(user);
+                user.Active = false;
                 return _context.SaveChanges() > 0;
             }
             return false;

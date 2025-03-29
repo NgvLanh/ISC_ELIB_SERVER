@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -61,7 +62,6 @@ namespace ISC_ELIB_SERVER.Models
         
         public virtual Class? Class { get; set; }
         public virtual AcademicYear? AcademicYear { get; set; }
-    
         public virtual EntryType? EntryTypeNavigation { get; set; }
         public virtual Role? Role { get; set; }
         public virtual UserStatus? UserStatus { get; set; }
@@ -87,7 +87,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Test> Tests { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
         public virtual ICollection<TransferSchool> TransferSchools { get; set; }
-
         public virtual School? School { get; set; }  // Liên kết tới School
+        [JsonIgnore]
+        public virtual ICollection<TestUser> TestUsers { get; set; }
     }
 }
