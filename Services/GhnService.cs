@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Linq;
+using ISC_ELIB_SERVER.DTOs.Responses;
 
 public class GhnService
 {
@@ -34,6 +35,46 @@ public class GhnService
         catch (Exception ex)
         {
             return ($"Lỗi: {ex.Message}", "", "");
+        }
+    }
+
+    public async Task<ApiResponse<Province[]>> GetProvinces()
+    {
+        try
+        {
+            var provinceJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/province");
+            return JsonSerializer.Deserialize<ApiResponse<Province[]>>(provinceJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Lỗi: {ex.Message}");
+            return ApiResponse<Province[]>.Fail("Lỗi khi lấy danh sách tỉnh thành phố");
+        }
+    }
+    public async Task<ApiResponse<District[]>> GetDistricts(int provinceId)
+    {
+        try
+        {
+            var districtJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/district?province_id={provinceId}");
+            return JsonSerializer.Deserialize<ApiResponse<District[]>>(districtJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Lỗi: {ex.Message}");
+            return ApiResponse<District[]>.Fail("Lỗi khi lấy danh sách quận huyện");
+        }
+    }
+    public async Task<ApiResponse<Ward[]>> GetWards(int districtId)
+    {
+        try
+        {
+            var wardJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/ward?district_id={districtId}");
+            return JsonSerializer.Deserialize<ApiResponse<Ward[]>>(wardJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Lỗi: {ex.Message}");
+            return ApiResponse<Ward[]>.Fail("Lỗi khi lấy danh sách xã phường");
         }
     }
 
