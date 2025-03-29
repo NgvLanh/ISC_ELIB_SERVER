@@ -892,7 +892,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.File).HasColumnName("file");
 
-                entity.Property(e => e.LeadershipId).HasColumnName("leadership_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
 
@@ -904,11 +904,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("retention_period");
 
-                entity.Property(e => e.Semester)
-                    .HasMaxLength(50)
-                    .HasColumnName("semester");
-
-                entity.Property(e => e.SemestersId).HasColumnName("semesters_id");
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
 
                 entity.Property(e => e.StudentId).HasColumnName("student_id");
 
@@ -916,6 +912,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Reserves)
                     .HasForeignKey(d => d.StudentId)
                     .HasConstraintName("fk_reserve_student_id");
+                entity.HasOne(d => d.Semester)
+                    .WithMany()  // Nếu trong Semester có danh sách Reserves, thay bằng .WithMany(s => s.Reserves)
+                    .HasForeignKey(d => d.SemesterId)
+                    .HasConstraintName("fk_reserve_semester_id")
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<Resignation>(entity =>

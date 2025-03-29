@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -19,17 +20,13 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [MaxLength(255, ErrorMessage = "Tên tệp không được vượt quá 255 ký tự")]
         public string? File { get; set; }
 
-        [Required(ErrorMessage = "Học kỳ không được để trống")]
-        [MaxLength(50, ErrorMessage = "Học kỳ không được vượt quá 50 ký tự")]
-        public string Semester { get; set; } = string.Empty;
-
         [Required(ErrorMessage = "Mã lớp không được để trống")]
         public int ClassId { get; set; }
 
         [Required(ErrorMessage = "Mã học kỳ không được để trống")]
-        public int? SemestersId { get; set; }
+        public int? SemesterId { get; set; }
 
-        [Required(ErrorMessage = "Mã lãnh đạo không được để trống")]
-        public int LeadershipId { get; set; }
+        [JsonIgnore]  // Ẩn khỏi request & response JSON
+        public int UserId { get; set; }
     }
 }
