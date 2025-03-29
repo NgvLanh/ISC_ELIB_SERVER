@@ -19,9 +19,10 @@ namespace ISC_ELIB_SERVER.Services
             private readonly SemesterRepo _semesterRepo;
             private readonly SubjectRepo _subjectRepo;
             private readonly UserRepo _userRepo;
+            private readonly SubjectGroupRepo _subjectGroupRepo;
             private readonly IMapper _mapper;
 
-            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo)
+            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo)
             {
                 _testRepo = testRepo;
                 _userRepo = userRepo;
@@ -29,6 +30,7 @@ namespace ISC_ELIB_SERVER.Services
                 _subjectRepo = subjectRepo;
                 _mapper = mapper;
                 _gradeLevelRepo = gradeLevelRepo;
+                _subjectGroupRepo = subjectGroupRepo;
             }
 
             public ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -71,7 +73,7 @@ namespace ISC_ELIB_SERVER.Services
                         : ApiResponse<ICollection<TestResponse>>.NotFound("Không có dữ liệu");
             }
 
-        public ApiResponse<ICollection<TestByStudentResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectId, long? gradeLevelsId, string? date, string? idUser)
+        public ApiResponse<ICollection<TestByStudentResponse>> GetTestesByStudent(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int status, long? subjectGroupId, long? gradeLevelsId, string? date, string? idUser)
         {
             if (string.IsNullOrEmpty(idUser))
             {
@@ -108,16 +110,16 @@ namespace ISC_ELIB_SERVER.Services
                 query = query.Where(qr => qr.Test.EndTime <= now);
             }
 
-            if (subjectId != null || subjectId.HasValue)
+            if (subjectGroupId != null || subjectGroupId.HasValue)
             {
-                var subject = _subjectRepo.GetSubjectById(subjectId.Value);
-                if (subject == null)
+                var subjectGroup = _subjectGroupRepo.GetSubjectGroupById(subjectGroupId.Value);
+                if (subjectGroup == null)
                 {
-                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Môn học có {subjectId} không tồn tại!!!");
+                    return ApiResponse<ICollection<TestByStudentResponse>>.NotFound($"Môn học có {subjectGroupId} không tồn tại!!!");
                 }
                 else
                 {
-                    query = query.Where(qr => qr.Test.Subject.Id == subjectId.Value);
+                    query = query.Where(qr => qr.Test.Subject.SubjectGroup.Id == subjectGroupId.Value);
                 }
             }
 

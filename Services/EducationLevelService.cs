@@ -63,6 +63,11 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
             }
 
+            //if (EducationLevelRequest.IsAnnualSystem == false && EducationLevelRequest.IsCredit == false)
+            //{
+            //    return ApiResponse<EducationLevelResponse>.BadRequest("Vui lòng chọn 1 trong 2 hệ niên chế hoặc tín chỉ");
+            //}
+
             var newEducationLevel = new EducationLevel
             {
                 Name = EducationLevelRequest.Name,

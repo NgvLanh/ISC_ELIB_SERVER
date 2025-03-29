@@ -15,16 +15,34 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public IActionResult GetTeachingAssignments(
+        [HttpGet("class-status-true")]
+        public IActionResult GetTeachingAssignmentsClassStatusTrue(
             [FromQuery] int? page = 1,
             [FromQuery] int? pageSize = 10,
             [FromQuery] string? sortColumn = "Id",
-            [FromQuery] string? sortOrder = "asc")
+            [FromQuery] string? sortOrder = "asc",
+            [FromQuery] string? searchSubject = null,
+            [FromQuery] int? subjectId = null,
+            [FromQuery] int? subjectGroupId = null)
         {
-            var response = _service.GetTeachingAssignments(page, pageSize, sortColumn, sortOrder);
+            var response = _service.GetTeachingAssignmentsClassStatusTrue(page, pageSize, sortColumn, sortOrder, searchSubject, subjectId, subjectGroupId);
             return Ok(response);
         }
+
+        [HttpGet("class-status-false")]
+        public IActionResult GetTeachingAssignmentsClassStatusFalse(
+            [FromQuery] int? page = 1,
+            [FromQuery] int? pageSize = 10,
+            [FromQuery] string? sortColumn = "Id",
+            [FromQuery] string? sortOrder = "asc",
+            [FromQuery] string? searchSubject = null,
+            [FromQuery] int? subjectId = null,
+            [FromQuery] int? subjectGroupId = null)
+        {
+            var response = _service.GetTeachingAssignmentsClassStatusFalse(page, pageSize, sortColumn, sortOrder, searchSubject, subjectId, subjectGroupId);
+            return Ok(response);
+        }
+
 
         [HttpGet("{id}")]
         public IActionResult GetTeachingAssignmentById(int id)

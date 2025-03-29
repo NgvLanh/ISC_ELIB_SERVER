@@ -1993,7 +1993,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(255)
                     .HasColumnName("attachment_path");
 
-                entity.Property(e => e.LeadershipId).HasColumnName("leadership_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
 
@@ -2239,6 +2239,24 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TestUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_test_users_user_id");
+            });
+
+            modelBuilder.Entity<ClassUser>(entity =>
+            {
+                entity.ToTable("class_users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.ClassId).HasColumnName("class_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.ClassUsers)
+                    .HasForeignKey(d => d.ClassId)
+                    .HasConstraintName("fk_test_users_class_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ClassUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_test_users_user_id");
             });

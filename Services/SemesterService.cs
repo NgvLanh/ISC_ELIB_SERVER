@@ -62,7 +62,7 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<object>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<object>>.Success(response) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<object>>.Success(response, page, pageSize, _repository.GetCourseOfSemesters(UserId).Count) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<SemesterResponse> GetSemesterById(long id)

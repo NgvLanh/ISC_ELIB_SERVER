@@ -15,6 +15,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? UserId { get; set; }
         public bool Active { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual User? User { get; set; }  // Liên kết đến User
+        public virtual ICollection<TransferSchool> TransferSchools { get; set; } // Liên kết đến TransferSchool
     }
 }
