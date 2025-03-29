@@ -11,15 +11,17 @@ namespace ISC_ELIB_SERVER.Services
     public class SubjectTypeService : ISubjectTypeService
     {
         private readonly SubjectTypeRepo _subjectTypeRepo;
+        private readonly AcademicYearRepo _academicYearRepo;
         private readonly IMapper _mapper;
 
-        public SubjectTypeService(SubjectTypeRepo subjectTypeRepo, IMapper mapper)
+        public SubjectTypeService(SubjectTypeRepo subjectTypeRepo, IMapper mapper, AcademicYearRepo academicYearRepo)
         {
             _subjectTypeRepo = subjectTypeRepo;
             _mapper = mapper;
+            _academicYearRepo = academicYearRepo;
         }
 
-        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, string? startDate, string? endDate)
+        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _subjectTypeRepo.GetAllSubjectType().AsQueryable();
 
@@ -38,24 +40,6 @@ namespace ISC_ELIB_SERVER.Services
                 _ => query.OrderBy(us => us.Id)
             };
             query = query.Where(qr => qr.Active == true);
-
-            if (startDate != null && endDate != null)
-            {
-                DateTime startDateValue;
-                DateTime endDateValue;
-                var checkStart = DateTime.TryParse(startDate, out startDateValue);
-                var checkEnd = DateTime.TryParse(endDate, out endDateValue);
-                if (!checkStart)
-                {
-                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"startDate không đúng định dạng!!!");
-                }
-                if (!checkEnd)
-                {
-                    return ApiResponse<ICollection<SubjectTypeResponse>>.BadRequest($"endDate không đúng định dạng!!!");
-                }
-
-                query = query.Where(qr => qr.Date.HasValue && qr.Date.Value.Date.Year >= startDateValue.Date.Year && qr.Date.Value.Year <= endDateValue.Date.Year);             
-            }
 
             var total = query.Count();
 
@@ -93,8 +77,13 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectTypeResponse>.Conflict("Tên loại môn học đã tồn tại");
             }
+            var academicYear = _academicYearRepo.GetAcademicYearById(Convert.ToInt64(subjectTypeRequest.AcademicYearsId));
+            if (academicYear == null)
+            {
+                return ApiResponse<SubjectTypeResponse>.NotFound($"Niên khóa có id {subjectTypeRequest.AcademicYearsId} không tồn tại!!!");
+            }
+
             var subjectType = _mapper.Map<SubjectType>(subjectTypeRequest);
-            subjectType.Date = DateTime.Now;
 
             var create = _subjectTypeRepo.CreateSubjectType(subjectType);
             return ApiResponse<SubjectTypeResponse>.Success(_mapper.Map<SubjectTypeResponse>(create));
@@ -105,6 +94,11 @@ namespace ISC_ELIB_SERVER.Services
             var subjectType = _subjectTypeRepo.GetSubjectTypeById(id);
             if (subjectType == null) {
                 return ApiResponse<SubjectTypeResponse>.NotFound($"Không tìm thấy loại môn học có id {id}");
+            }
+            var academicYear = _academicYearRepo.GetAcademicYearById(Convert.ToInt64(subjectTypeRequest.AcademicYearsId));
+            if (academicYear == null)
+            {
+                return ApiResponse<SubjectTypeResponse>.NotFound($"Niên khóa có id {subjectTypeRequest.AcademicYearsId} không tồn tại!!!");
             }
             _mapper.Map(subjectTypeRequest, subjectType);
             var update = _subjectTypeRepo.UpdateSubjectType(subjectType);

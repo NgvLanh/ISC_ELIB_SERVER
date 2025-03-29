@@ -6,6 +6,6 @@
         public string? Name { get; set; }
         public bool? Status { get; set; }
         public string? Description { get; set; }
-        public DateTime? Date { get; set; }
+        public AcademicYearResponse? AcademicYear { get; set; }
     }
 }

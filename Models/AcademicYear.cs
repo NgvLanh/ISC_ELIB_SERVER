@@ -26,5 +26,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Exam> Exams { get; set; }
         public virtual ICollection<Semester> Semesters { get; set; }
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<SubjectType> SubjectTypes { get; set; }
+
     }
 }

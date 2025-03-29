@@ -1375,11 +1375,14 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
-                entity.Property(e => e.Date)
-                    .HasColumnType("timestamp without time zone")
-                    .HasColumnName("date");
+                entity.Property(e => e.AcademicYearsId).HasColumnName("academic_year_id");
 
                 entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.HasOne(d => d.AcademicYear)
+                    .WithMany(p => p.SubjectTypes)
+                    .HasForeignKey(d => d.AcademicYearsId)
+                    .HasConstraintName("fk_subject_types_academic_year_id");
             });
 
             modelBuilder.Entity<Support>(entity =>
