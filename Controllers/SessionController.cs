@@ -81,14 +81,20 @@ namespace ISC_ELIB_SERVER.Controllers
             return result.Code == 0 ? Ok(result) : BadRequest(result);
         }
 
-        [HttpGet("studentFiltered")]
+        [HttpGet("getSession-by-students")]
         public ActionResult<ICollection<SessionStudentResponse>> GetFilteredSessions(
             [FromQuery] SessionStudentFilterRequest request,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10
             )
         {
-            var sessions = _service.GetFilteredSessions(page, pageSize, request);
+            var userId = User.FindFirst("Id")?.Value;
+            if (userId == null)
+            {
+                return BadRequest(ApiResponse<ICollection<SessionStudentResponse>>.NotFound("No userId found"));
+            }
+            // request.studentId = int.Parse(userId);
+            var sessions = _service.GetFilteredSessions(int.Parse(userId), page, pageSize, request);
             return Ok(sessions);
         }
     }

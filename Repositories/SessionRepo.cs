@@ -90,23 +90,33 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-        public ICollection<SessionStudentResponse> GetFilteredSessions(SessionStudentFilterRequest request)
+        public ICollection<SessionStudentResponse> GetFilteredSessions(int userId, SessionStudentFilterRequest request)
         {
+            // mội học sinh chỉ có thể ở một lớp trong khóa-khối không thể có trong nhiều lớp trong cùng một khóa-khối
             var query = _context.Sessions.AsQueryable();
 
-            // Lấy lớp học của sinh viên
-            var student = _context.Users.Include(u => u.Class)
-                                        .FirstOrDefault(u => u.Id == request.studentId);
+            // Lấy tất cả lớp học của sinh viên
+            var studentClasses = _context.ClassUsers
+                                         .Where(cu => cu.UserId == userId && cu.Class != null)
+                                        .Select(cu => cu.Class)
+                                         .ToList();
 
-            if (student == null || student.Class == null)
+            if (studentClasses == null || !studentClasses.Any())
             {
-                return new List<SessionStudentResponse>(); // Không có lớp
+                return new List<SessionStudentResponse>(); // Sinh viên không có lớp nào
             }
 
-            // Lọc theo lớp học của sinh viên
-            var classId = student.Class.Id;
+            // Lọc các lớp học đang hoạt động
+            var activeClassIds = studentClasses.Where(c => c.Active).Select(c => c.Id).ToList();
+
+            if (!activeClassIds.Any())
+            {
+                return new List<SessionStudentResponse>(); // Không có lớp nào đang hoạt động
+            }
+
+            // Lấy tất cả TeachingAssignments thuộc các lớp này
             var teachingAssignments = _context.TeachingAssignments
-                                              .Where(ta => ta.ClassId == classId && ta.Class.Active) // Lọc lớp học Đang hoạt động hay không
+                                              .Where(ta => activeClassIds.Contains(ta.Class.Id))
                                               .Select(ta => ta.Id);
 
             query = query.Where(s => s.TeachingAssignmentId.HasValue && teachingAssignments.Contains(s.TeachingAssignmentId.Value));
@@ -126,48 +136,43 @@ namespace ISC_ELIB_SERVER.Repositories
             // Lọc theo niên khóa
             if (request.AcademicYearId.HasValue)
             {
-                query = query.Where(s => s.TeachingAssignment != null && s.TeachingAssignment.Class != null && s.TeachingAssignment.Class.AcademicYearId == request.AcademicYearId.Value);
+                query = query.Where(s => s.TeachingAssignment != null &&
+                                         s.TeachingAssignment.Class != null &&
+                                         s.TeachingAssignment.Class.AcademicYearId == request.AcademicYearId.Value);
             }
 
-            // Lọc theo tên topic với LIKE (gần giống)
+            // Lọc theo tên topic (tìm kiếm gần đúng)
             if (!string.IsNullOrEmpty(request.TopicName))
             {
-                Console.WriteLine($"topicName: {request.TopicName}");
-                // query = query.Where(s => s.Description != null && EF.Functions.Like(s.Description, $"%{request.TopicName}%"));
                 query = query.Where(s => EF.Functions.ILike(s.TeachingAssignment.Topics.Name, $"%{request.TopicName}%"));
             }
+
             // Lọc theo trạng thái lớp
             if (!string.IsNullOrEmpty(request.Status))
             {
                 switch (request.Status.ToLower())
                 {
-                    case "CHUABATDAU":
+                    case "chuabatdau":
                         query = query.Where(s => s.StartDate.HasValue && s.StartDate > DateTime.Now);
                         break;
-                    case "DANGDIENRA":
-                        query = query.Where(s => s.StartDate.HasValue && s.EndDate.HasValue && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
+                    case "dangdienra":
+                        query = query.Where(s => s.StartDate.HasValue && s.EndDate.HasValue &&
+                                                 s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
                         break;
-                    case "DAHOANTHANH":
+                    case "dahoanthanh":
                         query = query.Where(s => s.EndDate.HasValue && s.EndDate < DateTime.Now);
                         break;
                 }
             }
 
-            // query = request.SortOrder.ToLower() == "desc"
-            //     ? query.OrderByDescending(s => EF.Property<object>(s.TeachingAssignment.Subject, request.SortColumn))
-            //     : query.OrderBy(s => EF.Property<object>(s, request.SortColumn));
-
+            // Sắp xếp dữ liệu
             query = request.SortOrder.ToLower() == "desc"
-? query.OrderByDescending(s => request.SortColumn.ToLower() == "startdate"
-? (object)s.StartDate
-: (object)s.TeachingAssignment.Subject.Name)
-: query.OrderBy(s => request.SortColumn.ToLower() == "startdate"
-? (object)s.StartDate
-: (object)s.TeachingAssignment.Subject.Name);
-
-
-
-            // query = query.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize);
+                ? query.OrderByDescending(s => request.SortColumn.ToLower() == "startdate"
+                    ? (object)s.StartDate
+                    : (object)s.TeachingAssignment.Subject.Name)
+                : query.OrderBy(s => request.SortColumn.ToLower() == "startdate"
+                    ? (object)s.StartDate
+                    : (object)s.TeachingAssignment.Subject.Name);
 
             // Trả về danh sách kết quả
             return query.Select(s => new SessionStudentResponse
@@ -186,11 +191,9 @@ namespace ISC_ELIB_SERVER.Repositories
                     Name = s.TeachingAssignment.User.FullName
                 },
                 Status = s.Status,
-                // SessionTime = s.StartDate.HasValue ?    s.StartDate.Value : DateTime.MinValue // Thêm thời gian vào phản hồi
-                SessionTime = s.StartDate.HasValue ? DateTimeUtils.FormatSessionTime(s.StartDate.Value) : "N/A"// Thay dổi dung để định dạng thời gian 
+                SessionTime = s.StartDate.HasValue ? s.StartDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : "N/A"
             }).ToList();
         }
-
 
 
     }

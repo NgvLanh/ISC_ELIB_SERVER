@@ -156,9 +156,9 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<SessionResponse>.Success();
         }
 
-        public ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(int page, int pageSize, SessionStudentFilterRequest request)
+        public ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(int userId,int page, int pageSize, SessionStudentFilterRequest request)
         {
-            var query = _sessionRepo.GetFilteredSessions(request);
+            var query = _sessionRepo.GetFilteredSessions(userId,request);
             
             int totalItems = query.Count(); // Đếm số lượng bản ghi thực tế sau khi lọc
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize); // Tính số trang đúng

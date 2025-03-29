@@ -80,6 +80,9 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
+        public virtual DbSet<ClassUser> ClassUsers { get; set; } = null!;
+
+
 
 
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
