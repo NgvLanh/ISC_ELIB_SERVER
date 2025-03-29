@@ -16,7 +16,9 @@ namespace ISC_ELIB_SERVER.Models
         public bool? Status { get; set; }
         public string? Description { get; set; }
         public bool Active { get; set; }
-        public DateTime? Date { get; set; }
+        public int? AcademicYearsId { get; set; }
+
+        public virtual AcademicYear AcademicYear { get; set; }
         [JsonIgnore]
         public virtual ICollection<Subject> Subjects { get; set; }
     }
