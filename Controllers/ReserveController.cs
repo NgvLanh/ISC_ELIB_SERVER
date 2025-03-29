@@ -3,6 +3,7 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -44,10 +45,12 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         //Post: api/reserves
+        [Authorize]
         [HttpPost]
         public IActionResult CreateReserve([FromBody] ReserveRequest reserveRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            reserveRequest.UserId = GetUserId() ?? throw new InvalidOperationException("Không tìm thấy thông tin người dùng");
             reserveRequest.ReserveDate = DateTimeUtils.ConvertToUnspecified(reserveRequest.ReserveDate) ?? throw new InvalidOperationException("ReserveDate không được để trống");
             var response = _service.CreateReserve(reserveRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
@@ -66,6 +69,20 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = _service.DeleteReserve(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        // Lấy userId từ token JWT
+        private int? GetUserId()
+        {
+            var userIdString = User.FindFirst("Id")?.Value;
+            Console.WriteLine($"User.FindFirst(\"Id\"): {userIdString}");
+
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return null; // Trả về null nếu không tìm thấy hoặc parse thất bại
+            }
+
+            return userId;
         }
     }
 }
