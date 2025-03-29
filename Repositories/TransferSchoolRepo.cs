@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using ISC_ELIB_SERVER.Models;
 using System.Numerics;
 using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
+
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -69,86 +70,61 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
-        public async Task<TransferSchoolResponse> CreateTransferSchoolAsync(TransferSchool_AddRequest request)
+        public TransferSchool CreateTransferSchool(TransferSchool entity)
         {
-            var studentInfo = await _context.StudentInfos
-                .Where(s => s.Id == request.StudentId)
-                .Include(s => s.User) // Bao gồm thông tin User để lấy ProvinceCode và DistrictCode
-                .FirstOrDefaultAsync();
-
-            if (studentInfo == null || studentInfo.User == null)
+            try
             {
-                throw new Exception("Không tìm thấy thông tin học viên!");
+                _context.TransferSchools.Add(entity);
+                _context.SaveChanges();
+                return entity;
             }
-
-            var semester = await _context.Semesters
-                .Where(s => s.Id == request.SemesterId)
-                .FirstOrDefaultAsync();
-
-            var transfer = new TransferSchool
+            catch (DbUpdateException ex)
             {
-                StudentId = request.StudentId,
-                TransferSchoolDate = request.TransferSchoolDate,
-                TransferToSchool = request.TransferToSchool,
-                SchoolAddress = request.SchoolAddress,
-                Reason = request.Reason,
-                AttachmentName = request.AttachmentName,
-                AttachmentPath = request.AttachmentPath,
-                SemesterId = request.SemesterId,
-                // Lấy trực tiếp từ User
-                LeadershipId = request.LeadershipId,
-                Active = true
-            };
+                Console.WriteLine(" Lỗi khi lưu vào Database:");
+                Console.WriteLine($"InnerException: {ex.InnerException?.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
 
-            _context.TransferSchools.Add(transfer);
-            await _context.SaveChangesAsync();
+                throw new Exception("Lưu dữ liệu thất bại! Chi tiết: " + ex.InnerException?.Message);
+            }
+           
+        }
 
-            return new TransferSchoolResponse
-            {
-                Id = transfer.Id,
-                StudentName = studentInfo.User.FullName,
-   
-                TransferSchoolDate = transfer.TransferSchoolDate,
-                TransferToSchool = transfer.TransferToSchool,
-                SchoolAddress = transfer.SchoolAddress,
-                Reason = transfer.Reason,
-                AttachmentName = transfer.AttachmentName,
-                AttachmentPath = transfer.AttachmentPath,
-                SemesterName = semester?.Name,
-            
-                SemesterId = transfer.SemesterId,
-                LeadershipId = transfer.LeadershipId
-            };
+
+        /// <summary>
+        /// Thêm mới thông tin chuyển trường.
+        /// </summary>
+        public TransferSchool? GetTransferSchoolById(int id)
+        {
+            return _context.TransferSchools
+                .FirstOrDefault(ts => ts.Id == id && ts.Active);
         }
 
 
         /// <summary>
         /// Cập nhật thông tin chuyển trường.
         /// </summary>
-        public object? UpdateTransferSchool(int transferSchoolId, TransferSchool updatedTransferSchool)
+        public TransferSchool? GetByStudentId(int studentId)
         {
-            var transferSchool = _context.TransferSchools.FirstOrDefault(ts => ts.Id == transferSchoolId && ts.Active);
-            if (transferSchool == null) return null;
-
-            transferSchool.TransferSchoolDate = updatedTransferSchool.TransferSchoolDate;
-            transferSchool.TransferToSchool = updatedTransferSchool.TransferToSchool;
-            transferSchool.Reason = updatedTransferSchool.Reason;
-            transferSchool.AttachmentName = updatedTransferSchool.AttachmentName;
-            transferSchool.AttachmentPath = updatedTransferSchool.AttachmentPath;
-            _context.SaveChanges();
-
-            return _context.TransferSchools
-                .Where(ts => ts.Id == transferSchool.Id)
-                .Select(ts => new
-                {
-                    StudentId = ts.StudentId,
-                    TransferDate = ts.TransferSchoolDate,
-                    TransferToSchool = ts.TransferToSchool,
-                    Reason = ts.Reason,
-                    AttachmentName = ts.AttachmentName,
-                    AttachmentPath = ts.AttachmentPath
-                })
-                .FirstOrDefault();
+            return _context.TransferSchools.FirstOrDefault(t => t.StudentId == studentId);
         }
+
+        public TransferSchool UpdateTransferSchool(TransferSchool transferSchool)
+        {
+            try
+            {
+                _context.TransferSchools.Update(transferSchool);
+                _context.SaveChanges();
+                return transferSchool;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Lỗi khi cập nhật dữ liệu: {ex.InnerException?.Message}");
+            }
+        }
+
+
     }
 }
+
+
+

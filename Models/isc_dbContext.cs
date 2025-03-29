@@ -1993,7 +1993,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(255)
                     .HasColumnName("attachment_path");
 
-                entity.Property(e => e.LeadershipId).HasColumnName("leadership_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
 
