@@ -3,6 +3,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Autofac.Core;
 
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -71,6 +72,24 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = _service.DeleteSession(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        [HttpPost("join")]
+        public IActionResult JoinSession([FromBody] JoinSessionRequest request)
+        {
+            var result = _service.JoinSession(request);
+            return result.Code == 0 ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("studentFiltered")]
+        public ActionResult<ICollection<SessionStudentResponse>> GetFilteredSessions(
+            [FromQuery] SessionStudentFilterRequest request,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+            )
+        {
+            var sessions = _service.GetFilteredSessions(page, pageSize, request);
+            return Ok(sessions);
         }
     }
 }
