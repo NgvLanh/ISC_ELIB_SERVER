@@ -7,6 +7,7 @@ using Autofac.Core;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services;
 
 [Route("api/transfer-school")]
 [ApiController]
@@ -55,6 +56,7 @@ public class TransferSchoolController : ControllerBase
         if (request == null)
             return BadRequest(new { Message = "Dữ liệu không hợp lệ." });
 
+        request.UserId = GetUserId();
         var response = _service.CreateTransferSchool(request);
         if (response.Data == null)
             return BadRequest(response);
@@ -62,18 +64,35 @@ public class TransferSchoolController : ControllerBase
         return Ok(response);
     }
 
-    // Cập nhật TransferSchool
-    [HttpPut("{id}")]
-    public IActionResult UpdateTransferSchool(int id, [FromBody] TransferSchoolRequest request)
+    [HttpPut("{studentId}")]
+    public IActionResult UpdateTransferSchool(int studentId, [FromBody] TransferSchoolRequest request)
     {
-        if (request == null)
-            return BadRequest(new { Code = 1, Message = "Dữ liệu không hợp lệ." });
-
-        var response = _service.UpdateTransferSchool(id, request);
-        return CreatedAtAction(nameof(GetTransferSchoolByStudentId), new { id = response.Data.StudentId }, response);
+        try
+        {
+            var updatedTransfer = _service.UpdateTransferSchool(studentId, request);
+            return updatedTransfer != null
+                ? Ok("Cập nhật thành công!")
+                : NotFound("Không tìm thấy dữ liệu để cập nhật!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Lỗi: {ex.Message}");
+        }
     }
 
-    // Xóa mềm TransferSchool
-    
+    // Lấy userId từ token JWT
+    private int? GetUserId()
+    {
+        var userIdString = User.FindFirst("Id")?.Value;
+        Console.WriteLine($"User.FindFirst(\"Id\"): {userIdString}");
+
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return null; // Trả về null nếu không tìm thấy hoặc parse thất bại
+        }
+
+        return userId;
+    }
+
 
 }

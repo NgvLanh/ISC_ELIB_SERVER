@@ -12,6 +12,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentId(int id);
         ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request);
         ApiResponse<TransferSchoolResponse> UpdateTransferSchool(int id, TransferSchoolRequest request);
-        ApiResponse<object> DeleteTransferSchool(int id);
+       
     }
 }

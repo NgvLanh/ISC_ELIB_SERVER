@@ -86,14 +86,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
                 throw new Exception("Lưu dữ liệu thất bại! Chi tiết: " + ex.InnerException?.Message);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(" Lỗi không xác định:");
-                Console.WriteLine($" Message: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-
-                throw new Exception("Đã xảy ra lỗi! Vui lòng thử lại.");
-            }
+           
         }
 
 
@@ -110,50 +103,28 @@ namespace ISC_ELIB_SERVER.Repositories
         /// <summary>
         /// Cập nhật thông tin chuyển trường.
         /// </summary>
-        public TransferSchool UpdateTransferSchool(TransferSchoolRequest request)
+        public TransferSchool? GetByStudentId(int studentId)
+        {
+            return _context.TransferSchools.FirstOrDefault(t => t.StudentId == studentId);
+        }
+
+        public TransferSchool UpdateTransferSchool(TransferSchool transferSchool)
         {
             try
             {
-                var transferSchool = _context.TransferSchools.FirstOrDefault(t => t.Id == request.StudentId);
-
-                if (transferSchool == null)
-                {
-                    throw new Exception("Không tìm thấy dữ liệu chuyển trường!");
-                }
-
-                // Cập nhật thông tin
-                transferSchool.TransferSchoolDate = request.TransferSchoolDate;
-                transferSchool.TransferToSchool = request.TransferToSchool;
-                transferSchool.SchoolAddress = request.SchoolAddress;
-                transferSchool.Reason = request.Reason;
-                transferSchool.AttachmentName = request.AttachmentName;
-                transferSchool.AttachmentPath = request.AttachmentPath;
-                transferSchool.SemesterId = request.SemesterId;
-                transferSchool.UserId = request.UserId;
-
+                _context.TransferSchools.Update(transferSchool);
                 _context.SaveChanges();
-
                 return transferSchool;
             }
             catch (DbUpdateException ex)
             {
-                Console.WriteLine("Lỗi khi lưu vào Database:");
-                Console.WriteLine($"InnerException: {ex.InnerException?.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-
-                throw new Exception("Lưu dữ liệu thất bại! Chi tiết: " + ex.InnerException?.Message);
+                throw new Exception($"Lỗi khi cập nhật dữ liệu: {ex.InnerException?.Message}");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("❌ Lỗi không xác định:");
-                Console.WriteLine($"➡ Message: {ex.Message}");
-                Console.WriteLine($"➡ StackTrace: {ex.StackTrace}");
-
-                throw new Exception("Đã xảy ra lỗi! Vui lòng thử lại.");
-            }
-
         }
+
+
     }
 }
+
 
 

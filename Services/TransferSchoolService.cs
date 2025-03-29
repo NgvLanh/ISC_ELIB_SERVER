@@ -6,6 +6,7 @@ using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Collections.Generic;
 
 namespace ISC_ELIB_SERVER.Services
@@ -20,7 +21,7 @@ namespace ISC_ELIB_SERVER.Services
         public TransferSchoolService(TransferSchoolRepo repository, IMapper mapper)
         {
             _repository = repository;
-        
+
             _mapper = mapper;
         }
 
@@ -51,29 +52,76 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request)
         {
-            // Chuyển DTO -> Entity
-            var transferSchool = _mapper.Map<TransferSchool>(request);
+
+            var transferSchool = new TransferSchool
+            {
+                UserId = request.UserId,
+                
+                StudentId = request.StudentId,
+                TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified),
+               
+                SchoolAddress = request.SchoolAddress,
+                Reason = request.Reason,
+                AttachmentName = request.AttachmentName,
+                AttachmentPath = request.AttachmentPath,
+                SemesterId = request.SemesterId,
+            };
 
             // Gọi Repository lưu vào DB
             var created = _repository.CreateTransferSchool(transferSchool);
 
+            var transferSchoolRepo = new TransferSchoolResponse
+            {
+
+                StudentId = created.StudentId,
+                TransferSchoolDate = created.TransferSchoolDate,
+            
+                Reason = created.Reason,
+                AttachmentName = created.AttachmentName,
+                AttachmentPath = created.AttachmentPath,
+                SemesterId = created.SemesterId,
+            };
+
             // Chuyển Entity -> DTO để trả về
-            return ApiResponse<TransferSchoolResponse>.Success(_mapper.Map<TransferSchoolResponse>(created));
+            return ApiResponse<TransferSchoolResponse>.Success(_mapper.Map<TransferSchoolResponse>(transferSchoolRepo));
         }
 
 
 
-        public ApiResponse<object> DeleteTransferSchool(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        public ApiResponse<TransferSchoolResponse> UpdateTransferSchool(int id, TransferSchoolRequest request)
+        public ApiResponse<TransferSchoolResponse> UpdateTransferSchool(int studentId, TransferSchoolRequest request)
         {
-            var transferSchool = _mapper.Map<TransferSchoolRequest>(request);
-            var updated = _repository.UpdateTransferSchool(transferSchool);
+            // Tìm dữ liệu cần cập nhật
+            var existingTransfer = _repository.GetByStudentId(studentId);
+            if (existingTransfer == null)
+            {
+                throw new Exception("Không tìm thấy dữ liệu chuyển trường!");
+            }
 
-            return ApiResponse<TransferSchoolResponse>.Success(_mapper.Map<TransferSchoolResponse>(updated));
+            // Cập nhật dữ liệu
+            existingTransfer.UserId = request.UserId;
+            existingTransfer.TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified);
+            existingTransfer.SchoolAddress = request.SchoolAddress;
+            existingTransfer.Reason = request.Reason;
+            existingTransfer.AttachmentName = request.AttachmentName;
+            existingTransfer.AttachmentPath = request.AttachmentPath;
+            existingTransfer.SemesterId = request.SemesterId;
+
+            // Gọi Repository để cập nhật dữ liệu vào DB
+            var updated = _repository.UpdateTransferSchool(existingTransfer);
+
+            // Tạo response để trả về
+            var transferSchoolResponse = new TransferSchoolResponse
+            {
+                StudentId = updated.StudentId,
+                TransferSchoolDate = updated.TransferSchoolDate,
+                Reason = updated.Reason,
+                AttachmentName = updated.AttachmentName,
+                AttachmentPath = updated.AttachmentPath,
+                SemesterId = updated.SemesterId
+            };
+
+            return ApiResponse<TransferSchoolResponse>.Success(transferSchoolResponse);
         }
     }
 }
