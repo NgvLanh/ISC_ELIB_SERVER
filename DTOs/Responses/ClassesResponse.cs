@@ -13,13 +13,14 @@ public class ClassesResponse
     public GradeLevelResponse? GradeLevel { get; set; }
 
     public AcademicYearResponse? AcademicYear { get; set; }
-
+    //danh sách giảng viên
     public ClassUserResponse? User { get; set; }
 
     public ClassTypeResponse? ClassType { get; set; }
 
     public ICollection<ClassSubjectResponse>? Subjects { get; set; }
 
+    //danh sách sinh viên
     public ICollection<ClassUserResponse>? Student { get; set; }
 }
 
@@ -41,4 +42,5 @@ public class ClassSubjectResponse
     public int HoursSemester2 { get; set; }
 
 }
+
 

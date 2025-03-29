@@ -6,6 +6,7 @@ namespace ISC_ELIB_SERVER.Services
     public interface IClassesService
     {
         ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
+        ApiResponse<ICollection<ClassesResponse>> GetClassByGradeLevelId(int? page, int? pageSize, int? gradeLevelId, string? sortColumn, string? sortOrder);
         ApiResponse<ClassesResponse> GetClassById(int id);
         ApiResponse<bool> DeleteClass(List<int> ids);
 
@@ -14,5 +15,6 @@ namespace ISC_ELIB_SERVER.Services
         Task<ApiResponse<ClassesResponse>> UpdateClassAsync(int id, ClassesRequest classesRequest);
 
         Task<ApiResponse<bool>> ImportClassesAsync(IFormFile file);
+
     }
 }
