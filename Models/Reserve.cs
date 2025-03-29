@@ -14,11 +14,12 @@ namespace ISC_ELIB_SERVER.Models
         public string? Semester { get; set; }
         public int? ClassId { get; set; }
         public int? SemestersId { get; set; }
-        public int? LeadershipId { get; set; }
+        public int? UserId { get; set; }
         public bool Active { get; set; }
 
         public virtual User? Student { get; set; }
         public virtual Class? Class { get; set; }
-
+        public virtual Semester? Semesters { get; set; }
+        public virtual User? User { get; set; }
     }
 }
