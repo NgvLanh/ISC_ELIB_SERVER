@@ -11,5 +11,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool Status { get; set; }
         [MaxLength(255, ErrorMessage = "Mô tả không được vượt quá 255 ký tự")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "{0} không được để trống")]
+        public int? AcademicYearsId { get; set; }
     }
 }

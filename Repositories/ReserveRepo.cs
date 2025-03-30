@@ -44,10 +44,11 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public bool DeleteReserve(long id)
         {
-            var reserve = GetReserveById(id);
+            var reserve = _context.Reserves.FirstOrDefault(r => r.Id == id);
             if (reserve != null)
             {
-                _context.Reserves.Remove(reserve);
+                reserve.Active = false;
+                _context.Reserves.Update(reserve); // Đánh dấu entity đã thay đổi
                 return _context.SaveChanges() > 0;
             }
             return false;

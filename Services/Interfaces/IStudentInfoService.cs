@@ -11,9 +11,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<StudentInfoResponses> UpdateStudentInfo(int id, StudentInfoRequest studentInfoRequest);
         ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id);
 
-        // Thêm phương thức lấy danh sách học viên theo lớp
-        //ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize);
-
         // Thêm phương thức lấy danh sách học viên theo UserId
         ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId);
 

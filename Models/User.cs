@@ -58,8 +58,10 @@ namespace ISC_ELIB_SERVER.Models
         [Column("avatar_url")]
         public string? AvatarUrl { get; set; }
 
-        public virtual AcademicYear? AcademicYear { get; set; }
+
+
         public virtual Class? Class { get; set; }
+        public virtual AcademicYear? AcademicYear { get; set; }
         public virtual EntryType? EntryTypeNavigation { get; set; }
         public virtual Role? Role { get; set; }
         public virtual UserStatus? UserStatus { get; set; }
@@ -85,6 +87,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Test> Tests { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
         public virtual ICollection<TransferSchool> TransferSchools { get; set; }
+        // public virtual School? School { get; set; }  // Liên kết tới School || 
         [JsonIgnore]
         public virtual ICollection<TestUser> TestUsers { get; set; }
 

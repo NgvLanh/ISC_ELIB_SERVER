@@ -5,8 +5,7 @@ using ISC_ELIB_SERVER.Enums;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -23,11 +22,13 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<AchivementResponse>> GetAchivements(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var query = _repository.GetAchievements().AsQueryable();
+            var query = _repository.GetAchievements()
+                .Include(a => a.User)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(us => us.Content.ToLower().Contains(search.ToLower()));
+                query = query.Where(a => a.Content.Contains(search));
             }
 
             query = sortColumn switch
@@ -44,21 +45,43 @@ namespace ISC_ELIB_SERVER.Services
                 Id = achievement.Id,
                 Content = achievement.Content,
                 DateAwarded = achievement.DateAwarded,
-                UserId = achievement.UserId,
                 TypeId = achievement.TypeId,
                 File = achievement.File,
+                Users = achievement.User != null ? new UserResponse
+                {
+                    Id = achievement.User.Id,
+                    Code = achievement.User.Code,
+                    FullName = achievement.User.FullName ?? "",
+                    Gender = achievement.User.Gender,
+                    Email = string.IsNullOrEmpty(achievement.User.Email) ? null : achievement.User.Email,
+                    PhoneNumber = string.IsNullOrEmpty(achievement.User.PhoneNumber) ? null : achievement.User.PhoneNumber,
+                    PlaceBirth = string.IsNullOrEmpty(achievement.User.PlaceBirth) ? null : achievement.User.PlaceBirth,
+                    Nation = string.IsNullOrEmpty(achievement.User.Nation) ? null : achievement.User.Nation,
+                    Religion = string.IsNullOrEmpty(achievement.User.Religion) ? null : achievement.User.Religion,
+                    AddressFull = string.IsNullOrEmpty(achievement.User.AddressFull) ? null : achievement.User.AddressFull,
+                    Street = string.IsNullOrEmpty(achievement.User.Street) ? null : achievement.User.Street,
+                    Dob = achievement.User.Dob != DateTime.MinValue ? achievement.User.Dob : null,
+                    EnrollmentDate = achievement.User.EnrollmentDate != DateTime.MinValue ? achievement.User.EnrollmentDate : null,
+                    RoleId = achievement.User.Role?.Id ?? 0,
+                    AcademicYearId = achievement.User.AcademicYear?.Id ?? 0,
+                    ClassId = achievement.User.Class?.Id ?? 0,
+                } : null,
                 TypeValue = achievement.TypeId.HasValue && Enum.IsDefined(typeof(EType), achievement.TypeId.Value)
-                             ? ((EType)achievement.TypeId.Value).ToString()
-                             : "Không xác định"
+                            ? ((EType)achievement.TypeId.Value).ToString()
+                            : "Không xác định"
             }).ToList();
+
+
 
             return response.Any()
                 ? ApiResponse<ICollection<AchivementResponse>>.Success(response)
                 : ApiResponse<ICollection<AchivementResponse>>.NotFound("Không có dữ liệu");
         }
 
+
         public ApiResponse<AchivementResponse> GetAchivementById(int id)
         {
+
             var achievement = _repository.GetAchivementById(id);
 
             if (achievement == null)
@@ -71,19 +94,31 @@ namespace ISC_ELIB_SERVER.Services
                 Id = achievement.Id,
                 Content = achievement.Content,
                 DateAwarded = achievement.DateAwarded,
-                UserId = achievement.UserId,
                 TypeId = achievement.TypeId,
-                File = achievement.File
+                File = achievement.File,
+                Users = achievement.User != null ? new UserResponse
+                {
+                    Id = achievement.User.Id,
+                    Code = achievement.User.Code,
+                    FullName = achievement.User.FullName ?? "",
+                    Gender = achievement.User.Gender,
+                    Email = string.IsNullOrEmpty(achievement.User.Email) ? null : achievement.User.Email,
+                    PhoneNumber = string.IsNullOrEmpty(achievement.User.PhoneNumber) ? null : achievement.User.PhoneNumber,
+                    PlaceBirth = string.IsNullOrEmpty(achievement.User.PlaceBirth) ? null : achievement.User.PlaceBirth,
+                    Nation = string.IsNullOrEmpty(achievement.User.Nation) ? null : achievement.User.Nation,
+                    Religion = string.IsNullOrEmpty(achievement.User.Religion) ? null : achievement.User.Religion,
+                    AddressFull = string.IsNullOrEmpty(achievement.User.AddressFull) ? null : achievement.User.AddressFull,
+                    Street = string.IsNullOrEmpty(achievement.User.Street) ? null : achievement.User.Street,
+                    Dob = achievement.User.Dob != DateTime.MinValue ? achievement.User.Dob : null,
+                    EnrollmentDate = achievement.User.EnrollmentDate != DateTime.MinValue ? achievement.User.EnrollmentDate : null,
+                    RoleId = achievement.User.Role?.Id ?? 0,
+                    AcademicYearId = achievement.User.AcademicYear?.Id ?? 0,
+                    ClassId = achievement.User.Class?.Id ?? 0,
+                } : null,
+                TypeValue = achievement.TypeId.HasValue && Enum.IsDefined(typeof(EType), achievement.TypeId.Value)
+                            ? ((EType)achievement.TypeId.Value).ToString()
+                            : "Không xác định"
             };
-
-            if (response.TypeId.HasValue && Enum.IsDefined(typeof(EType), response.TypeId.Value))
-            {
-                response.TypeValue = ((EType)response.TypeId.Value).ToString();
-            }
-            else
-            {
-                response.TypeValue = "Không xác định";
-            }
 
             return ApiResponse<AchivementResponse>.Success(response);
         }
@@ -115,19 +150,31 @@ namespace ISC_ELIB_SERVER.Services
                     Id = created.Id,
                     Content = created.Content,
                     DateAwarded = created.DateAwarded,
-                    UserId = created.UserId,
                     TypeId = created.TypeId,
-                    File = created.File
+                    File = created.File,
+                    Users = created.User != null ? new UserResponse
+                    {
+                        Id = created.User.Id,
+                        Code = created.User.Code,
+                        FullName = created.User.FullName ?? "",
+                        Gender = created.User.Gender,
+                        Email = string.IsNullOrEmpty(created.User.Email) ? null : created.User.Email,
+                        PhoneNumber = string.IsNullOrEmpty(created.User.PhoneNumber) ? null : created.User.PhoneNumber,
+                        PlaceBirth = string.IsNullOrEmpty(created.User.PlaceBirth) ? null : created.User.PlaceBirth,
+                        Nation = string.IsNullOrEmpty(created.User.Nation) ? null : created.User.Nation,
+                        Religion = string.IsNullOrEmpty(created.User.Religion) ? null : created.User.Religion,
+                        AddressFull = string.IsNullOrEmpty(created.User.AddressFull) ? null : created.User.AddressFull,
+                        Street = string.IsNullOrEmpty(created.User.Street) ? null : created.User.Street,
+                        Dob = created.User.Dob != DateTime.MinValue ? created.User.Dob : null,
+                        EnrollmentDate = created.User.EnrollmentDate != DateTime.MinValue ? created.User.EnrollmentDate : null,
+                        RoleId = created.User.Role?.Id ?? 0,
+                        AcademicYearId = created.User.AcademicYear?.Id ?? 0,
+                        ClassId = created.User.Class?.Id ?? 0,
+                    } : null,
+                    TypeValue = created.TypeId.HasValue && Enum.IsDefined(typeof(EType), created.TypeId.Value)
+                                ? ((EType)created.TypeId.Value).ToString()
+                                : "Không xác định"
                 };
-
-                if (response.TypeId.HasValue && Enum.IsDefined(typeof(EType), response.TypeId.Value))
-                {
-                    response.TypeValue = ((EType)response.TypeId.Value).ToString();
-                }
-                else
-                {
-                    response.TypeValue = "Không xác định";
-                }
 
                 return ApiResponse<AchivementResponse>.Success(_mapper.Map<AchivementResponse>(response));
             }
@@ -141,8 +188,6 @@ namespace ISC_ELIB_SERVER.Services
         {
             try
             {
-                
-
                 var achievement = _repository.GetAchivementById(id);
                 if (achievement == null)
                 {
@@ -154,8 +199,6 @@ namespace ISC_ELIB_SERVER.Services
                 achievement.Content = achivementRequest.Content;
                 achievement.File = achivementRequest.File;
                 achievement.DateAwarded = DateTime.SpecifyKind(achivementRequest.DateAwarded, DateTimeKind.Unspecified);
-
-                
 
                 var updated = _repository.UpdateAchivement(achievement);
 
@@ -169,19 +212,31 @@ namespace ISC_ELIB_SERVER.Services
                     Id = updated.Id,
                     Content = updated.Content,
                     DateAwarded = updated.DateAwarded,
-                    UserId = updated.UserId,
                     TypeId = updated.TypeId,
-                    File = updated.File
+                    File = updated.File,
+                    Users = updated.User != null ? new UserResponse
+                    {
+                        Id = updated.User.Id,
+                        Code = updated.User.Code,
+                        FullName = updated.User.FullName ?? "",
+                        Gender = updated.User.Gender,
+                        Email = string.IsNullOrEmpty(updated.User.Email) ? null : updated.User.Email,
+                        PhoneNumber = string.IsNullOrEmpty(updated.User.PhoneNumber) ? null : updated.User.PhoneNumber,
+                        PlaceBirth = string.IsNullOrEmpty(updated.User.PlaceBirth) ? null : updated.User.PlaceBirth,
+                        Nation = string.IsNullOrEmpty(updated.User.Nation) ? null : updated.User.Nation,
+                        Religion = string.IsNullOrEmpty(updated.User.Religion) ? null : updated.User.Religion,
+                        AddressFull = string.IsNullOrEmpty(updated.User.AddressFull) ? null : updated.User.AddressFull,
+                        Street = string.IsNullOrEmpty(updated.User.Street) ? null : updated.User.Street,
+                        Dob = updated.User.Dob != DateTime.MinValue ? updated.User.Dob : null,
+                        EnrollmentDate = updated.User.EnrollmentDate != DateTime.MinValue ? updated.User.EnrollmentDate : null,
+                        RoleId = updated.User.Role?.Id ?? 0,
+                        AcademicYearId = updated.User.AcademicYear?.Id ?? 0,
+                        ClassId = updated.User.Class?.Id ?? 0,
+                    } : null,
+                    TypeValue = updated.TypeId.HasValue && Enum.IsDefined(typeof(EType), updated.TypeId.Value)
+                                ? ((EType)updated.TypeId.Value).ToString()
+                                : "Không xác định"
                 };
-
-                if (response.TypeId.HasValue && Enum.IsDefined(typeof(EType), response.TypeId.Value))
-                {
-                    response.TypeValue = ((EType)response.TypeId.Value).ToString();
-                }
-                else
-                {
-                    response.TypeValue = "Không xác định";
-                }
 
                 return updated != null
                     ? ApiResponse<AchivementResponse>.Success(response)

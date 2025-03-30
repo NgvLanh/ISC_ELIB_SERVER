@@ -30,6 +30,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         [Required(ErrorMessage = "Mã lãnh đạo không được để trống.")]
         [Range(1, int.MaxValue, ErrorMessage = "Mã lãnh đạo phải lớn hơn 0.")]
+
+        public int? SemesterId { get; set; }
         public int LeadershipId { get; set; }
 
     }
