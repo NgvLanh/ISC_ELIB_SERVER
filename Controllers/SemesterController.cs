@@ -25,23 +25,23 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-        [HttpGet("scores")]
-        [Authorize]
-        public IActionResult GetScoreSemesters([FromQuery] int academicYearId)
+        [HttpGet("ranking")]
+        //[Authorize]
+        public IActionResult GetScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
         {
-            var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
+            //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
 
-            var response = _service.GetScoreBySemesters(userId, academicYearId);
+            var response = _service.GetScoreBySemesters(userId.Value, academicYearId.Value);
             return Ok(response);
         }
 
         [HttpGet("student-score")]
-        [Authorize]
-        public IActionResult GetStudentScoreSemesters([FromQuery] int academicYearId)
+        //[Authorize]
+        public IActionResult GetStudentScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
         {
-            var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
+            //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
 
-            var response = _service.GetStudentScores(userId, academicYearId);
+            var response = _service.GetStudentScores(userId.Value, academicYearId.Value);
             return Ok(response);
         }
 
