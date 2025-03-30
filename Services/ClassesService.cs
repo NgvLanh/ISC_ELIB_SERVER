@@ -535,7 +535,6 @@
                         .ThenInclude(u => u.UserStatus)
                 .AsQueryable();
 
-            // Lọc theo gradeLevelId nếu có
             if (gradeLevelId.HasValue)
             {
                 query = query.Where(c => c.GradeLevelId == gradeLevelId.Value);

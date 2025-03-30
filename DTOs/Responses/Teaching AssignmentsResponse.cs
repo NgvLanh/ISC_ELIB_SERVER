@@ -15,6 +15,7 @@ public class TeachingAssignmentsResponse
 
     public List<TeachingAssignmentsSessionsResponse>? Sessions { get; set; }
 
+    public TeachingAssignmentsSemesterResponse? Semester { get; set; }
     public class TeachingAssignmentsUserResponse
     {
         public int Id { get; set; }
@@ -45,5 +46,16 @@ public class TeachingAssignmentsResponse
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+
+    }
+
+    public class TeachingAssignmentsSemesterResponse
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public AcademicYearResponse? AcademicYear { get; set; }
+
+
+
     }
 }

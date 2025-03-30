@@ -373,26 +373,33 @@ namespace ISC_ELIB_SERVER.Models
                     .IsRequired(false); ;
             });
 
-            modelBuilder.Entity<ClassType>(entity =>
-            {
-                entity.ToTable("class_types");
+                    modelBuilder.Entity<ClassType>(entity =>
+                    {
+                        entity.ToTable("class_types");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                        entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
+                        entity.Property(e => e.Active)
+                            .HasColumnName("active")
+                            .HasDefaultValueSql("true");
 
-                entity.Property(e => e.Description)
-                    .HasMaxLength(255)
-                    .HasColumnName("description");
+                        entity.Property(e => e.Description)
+                            .HasMaxLength(255)
+                            .HasColumnName("description");
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(100)
-                    .HasColumnName("name");
+                        entity.Property(e => e.Name)
+                            .HasMaxLength(100)
+                            .HasColumnName("name");
 
-                entity.Property(e => e.Status).HasColumnName("status");
-            });
+                        entity.Property(e => e.Status).HasColumnName("status");
+
+                        entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
+
+                        entity.HasOne(d => d.AcademicYear)
+                            .WithMany(p => p.ClassTypes) 
+                            .HasForeignKey(d => d.AcademicYearId) 
+                            .HasConstraintName("fk_class_types_academic_year_id");
+                    });
 
             modelBuilder.Entity<Discussion>(entity =>
             {
