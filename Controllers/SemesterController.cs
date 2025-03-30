@@ -3,6 +3,7 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -21,6 +22,26 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult GetSemesters([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
             var response = _service.GetSemesters(page, pageSize, sortColumn, sortOrder);
+            return Ok(response);
+        }
+
+        [HttpGet("ranking")]
+        //[Authorize]
+        public IActionResult GetScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
+        {
+            //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
+
+            var response = _service.GetScoreBySemesters(userId.Value, academicYearId.Value);
+            return Ok(response);
+        }
+
+        [HttpGet("student-score")]
+        //[Authorize]
+        public IActionResult GetStudentScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
+        {
+            //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
+
+            var response = _service.GetStudentScores(userId.Value, academicYearId.Value);
             return Ok(response);
         }
 
