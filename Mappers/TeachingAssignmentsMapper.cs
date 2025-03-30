@@ -54,8 +54,20 @@ namespace ISC_ELIB_SERVER.Mappers
                             Name = session.Name
                         }).ToList()
                         : new List<TeachingAssignmentsResponse.TeachingAssignmentsSessionsResponse>()
-                    ));
-
+                    ))
+                .ForMember(dest => dest.Semester, opt => opt.MapFrom(src =>
+                src.Semester != null ? new TeachingAssignmentsResponse.TeachingAssignmentsSemesterResponse
+                {
+                    Id = src.Semester.Id,
+                    Name = src.Semester.Name,
+                    AcademicYear = src.Semester.AcademicYear != null ? new AcademicYearResponse
+                    {
+                        Id = src.Semester.AcademicYear.Id,
+                        StartTime = (DateTime)src.Semester.AcademicYear.StartTime,
+                        EndTime = (DateTime)src.Semester.AcademicYear.EndTime,
+                    } : null
+                } : null
+            ));
             CreateMap<TeachingAssignmentsRequest, TeachingAssignment>();
         }
     }

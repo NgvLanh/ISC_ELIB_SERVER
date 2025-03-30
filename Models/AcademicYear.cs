@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Models
@@ -13,6 +14,7 @@ namespace ISC_ELIB_SERVER.Models
             Exams = new HashSet<Exam>();
             Semesters = new HashSet<Semester>();
             Users = new HashSet<User>();
+            ClassTypes = new HashSet<ClassType>();
         }
 
         public int Id { get; set; }
@@ -26,6 +28,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Exam> Exams { get; set; }
         public virtual ICollection<Semester> Semesters { get; set; }
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<ClassType> ClassTypes { get; set; }
         public virtual ICollection<SubjectType> SubjectTypes { get; set; }
 
     }
