@@ -1701,9 +1701,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
-                entity.Property(e => e.Type)
-                    .HasMaxLength(50)
-                    .HasColumnName("type");
+                entity.Property(e => e.Type).HasColumnName("type");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -2166,7 +2164,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("active")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                entity.Property(e => e.EndDate).HasColumnName("end_date").HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.IsCurrent).HasColumnName("is_current");
 
@@ -2178,7 +2176,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("position");
 
-                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                entity.Property(e => e.StartDate).HasColumnName("start_date").HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.SubjectGroupsId).HasColumnName("subject_groups_id");
 
