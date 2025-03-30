@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
