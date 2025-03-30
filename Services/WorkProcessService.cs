@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -41,18 +42,27 @@ namespace ISC_ELIB_SERVER.Services
         {
             var query = _repository.GetWorkProcess().AsQueryable();
 
+            if (!string.IsNullOrEmpty(search))
+            {
+                var lowerSearch = search.ToLower();
+                query = query.Where(wp => wp.Organization != null && wp.Organization.ToLower().Contains(lowerSearch));
+            }
+
             query = sortColumn switch
             {
                 "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "Organization" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(wp => wp.Organization) : query.OrderBy(wp => wp.Organization),
                 _ => query.OrderBy(us => us.Id)
             };
+
+            var totalItems = query.Count();
 
             var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<WorkProcessResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<WorkProcessResponse>>.Success(response)
+                ? ApiResponse<ICollection<WorkProcessResponse>>.Success(response, page, pageSize, totalItems)
                 : ApiResponse<ICollection<WorkProcessResponse>>.NotFound("Không có dữ liệu");
         }
 
