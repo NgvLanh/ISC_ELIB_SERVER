@@ -10,7 +10,16 @@ namespace ISC_ELIB_SERVER.Services
 
     public interface IExamScheduleService
     {
-        ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending);
+        ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(
+        int page,
+        int pageSize,
+        string? search,
+        string? sortBy,
+        bool isDescending,
+        int? academicYearId,
+        int? semesterId
+    );
+
         ApiResponse<ExamScheduleResponse> GetById(long id);
         ApiResponse<ExamScheduleResponse> Create(ExamScheduleRequest request);
         ApiResponse<ExamScheduleResponse> Update(long id, ExamScheduleRequest request);
@@ -28,9 +37,9 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
+        public ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending, int? academicYearId, int? semesterId)
         {
-            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending);
+            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId);
             var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities.Items);
 
             var result = new PagedResult<ExamScheduleResponse>(responses, entities.TotalItems, page, pageSize);
