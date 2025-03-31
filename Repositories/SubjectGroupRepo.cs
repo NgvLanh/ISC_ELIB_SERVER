@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -13,7 +14,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<SubjectGroup> GetAllSubjectGroup()
         {
-            return _context.SubjectGroups.ToList();
+            return _context.SubjectGroups.Include(sg => sg.Teacher).ToList();
         }
 
         public SubjectGroup GetSubjectGroupById(long id)

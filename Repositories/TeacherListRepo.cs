@@ -18,7 +18,7 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.TeacherInfos
                 .Include(t => t.User)
-                .Include(t => t.SubjectGroups)
+                .ThenInclude(t => t.SubjectGroups)
                 .Include(t => t.WorkProcesses)
                 .Include(t => t.Retirements)
                 .Where(t => t.Active == true);
@@ -29,7 +29,7 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.TeacherInfos
                 .Include(t => t.User)
-                .Include(t => t.SubjectGroups)
+                .ThenInclude(t => t.SubjectGroups)
                 .Include(t => t.WorkProcesses)
                 .Include(t => t.Retirements)
                 .Where(t => t.Active == true)
