@@ -63,6 +63,9 @@ namespace ISC_ELIB_SERVER.Services
                 response.ProvinceName = provinceName;
                 response.DistrictName = districtName;
                 response.WardName = wardName;
+                // RoleName bằng cách lấy từ RoleRepo
+                var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+                response.RoleName = role?.Name;
                 responses.Add(response);
             }
 
@@ -81,7 +84,9 @@ namespace ISC_ELIB_SERVER.Services
             response.ProvinceName = provinceName;
             response.DistrictName = districtName;
             response.WardName = wardName;
-
+            // RoleName bằng cách lấy từ RoleRepo
+            var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+            response.RoleName = role?.Name;
             return ApiResponse<UserResponse>.Success(response);
         }
 
@@ -95,7 +100,9 @@ namespace ISC_ELIB_SERVER.Services
             response.ProvinceName = provinceName;
             response.DistrictName = districtName;
             response.WardName = wardName;
-
+            // RoleName bằng cách lấy từ RoleRepo
+            var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+            response.RoleName = role?.Name;
             return ApiResponse<UserResponse>.Success(response);
         }
 
@@ -148,6 +155,9 @@ namespace ISC_ELIB_SERVER.Services
                 ClassId = userRequest.ClassId,
                 EntryType = userRequest.EntryType,
                 AddressFull = userRequest.AddressFull,
+                ProvinceCode = userRequest.ProvinceCode,
+                DistrictCode = userRequest.DistrictCode,
+                WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
                 AvatarUrl = userRequest.AvatarUrl  
@@ -210,6 +220,9 @@ namespace ISC_ELIB_SERVER.Services
             user.Street = userRequest.Street;
             user.RoleId = userRequest.RoleId;
             user.AcademicYearId = userRequest.AcademicYearId;
+            user.ProvinceCode = userRequest.ProvinceCode;
+            user.DistrictCode = userRequest.DistrictCode;
+            user.WardCode = userRequest.WardCode;
             user.UserStatusId = userRequest.UserStatusId;
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
