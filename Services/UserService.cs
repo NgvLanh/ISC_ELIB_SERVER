@@ -135,6 +135,12 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
 
+            // Kiểm tra mã người dùng đã tồn tại chưa
+            if (_userRepo.GetUserByCode(userRequest.Code) != null)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
+            }
+
             // Nếu tất cả đều hợp lệ, tạo user
             var newUser = new User
             {
@@ -207,6 +213,11 @@ namespace ISC_ELIB_SERVER.Services
                 _classRepo.GetClassById(userRequest.ClassId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
+            }
+            // Kiểm tra mã người dùng đã tồn tại chưa
+            if (_userRepo.GetUserByCode(userRequest.Code) != null)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
             }
 
             // Cập nhật thông tin người dùng
