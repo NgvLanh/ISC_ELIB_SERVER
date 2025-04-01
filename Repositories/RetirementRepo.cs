@@ -35,9 +35,9 @@ namespace ISC_ELIB_SERVER.Repositories
                 return null;
             }
 
-            if (retirement.LeadershipId.HasValue)
+            if (retirement.LeadershipId != 0)
             {
-                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId.Value);
+                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId);
                 if (!leadershipExists)
                 {
                     return null;
@@ -60,11 +60,23 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 return null;
             }
+            if (!_context.TeacherInfos.Any(t => t.Id == Retirement.TeacherId))
+            {
+                return null;
+            }
+
+            if (Retirement.LeadershipId != 0 && !_context.Users.Any(u => u.Id == Retirement.LeadershipId))
+            {
+                return null;
+            }
+            existingRetirement.TeacherId = Retirement.TeacherId;
             existingRetirement.Date = Retirement.Date;
             existingRetirement.Note = Retirement.Note;
             existingRetirement.Attachment = Retirement.Attachment;
             existingRetirement.Status = Retirement.Status;
             existingRetirement.Active = Retirement.Active;
+            existingRetirement.LeadershipId = Retirement.LeadershipId;
+
             _context.Retirements.Update(existingRetirement);
 
             _context.SaveChanges();
