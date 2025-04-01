@@ -23,7 +23,7 @@ namespace ISC_ELIB_SERVER.Mappers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User != null ? (src.User.Gender == true ? "Nam" : "Nữ") : null))
                 .ForMember(dest => dest.Nation, opt => opt.MapFrom(src => src.User != null ? src.User.Nation : null))
                 .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.User != null && src.User.Class != null ? src.User.Class.Name : null))
-                .ForMember(dest => dest.UserStatusName, opt => opt.MapFrom(src => src.User != null && src.User.UserStatus != null ? src.User.UserStatus.Name : null));
+                .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.User != null && src.User.UserStatus != null ? src.User.UserStatus.Name : null));
 
             // Mapping từ StudentInfo -> StudentInfoClassResponse (lấy thêm thông tin từ User, AcademicYear, UserStatus)
             CreateMap<StudentInfo, StudentInfoClassResponse>()
