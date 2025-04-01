@@ -25,6 +25,12 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Users.FirstOrDefault(u => u.Id == id && u.Active);
         }
 
+        // Lấy User theo Code
+        public User GetUserByCode(string code)
+        {
+            return _context.Users.FirstOrDefault(u => u.Code == code && u.Active);
+        }
+
         // Tạo mới một User
         public User CreateUser(User user)
         {
