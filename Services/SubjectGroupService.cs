@@ -75,7 +75,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectGroupResponse>.Conflict("Tên tổ - bộ môn đã tồn tại");
             }
-            var teacher = _context.TeacherInfos.ToList().FirstOrDefault(x => x.Id == request.TeacherId);
+            var teacher = _context.Users.Where(u => u.Role.Name.ToLower() == "teacher").FirstOrDefault(x => x.Id == request.TeacherId);
             if (teacher == null)
             {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
@@ -90,6 +90,11 @@ namespace ISC_ELIB_SERVER.Services
             if (subjectGroup == null)
             {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Không tìm thấy tổ - bộ môn có id {id}");
+            }
+            var teacher = _context.Users.Where(u => u.Role.Name.ToLower() == "teacher").FirstOrDefault(x => x.Id == request.TeacherId);
+            if (teacher == null)
+            {
+                return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
             }
             _mapper.Map(request, subjectGroup);
             var update = _subjectGroupRepo.UpdateSubjectGroup(subjectGroup);
