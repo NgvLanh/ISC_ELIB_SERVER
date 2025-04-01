@@ -6,6 +6,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ISubjectService
     {
         ApiResponse<ICollection<SubjectResponse>> GetSubject(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
+        ApiResponse<ICollection<SubjectResponse>> GetSubjectByAcademicYear(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int? academicYearId);
         ApiResponse<SubjectResponse> GetSubjectById(long id);
         ApiResponse<SubjectResponse> CreateSubject(SubjectRequest request);
         ApiResponse<SubjectResponse> UpdateSubject(long id, SubjectRequest request);

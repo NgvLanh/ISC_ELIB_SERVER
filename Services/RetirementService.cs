@@ -37,6 +37,11 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<RetirementResponse>.NotFound("LeadershipId không tồn tại");
             }
+            var existingRetirement = _repository.GetRetirementByTeacherId(Retirement_AddRequest.TeacherId);
+            if (existingRetirement != null && existingRetirement.Any())
+            {
+                return ApiResponse<RetirementResponse>.BadRequest("Giáo viên đã có trong danh sách");
+            }
             var retirement = _mapper.Map<Retirement>(Retirement_AddRequest);
             var created = _repository.CreateRetirement(retirement);
             return ApiResponse<RetirementResponse>.Success(_mapper.Map<RetirementResponse>(created));
@@ -112,16 +117,37 @@ namespace ISC_ELIB_SERVER.Services
         }
         public ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest RetirementRequest)
         {
-            if (RetirementRequest.Date.HasValue)
+            try
             {
-                // Chuyển sang DateTime có Kind Unspecified
-                RetirementRequest.Date = DateTime.SpecifyKind(RetirementRequest.Date.Value, DateTimeKind.Unspecified);
+                if (RetirementRequest.Date.HasValue)
+                {
+                    // Chuyển sang DateTime có Kind Unspecified
+                    RetirementRequest.Date = DateTime.SpecifyKind(RetirementRequest.Date.Value, DateTimeKind.Unspecified);
+                }
+
+                // Kiểm tra sự tồn tại của TeacherId và LeadershipId
+                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId))
+                {
+                    return ApiResponse<Retirement>.NotFound("Giảng viên không tồn tại");
+                }
+
+                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId))
+                {
+                    return ApiResponse<Retirement>.NotFound("Người dùng không tồn tại");
+                }
+
+                var updated = _repository.UpdateRetirement(id, RetirementRequest);
+                return updated != null
+                    ? ApiResponse<Retirement>.Success(updated)
+                    : ApiResponse<Retirement>.NotFound("Không tìm thấy trạng thái nghỉ hưu để cập nhật");
             }
-            var Retirement = _mapper.Map<Retirement>(RetirementRequest);
-            var updated = _repository.UpdateRetirement(id, RetirementRequest);
-            return updated != null
-                ? ApiResponse<Retirement>.Success(updated)
-                : ApiResponse<Retirement>.NotFound("Không tìm thấy trạng thái nghỉ hưu để cập nhật");
+            catch (Exception ex)
+            {
+                // Ghi log lỗi nếu cần thiết
+                // _logger.LogError(ex, "Error updating retirement");
+
+                return ApiResponse<Retirement>.Fail($"Đã xảy ra lỗi khi cập nhật trạng thái nghỉ hưu: {ex.Message}");
+            }
         }
 
 
