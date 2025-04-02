@@ -41,6 +41,7 @@ namespace ISC_ELIB_SERVER.Repositories
             existingWorkProcess.Position = workProcess.Position;
             existingWorkProcess.StartDate = workProcess.StartDate;
             existingWorkProcess.EndDate = workProcess.EndDate;
+            existingWorkProcess.Program = workProcess.Program;
             existingWorkProcess.IsCurrent = workProcess.IsCurrent;
             existingWorkProcess.Active = workProcess.Active;
             _context.WorkProcesses.Update(existingWorkProcess);

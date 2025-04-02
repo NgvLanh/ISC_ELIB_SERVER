@@ -2098,7 +2098,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-                entity.Property(e => e.Street)
+                entity.Property(e => e.Street)  
                     .HasMaxLength(255)
                     .HasColumnName("street");
 
@@ -2174,6 +2174,9 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.SubjectGroupsId).HasColumnName("subject_groups_id");
 
                 entity.Property(e => e.TeacherId).HasColumnName("teacher_id");
+
+                entity.Property(e => e.Program)
+                    .HasColumnName("program");
 
                 entity.HasOne(d => d.Teacher)
                     .WithMany(p => p.WorkProcesses)
