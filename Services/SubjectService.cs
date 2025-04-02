@@ -69,6 +69,7 @@ namespace ISC_ELIB_SERVER.Services
                     )
                 : ApiResponse<ICollection<SubjectResponse>>.NotFound("Không có dữ liệu");
         }
+        
         public ApiResponse<ICollection<SubjectResponse>> GetSubjectByAcademicYear(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int? academicYearId)
         {
             if(academicYearId == null)
@@ -83,11 +84,71 @@ namespace ISC_ELIB_SERVER.Services
             var query = _context.Subjects
                             .Include(s => s.SubjectType)
                                 .ThenInclude(sg => sg.AcademicYear)
-                            //.Include(s => s.SubjectGroup)
+                            .Include(s => s.SubjectSubjectGroups)
+                                .ThenInclude(ssg => ssg.SubjectGroup)
                             .Where(s => s.SubjectType.AcademicYear.Id == academicYearId).AsQueryable();
             // Kiểm tra xem có dữ liệu không
             if (!query.ToList().Any()) { 
                 return ApiResponse<ICollection<SubjectResponse>>.NotFound($"Không có dữ liệu môn học theo niên khóa có id {academicYearId}!!!");
+            }
+
+            query = query.Where(qr => qr.Active);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
+            }
+
+            query = sortColumn?.ToLower() switch
+            {
+                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "code" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Code) : query.OrderBy(us => us.Code),
+                "hourssemester1" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester1) : query.OrderBy(us => us.HoursSemester1),
+                "hourssemester2" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.HoursSemester2) : query.OrderBy(us => us.HoursSemester2),
+                _ => query.OrderBy(us => us.Id)
+            };
+
+            var total = query.Count();
+
+            if (page.HasValue && pageSize.HasValue)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<SubjectResponse>>(result);
+
+            return ApiResponse<ICollection<SubjectResponse>>.Success(
+                        data: response,
+                        totalItems: total,
+                        pageSize: pageSize,
+                        page: page
+             );
+        }
+
+        public ApiResponse<ICollection<SubjectResponse>> GetSubjectBySubjectGroup(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder, int? subjectGroupId)
+        {
+            if (subjectGroupId == null)
+            {
+                return ApiResponse<ICollection<SubjectResponse>>.NotFound("Vui lòng truyền subjectGroupId!!!");
+            }
+            var subjectGroup = _context.SubjectGroups.FirstOrDefault(s => s.Id == subjectGroupId);
+            if (subjectGroup == null)
+            {
+                return ApiResponse<ICollection<SubjectResponse>>.NotFound($"Tổ bộ môn có id {subjectGroupId} không tồn tại!!!");
+            }
+
+            var query = _context.Subjects
+                            .Include(s => s.SubjectType)
+                                .ThenInclude(sg => sg.AcademicYear)
+                            .Include(s => s.SubjectSubjectGroups)
+                                .ThenInclude(ssg => ssg.SubjectGroup)
+                            .Where(s => s.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroup.Id == subjectGroupId)).AsQueryable();
+            // Kiểm tra xem có dữ liệu không
+            if (!query.ToList().Any())
+            {
+                return ApiResponse<ICollection<SubjectResponse>>.NotFound($"Không có dữ liệu môn học theo tổ bộ môn có id {subjectGroupId}!!!");
             }
 
             query = query.Where(qr => qr.Active);

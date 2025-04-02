@@ -15,6 +15,8 @@ namespace ISC_ELIB_SERVER.Repositories
         public  IQueryable<Subject> GetAllSubject()
         {
             return _context.Subjects
+                            .Include(s => s.SubjectSubjectGroups)
+                                .ThenInclude(ssg => ssg.SubjectGroup)
                             .Include(s => s.SubjectType);
         }
 

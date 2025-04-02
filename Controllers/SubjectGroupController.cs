@@ -51,5 +51,12 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.DeleteSubjectGroup(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+        [HttpDelete("delete-subject")]
+        public IActionResult DeleteSubject([FromQuery]long? subjectGroupId = null, [FromQuery]long? subjectId = null)
+        {
+            var response = _service.DeleteSubject(subjectGroupId, subjectId);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
     }
 }
