@@ -12,6 +12,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? Position { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int[]? Program { get; set; }
         public bool? IsCurrent { get; set; }
         public bool Active { get; set; }
 
