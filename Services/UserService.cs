@@ -6,6 +6,7 @@ using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -97,6 +98,25 @@ namespace ISC_ELIB_SERVER.Services
             response.WardName = wardName;
 
             return ApiResponse<UserResponse>.Success(response);
+        }
+
+        public ApiResponse<int> GetQuantityUserByRoleId(int roleId)
+        {
+
+            try
+            {
+                if (_roleRepo.GetRoleById(roleId) == null)
+                {
+                    return ApiResponse<int>.BadRequest("RoleId không hợp lệ");
+                }
+
+                return ApiResponse<int>.Success(_userRepo.GetQuantityUserByRoleId(roleId));
+            }
+            catch
+            {
+                return ApiResponse<int>.Fail("Lỗi không thể lấy số lượng users");
+            }
+
         }
 
         public ApiResponse<UserResponse> CreateUser(UserRequest userRequest)
@@ -261,6 +281,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
+
         public static string ComputeSha256(string? input)
         {
             if (String.IsNullOrEmpty(input))
@@ -277,5 +298,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             return builder.ToString();
         }
+
+
     }
 }
