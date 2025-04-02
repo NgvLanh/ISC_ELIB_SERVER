@@ -18,7 +18,7 @@ namespace ISC_ELIB_SERVER.Mappers
 
             // Mapping từ Entity -> Response DTO
             CreateMap<TransferSchool, TransferSchoolResponse>()
-                .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src =>
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
                     src.Student != null && src.Student.User != null ? src.Student.User.FullName : null))
                 .ForMember(dest => dest.StudentCode, opt => opt.MapFrom(src =>
                     src.Student != null && src.Student.User != null ? src.Student.User.Code : null))
