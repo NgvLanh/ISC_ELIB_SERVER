@@ -84,7 +84,10 @@ namespace ISC_ELIB_SERVER.Repositories
                     .ThenInclude(u => u.Class)
                 .Include(s => s.User)
                     .ThenInclude(u => u.UserStatus)
-                .ToList();
+                .Include(s => s.User) // Nạp User
+                    .ThenInclude(u => u.AcademicYear) // Nạp AcademicYear
+                    .ThenInclude(a => a.Semesters) // Nạp Semesters
+                .ToList(); // Chuyển thành danh sách sau khi đã nạp hết dữ liệu
         }
 
     }
