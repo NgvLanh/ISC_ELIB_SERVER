@@ -12,9 +12,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "Ngày kết thúc không được để trống")]
         public DateTime EndTime { get; set; }
 
-        [Required(ErrorMessage = "Trường học không được để trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "ID trường học không hợp lệ")]
-        public int? SchoolId { get; set; }
+        // [Required(ErrorMessage = "Trường học không được để trống")]
+        // [Range(1, int.MaxValue, ErrorMessage = "ID trường học không hợp lệ")]
+        public int? SchoolId { get; set; } = 1;
     }
 
     public class AcademicYearSemesterRequest
