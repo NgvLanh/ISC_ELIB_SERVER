@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -16,6 +17,13 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.Achievements
                 .Include(a => a.User);
+        }
+
+        public IQueryable<Achievement> GetAchievementsByTypeId(int typeId)
+        {
+            return _context.Achievements
+                .Include(a => a.User)
+                .Where(a => a.TypeId == typeId);
         }
 
         public Achievement? GetAchivementById(int id)

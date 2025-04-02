@@ -19,6 +19,13 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Users.Where( u => u.Active).ToList();
         }
 
+        public int GetQuantityUserByRoleId(int roleId)
+        {
+            var users = _context.Users.Where(a => a.RoleId == roleId).ToList();
+
+            return users.Count;
+        }
+
         // Lấy User theo Id
         public User GetUserById(int id)
         {

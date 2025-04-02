@@ -17,6 +17,8 @@ namespace ISC_ELIB_SERVER.Models
         public string? AttachmentName { get; set; }
         public string? AttachmentPath { get; set; }
 
+
+
         [Column("semester_id")]  // Chỉ định tên cột đúng trong PostgreSQL
         public int? SemesterId { get; set; }
         public int? UserId { get; set; } 
@@ -27,5 +29,6 @@ namespace ISC_ELIB_SERVER.Models
         public virtual User? User { get; set; } // Liên kết đến Semester
 
         public virtual Semester? Semester  { get; set; } // Liên kết đến Semester
+      
     }
 }

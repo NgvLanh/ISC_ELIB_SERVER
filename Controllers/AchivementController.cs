@@ -22,20 +22,74 @@ namespace ISC_ELIB_SERVER.Controllers
             [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
             var response = _service.GetAchivements(page, pageSize, search, sortColumn, sortOrder);
-            return Ok(response);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetAchivementById(int id)
+        //[HttpGet("{id}")]
+        //public IActionResult GetAchivementById(int id)
+        //{
+        //    var response = _service.GetAchivementById(id);
+        //    return response.Code == 0 ? Ok(response) : NotFound(response);
+        //}
+
+        //[HttpPost]
+        //public IActionResult CreateAchivement([FromBody] AchivementRequest achivementRequest)
+        //{
+        //    var response = _service.CreateAchivement(achivementRequest);
+        //    return response.Code == 0 ? Ok(response) : BadRequest(response);
+        //}
+
+        [HttpGet("GetAwards")]
+        public IActionResult GetAwards([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.GetAchivementById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            var response = _service.GetAwards(page, pageSize, search, sortColumn, sortOrder);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost]
-        public IActionResult CreateAchivement([FromBody] AchivementRequest AchivementRequest)
+        [HttpGet("GetDisciplines")]
+        public IActionResult GetDisciplines([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
-            var response = _service.CreateAchivement(AchivementRequest);
+            var response = _service.GetDisciplines(page, pageSize, search, sortColumn, sortOrder);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("CreateAward")]
+        public IActionResult CreateAward([FromBody] AchivementRequest achivementRequest)
+        {
+            achivementRequest.TypeId = 0;
+
+            var response = _service.CreateAchivement(achivementRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut("UpdateAward/{id}")]
+        public IActionResult UpdateAward(int id, [FromBody] AchivementRequest achivementRequest)
+        {
+            achivementRequest.TypeId = 0;
+            var response = _service.UpdateAchivement(id, achivementRequest);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("CreateDiscipline")]
+        public IActionResult CreateDiscipline([FromBody] AchivementRequest achivementRequest)
+        {
+            achivementRequest.TypeId = 1;
+            var response = _service.CreateAchivement(achivementRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut("UpdateDiscipline/{id}")]
+        public IActionResult UpdateDiscipline(int id, [FromBody] AchivementRequest achivementRequest)
+        {
+            achivementRequest.TypeId = 1;
+            var response = _service.UpdateAchivement(id, achivementRequest);
+
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 

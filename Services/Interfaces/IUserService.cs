@@ -9,6 +9,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder);
         Task<ApiResponse<UserResponse>> GetUserById(int id);
         Task<ApiResponse<UserResponse>> GetUserByCode(string code);
+        ApiResponse<int> GetQuantityUserByRoleId(int roleId);
         ApiResponse<UserResponse> CreateUser(UserRequest userRequest);
         ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest);
         ApiResponse<User> DeleteUser(int id);
