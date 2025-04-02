@@ -83,7 +83,7 @@ namespace ISC_ELIB_SERVER.Services
             var query = _context.Subjects
                             .Include(s => s.SubjectType)
                                 .ThenInclude(sg => sg.AcademicYear)
-                            .Include(s => s.SubjectGroup)
+                            //.Include(s => s.SubjectGroup)
                             .Where(s => s.SubjectType.AcademicYear.Id == academicYearId).AsQueryable();
             // Kiểm tra xem có dữ liệu không
             if (!query.ToList().Any()) { 
@@ -140,10 +140,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectResponse>.Conflict("Tên môn học đã tồn tại");
             }
-            var subjectGroup = _subjectGroupRepo.GetSubjectGroupById(request.SubjectGroupId);
-            if (subjectGroup == null) {
-                return ApiResponse<SubjectResponse>.NotFound($"Tổ - bộ mộn có id {request.SubjectGroupId} không tồn tại");
-            }
+
             var subjectType = _subjectTypeRepo.GetSubjectTypeById(request.SubjectTypeId);
             if (subjectType == null)
             {
@@ -159,11 +156,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectResponse>.NotFound($"Không tìm thấy môn học có id {id}");
             }
-            var subjectGroup = _subjectGroupRepo.GetSubjectGroupById(request.SubjectGroupId);
-            if (subjectGroup == null)
-            {
-                return ApiResponse<SubjectResponse>.NotFound($"Tổ - bộ mộn có id {request.SubjectGroupId} không tồn tại");
-            }
+
             var subjectType = _subjectTypeRepo.GetSubjectTypeById(request.SubjectTypeId);
             if (subjectType == null)
             {
