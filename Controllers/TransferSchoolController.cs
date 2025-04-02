@@ -37,14 +37,19 @@ public class TransferSchoolController : ControllerBase
     /// <summary>
     /// 2️⃣ Lấy thông tin chuyển trường của một học sinh theo ID
     /// </summary>
-    [HttpGet("student/{studentId}")]
-    public IActionResult GetTransferSchoolByStudentId(int studentId)
+    [HttpGet("{studentId}")]
+    public async Task<IActionResult> GetTransferSchoolByStudentId(int studentId)
     {
-        var result = _transferSchoolRepo.GetTransferSchoolByStudentId(studentId);
+        // Gọi phương thức bất đồng bộ để lấy thông tin chuyển trường
+        var result = await _transferSchoolRepo.GetTransferSchoolByStudentId(studentId);
+
         if (result == null)
         {
+            // Trả về NotFound nếu không tìm thấy thông tin
             return NotFound(new { message = "Không tìm thấy thông tin chuyển trường cho học sinh này" });
         }
+
+        // Trả về thông tin chuyển trường nếu tìm thấy
         return Ok(new { message = "Lấy thông tin chi tiết chuyển trường thành công", data = result });
     }
 
