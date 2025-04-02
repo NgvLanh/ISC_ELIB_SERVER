@@ -43,20 +43,30 @@ public class GhnService
         try
         {
             var provinceJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/province");
-            return JsonSerializer.Deserialize<ApiResponse<Province[]>>(provinceJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var provinces = JsonSerializer.Deserialize<GhnResponse<Province[]>>(provinceJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return ApiResponse<Province[]>.Success(provinces?.Data);
         }
         catch (Exception ex)
         {
             System.Console.WriteLine($"Lỗi: {ex.Message}");
-            return ApiResponse<Province[]>.Fail("Lỗi khi lấy danh sách tỉnh thành phố");
+            return ApiResponse<Province[]>.Fail("Lỗi khi lấy danh sách tỉnh/thành phố");
         }
     }
+
     public async Task<ApiResponse<District[]>> GetDistricts(int provinceId)
     {
         try
         {
+            // Validate if provinceId exists
+            var provinceResponse = await GetProvinces();
+            if (provinceResponse.Data?.All(p => p.ProvinceId != provinceId) == true)
+            {
+                return ApiResponse<District[]>.Fail("Mã tỉnh/thành phố không tồn tại");
+            }
+
             var districtJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/district?province_id={provinceId}");
-            return JsonSerializer.Deserialize<ApiResponse<District[]>>(districtJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var districts = JsonSerializer.Deserialize<GhnResponse<District[]>>(districtJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return ApiResponse<District[]>.Success(districts?.Data);
         }
         catch (Exception ex)
         {
@@ -64,12 +74,22 @@ public class GhnService
             return ApiResponse<District[]>.Fail("Lỗi khi lấy danh sách quận huyện");
         }
     }
+
     public async Task<ApiResponse<Ward[]>> GetWards(int districtId)
     {
         try
         {
+            // Validate if districtId exists
+            var districtJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/district");
+            var districts = JsonSerializer.Deserialize<GhnResponse<District[]>>(districtJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (districts?.Data?.All(d => d.DistrictId != districtId) == true)
+            {
+                return ApiResponse<Ward[]>.Fail("Mã quận/huyện không tồn tại");
+            }
+
             var wardJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/ward?district_id={districtId}");
-            return JsonSerializer.Deserialize<ApiResponse<Ward[]>>(wardJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var wards = JsonSerializer.Deserialize<GhnResponse<Ward[]>>(wardJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return ApiResponse<Ward[]>.Success(wards?.Data);
         }
         catch (Exception ex)
         {
