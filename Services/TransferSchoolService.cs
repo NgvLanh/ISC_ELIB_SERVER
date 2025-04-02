@@ -17,10 +17,12 @@ namespace ISC_ELIB_SERVER.Services
         private readonly StudentInfoRepo _studentRepository;
         private readonly UserRepo _userRepository;
         private readonly IMapper _mapper;
+        private readonly isc_dbContext _context;
 
-        public TransferSchoolService(TransferSchoolRepo repository, IMapper mapper)
+        public TransferSchoolService(TransferSchoolRepo repository, IMapper mapper, isc_dbContext context)
         {
             _repository = repository;
+            _context = context;
 
             _mapper = mapper;
         }
@@ -52,16 +54,24 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request)
         {
+            // Kiểm tra xem StudentId đã tồn tại trong bảng TransferSchool chưa
+            var isStudentIdExist = _context.TransferSchools.Any(ts => ts.StudentId == request.StudentId);
 
+            if (isStudentIdExist)
+            {
+                // Trả về thông báo thất bại nếu StudentId đã tồn tại
+                return ApiResponse<TransferSchoolResponse>.Fail("Thêm dữ liệu thất bại: StudentId đã tồn tại trong bảng TransferSchool.");
+            }
             var transferSchool = new TransferSchool
             {
                 UserId = request.UserId,
-                
+             
                 StudentId = request.StudentId,
                 TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified),
                
                 SchoolAddress = request.SchoolAddress,
                 Reason = request.Reason,
+               
                 AttachmentName = request.AttachmentName,
                 AttachmentPath = request.AttachmentPath,
                 SemesterId = request.SemesterId,
@@ -72,11 +82,13 @@ namespace ISC_ELIB_SERVER.Services
 
             var transferSchoolRepo = new TransferSchoolResponse
             {
-
+              
                 StudentId = created.StudentId,
+                
                 TransferSchoolDate = created.TransferSchoolDate,
-            
                 Reason = created.Reason,
+                DistrictCode = request.DistrictCode,
+                ProvinceCode = request.ProvinceCode,
                 AttachmentName = created.AttachmentName,
                 AttachmentPath = created.AttachmentPath,
                 SemesterId = created.SemesterId,

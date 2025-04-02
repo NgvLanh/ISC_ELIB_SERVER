@@ -72,6 +72,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public TransferSchool CreateTransferSchool(TransferSchool entity)
         {
+
             try
             {
                 _context.TransferSchools.Add(entity);

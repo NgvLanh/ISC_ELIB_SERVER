@@ -27,5 +27,6 @@ namespace ISC_ELIB_SERVER.Models
         public virtual User? User { get; set; } // Liên kết đến Semester
 
         public virtual Semester? Semester  { get; set; } // Liên kết đến Semester
+      
     }
 }
