@@ -24,24 +24,27 @@ namespace ISC_ELIB_SERVER.Repositories
         public List<object> GetTransferSchoolList()
         {
             return _context.TransferSchools
-                .Where(ts => ts.Active)
-                .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
-                .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
-                .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s }) // Lấy từ khóa ngoại
-                .Select(res => new
-                {
-                    StudentId = res.tsu.tsi.si.Id,
-                    FullName = res.tsu.u.FullName,
-                    DateOfBirth = res.tsu.u.Dob,
-                    Gender = res.tsu.u.Gender == true ? "Nam" : "Nữ",
-                    TransferDate = res.tsu.tsi.ts.TransferSchoolDate,
-                    TransferSemester = res.s.Name,   // Hiển thị tên học kỳ
-                    TransferToSchool = res.tsu.tsi.ts.TransferToSchool,
-                    SemesterStart = res.s.StartTime, // Ngày bắt đầu học kỳ
-                    SemesterEnd = res.s.EndTime      // Ngày kết thúc học kỳ
-                })
-                .Distinct()
-                .ToList<object>();
+     .Where(ts => ts.Active)
+     .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
+     .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
+     .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s }) // Lấy từ khóa ngoại
+     .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c }) // Liên kết với bảng Class qua ClassId trong bảng Users
+     .Select(res => new
+     {
+         StudentId = res.tsuc.tsu.tsi.si.Id,
+         FullName = res.tsuc.tsu.u.FullName,
+         DateOfBirth = res.tsuc.tsu.u.Dob,
+         Gender = res.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
+         TransferDate = res.tsuc.tsu.tsi.ts.TransferSchoolDate,
+         TransferSemester = res.tsuc.s.Name,   // Hiển thị tên học kỳ
+         TransferToSchool = res.tsuc.tsu.tsi.ts.TransferToSchool,
+         GradeLevelId = res.c.GradeLevelId,   // Lấy GradeLevelId từ bảng Class
+         SemesterStart = res.tsuc.s.StartTime, // Ngày bắt đầu học kỳ
+         SemesterEnd = res.tsuc.s.EndTime     // Ngày kết thúc học kỳ
+     })
+     .Distinct()
+     .ToList<object>();
+
         }
 
 
@@ -87,7 +90,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
                 throw new Exception("Lưu dữ liệu thất bại! Chi tiết: " + ex.InnerException?.Message);
             }
-           
+
         }
 
 
