@@ -40,8 +40,13 @@ jobs:
             # Kiểm tra lại thư mục new_publish sau khi xóa file
             ls -l /home/be2/new_publish
 
-            # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
-            cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/* /home/be2/new_publish/
+            # Kiểm tra xem thư mục build có chứa file không
+            if [ "$(ls -A /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/)" ]; then
+              # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
+              cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/* /home/be2/new_publish/
+            else
+              echo "Không có file để sao chép từ máy local."
+            fi
 
             # Kiểm tra xem các file đã được sao chép vào thư mục new_publish chưa
             ls -l /home/be2/new_publish
