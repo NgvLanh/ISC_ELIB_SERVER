@@ -34,7 +34,7 @@ jobs:
             find /home/be2/new_publish/* -type f -exec rm {} \;
 
             # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
-            cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Release/net6.0/* /home/be2/new_publish/
+            cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/* /home/be2/new_publish/
 
             # Kiểm tra xem các file đã được sao chép vào thư mục new_publish chưa
             ls -l /home/be2/new_publish
