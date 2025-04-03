@@ -43,5 +43,3 @@ Lưu ý:
 - **Ngày chỉnh sửa**: 11/2/2025
 - **Ghi chú**: Nếu có ai đó chỉnh sửa cấu hình, hãy ghi chú lại ngày tháng và lý do chỉnh sửa tại vị trí đã sửa.
   "
-
-Test: Test Github Action
