@@ -22,6 +22,8 @@ namespace ISC_ELIB_SERVER.Repositories
         /// <summary>
         /// Lấy danh sách học sinh đã chuyển trường.
         /// </summary>
+        /// 
+
         public List<object> GetTransferSchoolList()
         {
             return _context.TransferSchools
@@ -43,8 +45,8 @@ namespace ISC_ELIB_SERVER.Repositories
                 SemesterStart = res.tsuc.s.StartTime, // Ngày bắt đầu học kỳ
                 SemesterEnd = res.tsuc.s.EndTime     // Ngày kết thúc học kỳ
             })
-     .Distinct()
-     .ToList<object>();
+            .Distinct()
+            .ToList<object>();
 
         }
 
