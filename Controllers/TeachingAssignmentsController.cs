@@ -1,5 +1,6 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -104,6 +105,14 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.DeleteTeachingAssignment(ids);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
+
+        [HttpPut("update-status/{id}")]
+        public IActionResult UpdateTimeTeachingAssignment(int id)
+        {
+            var response = _service.UpdateTimeTeachingAssignment(id);
+            return Ok(response);
+        }
+
 
     }
 }
