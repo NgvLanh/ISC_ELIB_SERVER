@@ -20,7 +20,8 @@ namespace ISC_ELIB_SERVER.Repositories
         {
                 return _context.Tests
                     .Include(t => t.Subject)
-                        .ThenInclude(s => s.SubjectGroup)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(t => t.Subject)
                         .ThenInclude(s => s.SubjectType)
                     .Include(t => t.User)
@@ -33,7 +34,7 @@ namespace ISC_ELIB_SERVER.Repositories
                         .Where(tu => tu.UserId == userId && tu.Test.Active == true)
                         .Include(tu => tu.Test)
                             .ThenInclude(t => t.Subject)
-                                .ThenInclude(t => t.SubjectGroup)
+                                .ThenInclude(s => s.SubjectSubjectGroups)
                         .Include(tu => tu.Test)
                             .ThenInclude(t => t.Subject)
                                 .ThenInclude(t => t.SubjectType)

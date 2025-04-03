@@ -32,12 +32,22 @@ namespace ISC_ELIB_SERVER.Mappers
                         Name = src.Subject.Name
                     } : null))
 
+                //.ForMember(dest => dest.SubjectGroup, opt => opt.MapFrom(src =>
+                //    src.Subject != null && src.Subject.SubjectGroup != null ? new SubjectGroupResponse
+                //    {
+                //        Id = src.Subject.SubjectGroup.Id,
+                //        Name = src.Subject.SubjectGroup.Name
+
+                //    } : null))
+
                 .ForMember(dest => dest.SubjectGroup, opt => opt.MapFrom(src =>
-                    src.Subject != null && src.Subject.SubjectGroup != null ? new SubjectGroupResponse
+                    src.Subject != null ?
+                    src.Subject.SubjectSubjectGroups.Select(subjectGroup => new SubjectGroupResponse
                     {
-                        Id = src.Subject.SubjectGroup.Id,
-                        Name = src.Subject.SubjectGroup.Name
-                    } : null))
+                        Id = subjectGroup.Id,
+                        Name = subjectGroup.SubjectGroup.Name
+                    }).ToList()
+                    : new List<SubjectGroupResponse>()))
 
                 .ForMember(dest => dest.Topics, opt => opt.MapFrom(src =>
                     src.Topics != null ? new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse

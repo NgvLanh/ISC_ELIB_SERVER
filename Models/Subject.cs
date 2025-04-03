@@ -28,12 +28,8 @@ namespace ISC_ELIB_SERVER.Models
 
         [Column("hours_semester_2")]
         public int? HoursSemester2 { get; set; }
-        public int? SubjectGroupId { get; set; }
         public int? SubjectTypeId { get; set; }
         public bool Active { get; set; }
-
-        [JsonIgnore]
-        public virtual SubjectGroup? SubjectGroup { get; set; }
         [JsonIgnore]
         public virtual SubjectType? SubjectType { get; set; }
         public virtual ICollection<ExamSchedule> ExamSchedules { get; set; }
@@ -44,6 +40,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<Test> Tests { get; set; }
         [JsonIgnore]
         public virtual ICollection<ClassSubject> ClassSubjects { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<SubjectSubjectGroup> SubjectSubjectGroups { get; set; }
 
     }
 }
