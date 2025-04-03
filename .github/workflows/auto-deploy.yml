@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,11 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build the project
+      - name: Build and publish the project
         run: |
           dotnet clean
-          dotnet build
-          ls -l /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/  # Kiểm tra các file sau khi build
+          dotnet publish -c Release -o ./publish
+          ls -l ./publish
 
       - name: SSH to VPS and deploy
         uses: appleboy/ssh-action@v0.1.0
@@ -41,9 +42,9 @@ jobs:
             ls -l /home/be2/new_publish
 
             # Kiểm tra xem thư mục build có chứa file không
-            if [ "$(ls -A /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/)" ]; then
-              # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
-              cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/* /home/be2/new_publish/
+            if [ "$(ls -A ./publish)" ]; then
+              # Copy tất cả file publish từ máy local vào thư mục new_publish trên VPS
+              cp -r ./publish/* /home/be2/new_publish/
             else
               echo "Không có file để sao chép từ máy local."
             fi
