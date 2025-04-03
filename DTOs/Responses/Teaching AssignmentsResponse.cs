@@ -10,7 +10,7 @@ public class TeachingAssignmentsResponse
     public TeachingAssignmentsUserResponse? User { get; set; }
     public TeachingAssignmentsClassResponse? Class { get; set; }
     public TeachingAssignmentsSubjectResponse? Subject { get; set; }
-    public SubjectGroupResponse? SubjectGroup { get; set; }
+    public List<SubjectGroupResponse>? SubjectGroup { get; set; }
     public TeachingAssignmentsTopicResponse? Topics { get; set; }
 
     public List<TeachingAssignmentsSessionsResponse>? Sessions { get; set; }

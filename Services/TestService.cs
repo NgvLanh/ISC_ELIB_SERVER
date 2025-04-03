@@ -8,6 +8,7 @@ using Sprache;
 using System.Xml.Linq;
 using System.Security.Claims;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -20,9 +21,10 @@ namespace ISC_ELIB_SERVER.Services
             private readonly SubjectRepo _subjectRepo;
             private readonly UserRepo _userRepo;
             private readonly SubjectGroupRepo _subjectGroupRepo;
+            private readonly isc_dbContext _context; 
             private readonly IMapper _mapper;
 
-            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo)
+            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo, isc_dbContext context)
             {
                 _testRepo = testRepo;
                 _userRepo = userRepo;
@@ -31,6 +33,7 @@ namespace ISC_ELIB_SERVER.Services
                 _mapper = mapper;
                 _gradeLevelRepo = gradeLevelRepo;
                 _subjectGroupRepo = subjectGroupRepo;
+                _context = context;
             }
 
             public ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -85,7 +88,23 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ICollection<TestByStudentResponse>>.Fail("ID trong token không hợp lệ");
             }
 
-            var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
+            //var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
+
+            var query = _context.TestUsers
+                        .Where(tu => tu.UserId == userId && tu.Test.Active == true)
+                        .Include(tu => tu.Test)
+                            .ThenInclude(t => t.Subject)
+                                .ThenInclude(s => s.SubjectSubjectGroups)
+                                    .ThenInclude(ssg => ssg.SubjectGroup)
+                        .Include(tu => tu.Test)
+                            .ThenInclude(t => t.Subject)
+                                .ThenInclude(t => t.SubjectType)
+                        .Include(tu => tu.Test)
+                            .ThenInclude(t => t.User)
+                        .Include(tu => tu.User)
+                        .Include(tu => tu.Test)
+                            .ThenInclude(t => t.GradeLevel)
+                        .AsEnumerable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -119,7 +138,7 @@ namespace ISC_ELIB_SERVER.Services
                 }
                 else
                 {
-                    query = query.Where(qr => qr.Test.Subject.SubjectGroup.Id == subjectGroupId.Value);
+                    query = query.Where(qr => qr.Test.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroup.Id == subjectGroupId.Value));
                 }
             }
 
@@ -156,7 +175,12 @@ namespace ISC_ELIB_SERVER.Services
             {
                 query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
             }
-            var result = query.ToList();
+            var result = query.Select(su => new TestByStudentResponse
+            {
+                Test = _mapper.Map<TestResponse>(su.Test),
+                User = _mapper.Map<UserResponse>(su.User),
+                Status = su.Status
+            }).ToList();
 
             var response = _mapper.Map<ICollection<TestByStudentResponse>>(result);
 
