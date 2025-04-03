@@ -83,6 +83,17 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = await _service.ImportClassesAsync(file);
             return response.Code == 0 ? Ok(response) : NotFound(response);
-                }
         }
+
+        [HttpPut("class-user-status/{classId}/{userId}")]
+        public async Task<IActionResult> UpdateClassUserStatus([FromRoute] int classId, [FromRoute] int userId, [FromBody] UpdateClassUserStatusRequest request)
+        {
+            var response = await _service.UpdateClassUserStatus(classId, userId, request.NewStatusId);
+
+            return Ok(response);
+        }
+
+
+
     }
+}

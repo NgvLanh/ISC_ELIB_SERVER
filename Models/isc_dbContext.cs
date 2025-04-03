@@ -80,6 +80,8 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
+        public virtual DbSet<ClassUser> ClassUser { get; set; } = null!;
+
 
 
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
@@ -2262,6 +2264,7 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.ClassId).HasColumnName("class_id");
                 entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserStatusId).HasColumnName("user_status_id");
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.ClassUsers)
                     .HasForeignKey(d => d.ClassId)
@@ -2271,6 +2274,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.ClassUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_test_users_user_id");
+
+                entity.HasOne(d => d.UserStatus)
+                    .WithMany(p => p.ClassUsers)
+                    .HasForeignKey(d => d.UserStatusId)
+                    .HasConstraintName("fk_test_users_user_status_id");
             });
 
 

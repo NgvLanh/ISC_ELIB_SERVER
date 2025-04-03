@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Org.BouncyCastle.Crypto;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -65,7 +66,8 @@ namespace ISC_ELIB_SERVER.Repositories
                 return false;
             }
 
-            _context.ScoreTypes.Remove(scoreType);
+            scoreType.Active = false;
+            _context.ScoreTypes.Update(scoreType);
             return _context.SaveChanges() > 0;
         }
 
