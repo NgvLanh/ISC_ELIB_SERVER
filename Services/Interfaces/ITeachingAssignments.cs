@@ -18,5 +18,9 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<TeachingAssignmentsResponse> CreateTeachingAssignment(TeachingAssignmentsRequest teachingAssignmentRequest);
         ApiResponse<TeachingAssignmentsResponse> UpdateTeachingAssignment(int id, TeachingAssignmentsRequest teachingAssignmentRequest);
         ApiResponse<bool> DeleteTeachingAssignment(List<int> ids);
+
+        ApiResponse<bool> UpdateTimeTeachingAssignment(int id);
+
+
     }
 }
