@@ -44,7 +44,7 @@ jobs:
               # Copy tất cả file publish từ máy local vào thư mục publish trên VPS
               cp -r ./publish/* /home/be2/publish1/
             else
-              echo "Không có file để sao chép từ máy local."
+              echo "Không có file để sao chép từ máy local"
             fi
 
             # Kiểm tra xem các file đã được sao chép vào thư mục publish chưa
