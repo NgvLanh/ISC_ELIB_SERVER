@@ -16,6 +16,7 @@ jobs:
       - name: Build and publish the project
         run: |
           dotnet clean
+          dotnet build
           dotnet publish -c Release -o ./publish
           ls -l ./publish
 
