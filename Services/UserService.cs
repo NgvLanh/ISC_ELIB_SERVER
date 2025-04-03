@@ -161,6 +161,11 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
             }
 
+            // Kiểm tra email đã tồn tại chưa
+            if (_userRepo.GetUsers().Any(u => u.Email == userRequest.Email))
+            {
+                return ApiResponse<UserResponse>.BadRequest("Email đã tồn tại");
+            }
             // Nếu tất cả đều hợp lệ, tạo user
             var newUser = new User
             {

@@ -53,7 +53,7 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             if (studentInfoRequest == null)
                 return BadRequest("Dữ liệu thông tin học sinh không hợp lệ.");
-
+            studentInfoRequest.GuardianDob = DateTimeUtils.ConvertToUnspecified(studentInfoRequest.GuardianDob);
             return Ok(_studentInfoService.CreateStudentInfo(studentInfoRequest));
         }
 
@@ -63,7 +63,7 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             if (studentInfoRequest == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
-
+            studentInfoRequest.GuardianDob = DateTimeUtils.ConvertToUnspecified(studentInfoRequest.GuardianDob);
             return Ok(_studentInfoService.UpdateStudentInfo(id, studentInfoRequest));
         }
 
