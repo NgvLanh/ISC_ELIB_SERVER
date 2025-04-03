@@ -15,7 +15,7 @@ jobs:
       - name: Build the project
         run: |
           dotnet clean
-          dotnet build 
+          dotnet build
           ls -l /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/  # Kiểm tra các file sau khi build
 
       - name: SSH to VPS and deploy
@@ -31,8 +31,14 @@ jobs:
             # Tạo thư mục mới nếu chưa có
             mkdir -p /home/be2/new_publish
 
+            # Kiểm tra thư mục mới tạo trên VPS
+            ls -l /home/be2/new_publish
+
             # Xóa tất cả file trong thư mục new_publish mà không xóa folder
             find /home/be2/new_publish/* -type f -exec rm {} \;
+
+            # Kiểm tra lại thư mục new_publish sau khi xóa file
+            ls -l /home/be2/new_publish
 
             # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
             cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/* /home/be2/new_publish/
