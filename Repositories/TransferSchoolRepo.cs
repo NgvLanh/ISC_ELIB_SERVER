@@ -30,25 +30,27 @@ namespace ISC_ELIB_SERVER.Repositories
             .Where(ts => ts.Active)
             .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
             .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
-            .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s }) // Lấy từ khóa ngoại
-             .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c }) // Liên kết với bảng Class qua ClassId trong bảng Users
+            .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
+            .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c })
+            .Join(_context.GradeLevels, tsucg => tsucg.c.GradeLevelId, gl => gl.Id, (tsucg, gl) => new { tsucg, gl }) // JOIN với bảng GradeLevels
+
             .Select(res => new
             {
-                StudentId = res.tsuc.tsu.tsi.si.Id,
-                FullName = res.tsuc.tsu.u.FullName,
-                DateOfBirth = res.tsuc.tsu.u.Dob,
-                Gender = res.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
-                TransferDate = res.tsuc.tsu.tsi.ts.TransferSchoolDate,
-                TransferSemester = res.tsuc.s.Name,   // Hiển thị tên học kỳ
-                TransferToSchool = res.tsuc.tsu.tsi.ts.TransferToSchool,
-                GradeLevelId = res.c.GradeLevelId,   // Lấy GradeLevelId từ bảng Class
-                SemesterStart = res.tsuc.s.StartTime, // Ngày bắt đầu học kỳ
-                SemesterEnd = res.tsuc.s.EndTime     // Ngày kết thúc học kỳ
+                StudentId = res.tsucg.tsuc.tsu.tsi.si.Id,
+                FullName = res.tsucg.tsuc.tsu.u.FullName,
+                DateOfBirth = res.tsucg.tsuc.tsu.u.Dob,
+                Gender = res.tsucg.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
+                TransferDate = res.tsucg.tsuc.tsu.tsi.ts.TransferSchoolDate,
+                TransferSemester = res.tsucg.tsuc.s.Name,
+                TransferToSchool = res.tsucg.tsuc.tsu.tsi.ts.TransferToSchool,
+                GradeLevel = res.gl.Name,   // Lấy tên của cấp lớp thay vì Id
+                SemesterStart = res.tsucg.tsuc.s.StartTime,
+                SemesterEnd = res.tsucg.tsuc.s.EndTime
             })
             .Distinct()
             .ToList<object>();
-
         }
+
 
 
         /// <summary>
