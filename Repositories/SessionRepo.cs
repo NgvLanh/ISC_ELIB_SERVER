@@ -196,5 +196,14 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
 
+        public bool IsValidExamId(int examId)
+        {
+            return _context.Exams.Any(e => e.Id == examId);
+        }
+
+        public bool IsValidTeachingAssignmentId(int teachingAssignmentId)
+        {
+            return _context.TeachingAssignments.Any(ta => ta.Id == teachingAssignmentId);
+        }
     }
 }

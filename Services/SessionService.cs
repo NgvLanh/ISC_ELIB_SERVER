@@ -64,11 +64,26 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu và ngày kết thúc không được để trống.");
             }
+            if (request.StartDate.Value.Date < DateTime.Now.Date)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.");
+            }            // Validate foreign key relationships
+            if (!_sessionRepo.IsValidExamId(request.ExamId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"ExamId {request.ExamId} không hợp lệ.");
+            }
+
+            if (!_sessionRepo.IsValidTeachingAssignmentId(request.TeachingAssignmentId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"TeachingAssignmentId {request.TeachingAssignmentId} không hợp lệ.");
+            }
 
             if (request.StartDate.Value.Date >= request.EndDate.Value.Date)
             {
                 return ApiResponse<SessionResponse>.BadRequest("Ngày kết thúc phải sau ngày bắt đầu ít nhất một ngày.");
             }
+
+            
 
             //if (request.ExamId == null || request.TeachingAssignmentId == null)
             //{
