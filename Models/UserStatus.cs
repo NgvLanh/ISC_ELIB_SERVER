@@ -15,5 +15,7 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
         public bool IsDeleted { get; set; } = false;
         public virtual ICollection<User> Users { get; set; }
+
+        public virtual ICollection<ClassUser> ClassUsers { get; set; }
     }
 }

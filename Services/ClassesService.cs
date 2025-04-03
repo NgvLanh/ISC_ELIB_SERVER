@@ -16,9 +16,10 @@
             private readonly GradeLevelRepo _gradeLevelRepo;
             private readonly UserRepo _userRepo;
             private readonly IClassTypeRepo _classTypeRepo;
+            private readonly ClassUserRepo _classUserRepo;
             private readonly IMapper _mapper;
 
-            public ClassesService(IClassesRepo repository, IClassSubjectRepo classSubjectRepo, IMapper mapper, AcademicYearRepo academicYearRepo, GradeLevelRepo gradeLevelRepo,UserRepo userRepo, IClassTypeRepo classTypeRepo)
+            public ClassesService(IClassesRepo repository, IClassSubjectRepo classSubjectRepo, IMapper mapper, AcademicYearRepo academicYearRepo, GradeLevelRepo gradeLevelRepo,UserRepo userRepo, IClassTypeRepo classTypeRepo, ClassUserRepo classUserRepo)
             {
                 _repository = repository;
                 _classSubjectRepo = classSubjectRepo;
@@ -27,7 +28,8 @@
                 _gradeLevelRepo = gradeLevelRepo;
                 _userRepo = userRepo;
                 _classTypeRepo = classTypeRepo;
-            }
+                _classUserRepo = classUserRepo ?? throw new ArgumentNullException(nameof(classUserRepo));
+        }
 
         public ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
@@ -604,6 +606,29 @@
             return result.Any()
                 ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
                 : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public async Task<ApiResponse<bool>> UpdateClassUserStatus(int classId, int userId, int newStatusId)
+        {
+            try
+            {
+                var classUsers = await _classUserRepo.GetByCondition(cu => cu.ClassId == classId && cu.UserId == userId);
+                var classUser = classUsers.FirstOrDefault();
+
+                if (classUser == null)
+                {
+                    return ApiResponse<bool>.BadRequest("Không tìm thấy người dùng trong lớp học");
+                }
+
+                classUser.UserStatusId = newStatusId;
+                await _classUserRepo.Update(classUser);
+
+                return ApiResponse<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<bool>.Error(ex.Message);
+            }
         }
     }
 }
