@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,28 +30,28 @@ jobs:
             cd /home/be2
 
             # Tạo thư mục mới nếu chưa có (đã có nên ko tạo)
-            # mkdir -p /home/be2/publish
+            # mkdir -p /home/be2/publish_test_auto_deploy
 
             # Kiểm tra thư mục mới tạo trên VPS
-            ls -l /home/be2/publish
+            ls -l /home/be2/publish_test_auto_deploy
 
             # Xóa tất cả file trong thư mục publish mà không xóa folder
             find /home/be2/publish/* -type f -exec rm {} \;
 
             # Kiểm tra lại thư mục publish sau khi xóa file
-            ls -l /home/be2/publish
+            ls -l /home/be2/publish_test_auto_deploy
 
             # Kiểm tra xem thư mục build có chứa file không
             if [ "$(ls -A ./publish)" ]; then
               # Copy tất cả file publish từ máy local vào thư mục publish trên VPS
-              cp -r ./publish/* /home/be2/publish/
+              cp -r ./publish/* /home/be2/publish_test_auto_deploy/
             else
               echo "Không có file để sao chép từ máy local."
             fi
 
             # Kiểm tra xem các file đã được sao chép vào thư mục publish chưa
-            ls -l /home/be2/publish
-            
+            ls -l /home/be2/publish_test_auto_deploy
+
             # Di chuyển lên thư mục gốc của project
             cd ..
 
