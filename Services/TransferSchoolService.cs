@@ -119,6 +119,7 @@ namespace ISC_ELIB_SERVER.Services
 
             // Cập nhật dữ liệu
             existingTransfer.UserId = request.UserId;
+            existingTransfer.StudentId = request.StudentId;
             existingTransfer.TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified);
             existingTransfer.SchoolAddress = request.SchoolAddress;
             existingTransfer.Reason = request.Reason;
