@@ -15,7 +15,8 @@ jobs:
       - name: Build the project
         run: |
           dotnet clean
-          dotnet build --configuration Release
+          dotnet build 
+          ls -l /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Debug/net6.0/  # Kiểm tra các file sau khi build
 
       - name: SSH to VPS and deploy
         uses: appleboy/ssh-action@v0.1.0
