@@ -16,7 +16,7 @@ jobs:
       - name: Build and publish the project
         run: |
           dotnet clean
-          dotnet build
+          # dotnet build
           dotnet publish -c Release -o ./publish
           ls -l ./publish
 
@@ -31,10 +31,10 @@ jobs:
             cd /home/be2
 
             # Tạo thư mục nếu chưa có
-            mkdir -p /home/be2/publish_test_auto_deploy
+            mkdir -p /home/be2/publish1
 
             # Kiểm tra thư mục mới tạo trên VPS
-            ls -l /home/be2/publish_test_auto_deploy
+            ls -l /home/be2/publish1
 
             # Xóa tất cả file trong thư mục publish mà không xóa folder
             # find /home/be2/publish/* -type f -exec rm {} \;
@@ -42,13 +42,13 @@ jobs:
             # Kiểm tra xem thư mục build có chứa file không
             if [ "$(ls -A ./publish)" ]; then
               # Copy tất cả file publish từ máy local vào thư mục publish trên VPS
-              cp -r ./publish/* /home/be2/publish_test_auto_deploy/
+              cp -r ./publish/* /home/be2/publish1/
             else
               echo "Không có file để sao chép từ máy local."
             fi
 
             # Kiểm tra xem các file đã được sao chép vào thư mục publish chưa
-            ls -l /home/be2/publish_test_auto_deploy
+            ls -l /home/be2/publish1
 
             # Di chuyển lên thư mục gốc của project
             cd ..
