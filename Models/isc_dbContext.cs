@@ -371,26 +371,33 @@ namespace ISC_ELIB_SERVER.Models
                     .IsRequired(false); ;
             });
 
-            modelBuilder.Entity<ClassType>(entity =>
-            {
-                entity.ToTable("class_types");
+                    modelBuilder.Entity<ClassType>(entity =>
+                    {
+                        entity.ToTable("class_types");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                        entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
+                        entity.Property(e => e.Active)
+                            .HasColumnName("active")
+                            .HasDefaultValueSql("true");
 
-                entity.Property(e => e.Description)
-                    .HasMaxLength(255)
-                    .HasColumnName("description");
+                        entity.Property(e => e.Description)
+                            .HasMaxLength(255)
+                            .HasColumnName("description");
 
-                entity.Property(e => e.Name)
-                    .HasMaxLength(100)
-                    .HasColumnName("name");
+                        entity.Property(e => e.Name)
+                            .HasMaxLength(100)
+                            .HasColumnName("name");
 
-                entity.Property(e => e.Status).HasColumnName("status");
-            });
+                        entity.Property(e => e.Status).HasColumnName("status");
+
+                        entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
+
+                        entity.HasOne(d => d.AcademicYear)
+                            .WithMany(p => p.ClassTypes) 
+                            .HasForeignKey(d => d.AcademicYearId) 
+                            .HasConstraintName("fk_class_types_academic_year_id");
+                    });
 
             modelBuilder.Entity<Discussion>(entity =>
             {
@@ -895,7 +902,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.File).HasColumnName("file");
 
-                entity.Property(e => e.LeadershipId).HasColumnName("leadership_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
 
@@ -907,11 +914,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("retention_period");
 
-                entity.Property(e => e.Semester)
-                    .HasMaxLength(50)
-                    .HasColumnName("semester");
-
-                entity.Property(e => e.SemestersId).HasColumnName("semesters_id");
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
 
                 entity.Property(e => e.StudentId).HasColumnName("student_id");
 
@@ -919,6 +922,11 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Reserves)
                     .HasForeignKey(d => d.StudentId)
                     .HasConstraintName("fk_reserve_student_id");
+                entity.HasOne(d => d.Semester)
+                    .WithMany()  // Nếu trong Semester có danh sách Reserves, thay bằng .WithMany(s => s.Reserves)
+                    .HasForeignKey(d => d.SemesterId)
+                    .HasConstraintName("fk_reserve_semester_id")
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<Resignation>(entity =>
@@ -1378,11 +1386,14 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
-                entity.Property(e => e.Date)
-                    .HasColumnType("timestamp without time zone")
-                    .HasColumnName("date");
+                entity.Property(e => e.AcademicYearsId).HasColumnName("academic_year_id");
 
                 entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.HasOne(d => d.AcademicYear)
+                    .WithMany(p => p.SubjectTypes)
+                    .HasForeignKey(d => d.AcademicYearsId)
+                    .HasConstraintName("fk_subject_types_academic_year_id");
             });
 
             modelBuilder.Entity<Support>(entity =>
@@ -1693,9 +1704,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
-                entity.Property(e => e.Type)
-                    .HasMaxLength(50)
-                    .HasColumnName("type");
+                entity.Property(e => e.Type).HasColumnName("type");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -1996,7 +2005,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(255)
                     .HasColumnName("attachment_path");
 
-                entity.Property(e => e.LeadershipId).HasColumnName("leadership_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
 
@@ -2158,7 +2167,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasColumnName("active")
                     .HasDefaultValueSql("true");
 
-                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                entity.Property(e => e.EndDate).HasColumnName("end_date").HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.IsCurrent).HasColumnName("is_current");
 
@@ -2170,7 +2179,7 @@ namespace ISC_ELIB_SERVER.Models
                     .HasMaxLength(50)
                     .HasColumnName("position");
 
-                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                entity.Property(e => e.StartDate).HasColumnName("start_date").HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.SubjectGroupsId).HasColumnName("subject_groups_id");
 

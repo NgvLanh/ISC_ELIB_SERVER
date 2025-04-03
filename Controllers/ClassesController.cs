@@ -78,11 +78,11 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
-            [HttpPost("import")]
-            public async Task<IActionResult> ImportClasses([FromForm] IFormFile file)
-            {
-                var response = await _service.ImportClassesAsync(file);
-                return response.Code == 0 ? Ok(response) : NotFound(response);
-                    }
-            }
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportClasses([FromForm] IFormFile file)
+        {
+            var response = await _service.ImportClassesAsync(file);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+                }
+        }
     }

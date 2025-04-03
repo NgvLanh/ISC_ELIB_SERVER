@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Models;
+using Autofac.Core;
+using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services.Interfaces;
+using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services;
 
 [Route("api/transfer-school")]
 [ApiController]
 public class TransferSchoolController : ControllerBase
 {
     private readonly TransferSchoolRepo _transferSchoolRepo;
+    private readonly ITransferSchoolService _service;
 
-    public TransferSchoolController(TransferSchoolRepo transferSchoolRepo)
+
+    public TransferSchoolController(TransferSchoolRepo transferSchoolRepo,
+        ITransferSchoolService service)
     {
         _transferSchoolRepo = transferSchoolRepo;
+        _service = service;
     }
 
     /// <summary>
@@ -28,10 +37,10 @@ public class TransferSchoolController : ControllerBase
     /// <summary>
     /// 2️⃣ Lấy thông tin chuyển trường của một học sinh theo ID
     /// </summary>
-    [HttpGet("student/{studentInfoId}")]
-    public IActionResult GetTransferSchoolByStudentId(int studentInfoId)
+    [HttpGet("student/{studentId}")]
+    public IActionResult GetTransferSchoolByStudentId(int studentId)
     {
-        var result = _transferSchoolRepo.GetTransferSchoolByStudentId(studentInfoId);
+        var result = _transferSchoolRepo.GetTransferSchoolByStudentId(studentId);
         if (result == null)
         {
             return NotFound(new { message = "Không tìm thấy thông tin chuyển trường cho học sinh này" });
@@ -39,42 +48,51 @@ public class TransferSchoolController : ControllerBase
         return Ok(new { message = "Lấy thông tin chi tiết chuyển trường thành công", data = result });
     }
 
-    /// <summary>
-    /// 3️⃣ Thêm mới thông tin chuyển trường
-    /// </summary>
-/*    [HttpPost("add/{studentId}")]
-    public IActionResult PostTransferSchool(int studentId, [FromBody] TransferSchool transferSchool)
+
+    // Thêm mới TransferSchool
+    [HttpPost]
+    public IActionResult CreateTransferSchool([FromBody] TransferSchoolRequest request)
     {
-        if (transferSchool == null)
-        {
-            return BadRequest(new { message = "Dữ liệu không hợp lệ" });
-        }
+        if (request == null)
+            return BadRequest(new { Message = "Dữ liệu không hợp lệ." });
 
-        var result = _transferSchoolRepo.PostTransferSchool(studentId, transferSchool);
-        if (result == null)
-        {
-            return BadRequest(new { message = "Thêm thông tin chuyển trường thất bại" });
-        }
-        return Ok(new { message = "Thêm thông tin chuyển trường thành công", data = result });
+        request.UserId = GetUserId();
+        var response = _service.CreateTransferSchool(request);
+        if (response.Data == null)
+            return BadRequest(response);
+
+        return Ok(response);
     }
-*/
 
-    /// <summary>
-    /// 4️⃣ Cập nhật thông tin chuyển trường
-    /// </summary>
-    [HttpPut("update/{id}")]
-    public IActionResult UpdateTransferSchool(int id, [FromBody] TransferSchool transferSchool)
+    [HttpPut("{studentId}")]
+    public IActionResult UpdateTransferSchool(int studentId, [FromBody] TransferSchoolRequest request)
     {
-        if (transferSchool == null)
+        try
         {
-            return BadRequest(new { message = "Dữ liệu cập nhật không hợp lệ" });
+            var updatedTransfer = _service.UpdateTransferSchool(studentId, request);
+            return updatedTransfer != null
+                ? Ok("Cập nhật thành công!")
+                : NotFound("Không tìm thấy dữ liệu để cập nhật!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Lỗi: {ex.Message}");
+        }
+    }
+
+    // Lấy userId từ token JWT
+    private int? GetUserId()
+    {
+        var userIdString = User.FindFirst("Id")?.Value;
+        Console.WriteLine($"User.FindFirst(\"Id\"): {userIdString}");
+
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return null; // Trả về null nếu không tìm thấy hoặc parse thất bại
         }
 
-        var result = _transferSchoolRepo.UpdateTransferSchool(id, transferSchool);
-        if (result == null)
-        {
-            return NotFound(new { message = "Không tìm thấy thông tin chuyển trường để cập nhật" });
-        }
-        return Ok(new { message = "Cập nhật thông tin chuyển trường thành công", data = result });
+        return userId;
     }
+
+
 }

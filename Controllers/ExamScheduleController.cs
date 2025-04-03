@@ -21,11 +21,14 @@ namespace ISC_ELIB_SERVER.Controllers
      [FromQuery] int pageSize = 10,
      [FromQuery] string? search = null,
      [FromQuery] string? sortBy = "Id",
-     [FromQuery] bool isDescending = false)
+     [FromQuery] bool isDescending = false,
+     [FromQuery] int? academicYearId = null,
+     [FromQuery] int? semesterId = null)
         {
-            var response = _service.GetAll(page, pageSize, search, sortBy, isDescending);
+            var response = _service.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId);
             return StatusCode(response.Code == 0 ? 200 : 400, response);
         }
+
 
 
         [HttpGet("{id}")]

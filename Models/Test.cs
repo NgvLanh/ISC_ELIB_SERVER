@@ -16,7 +16,7 @@ namespace ISC_ELIB_SERVER.Models
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Type { get; set; }
+        public int? Type { get; set; } // 0 trắc nghiệm, 1 tự luận
         public int? DurationTime { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }

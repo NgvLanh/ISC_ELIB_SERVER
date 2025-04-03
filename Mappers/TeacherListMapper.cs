@@ -21,8 +21,8 @@ namespace ISC_ELIB_SERVER.Mappers
                     src.User != null ? src.User.Gender : false))
 
                 .ForMember(dest => dest.SubjectGroupName, opt => opt.MapFrom(src =>
-                    src.SubjectGroups != null && src.SubjectGroups.Any()
-                        ? src.SubjectGroups.FirstOrDefault().Name
+                    src.User.SubjectGroups != null && src.User.SubjectGroups.Any()
+                        ? src.User.SubjectGroups.FirstOrDefault().Name
                         : ""))
 
                 .ForMember(dest => dest.Position, opt => opt.MapFrom(src =>

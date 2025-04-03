@@ -92,5 +92,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<TestUser> TestUsers { get; set; }
 
         public virtual ICollection<ClassUser> ClassUsers { get; set; }
+        public virtual ICollection<SubjectGroup> SubjectGroups { get; set; }
+
     }
 }

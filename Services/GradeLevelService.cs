@@ -39,7 +39,7 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<GradeLevelResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<GradeLevelResponse>>.Success(response) : ApiResponse<ICollection<GradeLevelResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<GradeLevelResponse>>.Success(response, page, pageSize, _repository.GetGradeLevels().Count) : ApiResponse<ICollection<GradeLevelResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<ICollection<GradeLevelResponse>> GetGradeLevelsByAyAndSc(int? page, int? pageSize, string? sortColumn, string? sortOrder, string schoolName, int? startYear, int? endYear)
