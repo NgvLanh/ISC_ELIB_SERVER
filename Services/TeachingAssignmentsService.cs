@@ -353,13 +353,14 @@ namespace ISC_ELIB_SERVER.Services
                     Name = createdAssignment.Subject.Name
                 };
 
-                response.SubjectGroup = createdAssignment.Subject.SubjectSubjectGroups
-                    .Select(s => new SubjectGroupResponse
-                    {
-                        Id = s.SubjectGroup.Id,
-                        Name = s.SubjectGroup.Name,
-                        TeacherId = (int)s.SubjectGroup.TeacherId
-                    }).ToList();
+                response.SubjectGroup = createdAssignment.Subject?.SubjectSubjectGroups?
+                .Where(s => s.SubjectGroup != null) 
+                .Select(s => new SubjectGroupResponse
+                {
+                    Id = s.SubjectGroup?.Id ?? 0,
+                    Name = s.SubjectGroup?.Name ?? "Unknown",
+                    TeacherId = s.SubjectGroup?.TeacherId ?? 0
+                }).ToList() ?? new List<SubjectGroupResponse>();
 
                 response.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
                 {
@@ -448,13 +449,14 @@ namespace ISC_ELIB_SERVER.Services
                     }
                     : null;
 
-                response.SubjectGroup = updatedAssignment.Subject.SubjectSubjectGroups
+                response.SubjectGroup = updatedAssignment.Subject?.SubjectSubjectGroups?
+                   .Where(s => s.SubjectGroup != null)
                    .Select(s => new SubjectGroupResponse
                    {
-                       Id = s.SubjectGroup.Id,
-                       Name = s.SubjectGroup.Name,
-                       TeacherId = (int)s.SubjectGroup.TeacherId
-                   }).ToList();
+                       Id = s.SubjectGroup?.Id ?? 0,
+                       Name = s.SubjectGroup?.Name ?? "Unknown",
+                       TeacherId = s.SubjectGroup?.TeacherId ?? 0
+                   }).ToList() ?? new List<SubjectGroupResponse>();
 
                 response.Topics = updatedAssignment.Topics != null
                     ? new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
@@ -696,6 +698,31 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi: " + ex.Message);
             }
         }
+
+        public ApiResponse<bool> UpdateTimeTeachingAssignment(int id)
+        {
+            var assignment = _repository.GetTeachingAssignments()
+                .FirstOrDefault(ta => ta.Id == id);
+
+            if (assignment == null)
+            {
+                return ApiResponse<bool>.NotFound("Không tìm thấy phân công giảng dạy.");
+            }
+
+            DateTime now = DateTime.UtcNow;
+            now = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+
+            if (assignment.EndDate != now)
+            {
+                assignment.EndDate = now;
+                _context.TeachingAssignments.Update(assignment);
+                _context.SaveChanges();
+            }
+
+            return ApiResponse<bool>.Success(true);
+        }
+
+
 
     }
 }

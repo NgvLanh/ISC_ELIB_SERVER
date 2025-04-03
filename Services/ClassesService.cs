@@ -610,7 +610,7 @@
 
         public async Task<ApiResponse<bool>> UpdateClassUserStatus(int classId, int userId, int newStatusId)
         {
-            try
+            //try
             {
                 var classUsers = await _classUserRepo.GetByCondition(cu => cu.ClassId == classId && cu.UserId == userId);
                 var classUser = classUsers.FirstOrDefault();
@@ -625,10 +625,10 @@
 
                 return ApiResponse<bool>.Success(true);
             }
-            catch (Exception ex)
-            {
-                return ApiResponse<bool>.Error(ex.Message);
-            }
+            //catch (Exception ex)
+            //{
+            //    return ApiResponse<bool>.Error(ex.Message);
+            //}
         }
     }
 }
