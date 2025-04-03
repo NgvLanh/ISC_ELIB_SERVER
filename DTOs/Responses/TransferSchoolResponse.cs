@@ -16,12 +16,12 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int? SemesterId { get; set; }  // Lấy từ bảng Semester
         public string? Reason { get; set; }
       
-      /*  public int? ProvinceCode { get; set; }  // Lấy từ bảng User
+        public int? ProvinceCode { get; set; }  // Lấy từ bảng User
         public int? DistrictCode { get; set; }  // Lấy từ bảng User*/
 
         public string? ProvinceName { get; set; }
         public string? DistrictName { get; set; }
-       
+
         public string? AttachmentName { get; set; }
         public string? AttachmentPath { get; set; }
         public int StatusCode { get; set; }  // Chỉ dùng để báo lỗi/trạng thái
