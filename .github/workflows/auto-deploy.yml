@@ -1,0 +1,39 @@
+name: Auto Deploy C# API to VPS
+
+on:
+  push:
+    branches:
+      - production
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build the project
+        run: |
+          dotnet clean
+          dotnet build --configuration Release
+
+      - name: SSH to VPS and deploy
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_SSH_PASSWORD }}
+          script: |
+            cd /home/be2
+
+            # Tạo thư mục mới nếu chưa có
+            mkdir -p /home/be2/new_publish
+
+            # Xóa tất cả file trong thư mục new_publish mà không xóa folder
+            find /home/be2/new_publish/* -type f -exec rm {} \;
+
+            # Copy tất cả file build từ máy local vào thư mục new_publish trên VPS
+            cp -r /home/runner/work/ISC_ELIB_SERVER/ISC_ELIB_SERVER/bin/Release/net6.0/* /home/be2/new_publish/
+
+            # Kiểm tra xem các file đã được sao chép vào thư mục new_publish chưa
+            ls -l /home/be2/new_publish
