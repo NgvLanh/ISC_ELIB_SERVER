@@ -31,6 +31,14 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.GetSubjectByAcademicYear(page, pageSize, search, sortColumn, sortOrder, academicYearId);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
+        [HttpGet("get-by-subject-group")]
+        public IActionResult GetSubjectBySubjectGroup([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
+            [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null,
+            [FromQuery] int? subjectGroupId = null)
+        {
+            var response = _service.GetSubjectBySubjectGroup(page, pageSize, search, sortColumn, sortOrder, subjectGroupId);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetSubjectById(long id)

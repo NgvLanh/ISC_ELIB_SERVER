@@ -10,5 +10,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<SubjectGroupResponse> CreateSubjectGroup(SubjectGroupRequest request);
         ApiResponse<SubjectGroupResponse> UpdateSubjectGroup(long id, SubjectGroupRequest request);
         ApiResponse<string> DeleteSubjectGroup(long id);
+        ApiResponse<string> DeleteSubject(long? subjectGroupId, long? subjectId);
     }
 }

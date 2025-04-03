@@ -23,7 +23,19 @@ namespace ISC_ELIB_SERVER.Mappers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.User != null ? (src.User.Gender == true ? "Nam" : "Nữ") : null))
                 .ForMember(dest => dest.Nation, opt => opt.MapFrom(src => src.User != null ? src.User.Nation : null))
                 .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.User != null && src.User.Class != null ? src.User.Class.Name : null))
-                .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.User != null && src.User.UserStatus != null ? src.User.UserStatus.Name : null));
+                .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.User != null && src.User.UserStatus != null ? src.User.UserStatus.Name : null))
+            // Lấy thông tin AcademicYearId và Semesters từ User -> AcademicYear
+            .ForMember(dest => dest.AcademicYearId, opt => opt.MapFrom(src => src.User != null && src.User.AcademicYear != null ? src.User.AcademicYear.Id : (int?)null))
+            .ForMember(dest => dest.Semesters, opt => opt.MapFrom(src => src.User != null && src.User.AcademicYear != null ?
+                src.User.AcademicYear.Semesters.Select(se => new SemesterResponse
+                {
+                    Id = se.Id,
+                    Name = se.Name,
+                    StartTime = se.StartTime ?? default(DateTime),
+                    EndTime = se.EndTime ?? default(DateTime),
+                    AcademicYearId = se.AcademicYearId.HasValue ? se.AcademicYearId.Value : 0
+                }).ToList() : new List<SemesterResponse>())
+            );
 
             // Mapping từ StudentInfo -> StudentInfoClassResponse (lấy thêm thông tin từ User, AcademicYear, UserStatus)
             CreateMap<StudentInfo, StudentInfoClassResponse>()
