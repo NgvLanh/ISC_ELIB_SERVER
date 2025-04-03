@@ -59,6 +59,9 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<StudentInfoResponses> CreateStudentInfo(StudentInfoRequest studentInfoRequest)
         {
             var studentInfo = _mapper.Map<StudentInfo>(studentInfoRequest);
+
+            studentInfo.GuardianDob = DateTime.SpecifyKind(studentInfo.GuardianDob, DateTimeKind.Unspecified);
+
             _repository.AddStudentInfo(studentInfo);
             var createdStudentInfo = _mapper.Map<StudentInfoResponses>(studentInfo);
 
