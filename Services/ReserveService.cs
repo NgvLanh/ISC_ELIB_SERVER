@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -35,11 +36,41 @@ namespace ISC_ELIB_SERVER.Services
         // Lấy danh sách bảo lưu đang hoạt động
         public ApiResponse<ICollection<ReserveListResponse>> GetActiveReserves(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var reserves = _repository.GetActiveReserves(page, pageSize, search, sortColumn, sortOrder);
-            var response = _mapper.Map<ICollection<ReserveListResponse>>(reserves);
+            var query = _repository.GetActiveReserves().AsEnumerable();
 
-            return reserves.Any()
-                ? ApiResponse<ICollection<ReserveListResponse>>.Success(response)
+            // Tìm kiếm theo tên học viên
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(r => r.Student.FullName.Contains(search));
+            }
+
+            // Sắp xếp theo cột được chọn
+            switch (sortColumn?.ToLower())
+            {
+                case "fullname":
+                    query = sortOrder == "desc" ? query.OrderByDescending(r => r.Student.FullName) : query.OrderBy(r => r.Student.FullName);
+                    break;
+                case "reservedate":
+                    query = sortOrder == "desc" ? query.OrderByDescending(r => r.ReserveDate) : query.OrderBy(r => r.ReserveDate);
+                    break;
+                default:
+                    query = query.OrderBy(r => r.Id);
+                    break;
+            }
+            var total = query.Count();
+
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<ReserveListResponse>>(result);
+            return result.Any()
+                ? ApiResponse<ICollection<ReserveListResponse>>.Success(
+                        data:response,
+                        page:page,
+                        pageSize:pageSize,
+                        totalItems:total
+                    )
                 : ApiResponse<ICollection<ReserveListResponse>>.NotFound("Không có dữ liệu bảo lưu.");
         }
 

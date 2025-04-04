@@ -24,7 +24,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(esc => esc.ExampleScheduleNavigation)
                     .ThenInclude(es => es.GradeLevels)
                 .Include(esc => esc.ExampleScheduleNavigation)
-                    .ThenInclude(es => es.Exam) // Include Exam để lấy ExamGraders
+                    .ThenInclude(es => es.Exam) 
                         .ThenInclude(e => e.ExamGraders)
                             .ThenInclude(eg => eg.User)
                 .AsNoTracking();

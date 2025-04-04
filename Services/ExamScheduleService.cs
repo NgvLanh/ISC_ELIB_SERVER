@@ -17,7 +17,9 @@ namespace ISC_ELIB_SERVER.Services
         string? sortBy,
         bool isDescending,
         int? academicYearId,
-        int? semesterId
+        int? semesterId,
+            int? gradeLevelsId,  
+        int? classId
     );
 
         ApiResponse<ExamScheduleResponse> GetById(long id);
@@ -37,9 +39,11 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending, int? academicYearId, int? semesterId)
+        public ApiResponse<PagedResult<ExamScheduleResponse>> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending, int? academicYearId, int? semesterId, int? gradeLevelsId,  
+    int? classId)
         {
-            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId);
+            var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId,   gradeLevelsId, 
+    classId );
             var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities.Items);
 
             var result = new PagedResult<ExamScheduleResponse>(responses, entities.TotalItems, page, pageSize);
@@ -97,12 +101,15 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<object> Delete(long id)
         {
-            var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<object>.NotFound("ExamSchedule không tồn tại");
+            var entity = _repository.GetById((int)id);
+            if (entity == null)
+            {
+                return ApiResponse<object>.NotFound("ExamSchedule không tồn tại");
+            }
 
             try
             {
-                var result = _repository.Delete(id);
+                var result = _repository.Delete((int)id);
                 return result
                     ? ApiResponse<object>.Success()
                     : ApiResponse<object>.Conflict("Không thể xóa ExamSchedule");
@@ -110,10 +117,14 @@ namespace ISC_ELIB_SERVER.Services
             catch (Exception ex)
             {
                 return ApiResponse<object>.Error(new Dictionary<string, string[]>
-                {
-                    { "Exception", new[] { ex.Message } }
-                });
+        {
+            { "Exception", new[] { ex.Message } }
+        });
             }
         }
+
+
     }
+
 }
+
