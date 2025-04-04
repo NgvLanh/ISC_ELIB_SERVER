@@ -1,4 +1,6 @@
-﻿namespace ISC_ELIB_SERVER.DTOs.Requests
+﻿using ISC_ELIB_SERVER.Enums;
+
+namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class ExamScheduleRequest
     {
@@ -6,7 +8,7 @@
         public DateTime? ExamDay { get; set; }
         public string? Type { get; set; }
         public bool? Form { get; set; }
-        public string? Status { get; set; }
+        public ExamStatus Status { get; set; }
         public int AcademicYearId { get; set; }
         public int Subject { get; set; }
         public int SemesterId { get; set; }
