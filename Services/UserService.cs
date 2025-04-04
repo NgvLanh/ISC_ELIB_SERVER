@@ -264,6 +264,7 @@ namespace ISC_ELIB_SERVER.Services
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
             user.Active = userRequest.Active;
+            user.AvatarUrl = userRequest.AvatarUrl;
 
             // Chỉ cập nhật mật khẩu nếu có nhập mới
             if (!string.IsNullOrEmpty(userRequest.Password))
