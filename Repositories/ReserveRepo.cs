@@ -16,6 +16,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Reserves
                 .Include(r => r.Student)  // Load thông tin User (Student)
                 .Include(r => r.Class)    // Load thông tin Class
+                .Include(r => r.Semester) // Load thông tin Semester
                 .FirstOrDefault(r => r.Id == id); // Tìm theo Reserve.Id
         }
 
@@ -24,6 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Reserves
                 .Include(r => r.Student)
                 .Include(r => r.Class)
+                .Include(r => r.Semester)
                 .FirstOrDefault(r => r.StudentId == studentId); // Tìm theo StudentId (User.Id)
         }
 
@@ -59,6 +61,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return  _context.Reserves
                 .Include(r => r.Student)
                 .Include(r => r.Class)
+                .Include(r => r.Semester)
                 .Where(r => r.Active == true);
 
         }
