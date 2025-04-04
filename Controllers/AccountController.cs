@@ -123,6 +123,23 @@ public class AccountController : ControllerBase
         return Ok(ApiResponse<string>.Success("Mật khẩu đã được cập nhật thành công"));
     }
 
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var userId = User.FindFirst("id")?.Value;
+        if (userId == null)
+        {
+            return Unauthorized(ApiResponse<string>.Unauthorized("Người dùng không xác thực"));
+        }
+
+        var changePasswordResponse = _userService.ChangePassword(int.Parse(userId), request.CurrentPassword, request.NewPassword);
+        if (changePasswordResponse.Code != 0)
+        {
+            return BadRequest(changePasswordResponse);
+        }
+
+        return Ok(ApiResponse<string>.Success("Mật khẩu đã được cập nhật thành công"));
+    }
+
     private string GenerateRandomPassword()
     {
         const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
