@@ -61,20 +61,48 @@ public class TransferSchoolController : ControllerBase
         if (request == null)
             return BadRequest(new { Message = "Dữ liệu không hợp lệ." });
 
-        request.UserId = GetUserId();
+        // Lấy userId từ token
+        var userId = GetUserId();  // Giả sử GetUserId() lấy userId từ token
+
+        if (userId == null)
+        {
+            // Trả về lỗi nếu không lấy được userId
+            return BadRequest(new { Message = "Không thể xác định userId." });
+        }
+
+        // Gán userId vào request để truyền vào service
+        request.UserId = userId.Value;
+
+        // Gọi service để lưu vào DB
         var response = _service.CreateTransferSchool(request);
+
         if (response.Data == null)
             return BadRequest(response);
 
         return Ok(response);
     }
 
+
     [HttpPut("{studentId}")]
     public IActionResult UpdateTransferSchool(int studentId, [FromBody] TransferSchoolRequest request)
     {
         try
         {
+            // Lấy userId từ token
+            var userId = GetUserId();  // Giả sử GetUserId() lấy userId từ token
+
+            if (userId == null)
+            {
+                // Trả về lỗi nếu không lấy được userId
+                return BadRequest(new { Message = "Không thể xác định userId." });
+            }
+
+            // Gán userId vào request để truyền vào service
+            request.UserId = userId.Value;
+
+            // Gọi service để cập nhật TransferSchool
             var updatedTransfer = _service.UpdateTransferSchool(studentId, request);
+
             return updatedTransfer != null
                 ? Ok("Cập nhật thành công!")
                 : NotFound("Không tìm thấy dữ liệu để cập nhật!");

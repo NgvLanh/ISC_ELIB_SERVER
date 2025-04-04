@@ -23,7 +23,6 @@ namespace ISC_ELIB_SERVER.Repositories
         /// Lấy danh sách học sinh đã chuyển trường.
         /// </summary>
         /// 
-
         public List<object> GetTransferSchoolList()
         {
             return _context.TransferSchools
