@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -28,9 +29,20 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [StringLength(500, ErrorMessage = "Đường dẫn file đính kèm không được vượt quá 500 ký tự.")]
         public string? AttachmentPath { get; set; }
 
+        [Required(ErrorMessage = "Mã học kỳ không được để trống.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Mã học kỳ phải lớn hơn 0.")]
+        public int SemesterId { get; set; }
+
         [Required(ErrorMessage = "Mã lãnh đạo không được để trống.")]
         [Range(1, int.MaxValue, ErrorMessage = "Mã lãnh đạo phải lớn hơn 0.")]
         public int LeadershipId { get; set; }
-    }
 
+        [Required(ErrorMessage = "Mã tỉnh/thành không được để trống.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Mã tỉnh/thành phải lớn hơn 0.")]
+        public int ProvinceCode { get; set; }  // Lấy từ User
+
+        [Required(ErrorMessage = "Mã quận/huyện không được để trống.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Mã quận/huyện phải lớn hơn 0.")]
+        public int DistrictCode { get; set; }  // Lấy từ User
+    }
 }

@@ -31,5 +31,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         [Required(ErrorMessage = "Loại lớp không được để trống")]
         public int? ClassTypeId { get; set; }
 
+        public List<int> Subjects { get; set; } = new List<int>();
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -22,35 +23,52 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<ClassType> GetClassTypes()
         {
-            return _context.ClassTypes.ToList();
+            return _context.ClassTypes
+                .AsNoTracking()
+                .Include(ct => ct.AcademicYear)
+                .ToList();
         }
 
-        public ClassType GetClassTypeById(int id)
+
+        public ClassType? GetClassTypeById(int id)
         {
-            return _context.ClassTypes.FirstOrDefault(s => s.Id == id);
+            return _context.ClassTypes
+                .AsNoTracking() 
+                .Include(ct => ct.AcademicYear)
+                .FirstOrDefault(ct => ct.Id == id);
         }
+
 
         public ClassType CreateClassType(ClassType classType)
         {
             _context.ClassTypes.Add(classType);
             _context.SaveChanges();
-            return classType;
-        }//
+
+            return _context.ClassTypes
+                .AsNoTracking()
+                .Include(ct => ct.AcademicYear)
+                .FirstOrDefault(ct => ct.Id == classType.Id);
+        }
+
 
         public ClassType? UpdateClassType(ClassType classType)
         {
-            var existingClassType = _context.ClassTypes.Find(classType.Id);
+            var existingClassType = _context.ClassTypes
+                .AsNoTracking()
+                .FirstOrDefault(ct => ct.Id == classType.Id);
 
             if (existingClassType == null)
             {
-                return null;
+                return null; 
             }
 
-            existingClassType.Name = classType.Name;
-            existingClassType.Description = classType.Description;
-
+            _context.Entry(classType).State = EntityState.Modified;
             _context.SaveChanges();
-            return existingClassType;
+
+            return _context.ClassTypes
+                .AsNoTracking()
+                .Include(ct => ct.AcademicYear)
+                .FirstOrDefault(ct => ct.Id == classType.Id);
         }
 
         public bool DeleteClassType(int id)

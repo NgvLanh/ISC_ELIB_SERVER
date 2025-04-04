@@ -11,7 +11,6 @@ namespace ISC_ELIB_SERVER.Models
             GradeLevels = new HashSet<GradeLevel>();
             Resignations = new HashSet<Resignation>();
             Retirements = new HashSet<Retirement>();
-            SubjectGroups = new HashSet<SubjectGroup>();
             TeacherFamilies = new HashSet<TeacherFamily>();
             TeacherTrainingPrograms = new HashSet<TeacherTrainingProgram>();
             TemporaryLeaves = new HashSet<TemporaryLeave>();
@@ -36,11 +35,12 @@ namespace ISC_ELIB_SERVER.Models
         public bool Active { get; set; }
         public virtual User? User { get; set; }
 
+
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }
         public virtual ICollection<GradeLevel> GradeLevels { get; set; }
         public virtual ICollection<Resignation> Resignations { get; set; }
         public virtual ICollection<Retirement> Retirements { get; set; }
-        public virtual ICollection<SubjectGroup> SubjectGroups { get; set; }
+        //public virtual ICollection<SubjectGroup> SubjectGroups { get; set; }
         public virtual ICollection<TeacherFamily> TeacherFamilies { get; set; }
         public virtual ICollection<TeacherTrainingProgram> TeacherTrainingPrograms { get; set; }
         public virtual ICollection<TemporaryLeave> TemporaryLeaves { get; set; }

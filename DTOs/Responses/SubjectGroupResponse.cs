@@ -6,6 +6,8 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+
         public int TeacherId { get; set; }
+        public UserResponse? Teacher { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<EducationLevelResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<EducationLevelResponse>>.Success(response) : ApiResponse<ICollection<EducationLevelResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<EducationLevelResponse>>.Success(response, page, pageSize, _repository.GetEducationLevels().Count) : ApiResponse<ICollection<EducationLevelResponse>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<EducationLevelResponse> GetEducationLevelById(long id)
@@ -57,14 +57,16 @@ namespace ISC_ELIB_SERVER.Services
         {
             var ListEducationLevel = _repository.GetEducationLevels();
 
-            if(ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name))){
-                return ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
-            }
 
             if (EducationLevelRequest.IsAnnualSystem == true && EducationLevelRequest.IsCredit == true)
             {
                 return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
             }
+
+            //if (EducationLevelRequest.IsAnnualSystem == false && EducationLevelRequest.IsCredit == false)
+            //{
+            //    return ApiResponse<EducationLevelResponse>.BadRequest("Vui lòng chọn 1 trong 2 hệ niên chế hoặc tín chỉ");
+            //}
 
             var newEducationLevel = new EducationLevel
             {
@@ -93,8 +95,6 @@ namespace ISC_ELIB_SERVER.Services
 
             try
             {
-                Console.WriteLine("Dữ liệu trước khi lưu: " + JsonConvert.SerializeObject(newEducationLevel, Formatting.Indented));
-
                 var created = _repository.CreateEducationLevel(newEducationLevel);
                 return ApiResponse<EducationLevelResponse>.Success(_mapper.Map<EducationLevelResponse>(created));
             }
@@ -119,10 +119,10 @@ namespace ISC_ELIB_SERVER.Services
 
             var ListEducationLevel = _repository.GetEducationLevels().Where(item => item.Active); ;
 
-            if (ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name) && item.Id != id))
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
-            }
+            //if (ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name) && item.Id != id))
+            //{
+            //    return ApiResponse<EducationLevelResponse>.BadRequest("Tên cấp bậc đào tạo đã tồn tại");
+            //}
 
             
             if (EducationLevelRequest.IsAnnualSystem ==true && EducationLevelRequest.IsCredit == true)

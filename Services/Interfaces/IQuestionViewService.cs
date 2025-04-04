@@ -6,6 +6,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface IQuestionViewService
     {
         QuestionViewResponse GetViewCount(int questionId);
-        void AddView(QuestionViewRequest request);
+        void AddView(int questionId, int userId);
     }
 }

@@ -41,5 +41,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<User> Users { get; set; }
         [JsonIgnore]
         public virtual ICollection<ClassSubject> ClassSubjects { get; set; }
+
+        public virtual ICollection<ClassUser> ClassUsers { get; set; }
     }
 }

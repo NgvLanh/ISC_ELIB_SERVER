@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -15,7 +16,7 @@ namespace ISC_ELIB_SERVER.Models
 
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Type { get; set; }
+        public int? Type { get; set; } // 0 trắc nghiệm, 1 tự luận
         public int? DurationTime { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -23,15 +24,18 @@ namespace ISC_ELIB_SERVER.Models
         public string? Description { get; set; }
         public string? ClassIds { get; set; }
         public bool? FileSubmit { get; set; }
-        public int? SemesterId { get; set; }
+        public int? GradeLevelsId { get; set; }
         public int? SubjectId { get; set; }
         public int? UserId { get; set; }
         public bool? Active { get; set; }
 
         public virtual Subject? Subject { get; set; }
         public virtual User? User { get; set; }
+        public virtual GradeLevel? GradeLevel { get; set; }
         public virtual ICollection<TestFile> TestFiles { get; set; }
         public virtual ICollection<TestQuestion> TestQuestions { get; set; }
         public virtual ICollection<TestsSubmission> TestsSubmissions { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<TestUser> TestUsers { get; set; }
     }
 }

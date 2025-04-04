@@ -1,5 +1,6 @@
 ﻿using System;
 using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -13,7 +14,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<SubjectType> GetAllSubjectType()
         {
-            return _context.SubjectTypes.ToList();
+            return _context.SubjectTypes.Include(st => st.AcademicYear).ToList();
         }
 
         public SubjectType GetSubjectTypeById(long id)

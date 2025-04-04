@@ -9,5 +9,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string Name { get; set; }
         [Required(ErrorMessage = "Id teacher không được để trống")]
         public int TeacherId { get; set; }
+        [Required(ErrorMessage = "Mảng subjectId không được để trống")]
+        public int[] subjectId { get; set; }
     }
 }

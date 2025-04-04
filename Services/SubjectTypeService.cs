@@ -11,12 +11,14 @@ namespace ISC_ELIB_SERVER.Services
     public class SubjectTypeService : ISubjectTypeService
     {
         private readonly SubjectTypeRepo _subjectTypeRepo;
+        private readonly AcademicYearRepo _academicYearRepo;
         private readonly IMapper _mapper;
 
-        public SubjectTypeService(SubjectTypeRepo subjectTypeRepo, IMapper mapper)
+        public SubjectTypeService(SubjectTypeRepo subjectTypeRepo, IMapper mapper, AcademicYearRepo academicYearRepo)
         {
             _subjectTypeRepo = subjectTypeRepo;
             _mapper = mapper;
+            _academicYearRepo = academicYearRepo;
         }
 
         public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -75,7 +77,15 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectTypeResponse>.Conflict("Tên loại môn học đã tồn tại");
             }
-            var create = _subjectTypeRepo.CreateSubjectType(_mapper.Map<SubjectType>(subjectTypeRequest));
+            var academicYear = _academicYearRepo.GetAcademicYearById(Convert.ToInt64(subjectTypeRequest.AcademicYearsId));
+            if (academicYear == null)
+            {
+                return ApiResponse<SubjectTypeResponse>.NotFound($"Niên khóa có id {subjectTypeRequest.AcademicYearsId} không tồn tại!!!");
+            }
+
+            var subjectType = _mapper.Map<SubjectType>(subjectTypeRequest);
+
+            var create = _subjectTypeRepo.CreateSubjectType(subjectType);
             return ApiResponse<SubjectTypeResponse>.Success(_mapper.Map<SubjectTypeResponse>(create));
         }
 
@@ -84,6 +94,11 @@ namespace ISC_ELIB_SERVER.Services
             var subjectType = _subjectTypeRepo.GetSubjectTypeById(id);
             if (subjectType == null) {
                 return ApiResponse<SubjectTypeResponse>.NotFound($"Không tìm thấy loại môn học có id {id}");
+            }
+            var academicYear = _academicYearRepo.GetAcademicYearById(Convert.ToInt64(subjectTypeRequest.AcademicYearsId));
+            if (academicYear == null)
+            {
+                return ApiResponse<SubjectTypeResponse>.NotFound($"Niên khóa có id {subjectTypeRequest.AcademicYearsId} không tồn tại!!!");
             }
             _mapper.Map(subjectTypeRequest, subjectType);
             var update = _subjectTypeRepo.UpdateSubjectType(subjectType);

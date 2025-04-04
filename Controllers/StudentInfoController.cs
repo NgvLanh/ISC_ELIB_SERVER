@@ -20,6 +20,14 @@ namespace ISC_ELIB_SERVER.Controllers
             _studentInfoService = studentInfoService;
         }
 
+        // Lấy danh sách học viên theo user figma
+        [HttpGet("all")]
+        public IActionResult GetAllStudents()
+        {
+            var result = _studentInfoService.GetAllStudents();
+            return Ok(result);
+        }
+
         // GET: api/studentinfos
         [HttpGet]
         public ActionResult<ApiResponse<ICollection<StudentInfoResponses>>> GetStudentInfos(
@@ -45,7 +53,7 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             if (studentInfoRequest == null)
                 return BadRequest("Dữ liệu thông tin học sinh không hợp lệ.");
-
+            studentInfoRequest.GuardianDob = DateTimeUtils.ConvertToUnspecified(studentInfoRequest.GuardianDob);
             return Ok(_studentInfoService.CreateStudentInfo(studentInfoRequest));
         }
 
@@ -55,7 +63,7 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             if (studentInfoRequest == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
-
+            studentInfoRequest.GuardianDob = DateTimeUtils.ConvertToUnspecified(studentInfoRequest.GuardianDob);
             return Ok(_studentInfoService.UpdateStudentInfo(id, studentInfoRequest));
         }
 
@@ -66,20 +74,21 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(_studentInfoService.DeleteStudentInfo(id));
         }
 
-        //Lấy danh sách học sinh theo lớp
-        [HttpGet("class/{classId}")]
-        public IActionResult GetStudentsByClass(int classId, int page = 1, int pageSize = 10)
-        {
-            var result = _studentInfoService.GetStudentInfosByClassId(classId, page, pageSize);
-            return Ok(result);
-        }
-
-        // Lấy danh sách sinh viên theo UserId
+        // Lấy danh sách sinh viên theo thông tin bảng UserId
         [HttpGet("user/{userId}")]
         public IActionResult GetStudentsByUserId(int userId)
         {
             var result = _studentInfoService.GetStudentsByUserId(userId);
             return Ok(result);
         }
+
+        // Lấy danh sách học viên theo ClassId với thông tin chi tiết từ User và UserStatus
+        [HttpGet("class/{classId}/students")]
+        public IActionResult GetStudentsByClass(int classId)
+        {
+            var result = _studentInfoService.GetStudentsByClass(classId);
+            return Ok(result);
+        }
+
     }
 }

@@ -39,7 +39,33 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<SemesterResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<SemesterResponse>>.Success(response) : ApiResponse<ICollection<SemesterResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<SemesterResponse>>.Success(response, page, pageSize, _repository.GetSemesters().Count) : ApiResponse<ICollection<SemesterResponse>>.NotFound("Không có dữ liệu");
+        }
+
+
+        public ApiResponse<ICollection<object>> GetScoreBySemesters(long userId, long academicYearId)
+        {
+            var query = _repository.GetScoreBySemesters(userId, academicYearId).AsQueryable();
+
+            
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<object>>(result);
+
+            return result.Any() ? ApiResponse<ICollection<object>>.Success(response) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
+        }
+
+
+        public ApiResponse<ICollection<object>> GetStudentScores(long userId, long academicYearId)
+        {
+            var query = _repository.GetStudentScores(userId, academicYearId).AsQueryable();
+
+
+            var result = query.ToList();
+
+            var response = _mapper.Map<ICollection<object>>(result);
+
+            return result.Any() ? ApiResponse<ICollection<object>>.Success(response) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
         }
 
         public ApiResponse<ICollection<object>> GetCourseOfSemesters(int? page, int? pageSize, string? sortColumn, string? sortOrder, int UserId)
@@ -62,8 +88,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var response = _mapper.Map<ICollection<object>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<object>>.Success(response) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<object>>.Success(response, page, pageSize, _repository.GetCourseOfSemesters(UserId).Count) : ApiResponse<ICollection<object>>.NotFound("Không có dữ liệu");
         }
+
 
         public ApiResponse<SemesterResponse> GetSemesterById(long id)
         {

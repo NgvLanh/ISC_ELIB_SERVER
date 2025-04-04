@@ -1,63 +1,103 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
-using ISC_ELIB_SERVER.DTOs.Responses;
-using ISC_ELIB_SERVER.Models;
-using ISC_ELIB_SERVER.Repositories;
-using ISC_ELIB_SERVER.Services;
-using ISC_ELIB_SERVER.Services.Interfaces;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Sprache;
+using ISC_ELIB_SERVER.Repositories;
+using ISC_ELIB_SERVER.Models;
+using Autofac.Core;
+using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services.Interfaces;
+using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.Services;
 
-
-namespace ISC_ELIB_SERVER.Controllers
+[Route("api/transfer-school")]
+[ApiController]
+public class TransferSchoolController : ControllerBase
 {
-    [ApiController]
-    [Route("api/TransferSchool")]
-    public class TransferSchoolController : ControllerBase
+    private readonly TransferSchoolRepo _transferSchoolRepo;
+    private readonly ITransferSchoolService _service;
+
+
+    public TransferSchoolController(TransferSchoolRepo transferSchoolRepo,
+        ITransferSchoolService service)
     {
-        private readonly ITransferSchoolService _service;
-
-        public TransferSchoolController(ITransferSchoolService service)
-        {
-            _service = service;
-        }
-
-        [HttpGet]
-        public IActionResult GetTransferSchools([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
-        {
-            var response = _service.GetTransferSchools(page, pageSize, search, sortColumn, sortOrder);
-            return Ok(response);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetTransferSchoolById(long id)
-        {
-            var response = _service.GetTransferSchoolById(id);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
-        }
-
-        [HttpPost]
-        public IActionResult CreateTransferSchool([FromBody] TransferSchool_AddRequest TransferSchoolRequest)
-        {
-            var response = _service.CreateTransferSchool(TransferSchoolRequest);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateTransferSchool(long id, [FromBody] TransferSchool_UpdateRequest TransferSchool)
-        {
-            var response = _service.UpdateTransferSchool(id , TransferSchool);
-
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTransferSchool(long id)
-        {
-            var response = _service.DeleteTransferSchool(id);
-            var result = _service.GetTransferSchoolsNormal();
-            return response.Code == 0 ? Ok(result) : BadRequest(result);
-        }
-
+        _transferSchoolRepo = transferSchoolRepo;
+        _service = service;
     }
+
+    /// <summary>
+    /// 1️⃣ Lấy danh sách học sinh đã chuyển trường
+    /// </summary>
+    [HttpGet("list")]
+    public IActionResult GetTransferSchoolList()
+    {
+        var result = _transferSchoolRepo.GetTransferSchoolList();
+        return Ok(new { message = "Lấy danh sách học sinh chuyển trường thành công", data = result });
+    }
+
+    /// <summary>
+    /// 2️⃣ Lấy thông tin chuyển trường của một học sinh theo ID
+    /// </summary>
+    [HttpGet("{studentId}")]
+    public async Task<IActionResult> GetTransferSchoolByStudentId(int studentId)
+    {
+        // Gọi phương thức bất đồng bộ để lấy thông tin chuyển trường
+        var result = await _transferSchoolRepo.GetTransferSchoolByStudentId(studentId);
+
+        if (result == null)
+        {
+            // Trả về NotFound nếu không tìm thấy thông tin
+            return NotFound(new { message = "Không tìm thấy thông tin chuyển trường cho học sinh này" });
+        }
+
+        // Trả về thông tin chuyển trường nếu tìm thấy
+        return Ok(new { message = "Lấy thông tin chi tiết chuyển trường thành công", data = result });
+    }
+
+
+    // Thêm mới TransferSchool
+    [HttpPost]
+    public IActionResult CreateTransferSchool([FromBody] TransferSchoolRequest request)
+    {
+        if (request == null)
+            return BadRequest(new { Message = "Dữ liệu không hợp lệ." });
+
+        request.UserId = GetUserId();
+        var response = _service.CreateTransferSchool(request);
+        if (response.Data == null)
+            return BadRequest(response);
+
+        return Ok(response);
+    }
+
+    [HttpPut("{studentId}")]
+    public IActionResult UpdateTransferSchool(int studentId, [FromBody] TransferSchoolRequest request)
+    {
+        try
+        {
+            var updatedTransfer = _service.UpdateTransferSchool(studentId, request);
+            return updatedTransfer != null
+                ? Ok("Cập nhật thành công!")
+                : NotFound("Không tìm thấy dữ liệu để cập nhật!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Lỗi: {ex.Message}");
+        }
+    }
+
+    // Lấy userId từ token JWT
+    private int? GetUserId()
+    {
+        var userIdString = User.FindFirst("Id")?.Value;
+        Console.WriteLine($"User.FindFirst(\"Id\"): {userIdString}");
+
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return null; // Trả về null nếu không tìm thấy hoặc parse thất bại
+        }
+
+        return userId;
+    }
+
+
 }

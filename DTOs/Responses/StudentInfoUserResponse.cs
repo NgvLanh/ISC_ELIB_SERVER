@@ -3,11 +3,14 @@
     public class StudentInfoUserResponse
     {
         public int Id { get; set; }  // ID từ bảng StudentInfo
+        public string? Code { get; set; } // Mã học viên từ bảng user
         public string? FullName { get; set; }  // Tên đầy đủ từ bảng User
         public DateTime? Dob { get; set; }  // Ngày sinh từ bảng User
-        public bool? Gender { get; set; }  // Giới tính từ bảng User
+        public string? Gender { get; set; }  // Giới tính từ bảng User
         public string? Nation { get; set; }  // Quốc tịch từ bảng User
         public string? ClassName { get; set; } // Tên lớp từ bảng Class
-        public string? UserStatusName { get; set; } // Tên trạng thái từ bảng UserStatus
+        public string? status { get; set; } // Tên trạng thái từ bảng UserStatus
+        public int? AcademicYearId { get; set; } // ID năm học
+        public List<SemesterResponse>? Semesters { get; set; } // Danh sách học kỳ
     }
 }

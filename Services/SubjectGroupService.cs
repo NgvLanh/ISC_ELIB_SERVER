@@ -70,17 +70,52 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<SubjectGroupResponse> CreateSubjectGroup(SubjectGroupRequest request)
         {
+           
+
             var existing = _subjectGroupRepo.GetAllSubjectGroup().FirstOrDefault(st => st.Name?.ToLower() == request.Name.ToLower());
             if (existing != null)
             {
                 return ApiResponse<SubjectGroupResponse>.Conflict("Tên tổ - bộ môn đã tồn tại");
             }
-            var teacher = _context.TeacherInfos.ToList().FirstOrDefault(x => x.Id == request.TeacherId);
+            var teacher = _context.Users.Where(u => u.Role.Name.ToLower() == "teacher").FirstOrDefault(x => x.Id == request.TeacherId);
             if (teacher == null)
             {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
             }
+
+            if (request?.subjectId == null || request.subjectId.Any(id => id.GetType() != typeof(int)))
+            {
+                return ApiResponse<SubjectGroupResponse>.Fail("Vui lòng truyền vào mảng là số nguyên!!!");
+            }
+
+            List<Subject> listSubjects = new List<Subject>();
+            foreach (var id in request.subjectId)
+            {
+                var subject = _context.Subjects.FirstOrDefault(x => x.Id == id);
+                if(subject == null)
+                {
+                    return ApiResponse<SubjectGroupResponse>.NotFound($"Môn học có id {id} không tồn tại");
+                } 
+                else
+                {
+                    listSubjects.Add(subject);
+                }
+            }
             var create = _subjectGroupRepo.CreateSubjectGroup(_mapper.Map<SubjectGroup>(request));
+            
+            List<SubjectSubjectGroup> subjectSubjectGroups = new List<SubjectSubjectGroup>();
+            
+            foreach (var subject in listSubjects) {
+                subjectSubjectGroups.Add(new SubjectSubjectGroup
+                {
+                    SubjectId = subject.Id,
+                    SubjectGroupId = create.Id
+                });
+            }
+
+            _context.AddRange(subjectSubjectGroups);
+            _context.SaveChanges();
+
             return ApiResponse<SubjectGroupResponse>.Success(_mapper.Map<SubjectGroupResponse>(create));
         }
 
@@ -91,8 +126,51 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Không tìm thấy tổ - bộ môn có id {id}");
             }
+            var teacher = _context.Users.Where(u => u.Role.Name.ToLower() == "teacher").FirstOrDefault(x => x.Id == request.TeacherId);
+            if (teacher == null)
+            {
+                return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
+            }
+
+            if (request?.subjectId == null || request.subjectId.Any(id => id.GetType() != typeof(int)))
+            {
+                return ApiResponse<SubjectGroupResponse>.Fail("Vui lòng truyền vào mảng là số nguyên!!!");
+            }
             _mapper.Map(request, subjectGroup);
+           
+            List<Subject> listSubjects = new List<Subject>();
+            foreach (var idSubject in request.subjectId)
+            {
+                var subject = _context.Subjects.FirstOrDefault(x => x.Id == idSubject);
+                if (subject == null)
+                {
+                    return ApiResponse<SubjectGroupResponse>.NotFound($"Môn học có id {idSubject} không tồn tại");
+                }
+                else
+                {
+                    var checkSubject = _context.SubjectSubjectGroups.FirstOrDefault(ssg => ssg.SubjectId == subject.Id && ssg.SubjectGroupId == subjectGroup.Id);
+                    if(checkSubject == null)
+                    {
+                        listSubjects.Add(subject);
+                    }
+                }
+            }
             var update = _subjectGroupRepo.UpdateSubjectGroup(subjectGroup);
+
+            List<SubjectSubjectGroup> subjectSubjectGroups = new List<SubjectSubjectGroup>();
+
+            foreach (var subject in listSubjects)
+            {
+                subjectSubjectGroups.Add(new SubjectSubjectGroup
+                {
+                    SubjectId = subject.Id,
+                    SubjectGroupId = update.Id
+                });
+            }
+
+            _context.AddRange(subjectSubjectGroups);
+            _context.SaveChanges();
+
             return ApiResponse<SubjectGroupResponse>.Success(_mapper.Map<SubjectGroupResponse>(update));
         }
 
@@ -107,6 +185,38 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<string>.NotFound($"Không tìm thấy tổ - bộ môn có id {id}");
             }
+        }
+
+        public ApiResponse<string> DeleteSubject(long? subjectGroupId, long? subjectId)
+        {
+            if (subjectGroupId == null)
+            {
+                return ApiResponse<string>.NotFound("Vui lòng truyền subjectGroupId!!!");
+            }
+            if (subjectId == null)
+            {
+                return ApiResponse<string>.NotFound("Vui lòng truyền subjectId!!!");
+            }
+            var subjectGroup = _subjectGroupRepo.GetSubjectGroupById(subjectGroupId.Value);
+            if (subjectGroup == null) {
+                return ApiResponse<string>.NotFound($"Tổ bộ môn có id {subjectGroupId.Value} không tồn tại!!!");
+            }
+            var subject = _context.Subjects.FirstOrDefault(s => s.Id == subjectId.Value);
+            if (subject == null)
+            {
+                return ApiResponse<string>.NotFound($"Môn học có id {subjectId.Value} không tồn tại!!!");
+            }
+
+            var subjectSubjectGroup = _context.SubjectSubjectGroups.Where(ssg => ssg.SubjectGroupId == subjectGroup.Id && ssg.SubjectId == subject.Id);
+            if (!subjectSubjectGroup.ToList().Any())
+            {
+                return ApiResponse<string>.NotFound($"Môn học trong tổ bộ môn không tồn tại theo id subjectGroupId là {subjectGroup.Id} và subjectId là {subject.Id}!!!");
+            }
+
+            _context.SubjectSubjectGroups.RemoveRange(subjectSubjectGroup);
+            _context.SaveChanges();
+
+            return new ApiResponse<string>(0, "Xóa bộ môn khỏi tổ bộ môn thành công", null, null);
         }
     }
 }

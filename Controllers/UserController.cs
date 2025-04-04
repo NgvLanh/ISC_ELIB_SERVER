@@ -75,5 +75,15 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             return Ok(_userService.DeleteUser(id));
         }
+
+        [HttpPost("GetQuantityUserByRoleId/{roleId}")]
+        
+        public ActionResult<ApiResponse<int>> GetQuantityUserByRoleId(int roleId)
+        {
+            var response = _userService.GetQuantityUserByRoleId(roleId);
+
+            return response.Code == 0 ? Ok(response) : BadRequest(response); ;
+        }
+
     }
 }

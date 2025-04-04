@@ -9,10 +9,13 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public ClassTypeMapper()
         {
-            // us - res
-            CreateMap<ClassType, ClassTypeResponse>();
-            // res - us
-            CreateMap<ClassTypeRequest, ClassType>();
+            CreateMap<ClassType, ClassTypeResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) 
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name)) 
+                .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(src => src.AcademicYear)); 
+
+            CreateMap<ClassTypeRequest, ClassType>()
+                .ForMember(dest => dest.AcademicYear, opt => opt.Ignore()); 
         }
     }
 }

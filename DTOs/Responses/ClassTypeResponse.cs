@@ -11,5 +11,6 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public bool? Status { get; set; }
         public string? Description { get; set; }
 
+        public AcademicYearResponse? AcademicYear { get; set; }
     }
 }

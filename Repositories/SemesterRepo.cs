@@ -18,91 +18,104 @@ namespace ISC_ELIB_SERVER.Repositories
                 .ToList();
         }
 
+        public ICollection<object> GetScoreBySemesters(long userId, long academicYearId)
+        {
+            var semesterScores = _context.Semesters
+                .Where(s => s.AcademicYearId == academicYearId)
+                .Select(s => new
+                {
+                    Semester = s.Name,
+                    Scores = _context.StudentScores
+                                .Where(ss => ss.SemesterId == s.Id && ss.UserId == userId)
+                                .Select(ss => (decimal?)ss.Score)
+                                .ToList()
+                })
+                .AsEnumerable()
+                .Select(g => new
+                {
+                    Semester = g.Semester,
+                    AverageScore = g.Scores.Any() ? Math.Round((decimal)g.Scores.Average()!, 1) : 0,
+                    Ranking = g.Scores.Any()
+                        ? ((decimal)g.Scores.Average()! >= (decimal)8 ? "Giỏi" :
+                           (decimal)g.Scores.Average()! >= (decimal)6.5 ? "Khá" :
+                           (decimal)g.Scores.Average()! >= (decimal)5 ? "Trung bình" : "Yếu")
+                        : "Chưa có điểm"
+                })
+                .OrderBy(x => x.Semester) 
+                .ToList();
+
+            if (semesterScores.Any())
+            {
+                var allScores = semesterScores.Where(x => x.AverageScore > 0).Select(x => x.AverageScore).ToList();
+                decimal fullYearAverage = allScores.Any() ? Math.Round(allScores.Average(), 1) : 0;
+                string fullYearRanking = allScores.Any()
+                    ? (fullYearAverage >= (decimal)8 ? "Giỏi" :
+                       fullYearAverage >= (decimal)6.5 ? "Khá" :
+                       fullYearAverage >= (decimal)5 ? "Trung bình" : "Yếu")
+                    : "Chưa có điểm";
+
+                semesterScores.Add(new
+                {
+                    Semester = "Cả năm",
+                    AverageScore = fullYearAverage,
+                    Ranking = fullYearRanking
+                });
+            }
+
+            return semesterScores.Cast<object>().ToList();
+        }
 
 
-        //    public ICollection<object> GetCourseOfSemesters(int userId)
-        //    {
-        //        var dayOfWeekMapping = new Dictionary<DayOfWeek, string>
-        //{
-        //    { DayOfWeek.Monday, "Thứ 2" },
-        //    { DayOfWeek.Tuesday, "Thứ 3" },
-        //    { DayOfWeek.Wednesday, "Thứ 4" },
-        //    { DayOfWeek.Thursday, "Thứ 5" },
-        //    { DayOfWeek.Friday, "Thứ 6" },
-        //    { DayOfWeek.Saturday, "Thứ 7" },
-        //    { DayOfWeek.Sunday, "Chủ Nhật" }
-        //};
+        public ICollection<object> GetStudentScores(long userId, long academicYearId)
+        {
+            var rawData = from s in _context.Semesters
+                          join ay in _context.AcademicYears on s.AcademicYearId equals ay.Id
+                          join ss in _context.StudentScores on s.Id equals ss.SemesterId
+                          join sub in _context.Subjects on ss.SubjectId equals sub.Id
+                          join st in _context.ScoreTypes on ss.ScoreTypeId equals st.Id
+                          where ss.UserId == userId && ay.Id == academicYearId
+                          select new
+                          {
+                              SemesterId = s.Id,
+                              Semester = s.Name,
+                              SubjectId = sub.Id,
+                              Subject = sub.Name,
+                              ScoreType = st.Name,
+                              Score = ss.Score
+                          };
 
-        //        // Debug: Kiểm tra dữ liệu TeachingAssignments có đúng userId không?
-        //        var teachingAssignments = _context.TeachingAssignments
-        //            .Where(ta => ta.UserId == userId)
-        //            .ToList();
-        //        Console.WriteLine($"TeachingAssignments Count for User {userId}: {teachingAssignments.Count}");
+            var result = rawData
+                .GroupBy(x => new { x.SemesterId, x.Semester })
+                .Select(g => new
+                {
+                    Semester = g.Key.Semester,
+                    Subjects = g.GroupBy(x => new { x.SubjectId, x.Subject })
+                                .Select(sg => new
+                                {
+                                    Subject = sg.Key.Subject,
+                                    Scores = sg.Select(x => new { x.ScoreType, x.Score }).ToList(),
+                                    Average = sg.Any() ? Math.Round((decimal)sg.Average(x => x.Score), 1) : (decimal?)null
+                                }).ToList()
+                }).ToList<object>();
 
-        //        // Sử dụng DefaultIfEmpty() để tạo LEFT JOIN
-        //        var rawData = (from s in _context.Semesters
-        //                       join ay in _context.AcademicYears on s.AcademicYearId equals ay.Id into ayGroup
-        //                       from ay in ayGroup.DefaultIfEmpty() 
+            var allSemesters = _context.Semesters
+                .Where(s => s.AcademicYearId == academicYearId)
+                .Select(s => new
+                {
+                    SemesterId = s.Id,
+                    Semester = s.Name
+                }).ToList();
 
-        //                       join c in _context.Classes on ay.Id equals c.AcademicYearId into cGroup
-        //                       from c in cGroup.DefaultIfEmpty()
+            var finalResult = allSemesters.Select(s => new
+            {
+                Semester = s.Semester,
+                Subjects = result.Cast<dynamic>().FirstOrDefault(r => r.Semester == s.Semester)?.Subjects ??
+                           new List<object> { new { Subject = "Chưa có điểm", Scores = new List<object>(), Average = (decimal?)null } }
+            }).ToList<object>();
 
-        //                       join ta in _context.TeachingAssignments on c.Id equals ta.ClassId into taGroup
-        //                       from ta in taGroup.DefaultIfEmpty()
-        //                       where ta != null && ta.UserId == userId 
+            return finalResult;
+        }
 
-        //                       join sub in _context.Subjects on ta.SubjectId equals sub.Id into subGroup
-        //                       from sub in subGroup.DefaultIfEmpty()
-
-        //                       join ses in _context.Sessions on ta.Id equals ses.TeachingAssignmentId into sesGroup
-        //                       from ses in sesGroup.DefaultIfEmpty()
-
-        //                       select new
-        //                       {
-        //                           SemesterId = s.Id,
-        //                           Semester = s.Name,
-        //                           Subject = sub.Name ?? "",
-        //                           Class = c.Name ?? "",
-        //                           Schedule = ses.StartDate,
-        //                           Start = ta.StartDate,
-        //                           End = ta.EndDate,
-        //                           Status = ses.Status
-        //                       }).ToList();
-
-
-        //        var transformedData = rawData.Select(x => new
-        //        {
-        //            x.SemesterId,
-        //            x.Semester,
-        //            Subject = x.Subject,
-        //            Class = x.Class,
-        //            Schedule = x.Schedule.HasValue
-        //                ? (dayOfWeekMapping.GetValueOrDefault(x.Schedule.Value.DayOfWeek, "Không xác định")
-        //                + " - " + x.Schedule.Value.ToString("HH:mm"))
-        //                : "Không có lịch",
-        //            Date = $"{x.Start?.ToString("dd/MM") ?? ""} - {x.End?.ToString("dd/MM") ?? ""}",
-        //            x.Status
-        //        }).ToList();
-
-        //        // Fix lỗi GroupBy để không mất bản ghi
-        //        var groupedData = transformedData
-        //            .GroupBy(x => new { x.SemesterId, x.Semester })
-        //            .Select(g => new
-        //            {
-        //                Id = g.Key.SemesterId,
-        //                Semester = g.Key.Semester,
-        //                Courses = g.Select(x => new
-        //                {
-        //                    x.Subject,
-        //                    x.Class,
-        //                    x.Schedule,
-        //                    x.Date,
-        //                    x.Status
-        //                }).ToList()
-        //            }).ToList<object>();
-
-        //        return groupedData;
-        //    }
 
 
         public ICollection<object> GetCourseOfSemesters(int userId)
@@ -116,6 +129,13 @@ namespace ISC_ELIB_SERVER.Repositories
                 { DayOfWeek.Thursday, "Thứ 5" },
                 { DayOfWeek.Friday, "Thứ 6" },
                 { DayOfWeek.Saturday, "Thứ 7" }
+            }                                   ;
+
+            var statusMapping = new Dictionary<string, string>
+            {
+                { "Scheduled", "Chưa hoàn thành" },
+                { "Ongoing", "Đang diễn ra" },
+                { "Completed", "Đã hoàn thành" }
             };
 
             var rawData = (from ta in _context.TeachingAssignments
@@ -140,7 +160,6 @@ namespace ISC_ELIB_SERVER.Repositories
                                TeachingAssignmentId = ta.Id
                            }).ToList();
 
-            // Lấy session có StartDate nhỏ nhất cho mỗi TeachingAssignment
             var groupedSessions = rawData
                 .GroupBy(x => x.TeachingAssignmentId)
                 .Select(g => new
@@ -165,7 +184,9 @@ namespace ISC_ELIB_SERVER.Repositories
                           " - " + groupedSessions[g.First().TeachingAssignmentId].SessionStart.Value.ToString("HH:mm")
                         : "Không có lịch",
                     Date = $"{g.Key.StartDate?.ToString("dd/MM") ?? ""} - {g.Key.EndDate?.ToString("dd/MM") ?? ""}",
-                    Status = g.First().Status
+                    Status = g.First().Status != null && statusMapping.ContainsKey(g.First().Status)
+                        ? statusMapping[g.First().Status]
+                        : "Không xác định"
                 }).ToList();
 
             var groupedData = transformedData
@@ -186,6 +207,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
             return groupedData;
         }
+
 
 
 
@@ -222,6 +244,13 @@ namespace ISC_ELIB_SERVER.Repositories
                 return _context.SaveChanges() > 0;
             }
             return false;
+        }
+
+
+        // Lành -- Cần học kỳ theo niên khoá
+        public ICollection<Semester> GetSemestersByAcademicYearId(long academicYearId)
+        {
+            return _context.Semesters.Where(s => s.Active && s.AcademicYearId == academicYearId).ToList();
         }
     }
 }

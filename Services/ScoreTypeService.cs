@@ -29,14 +29,6 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ScoreTypeResponse>.NotFound($"Không có dữ liệu");
         }
 
-        public ApiResponse<ScoreTypeResponse> GetScoreTypeByName(string name)
-        {
-            var scoreType = _repository.GetScoreTypes().FirstOrDefault(st => st.Name?.ToLower() == name.ToLower());
-            return scoreType != null
-                ? ApiResponse<ScoreTypeResponse>.Success(_mapper.Map<ScoreTypeResponse>(scoreType))
-                : ApiResponse<ScoreTypeResponse>.NotFound($"Không tìm thấy tên loại điểm");
-        }
-
         public ApiResponse<ScoreTypeResponse> CreateScoreType(ScoreTypeRequest scoreTypeRequest)
         {
             var existing = _repository.GetScoreTypes().FirstOrDefault(st => st.Name.ToLower() == scoreTypeRequest.Name.ToLower());
@@ -91,16 +83,23 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ScoreType>.NotFound("Không tìm thấy để xóa");
         }
 
-        public ApiResponse<ICollection<ScoreTypeResponse>> GetScoreTypes(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<ScoreTypeResponse>> GetScoreTypes(
+            int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetScoreTypes().AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(st => st.Name.ToLower().Contains(search.ToLower()));
+            }
+
             query = sortColumn switch
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
+                "Id" => (sortOrder?.ToLower() == "desc") ? query.OrderByDescending(st => st.Id) : query.OrderBy(st => st.Id),
+                _ => query.OrderBy(st => st.Id)
             };
 
+            int totalRecords = query.Count();
 
             if (page.HasValue && pageSize.HasValue)
             {
@@ -108,12 +107,12 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
-
             var response = _mapper.Map<ICollection<ScoreTypeResponse>>(result);
 
-            return result.Any() ? ApiResponse<ICollection<ScoreTypeResponse>>
-            .Success(response, page, pageSize, _repository.GetScoreTypes().Count)
-             : ApiResponse<ICollection<ScoreTypeResponse>>.NotFound("Không có dữ liệu");
+            return result.Any()
+                ? ApiResponse<ICollection<ScoreTypeResponse>>.Success(response, page, pageSize, totalRecords)
+                : ApiResponse<ICollection<ScoreTypeResponse>>.NotFound("Không có dữ liệu");
         }
+
     }
 }

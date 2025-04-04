@@ -10,8 +10,15 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<StudentInfoResponses> CreateStudentInfo(StudentInfoRequest studentInfoRequest);
         ApiResponse<StudentInfoResponses> UpdateStudentInfo(int id, StudentInfoRequest studentInfoRequest);
         ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id);
-        ApiResponse<ICollection<StudentInfoResponses>> GetStudentInfosByClassId(int classId, int page, int pageSize);
+
+        // Thêm phương thức lấy danh sách học viên theo UserId
         ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId);
 
+        // Thêm phương thức lấy danh sách học viên theo user figma
+        ApiResponse<ICollection<StudentInfoUserResponse>> GetAllStudents();
+
+
+        // Thêm phương thức lấy danh sách học viên theo lớp với thông tin đầy đủ
+        ApiResponse<ICollection<StudentInfoClassResponse>> GetStudentsByClass(int classId);
     }
 }

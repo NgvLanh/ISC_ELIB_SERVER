@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         //[Required(ErrorMessage = "Loại không được để trống.")]
         //[MaxLength(50, ErrorMessage = "Loại không được vượt quá 50 ký tự.")]
-        public string? Type { get; set; }
+        public int? Type { get; set; }
 
         //[Range(1, 360, ErrorMessage = "Thời gian phải trong khoảng 1 đến 360 phút.")]
         public int? DurationTime { get; set; }
@@ -31,9 +31,11 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool? FileSubmit { get; set; }
 
         [Required(ErrorMessage = "Không được để trống.")]
-        public long SemesterId { get; set; }
+        public long GradeLevelsId { get; set; }
 
         [Required(ErrorMessage = "Không được để trống.")]
         public long SubjectId { get; set; }
+        [Required(ErrorMessage = "Không được để trống.")]
+        public int? TeacherId { get; set; }
     }
 }

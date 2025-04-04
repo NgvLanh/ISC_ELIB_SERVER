@@ -1,98 +1,119 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace ISC_ELIB_SERVER.Services
 {
     public class ClassTypeService : IClassTypeService
     {
         private readonly IClassTypeRepo _repository;
+        private readonly ClassRepo _classRepository;
+        private readonly AcademicYearRepo _academicYearRepository;
         private readonly IMapper _mapper;
 
-        public ClassTypeService(IClassTypeRepo repository, IMapper mapper)
+        public ClassTypeService(IClassTypeRepo repository, ClassRepo classRepository, AcademicYearRepo academicYearRepository, IMapper mapper)
         {
             _repository = repository;
+            _classRepository = classRepository;
+            _academicYearRepository = academicYearRepository;
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<ClassTypeResponse>> GetClassTypes(int? page, int? pageSize, string? sortColumn, string? sortOrder)
-        {
-            var query = _repository.GetClassTypes().AsQueryable();
-
-            query = sortColumn switch
-            {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
-            };
-
-
-            if (page.HasValue && pageSize.HasValue)
-            {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-            }
-
-            var result = query.ToList();
-
-            var response = _mapper.Map<ICollection<ClassTypeResponse>>(result);
-
-            return result.Any() ? ApiResponse<ICollection<ClassTypeResponse>>
-            .Success(response, page, pageSize, _repository.GetClassTypes().Count)
-             : ApiResponse<ICollection<ClassTypeResponse>>.NotFound("Không có dữ liệu");
-        }
 
         public ApiResponse<ClassTypeResponse> GetClassTypeById(int id)
         {
             var classType = _repository.GetClassTypeById(id);
-            return classType != null
-                ? ApiResponse<ClassTypeResponse>.Success(_mapper.Map<ClassTypeResponse>(classType))
-                : ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp");
+
+            if (classType == null)
+            {
+                return ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp");
+            }
+
+            var response = _mapper.Map<ClassTypeResponse>(classType);
+            return ApiResponse<ClassTypeResponse>.Success(response);
         }
 
-        public ApiResponse<ClassTypeResponse> GetClassTypeByName(string name)
-        {
-            var classType = _repository.GetClassTypes().FirstOrDefault(ct => ct.Name.ToLower() == name.ToLower());
-            return classType != null
-                ? ApiResponse<ClassTypeResponse>.Success(_mapper.Map<ClassTypeResponse>(classType))
-                : ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp với tên này");
-        }
 
         public ApiResponse<ClassTypeResponse> CreateClassType(ClassTypeRequest classTypeRequest)
         {
-            var existingClassType = _repository.GetClassTypes().FirstOrDefault(ct => ct.Name.ToLower() == classTypeRequest.Name.ToLower());
-            if (existingClassType != null)
+            if (string.IsNullOrWhiteSpace(classTypeRequest.Name))
+            {
+                return ApiResponse<ClassTypeResponse>.BadRequest("Tên loại lớp không được để trống");
+            }
+
+            bool isDuplicate = _repository.GetClassTypes()
+                .Any(ct => ct.Name.ToLower() == classTypeRequest.Name.ToLower());
+
+            if (isDuplicate)
             {
                 return ApiResponse<ClassTypeResponse>.Conflict("Tên loại lớp đã tồn tại");
             }
 
+            bool academicYearExists = _academicYearRepository.GetAcademicYears()
+                .Any(ay => ay.Id == classTypeRequest.AcademicYearId);
+
+            if (!academicYearExists)
+            {
+                return ApiResponse<ClassTypeResponse>.BadRequest("Niên khóa không hợp lệ");
+            }
+
             var classType = _mapper.Map<ClassType>(classTypeRequest);
+            classType.AcademicYearId = (int)classTypeRequest.AcademicYearId; 
+
             _repository.CreateClassType(classType);
+
             return ApiResponse<ClassTypeResponse>.Success(_mapper.Map<ClassTypeResponse>(classType));
         }
 
+
         public ApiResponse<ClassTypeResponse> UpdateClassType(int id, ClassTypeRequest classTypeRequest)
         {
+            if (string.IsNullOrWhiteSpace(classTypeRequest.Name))
+            {
+                return ApiResponse<ClassTypeResponse>.BadRequest("Tên loại lớp không được để trống");
+            }
+
             var existingClassType = _repository.GetClassTypeById(id);
             if (existingClassType == null)
             {
                 return ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp");
             }
 
-            var duplicate = _repository.GetClassTypes().FirstOrDefault(ct => ct.Name.ToLower() == classTypeRequest.Name.ToLower() && ct.Id != id);
-            if (duplicate != null)
+            bool isDuplicate = _repository.GetClassTypes()
+                .Any(ct => ct.Name.ToLower() == classTypeRequest.Name.ToLower() && ct.Id != id);
+
+            if (isDuplicate)
             {
                 return ApiResponse<ClassTypeResponse>.Conflict("Tên loại lớp đã tồn tại");
             }
 
-            existingClassType.Name = classTypeRequest.Name;
-            existingClassType.Description = classTypeRequest.Description;
+            if (classTypeRequest.AcademicYearId != existingClassType.AcademicYearId)
+            {
+                bool academicYearExists = _academicYearRepository.GetAcademicYears()
+                    .Any(ay => ay.Id == classTypeRequest.AcademicYearId);
+
+                if (!academicYearExists)
+                {
+                    return ApiResponse<ClassTypeResponse>.BadRequest("Niên khóa không hợp lệ");
+                }
+            }
+
+            _mapper.Map(classTypeRequest, existingClassType);
+
+            existingClassType.Status = true;
 
             var updatedClassType = _repository.UpdateClassType(existingClassType);
+
             return ApiResponse<ClassTypeResponse>.Success(_mapper.Map<ClassTypeResponse>(updatedClassType));
         }
+
+
 
         public ApiResponse<bool> DeleteClassType(int id)
         {
@@ -100,6 +121,51 @@ namespace ISC_ELIB_SERVER.Services
             return deleted
                 ? ApiResponse<bool>.Success(true)
                 : ApiResponse<bool>.NotFound("Không tìm thấy loại lớp để xóa");
+        }
+
+        public ApiResponse<ICollection<ClassTypeResponse>> GetClassTypes(
+     int? page, int? pageSize, int? searchYear, string? searchName, string? sortColumn, string? sortOrder)
+        {
+            if (!searchYear.HasValue)
+            {
+                return ApiResponse<ICollection<ClassTypeResponse>>.BadRequest("Niên khóa không được để trống");
+            }
+
+            var academicYearExists = _academicYearRepository.GetAcademicYears()
+                .Any(ay => ay.Id == searchYear.Value);
+
+            if (!academicYearExists)
+            {
+                return ApiResponse<ICollection<ClassTypeResponse>>.NotFound("Niên khóa không tồn tại");
+            }
+
+            var query = _repository.GetClassTypes()
+                .Where(ct => ct.AcademicYearId == searchYear.Value);
+
+            if (!string.IsNullOrWhiteSpace(searchName))
+            {
+                query = query.Where(ct => ct.Name.ToLower().Contains(searchName.ToLower()));
+            }
+
+            query = sortColumn?.ToLower() switch
+            {
+                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(ct => ct.Id) : query.OrderBy(ct => ct.Id),
+                _ => query.OrderBy(ct => ct.Id)
+            };
+
+            int totalRecords = query.Count();
+
+            if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+            var response = _mapper.Map<ICollection<ClassTypeResponse>>(result);
+
+            return response.Any()
+                ? ApiResponse<ICollection<ClassTypeResponse>>.Success(response, page, pageSize, totalRecords)
+                : ApiResponse<ICollection<ClassTypeResponse>>.NotFound("Không có dữ liệu");
         }
     }
 }

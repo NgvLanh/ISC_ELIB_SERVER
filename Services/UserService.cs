@@ -7,6 +7,7 @@ using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -64,6 +65,9 @@ namespace ISC_ELIB_SERVER.Services
                 response.ProvinceName = provinceName;
                 response.DistrictName = districtName;
                 response.WardName = wardName;
+                // RoleName bằng cách lấy từ RoleRepo
+                var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+                response.RoleName = role?.Name;
                 responses.Add(response);
             }
 
@@ -82,7 +86,9 @@ namespace ISC_ELIB_SERVER.Services
             response.ProvinceName = provinceName;
             response.DistrictName = districtName;
             response.WardName = wardName;
-
+            // RoleName bằng cách lấy từ RoleRepo
+            var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+            response.RoleName = role?.Name;
             return ApiResponse<UserResponse>.Success(response);
         }
 
@@ -96,8 +102,29 @@ namespace ISC_ELIB_SERVER.Services
             response.ProvinceName = provinceName;
             response.DistrictName = districtName;
             response.WardName = wardName;
-
+            // RoleName bằng cách lấy từ RoleRepo
+            var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
+            response.RoleName = role?.Name;
             return ApiResponse<UserResponse>.Success(response);
+        }
+
+        public ApiResponse<int> GetQuantityUserByRoleId(int roleId)
+        {
+
+            try
+            {
+                if (_roleRepo.GetRoleById(roleId) == null)
+                {
+                    return ApiResponse<int>.BadRequest("RoleId không hợp lệ");
+                }
+
+                return ApiResponse<int>.Success(_userRepo.GetQuantityUserByRoleId(roleId));
+            }
+            catch
+            {
+                return ApiResponse<int>.Fail("Lỗi không thể lấy số lượng users");
+            }
+
         }
 
         public ApiResponse<UserResponse> CreateUser(UserRequest userRequest)
@@ -129,6 +156,17 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
 
+            // Kiểm tra mã người dùng đã tồn tại chưa
+            if (_userRepo.GetUserByCode(userRequest.Code) != null)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
+            }
+
+            // Kiểm tra email đã tồn tại chưa
+            if (_userRepo.GetUsers().Any(u => u.Email == userRequest.Email))
+            {
+                return ApiResponse<UserResponse>.BadRequest("Email đã tồn tại");
+            }
             // Nếu tất cả đều hợp lệ, tạo user
             var newUser = new User
             {
@@ -149,6 +187,9 @@ namespace ISC_ELIB_SERVER.Services
                 ClassId = userRequest.ClassId,
                 EntryType = userRequest.EntryType,
                 AddressFull = userRequest.AddressFull,
+                ProvinceCode = userRequest.ProvinceCode,
+                DistrictCode = userRequest.DistrictCode,
+                WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
                 AvatarUrl = userRequest.AvatarUrl  
@@ -199,6 +240,11 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
+            // Kiểm tra mã người dùng đã tồn tại chưa
+            if (_userRepo.GetUserByCode(userRequest.Code) != null)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
+            }
 
             // Cập nhật thông tin người dùng
             user.FullName = userRequest.FullName;
@@ -211,6 +257,9 @@ namespace ISC_ELIB_SERVER.Services
             user.Street = userRequest.Street;
             user.RoleId = userRequest.RoleId;
             user.AcademicYearId = userRequest.AcademicYearId;
+            user.ProvinceCode = userRequest.ProvinceCode;
+            user.DistrictCode = userRequest.DistrictCode;
+            user.WardCode = userRequest.WardCode;
             user.UserStatusId = userRequest.UserStatusId;
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
@@ -282,6 +331,7 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user));
         }
 
+
         public static string ComputeSha256(string? input)
         {
             if (String.IsNullOrEmpty(input))
@@ -298,5 +348,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             return builder.ToString();
         }
+
+
     }
 }

@@ -8,9 +8,9 @@
         public string RetentionPeriod { get; set; }
         public string? Reason { get; set; }
         public string? File { get; set; }
-        public string Semester { get; set; }
         public int ClassId { get; set; }
         public int SemesterId { get; set; }
-        public int LeadershipId { get; set; }
+        public int UserId { get; set; }
+        public bool Active { get; set; }
     }
 }
