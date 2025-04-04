@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -308,6 +309,26 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<UserResponse>.BadRequest(ex.Message);
             }
+        }
+
+        public ApiResponse<UserResponse> ChangePassword(int userId, string currentPassword, string newPassword)
+        {
+            var user = _userRepo.GetUserById(userId);
+            if (user == null)
+            {
+                return ApiResponse<UserResponse>.NotFound("Người dùng không tồn tại");
+            }
+
+            bool isValid = user.Password == ComputeSha256(currentPassword);
+            if (!isValid)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mật khẩu hiện tại không đúng");
+            }
+
+            user.Password = ComputeSha256(newPassword);
+            _userRepo.UpdateUser(user);
+
+            return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user));
         }
 
 
