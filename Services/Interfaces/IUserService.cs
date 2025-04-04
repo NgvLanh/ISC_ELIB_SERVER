@@ -14,5 +14,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest);
         ApiResponse<User> DeleteUser(int id);
         ApiResponse<UserResponse> UpdateUserPassword(int userId, string newPassword);
+        ApiResponse<UserResponse> ChangePassword(int userId, string currentPassword, string newPassword);
     }
 }

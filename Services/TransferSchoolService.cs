@@ -63,13 +63,11 @@ namespace ISC_ELIB_SERVER.Services
 
             if (isStudentIdExist)
             {
-                // Trả về thông báo thất bại nếu StudentId đã tồn tại
                 return ApiResponse<TransferSchoolResponse>.Fail("Thêm dữ liệu thất bại: StudentId đã tồn tại trong bảng TransferSchool.");
             }
 
             var transferSchool = new TransferSchool
             {
-                UserId = request.UserId,
                 StudentId = request.StudentId,
                 TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified),
                 SchoolAddress = request.SchoolAddress,
@@ -77,10 +75,11 @@ namespace ISC_ELIB_SERVER.Services
                 AttachmentName = request.AttachmentName,
                 AttachmentPath = request.AttachmentPath,
                 SemesterId = request.SemesterId,
+                UserId = request.UserId  // Gán userId vào TransferSchool
             };
 
-            // Gọi Repository lưu vào DB
             var created = _repository.CreateTransferSchool(transferSchool);
+
 
             // Lấy thông tin quận/huyện từ service
             var (provinceName, districtName, wardName) = _ghnService.GetLocationName(
@@ -104,50 +103,37 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<TransferSchoolResponse>.Success(_mapper.Map<TransferSchoolResponse>(transferSchoolRepo));
         }
 
-
-
-
-
         public ApiResponse<TransferSchoolResponse> UpdateTransferSchool(int studentId, TransferSchoolRequest request)
         {
-            // Tìm dữ liệu cần cập nhật
-            var existingTransfer = _repository.GetByStudentId(studentId);
+            var existingTransfer = _context.TransferSchools.FirstOrDefault(ts => ts.StudentId == studentId);
+
             if (existingTransfer == null)
             {
-                throw new Exception("Không tìm thấy dữ liệu chuyển trường!");
+                return ApiResponse<TransferSchoolResponse>.Fail("Không tìm thấy dữ liệu để cập nhật.");
             }
 
-            // Cập nhật dữ liệu
-            existingTransfer.UserId = request.UserId;
-            existingTransfer.StudentId = request.StudentId;
             existingTransfer.TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified);
             existingTransfer.SchoolAddress = request.SchoolAddress;
             existingTransfer.Reason = request.Reason;
             existingTransfer.AttachmentName = request.AttachmentName;
             existingTransfer.AttachmentPath = request.AttachmentPath;
             existingTransfer.SemesterId = request.SemesterId;
+            existingTransfer.UserId = request.UserId;  // Lưu userId từ token
 
-            // Gọi Repository để cập nhật dữ liệu vào DB
-            var updated = _repository.UpdateTransferSchool(existingTransfer);
+            // Cập nhật vào cơ sở dữ liệu
+            _context.SaveChanges();
 
-            // Tạo response để trả về
-            var transferSchoolResponse = new TransferSchoolResponse
-            {
-                StudentId = updated.StudentId,
-                TransferSchoolDate = updated.TransferSchoolDate,
-                Reason = updated.Reason,
-                AttachmentName = updated.AttachmentName,
-                AttachmentPath = updated.AttachmentPath,
-               
-            };
-
-            return ApiResponse<TransferSchoolResponse>.Success(transferSchoolResponse);
+            return ApiResponse<TransferSchoolResponse>.Success(_mapper.Map<TransferSchoolResponse>(existingTransfer));
         }
+
 
         ApiResponse<TransferSchoolResponse> ITransferSchoolService.GetTransferSchoolByStudentId(int id)
         {
             throw new NotImplementedException();
         }
+
+        
     }
+
 }
 
