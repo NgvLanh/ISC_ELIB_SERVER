@@ -9,7 +9,8 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public ExamGraderMapper()
         {
-            CreateMap<ExamGrader, ExamGraderResponse>();
+            CreateMap<ExamGrader, ExamGraderResponse>()
+                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : null)); ;
             CreateMap<ExamGraderRequest, ExamGrader>();
         }
     }
