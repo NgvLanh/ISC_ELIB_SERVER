@@ -123,6 +123,7 @@ public class AccountController : ControllerBase
         return Ok(ApiResponse<string>.Success("Mật khẩu đã được cập nhật thành công"));
     }
 
+    [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         var userId = User.FindFirst("id")?.Value;
