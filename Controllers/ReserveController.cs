@@ -56,9 +56,11 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult UpdateReserve(long id, [FromBody] ReserveRequest reserveRequest)
         {
+            reserveRequest.UserId = GetUserId() ?? throw new InvalidOperationException("Không tìm thấy thông tin người dùng");
             reserveRequest.ReserveDate = DateTimeUtils.ConvertToUnspecified(reserveRequest.ReserveDate) ?? throw new InvalidOperationException("ReserveDate không được để trống");
             var response = _service.UpdateReserve(id, reserveRequest);
             return response.Code == 0 ? Ok(response) : NotFound(response);

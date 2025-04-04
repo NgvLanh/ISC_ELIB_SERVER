@@ -16,5 +16,8 @@ namespace ISC_ELIB_SERVER.Services
 
         Task<ApiResponse<bool>> ImportClassesAsync(IFormFile file);
 
+        Task<ApiResponse<bool>> UpdateClassUserStatus(int classId, int userId, int newStatusId);
+
+
     }
 }

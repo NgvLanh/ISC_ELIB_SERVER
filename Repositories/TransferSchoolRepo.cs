@@ -12,66 +12,93 @@ namespace ISC_ELIB_SERVER.Repositories
     public class TransferSchoolRepo
     {
         private readonly isc_dbContext _context;
-
-        public TransferSchoolRepo(isc_dbContext context)
+        private readonly GhnService _ghnService;
+        public TransferSchoolRepo(isc_dbContext context, GhnService ghnService)
         {
             _context = context;
+            _ghnService = ghnService;
         }
 
         /// <summary>
         /// Lấy danh sách học sinh đã chuyển trường.
         /// </summary>
+        /// 
         public List<object> GetTransferSchoolList()
         {
             return _context.TransferSchools
-                .Where(ts => ts.Active)
-                .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
-                .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
-                .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s }) // Lấy từ khóa ngoại
-                .Select(res => new
-                {
-                    StudentId = res.tsu.tsi.si.Id,
-                    FullName = res.tsu.u.FullName,
-                    DateOfBirth = res.tsu.u.Dob,
-                    Gender = res.tsu.u.Gender == true ? "Nam" : "Nữ",
-                    TransferDate = res.tsu.tsi.ts.TransferSchoolDate,
-                    TransferSemester = res.s.Name,   // Hiển thị tên học kỳ
-                    TransferToSchool = res.tsu.tsi.ts.TransferToSchool,
-                    SemesterStart = res.s.StartTime, // Ngày bắt đầu học kỳ
-                    SemesterEnd = res.s.EndTime      // Ngày kết thúc học kỳ
-                })
-                .Distinct()
-                .ToList<object>();
+            .Where(ts => ts.Active)
+            .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
+            .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
+            .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
+            .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c })
+            .Join(_context.GradeLevels, tsucg => tsucg.c.GradeLevelId, gl => gl.Id, (tsucg, gl) => new { tsucg, gl }) // JOIN với bảng GradeLevels
+
+            .Select(res => new
+            {
+                StudentId = res.tsucg.tsuc.tsu.tsi.si.Id,
+                FullName = res.tsucg.tsuc.tsu.u.FullName,
+                DateOfBirth = res.tsucg.tsuc.tsu.u.Dob,
+                Gender = res.tsucg.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
+                TransferDate = res.tsucg.tsuc.tsu.tsi.ts.TransferSchoolDate,
+                TransferSemester = res.tsucg.tsuc.s.Name,
+                TransferToSchool = res.tsucg.tsuc.tsu.tsi.ts.TransferToSchool,
+                GradeLevel = res.gl.Name,   // Lấy tên của cấp lớp thay vì Id
+                SemesterStart = res.tsucg.tsuc.s.StartTime,
+                SemesterEnd = res.tsucg.tsuc.s.EndTime
+            })
+            .Distinct()
+            .ToList<object>();
         }
+
 
 
         /// <summary>
         /// Lấy thông tin chi tiết học sinh chuyển trường theo StudentId.
         /// </summary>
-        public object? GetTransferSchoolByStudentId(int studentId)
+        public async Task<TransferSchoolResponse?> GetTransferSchoolByStudentId(int studentId)
         {
-            return _context.TransferSchools
+            var transferSchool = await _context.TransferSchools
                 .Where(ts => ts.StudentId == studentId && ts.Active)
                 .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
                 .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
                 .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
                 .Select(res => new
                 {
-                    StudentCode = res.tsu.u.Code,       // Mã học viên
-                    FullName = res.tsu.u.FullName,     // Tên học viên
-                    TransferSemester = res.s.Name,     // Học kỳ chuyển trường
-                    Province = res.tsu.u.ProvinceCode, // Tỉnh/Thành
-                    District = res.tsu.u.DistrictCode, // Quận/Huyện
-                    TransferFrom = res.tsu.tsi.ts.TransferToSchool, // Chuyển từ
-                    Reason = res.tsu.tsi.ts.Reason,    // Lý do
-                    Attachment = res.tsu.tsi.ts.AttachmentName // Tệp đính kèm
+                    StudentCode = res.tsu.u.Code ?? "Không có mã học viên",
+                    FullName = res.tsu.u.FullName ?? "Không có tên",
+                    TransferSemester = res.s.Name ?? "Không có học kỳ",
+                    TransferSchoolDate = res.tsu.tsi.ts.TransferSchoolDate ?? DateTime.MinValue,
+                    TransferToSchool = res.tsu.tsi.ts.TransferToSchool ?? "Không có thông tin trường chuyển đến",
+                    ProvinceCode = res.tsu.u.ProvinceCode ?? 0,
+                    DistrictCode = res.tsu.u.DistrictCode ?? 0,
+                    Reason = res.tsu.tsi.ts.Reason ?? "Không có lý do",
+                    Attachment = res.tsu.tsi.ts.AttachmentName ?? "Không có tệp đính kèm"
                 })
-                .FirstOrDefault(); // Lấy một bản ghi duy nhất hoặc trả về null nếu không có dữ liệu
+                .FirstOrDefaultAsync();
+
+            if (transferSchool == null)
+                return null;
+
+            return new TransferSchoolResponse
+            {
+                FullName = transferSchool.FullName,
+                StudentCode = transferSchool.StudentCode,
+                TransferSemester = transferSchool.TransferSemester,
+                TransferSchoolDate = transferSchool.TransferSchoolDate,
+                TransferToSchool = transferSchool.TransferToSchool,
+                Reason = transferSchool.Reason,
+                ProvinceCode = transferSchool.ProvinceCode,
+                DistrictCode = transferSchool.DistrictCode,
+                AttachmentName = transferSchool.Attachment,
+                StatusCode = 200
+            };
         }
+
 
 
         public TransferSchool CreateTransferSchool(TransferSchool entity)
         {
+
             try
             {
                 _context.TransferSchools.Add(entity);
@@ -86,7 +113,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
                 throw new Exception("Lưu dữ liệu thất bại! Chi tiết: " + ex.InnerException?.Message);
             }
-           
+
         }
 
 

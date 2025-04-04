@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -18,7 +19,8 @@ namespace ISC_ELIB_SERVER.Models
         public int duration_in_minutes { get; set; }
         public string? Type { get; set; }
         public bool? Form { get; set; }
-        public string? Status { get; set; }
+        [Column("Status")]  
+        public ExamStatus Status { get; set; }
         public int? AcademicYearId { get; set; }
         public int? Subject { get; set; }
         public int? SemesterId { get; set; }
@@ -26,7 +28,7 @@ namespace ISC_ELIB_SERVER.Models
         [Column("exam_id")]
         public int? ExamId { get; set; }
 
-        //public virtual Exam? Exam { get; set; }
+    
 
         public bool Active { get; set; }
 

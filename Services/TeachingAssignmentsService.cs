@@ -11,25 +11,28 @@ namespace ISC_ELIB_SERVER.Services
     public class TeachingAssignmentsService : ITeachingAssignmentsService
     {
         private readonly ITeachingAssignmentsRepo _repository;
+        private readonly isc_dbContext _context;
         private readonly IMapper _mapper;
 
-        public TeachingAssignmentsService(ITeachingAssignmentsRepo repository, IMapper mapper)
+        public TeachingAssignmentsService(ITeachingAssignmentsRepo repository, IMapper mapper, isc_dbContext context)
         {
             _repository = repository;
             _mapper = mapper;
+            _context = context;
         }
 
         public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignmentsNotExpired(
          int? page, int? pageSize, string? sortColumn, string? sortOrder,
          string? searchSubject, int? subjectId, int? subjectGroupId)
         {
-            try
+            //try
             {
                 var query = _repository.GetTeachingAssignments()
                     .Include(ta => ta.User)
                     .Include(ta => ta.Class)
                     .Include(ta => ta.Subject)
-                    .Include(ta => ta.Subject.SubjectGroup)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Topics)
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
@@ -45,7 +48,7 @@ namespace ISC_ELIB_SERVER.Services
 
                 if (subjectGroupId.HasValue)
                 {
-                    query = query.Where(us => us.Subject.SubjectGroupId == subjectGroupId.Value);
+                    query = query.Where(us => us.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroup.Id == subjectGroupId.Value));
                 }
 
                 if (!string.IsNullOrWhiteSpace(searchSubject))
@@ -100,11 +103,12 @@ namespace ISC_ELIB_SERVER.Services
                             Name = assignment.Subject.Name
                         };
 
-                        assignmentResponse.SubjectGroup = new SubjectGroupResponse
-                        {
-                            Id = assignment.Subject.SubjectGroup.Id,
-                            Name = assignment.Subject.SubjectGroup.Name
-                        };
+                        assignmentResponse.SubjectGroup = assignment.Subject.SubjectSubjectGroups
+                            .Select(s => new SubjectGroupResponse
+                            {
+                                Id = s.SubjectGroup.Id,
+                                Name = s.SubjectGroup.Name
+                            }).ToList();
 
                         assignmentResponse.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
                         {
@@ -142,10 +146,10 @@ namespace ISC_ELIB_SERVER.Services
                     ? ApiResponse<ICollection<TeachingAssignmentsResponse>>.Success(response, page, pageSize, totalRecords)
                     : ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Không có dữ liệu");
             }
-            catch (Exception ex)
-            {
-                return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi: " + ex.Message);
-            }
+            //catch (Exception ex)
+            //{
+            //    return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi: " + ex.Message);
+            //}
         }
 
 
@@ -159,7 +163,8 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.User)
                     .Include(ta => ta.Class)
                     .Include(ta => ta.Subject)
-                    .Include(ta => ta.Subject.SubjectGroup)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Topics)
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
@@ -175,7 +180,8 @@ namespace ISC_ELIB_SERVER.Services
 
                 if (subjectGroupId.HasValue)
                 {
-                    query = query.Where(us => us.Subject.SubjectGroupId == subjectGroupId.Value);
+                    //var subjectGroup = _context.SubjectSubjectGroups.FirstOrDefault(s => s.SubjectGroupId == subjectGroupId.Value);
+                    query = query.Where(us => us.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroup.Id == subjectGroupId.Value));
                 }
 
                 if (!string.IsNullOrWhiteSpace(searchSubject))
@@ -229,11 +235,13 @@ namespace ISC_ELIB_SERVER.Services
                             Name = assignment.Subject.Name
                         };
 
-                        assignmentResponse.SubjectGroup = new SubjectGroupResponse
-                        {
-                            Id = assignment.Subject.SubjectGroup.Id,
-                            Name = assignment.Subject.SubjectGroup.Name
-                        };
+                        assignmentResponse.SubjectGroup = assignment.Subject.SubjectSubjectGroups
+                            .Select(s => new SubjectGroupResponse
+                            {
+                                Id = s.SubjectGroup.Id,
+                                Name = s.SubjectGroup.Name
+
+                            }).ToList();
 
                         assignmentResponse.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
                         {
@@ -291,7 +299,8 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.User)
                     .Include(ta => ta.Class)
                     .Include(ta => ta.Subject)
-                    .Include(ta => ta.Subject.SubjectGroup)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Topics)
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
@@ -344,15 +353,14 @@ namespace ISC_ELIB_SERVER.Services
                     Name = createdAssignment.Subject.Name
                 };
 
-                response.SubjectGroup = createdAssignment.Subject.SubjectGroup != null
-                    ? new SubjectGroupResponse
-                    {
-                        Id = createdAssignment.Subject.SubjectGroup.Id,
-                        Name = createdAssignment.Subject.SubjectGroup.Name,
-                        TeacherId = (int)createdAssignment.Subject.SubjectGroup.TeacherId
-
-                    }
-                    : null;
+                response.SubjectGroup = createdAssignment.Subject?.SubjectSubjectGroups?
+                .Where(s => s.SubjectGroup != null) 
+                .Select(s => new SubjectGroupResponse
+                {
+                    Id = s.SubjectGroup?.Id ?? 0,
+                    Name = s.SubjectGroup?.Name ?? "Unknown",
+                    TeacherId = s.SubjectGroup?.TeacherId ?? 0
+                }).ToList() ?? new List<SubjectGroupResponse>();
 
                 response.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
                 {
@@ -441,14 +449,14 @@ namespace ISC_ELIB_SERVER.Services
                     }
                     : null;
 
-                response.SubjectGroup = updatedAssignment.Subject?.SubjectGroup != null
-                    ? new SubjectGroupResponse
-                    {
-                        Id = updatedAssignment.Subject.SubjectGroup.Id,
-                        Name = updatedAssignment.Subject.SubjectGroup.Name,
-                        TeacherId = (int)updatedAssignment.Subject.SubjectGroup.TeacherId
-                    }
-                    : null;
+                response.SubjectGroup = updatedAssignment.Subject?.SubjectSubjectGroups?
+                   .Where(s => s.SubjectGroup != null)
+                   .Select(s => new SubjectGroupResponse
+                   {
+                       Id = s.SubjectGroup?.Id ?? 0,
+                       Name = s.SubjectGroup?.Name ?? "Unknown",
+                       TeacherId = s.SubjectGroup?.TeacherId ?? 0
+                   }).ToList() ?? new List<SubjectGroupResponse>();
 
                 response.Topics = updatedAssignment.Topics != null
                     ? new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
@@ -522,17 +530,19 @@ namespace ISC_ELIB_SERVER.Services
         {
             try
             {
+                var subjectSubjectGroup = _context.SubjectSubjectGroups.Where(s => s.SubjectGroup.Id == subjectGroupId);
                 var query = _repository.GetTeachingAssignments()
                     .Include(ta => ta.User)
                     .Include(ta => ta.Class)
                     .Include(ta => ta.Subject)
-                    .Include(ta => ta.Subject.SubjectGroup)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Topics)
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
                     .Where(ta => ta.Semester.AcademicYear.Id == academicYearId &&
-                                 ta.Subject.SubjectGroup.Id == subjectGroupId)
+                                 ta.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroupId == subjectGroupId))
                     .AsQueryable()
                     .AsNoTracking();
 
@@ -587,12 +597,13 @@ namespace ISC_ELIB_SERVER.Services
                             Name = originalAssignment.Subject.Name
                         };
 
-                        assignment.SubjectGroup = new SubjectGroupResponse
-                        {
-                            Id = originalAssignment.Subject.SubjectGroup.Id,
-                            Name = originalAssignment.Subject.SubjectGroup.Name
-                        };
-
+                        assignment.SubjectGroup = originalAssignment.Subject.SubjectSubjectGroups
+                            .Select(s => new SubjectGroupResponse
+                            {
+                                Id = s.SubjectGroup.Id,
+                                Name = s.SubjectGroup.Name
+                            }).ToList();
+                  
                         assignment.Topics = new TeachingAssignmentsResponse.TeachingAssignmentsTopicResponse
                         {
                             Id = originalAssignment.Topics.Id,
@@ -649,6 +660,8 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.User)
                     .Include(ta => ta.Class)
                     .Include(ta => ta.Subject)
+                        .ThenInclude(s => s.SubjectSubjectGroups)
+                            .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
                     .Where(ta => ta.User.Id == teacherId.Value)
@@ -685,6 +698,31 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ICollection<TeachingAssignmentsResponse>>.NotFound("Lỗi: " + ex.Message);
             }
         }
+
+        public ApiResponse<bool> UpdateTimeTeachingAssignment(int id)
+        {
+            var assignment = _repository.GetTeachingAssignments()
+                .FirstOrDefault(ta => ta.Id == id);
+
+            if (assignment == null)
+            {
+                return ApiResponse<bool>.NotFound("Không tìm thấy phân công giảng dạy.");
+            }
+
+            DateTime now = DateTime.UtcNow;
+            now = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+
+            if (assignment.EndDate != now)
+            {
+                assignment.EndDate = now;
+                _context.TeachingAssignments.Update(assignment);
+                _context.SaveChanges();
+            }
+
+            return ApiResponse<bool>.Success(true);
+        }
+
+
 
     }
 }

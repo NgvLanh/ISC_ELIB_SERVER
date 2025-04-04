@@ -2,9 +2,9 @@
 {
     public enum RetirementStatus
     {
-        Working = 0,
-        TemporarilyOnLeave = 1,
-        Resigned = 2,
-        Retired = 3
+        Working = 6,
+        TemporarilyOnLeave = 7,
+        Resigned = 8,
+        Retired = 9
     }
 }
