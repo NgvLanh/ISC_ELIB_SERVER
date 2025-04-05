@@ -44,6 +44,11 @@ namespace ISC_ELIB_SERVER.Services
                     return ApiResponse<LoginResponse>.Fail("Tên đăng nhập hoặc mật khẩu không đúng");
                 }
 
+                if (!user.Active)
+                {
+                    return ApiResponse<LoginResponse>.Fail("Tài khoản đã dừng hoạt động");
+                }
+
                 var token = GenerateTokens(user);
 
                 if (string.IsNullOrEmpty(token.Item1))
