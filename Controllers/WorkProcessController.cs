@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
     [Route("api/work-process")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WorkProcessController : ControllerBase
     {
         private readonly IWorkProcessService _service;
