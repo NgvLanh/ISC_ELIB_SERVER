@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Controllers
 {
     [Route("api/teacherlists")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TeacherListController : ControllerBase
     {
         private readonly ITeacherListService _teacherListService;
