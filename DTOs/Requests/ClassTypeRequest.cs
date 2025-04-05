@@ -14,5 +14,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         [Required(ErrorMessage = "Niên khóa không được để trống")]
         public int? AcademicYearId { get; set; }
+
+        public bool Status { get; set; }
     }
 }
