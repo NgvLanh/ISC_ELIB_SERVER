@@ -171,7 +171,7 @@ namespace ISC_ELIB_SERVER.Services
             var newUser = new User
             {
                 Code = userRequest.Code,
-                Password = ComputeSha256("a"),
+                Password = ComputeSha256("123456"),
                 FullName = userRequest.FullName,
                 Dob = userRequest.Dob,
                 Gender = userRequest.Gender,
@@ -333,13 +333,8 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
-        public static string ComputeSha256(string? input)
+        public static string ComputeSha256(string input)
         {
-            if (String.IsNullOrEmpty(input))
-            {
-                return null;
-            }
-
             using SHA256 sha256 = SHA256.Create();
             byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
             StringBuilder builder = new();
@@ -349,7 +344,5 @@ namespace ISC_ELIB_SERVER.Services
             }
             return builder.ToString();
         }
-
-
     }
 }

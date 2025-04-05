@@ -14,7 +14,9 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public PagedResult<ExamGrader> GetAll(int page, int pageSize, string? search, string? sortBy, bool isDescending)
         {
-            var query = _context.ExamGraders.AsQueryable();
+            var query = _context.ExamGraders
+        .Include(e => e.User) 
+        .AsQueryable();
 
             // 🔍 Tìm kiếm theo `UserId` hoặc `ExamId`
             if (!string.IsNullOrEmpty(search))

@@ -8,7 +8,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public DateTime? ExamDay { get; set; }
         public string? Type { get; set; }
         public bool? Form { get; set; }
-        public ExamStatus Status { get; set; }
+        public ExamScheduleStatus? Status { get; set; }
         public int AcademicYearId { get; set; }
         public int Subject { get; set; }
         public int SemesterId { get; set; }
