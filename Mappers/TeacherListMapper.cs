@@ -20,21 +20,14 @@ namespace ISC_ELIB_SERVER.Mappers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src =>
                     src.User != null ? src.User.Gender : false))
 
-                .ForMember(dest => dest.SubjectGroupName, opt => opt.MapFrom(src =>
-                    src.User.SubjectGroups != null && src.User.SubjectGroups.Any()
-                        ? src.User.SubjectGroups.FirstOrDefault().Name
-                        : ""))
+                .ForMember(dest => dest.SubjectId, opt => opt.MapFrom(src => src.SubjectId))
 
-                .ForMember(dest => dest.Position, opt => opt.MapFrom(src =>
-                    src.WorkProcesses != null && src.WorkProcesses.Any()
-                        ? src.WorkProcesses.OrderByDescending(wp => wp.StartDate).FirstOrDefault().Position
-                        : ""))
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position))
 
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
                     src.Retirements != null && src.Retirements.Any()
                         ? src.Retirements.OrderByDescending(r => r.Date).FirstOrDefault().Status
-                        : RetirementStatus.Working
-                           ));
+                        : RetirementStatus.Working));
         }
     }
 }
