@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
     [Route("api/work-process")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WorkProcessController : ControllerBase
     {
         private readonly IWorkProcessService _service;
@@ -47,6 +47,13 @@ namespace ISC_ELIB_SERVER.Controllers
         public IActionResult GetWorkProcessById(long id)
         {
             var response = _service.GetWorkProcessById(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        [HttpGet("getbyteacherid/{id}")]
+        public IActionResult GetWorkProcessByTeacherId(long id)
+        {
+            var response = _service.GetWorkProcessByTeacherId(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
