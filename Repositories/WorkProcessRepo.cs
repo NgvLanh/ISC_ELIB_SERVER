@@ -22,9 +22,9 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.WorkProcesses.FirstOrDefault(s => s.Id == id && s.Active);
         }
 
-        public WorkProcess? GetWorkProcessByTeacherId(long id)
+        public ICollection<WorkProcess> GetWorkProcessByTeacherId(long id)
         {
-            return _context.WorkProcesses.FirstOrDefault(s => s.TeacherId == id && s.Active);
+            return _context.WorkProcesses.Where(s => s.TeacherId == id && s.Active).ToList();
         }
 
         public WorkProcess CreateWorkProcess(WorkProcess workProcess)

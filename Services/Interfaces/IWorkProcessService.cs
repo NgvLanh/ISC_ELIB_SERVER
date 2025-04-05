@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 
         ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcessNoPaging();
         ApiResponse<WorkProcessResponse> GetWorkProcessById(long id);
-        ApiResponse<WorkProcessResponse> GetWorkProcessByTeacherId(long id);
+        ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcessByTeacherId(long id);
         ApiResponse<WorkProcessResponse> CreateWorkProcess(WorkProcessRequest workProcess_AddRequest);
         ApiResponse<WorkProcess> UpdateWorkProcess(long id, WorkProcessRequest workProcess_UpdateRequest);
         ApiResponse<WorkProcess> DeleteWorkProcess(long id);
