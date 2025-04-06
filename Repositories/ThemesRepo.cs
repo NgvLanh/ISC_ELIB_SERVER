@@ -5,7 +5,6 @@ namespace ISC_ELIB_SERVER.Repositories
     public class ThemesRepo
     {
         private readonly isc_dbContext _context;
-
         public ThemesRepo(isc_dbContext context)
         {
             _context = context;

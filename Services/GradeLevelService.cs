@@ -93,7 +93,6 @@ namespace ISC_ELIB_SERVER.Services
                 Name = GradeLevelRequest.Name,
                 TeacherId = GradeLevelRequest.TeacherId
             };
-
             try
             {
                 var created = _repository.CreateGradeLevel(newGradeLevel);
@@ -101,7 +100,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             catch (Exception ex)
             {
-                return ApiResponse<GradeLevelResponse>.BadRequest($"Lỗi: {ex.Message}, kiểm tra lại TeacherId");
+                return ApiResponse<GradeLevelResponse>.BadRequest("Lỗi....");
             }
         }
 

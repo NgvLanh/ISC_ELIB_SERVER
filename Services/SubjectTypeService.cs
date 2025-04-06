@@ -4,7 +4,6 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using System.Linq;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -19,43 +18,29 @@ namespace ISC_ELIB_SERVER.Services
             _mapper = mapper;
         }
 
-        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        public ApiResponse<ICollection<SubjectTypeResponse>> GetSubjectType(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
             var query = _subjectTypeRepo.GetAllSubjectType().AsQueryable();
-
-            query = query.Where(qr => qr.Active);
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
             }
 
-            query = sortColumn?.ToLower() switch
+            query = sortColumn switch
             {
-                "name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-                "id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                "status" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Status) : query.OrderBy(us => us.Status),
+                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "Status" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Status) : query.OrderBy(us => us.Status),
                 _ => query.OrderBy(us => us.Id)
             };
-            query = query.Where(qr => qr.Active == true);
 
-            var total = query.Count();
-
-            if (page.HasValue && pageSize.HasValue) {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-            }
-
-            var result = query.ToList();
+            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             var response = _mapper.Map<ICollection<SubjectTypeResponse>>(result);
 
             return result.Any()
-                ? ApiResponse<ICollection<SubjectTypeResponse>>.Success(
-                        data: response,
-                        totalItems: total,
-                        pageSize: pageSize,
-                        page: page
-                    )
+                ? ApiResponse<ICollection<SubjectTypeResponse>>.Success(response)
                 : ApiResponse<ICollection<SubjectTypeResponse>>.NotFound("Không có dữ liệu");
         }
 

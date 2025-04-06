@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -54,8 +53,6 @@ namespace ISC_ELIB_SERVER.Models
         public int? WardCode { get; set; }
         public string? Street { get; set; }
         public bool Active { get; set; }
-        [Column("avatar_url")]
-        public string? AvatarUrl { get; set; }
 
         public virtual AcademicYear? AcademicYear { get; set; }
         public virtual Class? Class { get; set; }

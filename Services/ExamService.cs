@@ -21,25 +21,43 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<ICollection<ExamResponse>> GetExams(int page, int pageSize, string search, string sortColumn, string sortOrder)
         {
-            var query = _repository.GetExams().AsQueryable();
+            var exams = _repository.GetExams();
 
-            query = sortColumn switch
+            if(!string.IsNullOrEmpty(search))
             {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(e => e.Id) : query.OrderBy(e => e.Id),
-                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(e => e.Name) : query.OrderBy(e => e.Name),
-                "ExamDate" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(e => e.ExamDate) : query.OrderBy(e => e.ExamDate),
-                _ => query.OrderBy(e => e.Id)
+                exams = exams
+                    .Where(e => e.Name != null && e.Name.Contains(search))
+                    .ToList();
+            }
+
+            exams = sortColumn?.ToLower() switch
+            {
+                "id" => sortOrder.ToLower() == "desc"
+                    ? exams.OrderByDescending(e => e.Id).ToList()
+                    : exams.OrderBy(e => e.Id).ToList(),
+                "name" => sortOrder.ToLower() == "desc"
+                    ? exams.OrderByDescending(e => e.Name).ToList()
+                    : exams.OrderBy(e => e.Name).ToList(),
+                "examdate" => sortOrder.ToLower() == "desc"
+                    ? exams.OrderByDescending(e => e.ExamDate).ToList()
+                    : exams.OrderBy(e => e.ExamDate).ToList(),
+                "durationminutes" => sortOrder.ToLower() == "desc"
+                    ? exams.OrderByDescending(e => e.DurationMinutes).ToList()
+                    : exams.OrderBy(e => e.DurationMinutes).ToList(),
+                "status" => sortOrder.ToLower() == "desc"
+                    ? exams.OrderByDescending(e => e.Status).ToList()
+                    : exams.OrderBy(e => e.Status).ToList(),
+                _ => exams.OrderBy(e => e.Id).ToList()
             };
 
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            var paginatedResult = exams
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
-            var result = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var response = _mapper.Map<ICollection<ExamResponse>>(result);
+            var mappedResult = _mapper.Map<ICollection<ExamResponse>>(paginatedResult);
 
-            return result.Any()
-                  ? ApiResponse<ICollection<ExamResponse>>.Success(response, page, pageSize, totalItems)
-                  : ApiResponse<ICollection<ExamResponse>>.NotFound("Không có dữ liệu");
+            return ApiResponse<ICollection<ExamResponse>>.Success(mappedResult);
         }
 
         public ApiResponse<ExamResponse> GetExamById(long id)
@@ -100,7 +118,7 @@ namespace ISC_ELIB_SERVER.Services
 
             return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
             {
-                { "Error", new[] { "Tạo bài thi thất bại" } }
+                { "Error", new[] { "Failed to create exam" } }
             });
         }
 
@@ -110,9 +128,9 @@ namespace ISC_ELIB_SERVER.Services
             if (existingExam == null)
             {
                 return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
-                {
-                    { "Error", new[] { "Bài thi không tồn tại" } }
-                });
+        {
+            { "Error", new[] { "Exam not found" } }
+        });
             }
 
             // Lưu lại đường dẫn file cũ
@@ -164,7 +182,7 @@ namespace ISC_ELIB_SERVER.Services
 
             return ApiResponse<ExamResponse>.Error(new Dictionary<string, string[]>
             {
-                { "Error", new[] { "Cập nhật bài thi thất bại" } }
+                { "Error", new[] { "Failed to update exam" } }
             });
         }
 
@@ -174,7 +192,7 @@ namespace ISC_ELIB_SERVER.Services
             var existingExam = _repository.GetExamById(id);
             if (existingExam == null)
             {
-                return ApiResponse<ExamResponse>.NotFound("Không tồn tại.");
+                return ApiResponse<ExamResponse>.NotFound("Exam not found.");
             }
 
             try
@@ -191,7 +209,7 @@ namespace ISC_ELIB_SERVER.Services
                 {
                     { "Exception", new[] { "Không có thay đổi nào được thực hiện." } }
                 });
-            }
+                    }
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] Xóa thất bại: {ex.Message}");

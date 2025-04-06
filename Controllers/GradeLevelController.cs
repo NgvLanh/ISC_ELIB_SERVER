@@ -15,21 +15,8 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        [HttpGet("GetGradeLevels")]
-        public IActionResult GetGradeLevels(
-                [FromQuery] int? page = null,
-                [FromQuery] int? pageSize = null,
-                [FromQuery] string? sortColumn = null,
-                [FromQuery] string? sortOrder = null
-             )
-        {
-            var response = _service.GetGradeLevels(page, pageSize, sortColumn, sortOrder);
-            return Ok(response);
-        }
-
-
         [HttpGet]
-        public IActionResult GetGradeLevelsByAyAndSc(
+        public IActionResult GetGradeLevels(
                 [FromQuery] string schoolName,
                 [FromQuery] int? startYear,
                 [FromQuery] int? endYear,

@@ -10,15 +10,11 @@ namespace ISC_ELIB_SERVER.Services
     {
         private readonly CampusRepo _repository;
         private readonly IMapper _mapper;
-        private readonly SchoolRepo _schoolRepository;
-        private readonly UserRepo _userRepository;
 
-        public CampusService(CampusRepo repository, IMapper mapper, SchoolRepo schoolRepository, UserRepo userRepository)
+        public CampusService(CampusRepo repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _schoolRepository = schoolRepository;
-            _userRepository = userRepository;
         }
 
         public ApiResponse<ICollection<CampusResponse>> GetCampuses(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -42,6 +38,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var result = query.ToList();
+
             var response = _mapper.Map<ICollection<CampusResponse>>(result);
 
             return result.Any() ? ApiResponse<ICollection<CampusResponse>>
@@ -59,16 +56,6 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<CampusResponse> CreateCampus(CampusRequest campusRequest)
         {
-            if (_schoolRepository.GetSchoolById((long)campusRequest.SchoolId) == null)
-            {
-                return ApiResponse<CampusResponse>.BadRequest("Mã trường không tồn tại");
-            }
-
-            if (_userRepository.GetUserById(campusRequest.UserId ?? 0) == null)
-            {
-                return ApiResponse<CampusResponse>.BadRequest("Mã người dùng không tồn tại");
-            }
-
             var newCampus = new Campus
             {
                 Name = campusRequest.Name,
@@ -85,7 +72,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             catch (Exception)
             {
-                return ApiResponse<CampusResponse>.BadRequest("Lỗi khi tạo cơ sở");
+                return ApiResponse<CampusResponse>.BadRequest("Mã trường hoặc mã người dùng không chính xác");
             }
         }
 
@@ -95,16 +82,6 @@ namespace ISC_ELIB_SERVER.Services
             if (existing == null)
             {
                 return ApiResponse<CampusResponse>.NotFound($"Không tìm thấy cơ sở #{id}");
-            }
-
-            if (_schoolRepository.GetSchoolById((long)campusRequest.SchoolId) == null)
-            {
-                return ApiResponse<CampusResponse>.BadRequest("Mã trường không tồn tại");
-            }
-
-            if (_userRepository.GetUserById(campusRequest.UserId ?? 0) == null)
-            {
-                return ApiResponse<CampusResponse>.BadRequest("Mã người dùng không tồn tại");
             }
 
             existing.Name = campusRequest.Name;
@@ -120,7 +97,7 @@ namespace ISC_ELIB_SERVER.Services
             }
             catch (Exception)
             {
-                return ApiResponse<CampusResponse>.BadRequest("Lỗi khi cập nhật cơ sở");
+                return ApiResponse<CampusResponse>.BadRequest("Mã trường không chính xác");
             }
         }
 

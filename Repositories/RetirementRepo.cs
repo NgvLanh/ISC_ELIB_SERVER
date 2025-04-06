@@ -12,12 +12,12 @@ namespace ISC_ELIB_SERVER.Repositories
         }
         public ICollection<Retirement> GetRetirement()
         {
-            return _context.Retirements.Where(r => r.Active).ToList();
+            return _context.Retirements.ToList();
         }
 
-        public Retirement? GetRetirementById(long id)
+        public Retirement GetRetirementById(long id)
         {
-            return _context.Retirements.FirstOrDefault(r => r.Id == id && r.Active);
+            return _context.Retirements.FirstOrDefault(s => s.Id == id);
         }
 
         public ICollection<Retirement> GetRetirementByTeacherId(long id)
@@ -78,8 +78,7 @@ namespace ISC_ELIB_SERVER.Repositories
             var Retirement = GetRetirementById(id);
             if (Retirement != null)
             {
-                Retirement.Active = false;
-                _context.Retirements.Update(Retirement);
+                _context.Retirements.Remove(Retirement);
                 return _context.SaveChanges() > 0;
             }
             return false;

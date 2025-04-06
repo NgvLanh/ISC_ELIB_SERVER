@@ -19,8 +19,8 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTestes([FromQuery] int? page = null, [FromQuery] int? pageSize = null,
-            [FromQuery] string? search = null, [FromQuery] string? sortColumn = null, [FromQuery] string? sortOrder = null)
+        public IActionResult GetTestes([FromQuery] int page = 1, [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = "", [FromQuery] string sortColumn = "Id", [FromQuery] string sortOrder = "asc")
         {
             var response = _service.GetTestes(page, pageSize, search, sortColumn, sortOrder);
             return Ok(response);
@@ -36,18 +36,14 @@ namespace ISC_ELIB_SERVER.Controllers
         [HttpPost]
         public IActionResult CreateTest([FromBody] TestRequest TestRequest)
         {
-            var userId = User.FindFirst("Id")?.Value;
-
-            var response = _service.CreateTest(TestRequest, userId);
+            var response = _service.CreateTest(TestRequest);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateTest(long id, [FromBody] TestRequest Test)
         {
-            var userId = User.FindFirst("Id")?.Value;
-            
-            var response = _service.UpdateTest(id,Test, userId);
+            var response = _service.UpdateTest(id,Test);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 

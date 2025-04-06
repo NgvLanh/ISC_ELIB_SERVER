@@ -21,8 +21,7 @@ namespace ISC_ELIB_SERVER.Models
         public double? Score { get; set; }
         public bool? Graded { get; set; }
         public bool? Active { get; set; }
-        public int? UserId { get; set; }
-        public virtual User? User { get; set; }
+
         public virtual User? Student { get; set; }
         public virtual Test? Test { get; set; }
         public virtual ICollection<TestSubmissionsAnswer> TestSubmissionsAnswers { get; set; }

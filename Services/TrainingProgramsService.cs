@@ -65,11 +65,6 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest)
         {
-            if (trainingProgramsRequest.StartDate >= trainingProgramsRequest.EndDate)
-            {
-                return ApiResponse<TrainingProgramsResponse>.BadRequest("Ngày bắt đầu phải trước ngày kết thúc");
-            }
-
             var existing = _repository.GetTrainingProgram().FirstOrDefault(us => us.Name?.ToLower() == trainingProgramsRequest.Name.ToLower());
             if (existing != null)
             {
@@ -88,10 +83,8 @@ namespace ISC_ELIB_SERVER.Services
                 Name = trainingProgramsRequest.Name,
                 MajorId = trainingProgramsRequest.MajorId,
                 SchoolFacilitiesId = trainingProgramsRequest.SchoolFacilitiesId,
-                //StartDate = trainingProgramsRequest.StartDate,
-                StartDate = DateTime.SpecifyKind(trainingProgramsRequest.StartDate, DateTimeKind.Utc),
-                EndDate = DateTime.SpecifyKind(trainingProgramsRequest.EndDate, DateTimeKind.Utc),
-                //EndDate = trainingProgramsRequest.EndDate,
+                StartDate = trainingProgramsRequest.StartDate,
+                EndDate = trainingProgramsRequest.EndDate,
                 TrainingForm = trainingProgramsRequest.TrainingForm,
                 Active = false,
                 FileName = trainingProgramsRequest.FileName,
@@ -109,11 +102,6 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy chương trình đào tạo.");
             }
 
-            if (trainingProgramsRequest.StartDate >= trainingProgramsRequest.EndDate)
-            {
-                return ApiResponse<TrainingProgramsResponse>.BadRequest("Ngày bắt đầu phải trước ngày kết thúc");
-            }
-
             var existing = _repository.GetTrainingProgram()
                 .FirstOrDefault(us => us.Id != id && us.Name?.ToLower() == trainingProgramsRequest.Name.ToLower());
             if (existing != null)
@@ -125,10 +113,8 @@ namespace ISC_ELIB_SERVER.Services
             existingTrainingPrograms.MajorId = trainingProgramsRequest.MajorId;
             existingTrainingPrograms.SchoolFacilitiesId = trainingProgramsRequest.SchoolFacilitiesId;
             existingTrainingPrograms.Degree = trainingProgramsRequest.Degree;
-            //existingTrainingPrograms.StartDate = trainingProgramsRequest.StartDate;
-            //existingTrainingPrograms.EndDate = trainingProgramsRequest.EndDate;
-            existingTrainingPrograms.StartDate = DateTime.SpecifyKind(trainingProgramsRequest.StartDate, DateTimeKind.Utc);
-            existingTrainingPrograms.EndDate = DateTime.SpecifyKind(trainingProgramsRequest.EndDate, DateTimeKind.Utc);
+            existingTrainingPrograms.StartDate = trainingProgramsRequest.StartDate;
+            existingTrainingPrograms.EndDate = trainingProgramsRequest.EndDate;
             existingTrainingPrograms.TrainingForm = trainingProgramsRequest.TrainingForm;
             existingTrainingPrograms.Active = false;
             existingTrainingPrograms.FileName = trainingProgramsRequest.FileName;

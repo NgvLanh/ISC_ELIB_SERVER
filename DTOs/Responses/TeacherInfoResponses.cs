@@ -16,6 +16,5 @@
         public int ProvinceCode { get; set; }
         public int DistrictCode { get; set; }
         public int WardCode { get; set; }
-        public bool Active { get; set; }
     }
 }
