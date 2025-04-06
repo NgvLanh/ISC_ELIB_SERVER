@@ -5,6 +5,8 @@
         public class TransferSchoolRequest
         {
             public int? StudentId { get; set; }
+
+            public string? StudentCode { get; set; }
             public string? FullName { get; set; }
 
             public DateTime TransferSchoolDate { get; set; }
