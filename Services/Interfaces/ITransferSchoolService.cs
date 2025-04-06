@@ -9,9 +9,9 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ITransferSchoolService
     {
         ApiResponse<ICollection<TransferSchoolResponse>> GetTransferSchoolList();
-        ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentId(int id);
+        ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentId(int studentId);
         ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request);
-        ApiResponse<TransferSchoolResponse> UpdateTransferSchool(int id, TransferSchoolRequest request);
-       
+        ApiResponse<TransferSchoolResponse> UpdateTransferSchool(string studentCode, TransferSchoolRequest request);
+        
     }
 }

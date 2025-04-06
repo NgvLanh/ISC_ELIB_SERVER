@@ -37,6 +37,7 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 StudentId = res.tsucg.tsuc.tsu.tsi.si.Id,
                 FullName = res.tsucg.tsuc.tsu.u.FullName,
+                Code = res.tsucg.tsuc.tsu.u.Code,
                 DateOfBirth = res.tsucg.tsuc.tsu.u.Dob,
                 Gender = res.tsucg.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
                 TransferDate = res.tsucg.tsuc.tsu.tsi.ts.TransferSchoolDate,
@@ -93,7 +94,6 @@ namespace ISC_ELIB_SERVER.Repositories
                 StatusCode = 200
             };
         }
-
 
 
         public TransferSchool CreateTransferSchool(TransferSchool entity)

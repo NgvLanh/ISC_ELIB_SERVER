@@ -12,5 +12,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<StudentScoreResponse> CreateStudentScore(StudentScoreRequest studentScoreRequest);
         ApiResponse<StudentScoreResponse> UpdateStudentScore(int id, StudentScoreRequest studentScoreRequest);
         ApiResponse<StudentScore> DeleteStudentScore(int id);
+        ApiResponse<StudentScoreDashboardResponse> ViewStudentDashboardScores(int? academicYearId, int? classId, int? gradeLevelId, int? subjectId);
     }
 }
