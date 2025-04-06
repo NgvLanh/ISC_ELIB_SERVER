@@ -9,8 +9,8 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string FullName { get; set; } = null!;
         public DateTime BirthDate { get; set; }
         public bool? Gender { get; set; }
-        public string SubjectGroupName { get; set; } = "";
-        public string Position { get; set; } = "";
+        public int SubjectId { get; set; }
+        public string Position { get; set; }
 
         // Status dạng enum
         public int Status { get; set; }
