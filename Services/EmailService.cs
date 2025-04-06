@@ -37,7 +37,7 @@ public class EmailService : IEmailService
             }
             else if (emailType == "OTP")
             {
-                validityMessage = "OTP chỉ tồn tại được <strong>10 phút</strong>.";
+                validityMessage = "OTP chỉ tồn tại được <strong>3 phút</strong>.";
             }
 
             var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "EmailTemplate.html");
