@@ -25,7 +25,7 @@ public class PasswordResetService : IPasswordResetService
         if (user != null)
         {
             user.SetOtp(otp);
-            user.SetOtpExpiration(DateTime.UtcNow.AddMinutes(10)); 
+            user.SetOtpExpiration(DateTime.UtcNow.AddMinutes(3)); 
             await _context.SaveChangesAsync();
         }
     }
