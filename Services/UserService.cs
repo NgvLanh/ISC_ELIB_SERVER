@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -161,11 +162,16 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
             }
 
+            // Kiểm tra email đã tồn tại chưa
+            if (_userRepo.GetUsers().Any(u => u.Email == userRequest.Email))
+            {
+                return ApiResponse<UserResponse>.BadRequest("Email đã tồn tại");
+            }
             // Nếu tất cả đều hợp lệ, tạo user
             var newUser = new User
             {
                 Code = userRequest.Code,
-                Password = ComputeSha256("a"),
+                Password = ComputeSha256("123456"),
                 FullName = userRequest.FullName,
                 Dob = userRequest.Dob,
                 Gender = userRequest.Gender,
@@ -258,6 +264,7 @@ namespace ISC_ELIB_SERVER.Services
             user.ClassId = userRequest.ClassId;
             user.EntryType = userRequest.EntryType;
             user.Active = userRequest.Active;
+            user.AvatarUrl = userRequest.AvatarUrl;
 
             // Chỉ cập nhật mật khẩu nếu có nhập mới
             if (!string.IsNullOrEmpty(userRequest.Password))
@@ -305,14 +312,29 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-
-        public static string ComputeSha256(string? input)
+        public ApiResponse<UserResponse> ChangePassword(int userId, string currentPassword, string newPassword)
         {
-            if (String.IsNullOrEmpty(input))
+            var user = _userRepo.GetUserById(userId);
+            if (user == null)
             {
-                return null;
+                return ApiResponse<UserResponse>.NotFound("Người dùng không tồn tại");
             }
 
+            bool isValid = user.Password == ComputeSha256(currentPassword);
+            if (!isValid)
+            {
+                return ApiResponse<UserResponse>.BadRequest("Mật khẩu hiện tại không đúng");
+            }
+
+            user.Password = ComputeSha256(newPassword);
+            _userRepo.UpdateUser(user);
+
+            return ApiResponse<UserResponse>.Success(_mapper.Map<UserResponse>(user));
+        }
+
+
+        public static string ComputeSha256(string input)
+        {
             using SHA256 sha256 = SHA256.Create();
             byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
             StringBuilder builder = new();
@@ -322,7 +344,5 @@ namespace ISC_ELIB_SERVER.Services
             }
             return builder.ToString();
         }
-
-
     }
 }

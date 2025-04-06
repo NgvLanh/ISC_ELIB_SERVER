@@ -25,10 +25,10 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-        [HttpGet("by-grade")]
-        public IActionResult GetClassByGradeLevelId([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] int? gradeLevelId = null, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        [HttpGet("by-grade-academic")]
+        public IActionResult GetClassByGradeLevelId([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] int? gradeLevelId = null, [FromQuery] int? academicYearId = null,[FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
-            var response = _service.GetClassByGradeLevelId(page, pageSize, gradeLevelId, sortColumn, sortOrder);
+            var response = _service.GetClassByGradeLevelIdAndAcademicYearId(page, pageSize, gradeLevelId, academicYearId, sortColumn, sortOrder);
             return Ok(response);
         }
 

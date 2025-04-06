@@ -16,6 +16,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Reserves
                 .Include(r => r.Student)  // Load thông tin User (Student)
                 .Include(r => r.Class)    // Load thông tin Class
+                .Include(r => r.Semester) // Load thông tin Semester
                 .FirstOrDefault(r => r.Id == id); // Tìm theo Reserve.Id
         }
 
@@ -24,6 +25,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.Reserves
                 .Include(r => r.Student)
                 .Include(r => r.Class)
+                .Include(r => r.Semester)
                 .FirstOrDefault(r => r.StudentId == studentId); // Tìm theo StudentId (User.Id)
         }
 
@@ -54,35 +56,14 @@ namespace ISC_ELIB_SERVER.Repositories
             return false;
         }
 
-        public ICollection<Reserve> GetActiveReserves(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        public IQueryable<Reserve> GetActiveReserves()
         {
-            var query = _context.Reserves
+            return  _context.Reserves
                 .Include(r => r.Student)
                 .Include(r => r.Class)
+                .Include(r => r.Semester)
                 .Where(r => r.Active == true);
 
-            // Tìm kiếm theo tên học viên
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(r => r.Student.FullName.Contains(search));
-            }
-
-            // Sắp xếp theo cột được chọn
-            switch (sortColumn?.ToLower())
-            {
-                case "fullname":
-                    query = sortOrder == "desc" ? query.OrderByDescending(r => r.Student.FullName) : query.OrderBy(r => r.Student.FullName);
-                    break;
-                case "reservedate":
-                    query = sortOrder == "desc" ? query.OrderByDescending(r => r.ReserveDate) : query.OrderBy(r => r.ReserveDate);
-                    break;
-                default:
-                    query = query.OrderBy(r => r.Id);
-                    break;
-            }
-
-            // Áp dụng phân trang
-            return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         }
 
     }

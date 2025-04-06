@@ -82,6 +82,14 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<WorkProcessResponse>.Success(_mapper.Map<WorkProcessResponse>(workProcess))
                 : ApiResponse<WorkProcessResponse>.NotFound($"Không tìm thấy trạng quá trình công tác #{id}");
         }
+        
+        public ApiResponse<ICollection<WorkProcessResponse>> GetWorkProcessByTeacherId(long id)
+        {
+            var workProcess = _repository.GetWorkProcessByTeacherId(id);
+            return workProcess != null
+                ? ApiResponse<ICollection<WorkProcessResponse>>.Success(_mapper.Map<ICollection<WorkProcessResponse>>(workProcess))
+                : ApiResponse<ICollection<WorkProcessResponse>>.NotFound($"Không tìm thấy trạng quá trình công tác #{id}");
+        }
 
         public ApiResponse<WorkProcess> UpdateWorkProcess(long id, WorkProcessRequest workProcessRequest)
         {

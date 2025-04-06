@@ -34,8 +34,10 @@ namespace ISC_ELIB_SERVER.Models
         public int? WardCode { get; set; }
         public bool Active { get; set; }
         public virtual User? User { get; set; }
+        public int SubjectId { get; set; } // Môn học
+        public string? Position { get; set; } // Chức vụ
 
-
+        public virtual Subject? Subject { get; set; }
         public virtual ICollection<ExamScheduleClass> ExamScheduleClasses { get; set; }
         public virtual ICollection<GradeLevel> GradeLevels { get; set; }
         public virtual ICollection<Resignation> Resignations { get; set; }

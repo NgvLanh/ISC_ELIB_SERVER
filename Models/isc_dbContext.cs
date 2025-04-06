@@ -1540,10 +1540,20 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.WardCode).HasColumnName("ward_code");
 
+                entity.Property(e =>e.SubjectId).HasColumnName("subject_id");
+
+                entity.Property(e => e.Position).HasMaxLength(100).HasColumnName("position");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TeacherInfos)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_teacher_info_user_id")
+                    .IsRequired(false);
+
+                entity.HasOne(d => d.Subject)
+                    .WithMany()
+                    .HasForeignKey(d => d.SubjectId)
+                    .HasConstraintName("fk_teacher_info_subject")
                     .IsRequired(false);
             });
 

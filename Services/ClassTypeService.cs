@@ -106,7 +106,6 @@ namespace ISC_ELIB_SERVER.Services
 
             _mapper.Map(classTypeRequest, existingClassType);
 
-            existingClassType.Status = true;
 
             var updatedClassType = _repository.UpdateClassType(existingClassType);
 

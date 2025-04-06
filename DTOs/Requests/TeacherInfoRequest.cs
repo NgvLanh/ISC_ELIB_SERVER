@@ -16,5 +16,7 @@
         public int DistrictCode { get; set; }
         public int WardCode { get; set; }
         public bool Active { get; set; }
+        public int SubjectId { get; set; } // Môn học
+        public string? Position { get; set; } // Chức vụ
     }
 }

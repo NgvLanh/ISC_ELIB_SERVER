@@ -16,6 +16,7 @@ namespace ISC_ELIB_SERVER.Services
             _repository = repository;
             _mapper = mapper;
         }
+
         public ApiResponse<TeacherListResponse> GetTeacherListById(int id)
         {
             var teacherInfo = _repository.GetTeacherListById(id);
@@ -32,6 +33,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var query = _repository.GetAllTeacherList().AsQueryable();
 
+            // Lọc chỉ lấy những người dùng có vai trò là giáo viên
+            query = query.Where(t => t.User != null && t.User.Role != null && t.User.Role.Id == 2);
+
             // Thực hiện tìm kiếm nếu có
             if (!string.IsNullOrEmpty(search))
             {
@@ -47,7 +51,7 @@ namespace ISC_ELIB_SERVER.Services
             // Sắp xếp theo cột được chỉ định
             query = sortColumn switch
             {
-                "TeacherCode" => currentPageSize.ToString().ToLower() == "desc" ? query.OrderByDescending(t => t.User.Code) : query.OrderBy(t => t.User.Code),
+                "TeacherCode" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.User.Code) : query.OrderBy(t => t.User.Code),
                 "FullName" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.User.FullName) : query.OrderBy(t => t.User.FullName),
                 _ => sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Id) : query.OrderBy(t => t.Id)
             };
@@ -66,7 +70,5 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<ICollection<TeacherListResponse>>.Success(response, currentPage, currentPageSize, totalItems)
                 : ApiResponse<ICollection<TeacherListResponse>>.NotFound("No data found for TeacherList");
         }
-
-
     }
 }

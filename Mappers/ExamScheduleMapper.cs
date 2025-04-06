@@ -24,7 +24,9 @@ namespace ISC_ELIB_SERVER.Mappers
                     opt => opt.MapFrom(src =>
                         src.Exam != null && src.Exam.ExamGraders != null
                             ? src.Exam.ExamGraders.Select(eg => eg.User.FullName).ToList()
-                            : new List<string>()));
+                            : new List<string>()))
+       .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status))
+        .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.ToString())); ;
         }
     }
 }
