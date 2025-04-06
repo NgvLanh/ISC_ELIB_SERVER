@@ -22,7 +22,11 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public Subject GetSubjectById(long id)
         {
-            return  _context.Subjects.FirstOrDefault(x => x.Id == id);
+            return  _context.Subjects
+                            .Include(s => s.SubjectSubjectGroups)
+                                .ThenInclude(ssg => ssg.SubjectGroup)
+                            .Include(s => s.SubjectType)
+                            .FirstOrDefault(x => x.Id == id);
         }
 
         public Subject CreateSubject(Subject Subject)
