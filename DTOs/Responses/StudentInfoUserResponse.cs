@@ -10,7 +10,6 @@
         public string? Nation { get; set; }  // Quốc tịch từ bảng User
         public string? ClassName { get; set; } // Tên lớp từ bảng Class
         public string? status { get; set; } // Tên trạng thái từ bảng UserStatus
-        public int? AcademicYearId { get; set; } // ID năm học
-        public List<SemesterResponse>? Semesters { get; set; } // Danh sách học kỳ
+        public AcademicYearResponse? AcademicYear { get; set; }
     }
 }
