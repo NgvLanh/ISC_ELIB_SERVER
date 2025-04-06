@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ISC_ELIB_SERVER.Controllers
 {
     [ApiController]
-    [Route("api/studen-score")]
+    [Route("api/student-score")]
     public class StudentScoreController : ControllerBase
     {
         private readonly IStudentScoreService _service;
@@ -51,6 +51,17 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = _service.DeleteStudentScore(id);
 
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        [HttpGet("view-dashboard-scores")]
+        public IActionResult ViewStudentDashboardScores(
+            [FromQuery] int? academicYearId = null,
+            [FromQuery] int? classId = 10,
+            [FromQuery] int? gradeLevelId = 10,
+            [FromQuery] int? subjectId = null)
+        {
+            var response = _service.ViewStudentDashboardScores(academicYearId, classId, gradeLevelId, subjectId);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }

@@ -1,4 +1,6 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -9,6 +11,8 @@ namespace ISC_ELIB_SERVER.Repositories
         StudentScore CreateStudentScore(StudentScore studentScore);
         StudentScore UpdateStudentScore(StudentScore studentScore);
         bool DeleteStudentScore(int id);
+        ICollection<StudentScore> GetStudentScoresByUserIdAndSubjectIdAndSemesterId(int userId, int subjectId, int semesterId);
+
     }
 
     public class StudentScoreRepo : IStudentScoreRepo
@@ -66,6 +70,14 @@ namespace ISC_ELIB_SERVER.Repositories
 
             _context.StudentScores.Remove(studentScore);
             return _context.SaveChanges() > 0;
+        }
+
+        public ICollection<StudentScore> GetStudentScoresByUserIdAndSubjectIdAndSemesterId(int userId, int subjectId, int semesterId)
+        {
+            return _context.StudentScores
+            .Include(s => s.ScoreType)
+            .Where(s => s.UserId == userId && s.SubjectId == subjectId && s.SemesterId == semesterId)
+                .ToList();
         }
     }
 }

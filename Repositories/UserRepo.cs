@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ namespace ISC_ELIB_SERVER.Repositories
         // Lấy tất cả các User
         public ICollection<User> GetUsers()
         {
-            return _context.Users.Where( u => u.Active).ToList();
+            return _context.Users.Where(u => u.Active).ToList();
         }
 
         public int GetQuantityUserByRoleId(int roleId)
@@ -64,6 +65,15 @@ namespace ISC_ELIB_SERVER.Repositories
                 return _context.SaveChanges() > 0;
             }
             return false;
+        }
+
+        // Lấy danh sách User theo id lớp học
+        public ICollection<User> GetUsersByClassId(int classId, string roleName = "Student")
+        {
+            return _context.Users
+            .Where(u => u.ClassId == classId && u.Active && u.Role.Name == roleName)
+            .Include(r => r.Role)
+            .ToList();
         }
     }
 }
