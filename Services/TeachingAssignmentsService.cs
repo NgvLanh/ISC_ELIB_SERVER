@@ -11,14 +11,16 @@ namespace ISC_ELIB_SERVER.Services
     public class TeachingAssignmentsService : ITeachingAssignmentsService
     {
         private readonly ITeachingAssignmentsRepo _repository;
+        private readonly UserRepo _userRepo;
         private readonly isc_dbContext _context;
         private readonly IMapper _mapper;
 
-        public TeachingAssignmentsService(ITeachingAssignmentsRepo repository, IMapper mapper, isc_dbContext context)
+        public TeachingAssignmentsService(ITeachingAssignmentsRepo repository, IMapper mapper, isc_dbContext context, UserRepo userRepo)
         {
             _repository = repository;
             _mapper = mapper;
             _context = context;
+            _userRepo = userRepo;
         }
 
         public ApiResponse<ICollection<TeachingAssignmentsResponse>> GetTeachingAssignmentsNotExpired(
@@ -37,7 +39,7 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
-                    .Where(ta => ta.EndDate >= DateTime.Now) // Chỉ lấy chưa qua EndDate
+                    .Where(ta => ta.EndDate >= DateTime.Now && ta.Active) // Chỉ lấy chưa qua EndDate
                     .AsQueryable()
                     .AsNoTracking();
 
@@ -169,7 +171,7 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.Sessions)
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
-                    .Where(ta => ta.EndDate < DateTime.Now)
+                    .Where(ta => ta.EndDate < DateTime.Now && ta.Active)
                     .AsQueryable()
                     .AsNoTracking();
 
@@ -323,6 +325,13 @@ namespace ISC_ELIB_SERVER.Services
         {
             try
             {
+                var user = _repository.GetTeachingAssignmentById((int)request.UserId);
+                if (user != null)
+                {
+                    return ApiResponse<TeachingAssignmentsResponse>.NotFound("Đã phân công giảng dạy.");
+                }
+
+
                 var newAssignment = _mapper.Map<TeachingAssignment>(request);
                 var createdAssignment = _repository.CreateTeachingAssignment(newAssignment);
 
@@ -404,6 +413,11 @@ namespace ISC_ELIB_SERVER.Services
         {
             try
             {
+                var user = _repository.GetTeachingAssignmentById((int)request.UserId);
+                if (user != null)
+                {
+                    return ApiResponse<TeachingAssignmentsResponse>.NotFound("Đã phân công giảng dạy.");
+                }
                 var existingAssignment = _repository.GetTeachingAssignmentById(id);
                 if (existingAssignment == null)
                 {
@@ -542,7 +556,7 @@ namespace ISC_ELIB_SERVER.Services
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
                     .Where(ta => ta.Semester.AcademicYear.Id == academicYearId &&
-                                 ta.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroupId == subjectGroupId))
+                                 ta.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroupId == subjectGroupId) && ta.Active)
                     .AsQueryable()
                     .AsNoTracking();
 
@@ -664,7 +678,7 @@ namespace ISC_ELIB_SERVER.Services
                             .ThenInclude(ssg => ssg.SubjectGroup)
                     .Include(ta => ta.Semester)
                     .ThenInclude(s => s.AcademicYear)
-                    .Where(ta => ta.User.Id == teacherId.Value)
+                    .Where(ta => ta.User.Id == teacherId.Value && ta.Active)
                     .AsQueryable()
                     .AsNoTracking();
 
