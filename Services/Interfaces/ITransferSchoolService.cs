@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Requests.ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
@@ -12,6 +12,6 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentId(int studentId);
         ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request);
         ApiResponse<TransferSchoolResponse> UpdateTransferSchool(string studentCode, TransferSchoolRequest request);
-        
+        ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentCode(string studentCode);
     }
 }
