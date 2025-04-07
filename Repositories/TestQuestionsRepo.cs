@@ -47,6 +47,12 @@ namespace ISC_ELIB_SERVER.Repositories
             }
             return false;
         }
+
+        public bool IsMultipleChoiceQuestion(int questionId)
+        {
+            var question = _context.TestQuestions.FirstOrDefault(q => q.Id == questionId);
+            return question != null && question.QuestionType == Enums.QuestionType.TracNghiem;
+        }
     }
 }
 

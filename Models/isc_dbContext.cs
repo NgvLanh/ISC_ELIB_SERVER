@@ -81,6 +81,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         public virtual DbSet<ClassUser> ClassUser { get; set; } = null!;
+        public virtual DbSet<TestSubmissionAnswerAttachment> TestSubmissionAnswerAttachments { get; set; } = null!;
 
 
 
@@ -1794,19 +1795,24 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Active)
-                    .HasColumnName("active")
-                    .HasDefaultValueSql("true");
-
-                entity.Property(e => e.AnswerText).HasColumnName("answer_text");
-
-                entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
+                entity.Property(e => e.SubmissionId).HasColumnName("submission_id");
 
                 entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.Property(e => e.SelectedAnswerId).HasColumnName("selected_answer_id");
 
-                entity.Property(e => e.SubmissionId).HasColumnName("submission_id");
+                entity.Property(e => e.AnswerText).HasColumnName("answer_text");
+
+                entity.Property(e => e.IsCorrect).HasColumnName("is_correct");
+
+                entity.Property(e => e.Score).HasColumnName("score");
+
+                entity.Property(e => e.TeacherComment)
+                    .HasColumnName("teacher_comment");
+
+                entity.Property(e => e.Active)
+                    .HasColumnName("active")
+                    .HasDefaultValueSql("true");
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.TestSubmissionsAnswers)
@@ -1823,6 +1829,38 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.SubmissionId)
                     .HasConstraintName("fk_test_submissions_answers_submission_id");
             });
+
+            modelBuilder.Entity<TestSubmissionAnswerAttachment>(entity =>
+            {
+                entity.ToTable("test_submission_answer_attachments");
+
+                entity.HasKey(e => e.Id).HasName("pk_test_submission_answer_attachments");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.TestSubmissionAnswerId)
+                    .HasColumnName("test_submission_answer_id");
+
+                entity.Property(e => e.Filename)
+                    .HasColumnName("filename")
+                    .IsRequired();
+
+                entity.Property(e => e.FileBase64)
+                    .HasColumnName("file_base64")
+                    .IsRequired();
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("now()");
+
+                entity.HasOne(d => d.TestSubmissionAnswer)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.TestSubmissionAnswerId)
+                    .HasConstraintName("fk_answer_attachment_answer_id")
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
 
             modelBuilder.Entity<TestsAttachment>(entity =>
             {
