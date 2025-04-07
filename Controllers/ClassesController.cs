@@ -93,7 +93,25 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
+        [HttpGet("by-subjectId")]
+        public IActionResult GetClassBySubjectId([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] int? subjectId = null, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        {
+            var response = _service.GetClassBySubjectId(page, pageSize, subjectId, sortColumn, sortOrder);
+            return Ok(response);
+        }
 
+        [HttpGet("classType-co-ban")]
+        public IActionResult GetClassByCoBan([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? sortColumn, [FromQuery] string? sortOrder)
+        {
+            var response = _service.GetClassByCoBan(page, pageSize, sortColumn, sortOrder);
+            return Ok(response);
+        }
 
+        [HttpGet("classType-nang-cao")]
+        public IActionResult GetClassByNangCao([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? sortColumn, [FromQuery] string? sortOrder)
+        {
+            var response = _service.GetClassByNangCao(page, pageSize, sortColumn, sortOrder);
+            return Ok(response);
+        }
     }
 }
