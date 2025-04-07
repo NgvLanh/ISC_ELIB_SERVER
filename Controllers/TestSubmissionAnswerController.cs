@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -40,11 +41,41 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTestSubmissionAnswer([FromBody] TestSubmissionAnswerRequest request)
+        public async Task<IActionResult> CreateTestSubmissionAnswer(
+        [FromForm] TestSubmissionAnswerRequest request,
+        [FromForm] List<IFormFile> attachments)
         {
-            var response = _service.CreateTestSubmissionAnswer(request);
+            try
+            {
+                // Gọi service để xử lý file và dữ liệu
+                var response = await _service.CreateTestSubmissionAnswer(request, attachments);
 
-            if (response.Code == 0) // Success
+                if (response.Code == 0) // Success
+                    return Ok(response);
+
+                if (response.Message.Contains("Conflict"))
+                    return Conflict(response);
+
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<TestSubmissionAnswerResponse>(1, "Lỗi hệ thống", null, new Dictionary<string, string[]>
+                {
+                    { "Exception", new[] { ex.Message } }
+                }));
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTestSubmissionAnswer(
+            int id,
+            [FromForm] TestSubmissionAnswerRequest request,
+            [FromForm] List<IFormFile> attachments)
+        {
+            var response = await _service.UpdateTestSubmissionAnswer(id, request, attachments);
+
+            if (response.Code == 0)
                 return Ok(response);
 
             if (response.Message.Contains("Conflict"))
@@ -53,14 +84,8 @@ namespace ISC_ELIB_SERVER.Controllers
             return BadRequest(response);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateTestSubmissionAnswer(int id, [FromBody] TestSubmissionAnswerRequest request)
-        {
-            var response = _service.UpdateTestSubmissionAnswer(id, request);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
 
-        [HttpPut("{id}/toggle-active")]    
+        [HttpPut("{id}/toggle-active")]
         public IActionResult DeleteTestSubmissionAnswer(int id)
         {
             var response = _service.DeleteTestSubmissionAnswer(id);

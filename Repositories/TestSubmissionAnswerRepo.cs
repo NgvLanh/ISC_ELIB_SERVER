@@ -39,5 +39,37 @@ namespace ISC_ELIB_SERVER.Repositories
             }
             return false;
         }
+
+        public void AddAttachments(List<TestSubmissionAnswerAttachment> attachments)
+        {
+            _context.TestSubmissionAnswerAttachments.AddRange(attachments);
+            _context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
+
+        public ICollection<TestSubmissionAnswerAttachment> GetAttachmentsBySubmissionAnswerId(int id)
+        {
+            return _context.TestSubmissionAnswerAttachments
+                           .Where(a => a.TestSubmissionAnswerId == id)
+                           .ToList();
+        }
+
+        public ICollection<TestSubmissionAnswerAttachment> GetAttachmentsBySubmissionAnswerIds(List<int> answerIds)
+        {
+            return _context.TestSubmissionAnswerAttachments
+                .Where(att => answerIds.Contains(att.TestSubmissionAnswerId))
+                .ToList();
+        }
+
+        public void RemoveAttachments(List<TestSubmissionAnswerAttachment> attachments)
+        {
+            _context.TestSubmissionAnswerAttachments.RemoveRange(attachments);
+            _context.SaveChanges();
+        }
+
     }
 }
