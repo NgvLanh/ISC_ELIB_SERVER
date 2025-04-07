@@ -13,5 +13,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public int Subject { get; set; }
         public int SemesterId { get; set; }
         public int GradeLevelsId { get; set; }
+        public int duration_in_minutes { get; set; }
+        public List<int> ClassIds { get; set; } = new List<int>();
+        public List<int> GraderIds { get; set; } = new List<int>();
     }
 }

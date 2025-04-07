@@ -38,7 +38,10 @@ namespace ISC_ELIB_SERVER.Mappers
                                   .Select(eg => eg.User != null ? eg.User.FullName : string.Empty)
                                   .Where(name => !string.IsNullOrEmpty(name))
                                   .ToList()
-                            : new List<string>()));
+                            : new List<string>()))
+                // Mapping cho JoinedStudentQuantity mới
+                .ForMember(dest => dest.joined_student_quantity,
+                    opt => opt.MapFrom(src => src.joined_student_quantity));
 
             CreateMap<ExamScheduleClassRequest, ExamScheduleClass>();
 
@@ -52,4 +55,5 @@ namespace ISC_ELIB_SERVER.Mappers
                     opt => opt.MapFrom(src => src.duration_in_minutes));
         }
     }
+
 }

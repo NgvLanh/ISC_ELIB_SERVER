@@ -21,7 +21,8 @@ namespace ISC_ELIB_SERVER.Services
             int? gradeLevelsId,  
         int? classId
     );
-
+        ApiResponse<List<ExamScheduleResponse>> GetForCalendar(
+   int academicYearId, int? semesterId, int? gradeLevelsId, int? classId);
         ApiResponse<ExamScheduleResponse> GetById(long id);
         ApiResponse<ExamScheduleResponse> Create(ExamScheduleRequest request);
         ApiResponse<ExamScheduleResponse> Update(long id, ExamScheduleRequest request);
@@ -50,6 +51,13 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<PagedResult<ExamScheduleResponse>>.Success(result);
         }
 
+        public ApiResponse<List<ExamScheduleResponse>> GetForCalendar(
+    int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
+        {
+            var entities = _repository.GetForCalendar(academicYearId, semesterId, gradeLevelsId, classId);
+            var responses = _mapper.Map<List<ExamScheduleResponse>>(entities);
+            return ApiResponse<List<ExamScheduleResponse>>.Success(responses);
+        }
         public ApiResponse<ExamScheduleResponse> GetById(long id)
         {
             var entity = _repository.GetById(id);
@@ -64,16 +72,36 @@ namespace ISC_ELIB_SERVER.Services
             try
             {
                 var entity = _mapper.Map<ExamSchedule>(request);
+
+                if (request.ClassIds != null && request.ClassIds.Any())
+                {
+                    foreach (var classId in request.ClassIds)
+                    {
+                        var examScheduleClass = new ExamScheduleClass
+                        {
+                            ClassId = classId,
+                            Active = true
+                        };
+                        entity.ExamScheduleClasses.Add(examScheduleClass);
+                    }
+                }
+
                 _repository.Create(entity);
+
+                if (request.GraderIds != null && request.GraderIds.Any())
+                {
+                    _repository.AddGraders(entity.Id, request.GraderIds);
+                }
+
                 var response = _mapper.Map<ExamScheduleResponse>(entity);
                 return ApiResponse<ExamScheduleResponse>.Success(response);
             }
             catch (Exception ex)
             {
                 return ApiResponse<ExamScheduleResponse>.Error(new Dictionary<string, string[]>
-                {
-                    { "Exception", new[] { ex.Message } }
-                });
+        {
+            { "Exception", new[] { ex.Message } }
+        });
             }
         }
 

@@ -94,9 +94,49 @@ namespace ISC_ELIB_SERVER.Repositories
                 .FirstOrDefault(e => e.Id == id && e.Active); 
             return examSchedule;
         }
+
+        public List<ExamSchedule> GetForCalendar(
+    int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
+        {
+            var query = _context.ExamSchedules
+                .Include(e => e.AcademicYear)
+                .Include(e => e.SubjectNavigation)
+                .Include(e => e.Semester)
+                .Include(e => e.GradeLevels)
+                .Include(e => e.Exam)
+                    .ThenInclude(ex => ex.ExamGraders)
+                        .ThenInclude(eg => eg.User)
+                .Include(e => e.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.Class)
+                .Where(e => e.Active && e.AcademicYear.Id == academicYearId);
+
+            if (semesterId.HasValue)
+                query = query.Where(e => e.Semester.Id == semesterId.Value);
+            if (gradeLevelsId.HasValue)
+                query = query.Where(e => e.GradeLevels.Id == gradeLevelsId.Value);
+            if (classId.HasValue)
+                query = query.Where(e => e.ExamScheduleClasses.Any(c => c.ClassId == classId.Value));
+
+            return query.AsNoTracking().ToList();
+        }
         public void Create(ExamSchedule examSchedule)
         {
             _context.ExamSchedules.Add(examSchedule);
+            _context.SaveChanges();
+        }
+        public void AddGraders(int examId, List<int> graderIds)
+        {
+            foreach (var graderId in graderIds)
+            {
+                var examGrader = new ExamGrader
+                {
+                    ExamId = examId,
+                    UserId = graderId,
+                    Active = true
+                };
+                _context.ExamGraders.Add(examGrader);
+            }
+
             _context.SaveChanges();
         }
 
