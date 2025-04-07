@@ -55,13 +55,13 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<EducationLevelResponse> CreateEducationLevel(EducationLevelRequest EducationLevelRequest)
         {
-            var ListEducationLevel = _repository.GetEducationLevels();
+            //var ListEducationLevel = _repository.GetEducationLevels();
 
 
-            if (EducationLevelRequest.IsAnnualSystem == true && EducationLevelRequest.IsCredit == true)
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
-            }
+            //if (EducationLevelRequest.IsAnnualSystem == true && EducationLevelRequest.IsCredit == true)
+            //{
+            //    return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
+            //}
 
             //if (EducationLevelRequest.IsAnnualSystem == false && EducationLevelRequest.IsCredit == false)
             //{
@@ -75,22 +75,12 @@ namespace ISC_ELIB_SERVER.Services
                 IsAnnualSystem = EducationLevelRequest.IsAnnualSystem,
                 IsCredit = EducationLevelRequest.IsCredit,
                 Status = EducationLevelRequest.Status,
-                Description = EducationLevelRequest.Description
+                Description = EducationLevelRequest.Description,
+                TrainingDuration = EducationLevelRequest.TrainingDuration,
+                SemesterPerYear = EducationLevelRequest.SemesterPerYear,
+                MandatoryCourse = EducationLevelRequest.MandatoryCourse,
+                ElectiveCourse = EducationLevelRequest.ElectiveCourse
             };
-
-            if (EducationLevelRequest.IsAnnualSystem == true)
-            {
-                newEducationLevel.IsAnnualSystem = true;
-                newEducationLevel.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                newEducationLevel.SemesterPerYear = EducationLevelRequest.SemesterPerYear;
-            }
-            else if (EducationLevelRequest.IsCredit == true)
-            {
-                newEducationLevel.IsCredit = true;
-                newEducationLevel.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                newEducationLevel.MandatoryCourse = EducationLevelRequest.MandatoryCourse;
-                newEducationLevel.ElectiveCourse = EducationLevelRequest.ElectiveCourse;
-            }
 
 
             try
@@ -117,7 +107,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<EducationLevelResponse>.NotFound($"Không tìm thấy cấp bậc đào tạo #{id}");
             }
 
-            var ListEducationLevel = _repository.GetEducationLevels().Where(item => item.Active); ;
+            //var ListEducationLevel = _repository.GetEducationLevels().Where(item => item.Active); ;
 
             //if (ListEducationLevel.Any(item => item.Name.Equals(EducationLevelRequest.Name) && item.Id != id))
             //{
@@ -125,10 +115,10 @@ namespace ISC_ELIB_SERVER.Services
             //}
 
             
-            if (EducationLevelRequest.IsAnnualSystem ==true && EducationLevelRequest.IsCredit == true)
-            {
-                return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
-            }
+            //if (EducationLevelRequest.IsAnnualSystem ==true && EducationLevelRequest.IsCredit == true)
+            //{
+            //    return ApiResponse<EducationLevelResponse>.BadRequest("Không thể áp dụng đồng thời cả hệ niên chế và hệ tín chỉ");
+            //}
 
             existing.Name = EducationLevelRequest.Name;
             existing.TrainingType = EducationLevelRequest.TrainingType;
@@ -136,21 +126,10 @@ namespace ISC_ELIB_SERVER.Services
             existing.Description = EducationLevelRequest.Description;
             existing.IsAnnualSystem = EducationLevelRequest.IsAnnualSystem;
             existing.IsCredit = EducationLevelRequest.IsCredit;
-
-            if (EducationLevelRequest.IsAnnualSystem == true)
-            {
-                existing.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                existing.SemesterPerYear = EducationLevelRequest.SemesterPerYear;
-                existing.MandatoryCourse = null;
-                existing.ElectiveCourse = null;
-            }
-            else if (EducationLevelRequest.IsCredit == true)
-            {
-                existing.SemesterPerYear =null;
-                existing.TrainingDuration = EducationLevelRequest.TrainingDuration;
-                existing.MandatoryCourse = EducationLevelRequest.MandatoryCourse;
-                existing.ElectiveCourse = EducationLevelRequest.ElectiveCourse;
-            }
+            existing.TrainingDuration = EducationLevelRequest.TrainingDuration;
+            existing.SemesterPerYear = EducationLevelRequest.SemesterPerYear;
+            existing.MandatoryCourse = EducationLevelRequest.MandatoryCourse;
+            existing.ElectiveCourse = EducationLevelRequest.ElectiveCourse;
 
             try
             {

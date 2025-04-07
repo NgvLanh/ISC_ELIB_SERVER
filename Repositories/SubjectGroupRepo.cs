@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public SubjectGroup GetSubjectGroupById(long id)
         {
-            return _context.SubjectGroups.FirstOrDefault(x => x.Id == id);
+            return _context.SubjectGroups.Include(sg => sg.Teacher).FirstOrDefault(x => x.Id == id);
         }
 
         public SubjectGroup CreateSubjectGroup(SubjectGroup subjectGroup)

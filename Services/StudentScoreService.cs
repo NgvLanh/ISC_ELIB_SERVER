@@ -4,20 +4,29 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using AutoMapper;
-using System.Collections.Generic;
-using System.Linq;
-using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
     public class StudentScoreService : IStudentScoreService
     {
         private readonly IStudentScoreRepo _repository;
+        private readonly TestRepo _testRepo;
+        private readonly IClassesRepo _classesRepo;
+        private readonly UserRepo _userRepo;
+        private readonly SemesterRepo _semesterRepo;
         private readonly IMapper _mapper;
 
-        public StudentScoreService(IStudentScoreRepo repository, IMapper mapper)
+        public StudentScoreService(IStudentScoreRepo repository, TestRepo testRepo, IClassesRepo classesRepo,
+        UserRepo userRepo,
+        SemesterRepo semesterRepo,
+        IMapper mapper)
         {
             _repository = repository;
+            _testRepo = testRepo;
+            _classesRepo = classesRepo;
+            _userRepo = userRepo;
+            _semesterRepo = semesterRepo;
             _mapper = mapper;
         }
 
@@ -94,5 +103,70 @@ namespace ISC_ELIB_SERVER.Services
             .Success(response, page, pageSize, _repository.GetStudentScores().Count)
              : ApiResponse<ICollection<StudentScoreResponse>>.NotFound("Không có dữ liệu");
         }
+
+        public ApiResponse<StudentScoreDashboardResponse> ViewStudentDashboardScores(int? academicYearId, int? classId, int? gradeLevelId, int? subjectId)
+        {
+            if (academicYearId == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu năm học");
+
+            if (classId == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu lớp");
+
+            if (gradeLevelId == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu khối");
+
+            if (subjectId == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu môn học");
+
+            var testOfSubject = _mapper.Map<StudentScoreByTestResponse>(_testRepo.GetTestsBySubjectId((int)subjectId));
+            if (testOfSubject == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không có bài kiểm tra cho môn học này");
+
+            var classTest = _mapper.Map<ClassScoreResponse>(_classesRepo.GetClassById(classId ?? 0));
+            if (classTest == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy lớp học");
+
+            var studentsOfClass = _mapper.Map<ICollection<StudentResponse>>(_userRepo.GetUsersByClassId((int)classId));
+            if (studentsOfClass == null || !studentsOfClass.Any())
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy sinh viên trong lớp");
+
+            var semesterOfAcademicYear = _mapper.Map<ICollection<SemesterScoreResponse>>(_semesterRepo.GetSemestersByAcademicYearId(academicYearId ?? 0));
+            // Console.WriteLine(JsonConvert.SerializeObject(semesterOfAcademicYear, Formatting.Indented));
+            foreach (var student in studentsOfClass)
+            {
+                student.Semesters = semesterOfAcademicYear.Select(semester => new SemesterScoreResponse
+                {
+                    Id = semester.Id,
+                    Name = semester.Name,
+                    Scores = _mapper.Map<ICollection<ScoreResponse>>(
+                            _repository.GetStudentScoresByUserIdAndSubjectIdAndSemesterId(student.Id, (int)subjectId, semester.Id)),
+                    AverageScore = _mapper.Map<ICollection<ScoreResponse>>(
+                            _repository.GetStudentScoresByUserIdAndSubjectIdAndSemesterId(student.Id, (int)subjectId, semester.Id)).Any()
+                            ? _mapper.Map<ICollection<ScoreResponse>>(
+                            _repository.GetStudentScoresByUserIdAndSubjectIdAndSemesterId(student.Id, (int)subjectId, semester.Id)).Sum(s => s.Score * s.ScoreType.Weight) / _mapper.Map<ICollection<ScoreResponse>>(
+                            _repository.GetStudentScoresByUserIdAndSubjectIdAndSemesterId(student.Id, (int)subjectId, semester.Id)).Sum(s => s.ScoreType.Weight)
+                            : 0
+                }).ToList();
+
+                student.AverageScore = student.Semesters.Any()
+                    ? student.Semesters.Average(s => s.AverageScore)
+                    : 0;
+
+                student.Passed = student.AverageScore >= 5.0;
+                student.LastUpdate = DateTime.Now;
+            }
+
+
+            testOfSubject.Class = classTest;
+
+            var dashboardResponse = new StudentScoreDashboardResponse
+            {
+                Test = testOfSubject,
+                Students = studentsOfClass
+            };
+
+            return ApiResponse<StudentScoreDashboardResponse>.Success(dashboardResponse);
+        }
+
     }
 }
