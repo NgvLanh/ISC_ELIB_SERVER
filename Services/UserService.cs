@@ -68,6 +68,10 @@ namespace ISC_ELIB_SERVER.Services
                 // RoleName bằng cách lấy từ RoleRepo
                 var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
                 response.RoleName = role?.Name;
+                // Lấy thông tin khối từ ClassRepo
+                var classInfo = _classRepo.GetClassById(user.ClassId ?? 0);
+                response.ClassId = classInfo != null ? user.ClassId : null;
+                response.GradeLevelId = classInfo?.GradeLevelId;
                 responses.Add(response);
             }
 
