@@ -93,7 +93,12 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-
+        [HttpGet("by-subjectId")]
+        public IActionResult GetClassBySubjectId([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] int? subjectId = null, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
+        {
+            var response = _service.GetClassBySubjectId(page, pageSize, subjectId, sortColumn, sortOrder);
+            return Ok(response);
+        }
 
     }
 }
