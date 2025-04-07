@@ -100,5 +100,18 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
+        [HttpGet("classType-co-ban")]
+        public IActionResult GetClassByCoBan([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? sortColumn, [FromQuery] string? sortOrder)
+        {
+            var response = _service.GetClassByCoBan(page, pageSize, sortColumn, sortOrder);
+            return Ok(response);
+        }
+
+        [HttpGet("classType-nang-cao")]
+        public IActionResult GetClassByNangCao([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery] string? sortColumn, [FromQuery] string? sortOrder)
+        {
+            var response = _service.GetClassByNangCao(page, pageSize, sortColumn, sortOrder);
+            return Ok(response);
+        }
     }
 }
