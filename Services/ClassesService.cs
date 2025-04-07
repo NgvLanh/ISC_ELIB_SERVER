@@ -34,6 +34,8 @@
         public ApiResponse<ICollection<ClassesResponse>> GetClass(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
             var query = _repository.GetClass()
+                .Include(u => u.ClassUsers) 
+                    .ThenInclude(cu => cu.UserStatus)
                 .Include(c => c.GradeLevel)
                 .Include(c => c.AcademicYear)
                 .Include(c => c.User)
@@ -88,7 +90,7 @@
                     classResponse.Subjects = classData.ClassSubjects
                         .Select(cs => new ClassSubjectResponse
                         {
-                            Id = cs.Id,
+                            Id = cs.Subject.Id,
                             Code = cs.Subject.Code,
                             Name = cs.Subject.Name,
                             HoursSemester1 = (int)cs.Subject.HoursSemester1,
@@ -112,7 +114,8 @@
                                 Year = (user?.AcademicYear?.StartTime.HasValue == true && user?.AcademicYear?.EndTime.HasValue == true)
                                     ? $"{user.AcademicYear.StartTime.Value.Year}-{user.AcademicYear.EndTime.Value.Year}"
                                     : null,
-                                UserStatus = user?.UserStatus?.Name ?? "Chưa có trạng thái"
+                                UserStatus = cu.UserStatus?.Name ?? "Chưa có trạng thái"
+
                             };
                         })
                         .Where(u => u.Id != 0)  
@@ -128,6 +131,8 @@
         public ApiResponse<ClassesResponse> GetClassById(int id)
         {
             var classData = _repository.GetClass()
+                .Include(u => u.ClassUsers)
+                    .ThenInclude(cu => cu.UserStatus)
                 .Include(c => c.ClassSubjects)
                     .ThenInclude(cs => cs.Subject)
                 .Include(c => c.ClassUsers) 
@@ -149,7 +154,7 @@
             response.Subjects = classData.ClassSubjects
                 .Select(cs => new ClassSubjectResponse
                 {
-                    Id = cs.Id,
+                    Id = cs.Subject.Id,
                     Code = cs.Subject.Code,
                     Name = cs.Subject.Name,
                     HoursSemester1 = (int)cs.Subject.HoursSemester1,
@@ -173,7 +178,7 @@
                         Year = (user?.AcademicYear?.StartTime.HasValue == true && user?.AcademicYear?.EndTime.HasValue == true)
                             ? $"{user.AcademicYear.StartTime.Value.Year}-{user.AcademicYear.EndTime.Value.Year}"
                             : null,
-                        UserStatus = user?.UserStatus?.Name ?? "Chưa có trạng thái"
+                        UserStatus = cu.UserStatus?.Name ?? "Chưa có trạng thái"
                     };
                 })
                 .Where(u => u.Id != 0)
@@ -232,7 +237,7 @@
 
                 response.Subjects = classEntity.ClassSubjects?.Select(cs => new ClassSubjectResponse
                 {
-                    Id = cs.Id,
+                    Id = cs.Subject.Id,
                     Code = cs.Subject.Code,
                     Name = cs.Subject.Name,
                     HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
@@ -319,7 +324,7 @@
                 response.Subjects = classEntity.ClassSubjects?
                     .Select(cs => new ClassSubjectResponse
                     {
-                        Id = cs.Id,
+                        Id = cs.Subject.Id,
                         Code = cs.Subject.Code,
                         Name = cs.Subject.Name,
                         HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
@@ -558,14 +563,12 @@
                 .AsNoTracking()
                 .AsQueryable();
 
-            // Lọc theo GradeLevelId và AcademicYearId nếu có
             if (gradeLevelId.HasValue)
                 query = query.Where(c => c.GradeLevelId == gradeLevelId.Value);
 
             if (academicYearId.HasValue)
                 query = query.Where(c => c.AcademicYearId == academicYearId.Value);
 
-            // Sắp xếp theo cột được chỉ định
             if (!string.IsNullOrEmpty(sortColumn))
             {
                 bool isDesc = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
@@ -579,14 +582,12 @@
 
             int totalCount = query.Count();
 
-            // Phân trang
             if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
                 query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
 
             var result = query.ToList();
             var response = _mapper.Map<ICollection<ClassesResponse>>(result);
 
-            // Ánh xạ danh sách classes theo `Id`
             var classDict = response.ToDictionary(c => c.Id);
 
             foreach (var classData in result)
@@ -597,7 +598,7 @@
                         .Where(cs => cs.Subject != null)
                         .Select(cs => new ClassSubjectResponse
                         {
-                            Id = cs.Id,
+                            Id = cs.Subject.Id,
                             Code = cs.Subject.Code,
                             Name = cs.Subject.Name,
                             HoursSemester1 = cs.Subject.HoursSemester1 ?? 0,
@@ -628,6 +629,201 @@
             return response.Any()
                 ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
                 : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
+        }
+
+        public ApiResponse<ICollection<ClassesResponse>> GetClassBySubjectId(int? page, int? pageSize, int? subjectId, string? sortColumn, string? sortOrder)
+        {
+            if (subjectId == null)
+                return ApiResponse<ICollection<ClassesResponse>>.BadRequest("SubjectId không được để trống");
+
+            var query = _repository.GetClass()
+                .Include(c => c.ClassUsers)
+                    .ThenInclude(cu => cu.UserStatus)
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .Include(c => c.ClassUsers)
+                    .ThenInclude(cu => cu.User)
+                        .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.ClassUsers)
+                    .ThenInclude(cu => cu.User)
+                        .ThenInclude(u => u.UserStatus)
+                .Include(c => c.Users)
+                .AsQueryable();
+
+            // Lọc theo subjectId
+            query = query.Where(c => c.ClassSubjects.Any(cs => cs.SubjectId == subjectId));
+
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                bool isDesc = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
+
+                query = sortColumn.ToLower() switch
+                {
+                    "code" => isDesc ? query.OrderByDescending(c => c.Code) : query.OrderBy(c => c.Code),
+                    "name" => isDesc ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name),
+                    "studentquantity" => isDesc ? query.OrderByDescending(c => c.StudentQuantity) : query.OrderBy(c => c.StudentQuantity),
+                    _ => query.OrderBy(c => c.Code)
+                };
+            }
+
+            int totalCount = query.Count();
+
+            if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+            var response = _mapper.Map<ICollection<ClassesResponse>>(result);
+
+            var classDict = response.ToDictionary(c => c.Id);
+
+            foreach (var classData in result)
+            {
+                if (classDict.TryGetValue(classData.Id, out var classResponse))
+                {
+                    classResponse.Subjects = classData.ClassSubjects
+                        .Select(cs => new ClassSubjectResponse
+                        {
+                            Id = cs.Subject.Id,
+                            Code = cs.Subject.Code,
+                            Name = cs.Subject.Name,
+                            HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                            HoursSemester2 = (int)cs.Subject.HoursSemester2
+                        })
+                        .ToList();
+
+                    classResponse.Student = classData.ClassUsers
+                        .Select(cu =>
+                        {
+                            var user = cu.User ?? classData.Users.FirstOrDefault(u => u.Id == cu.UserId && u.RoleId == 2);
+
+                            return new ClassUserResponse
+                            {
+                                Id = user?.Id ?? 0,
+                                Code = user?.Code ?? "N/A",
+                                FullName = user?.FullName ?? "Không có dữ liệu",
+                                EnrollmentDate = user?.EnrollmentDate.HasValue == true
+                                    ? user.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                                    : null,
+                                Year = (user?.AcademicYear?.StartTime.HasValue == true && user?.AcademicYear?.EndTime.HasValue == true)
+                                    ? $"{user.AcademicYear.StartTime.Value.Year}-{user.AcademicYear.EndTime.Value.Year}"
+                                    : null,
+                                UserStatus = cu.UserStatus?.Name ?? "Chưa có trạng thái"
+                            };
+                        })
+                        .Where(u => u.Id != 0)
+                        .ToList();
+                }
+            }
+
+            return result.Any()
+                ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
+                : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có lớp học nào chứa môn học này");
+        }
+
+        public ApiResponse<ICollection<ClassesResponse>> GetClassByCoBan(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        {
+            return GetClassByType(29, page, pageSize, sortColumn, sortOrder);
+        }
+
+        public ApiResponse<ICollection<ClassesResponse>> GetClassByType(int classTypeId, int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        {
+            var query = _repository.GetClass()
+                .Include(u => u.ClassUsers)
+                    .ThenInclude(cu => cu.UserStatus)
+                .Include(c => c.GradeLevel)
+                .Include(c => c.AcademicYear)
+                .Include(c => c.User)
+                .Include(c => c.ClassType)
+                .Include(c => c.ClassSubjects)
+                    .ThenInclude(cs => cs.Subject)
+                .Include(c => c.ClassUsers)
+                    .ThenInclude(cu => cu.User)
+                        .ThenInclude(u => u.AcademicYear)
+                .Include(c => c.ClassUsers)
+                    .ThenInclude(cu => cu.User)
+                        .ThenInclude(u => u.UserStatus)
+                .Include(c => c.Users)
+                .Where(c => c.ClassTypeId == classTypeId)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                bool isDesc = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
+                query = sortColumn.ToLower() switch
+                {
+                    "code" => isDesc ? query.OrderByDescending(c => c.Code) : query.OrderBy(c => c.Code),
+                    "name" => isDesc ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name),
+                    "studentquantity" => isDesc ? query.OrderByDescending(c => c.StudentQuantity) : query.OrderBy(c => c.StudentQuantity),
+                    _ => query.OrderBy(c => c.Code)
+                };
+            }
+
+            int totalCount = query.Count();
+
+            if (page.HasValue && pageSize.HasValue && page > 0 && pageSize > 0)
+            {
+                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            }
+
+            var result = query.ToList();
+            var response = _mapper.Map<ICollection<ClassesResponse>>(result);
+
+            var classDict = response.ToDictionary(c => c.Id);
+
+            foreach (var classData in result)
+            {
+                if (classDict.TryGetValue(classData.Id, out var classResponse))
+                {
+                    classResponse.Subjects = classData.ClassSubjects
+                        .Select(cs => new ClassSubjectResponse
+                        {
+                            Id = cs.Subject.Id,
+                            Code = cs.Subject.Code,
+                            Name = cs.Subject.Name,
+                            HoursSemester1 = (int)cs.Subject.HoursSemester1,
+                            HoursSemester2 = (int)cs.Subject.HoursSemester2
+                        })
+                        .ToList();
+
+                    classResponse.Student = classData.ClassUsers
+                        .Select(cu =>
+                        {
+                            var user = cu.User ?? classData.Users.FirstOrDefault(u => u.Id == cu.UserId && u.RoleId == 2);
+
+                            return new ClassUserResponse
+                            {
+                                Id = user?.Id ?? 0,
+                                Code = user?.Code ?? "N/A",
+                                FullName = user?.FullName ?? "Không có dữ liệu",
+                                EnrollmentDate = user?.EnrollmentDate.HasValue == true
+                                    ? user.EnrollmentDate.Value.ToString("dd/MM/yyyy")
+                                    : null,
+                                Year = (user?.AcademicYear?.StartTime.HasValue == true && user?.AcademicYear?.EndTime.HasValue == true)
+                                    ? $"{user.AcademicYear.StartTime.Value.Year}-{user.AcademicYear.EndTime.Value.Year}"
+                                    : null,
+                                UserStatus = cu.UserStatus?.Name ?? "Chưa có trạng thái"
+                            };
+                        })
+                        .Where(u => u.Id != 0)
+                        .ToList();
+                }
+            }
+
+            return result.Any()
+                ? ApiResponse<ICollection<ClassesResponse>>.Success(response, page, pageSize, totalCount)
+                : ApiResponse<ICollection<ClassesResponse>>.NotFound("Không có dữ liệu");
+        }
+
+
+        public ApiResponse<ICollection<ClassesResponse>> GetClassByNangCao(int? page, int? pageSize, string? sortColumn, string? sortOrder)
+        {
+            return GetClassByType(9, page, pageSize, sortColumn, sortOrder);
         }
     }
 }

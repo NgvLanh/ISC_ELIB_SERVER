@@ -19,6 +19,11 @@ namespace ISC_ELIB_SERVER.Services
 
         Task<ApiResponse<bool>> UpdateClassUserStatus(int classId, int userId, int newStatusId);
 
+        ApiResponse<ICollection<ClassesResponse>> GetClassBySubjectId(int? page, int? pageSize, int?subjectId, string? sortColumn, string? sortOrder);
+
+        ApiResponse<ICollection<ClassesResponse>> GetClassByCoBan(int? page, int? pageSize, string? sortColumn, string? sortOrder);
+
+        ApiResponse<ICollection<ClassesResponse>> GetClassByNangCao(int? page, int? pageSize, string? sortColumn, string? sortOrder);
 
     }
 }
