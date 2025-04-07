@@ -1,4 +1,4 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Utils;
 
@@ -34,7 +34,7 @@ namespace ISC_ELIB_SERVER.Repositories
             return workProcess;
         }
 
-        public WorkProcess? UpdateWorkProcess(long id, WorkProcessRequest workProcess)
+        public WorkProcess? UpdateWorkProcess(long id, WorkProcess workProcess)
         {
             var existingWorkProcess = GetWorkProcessById(id);
 
@@ -48,7 +48,6 @@ namespace ISC_ELIB_SERVER.Repositories
             existingWorkProcess.EndDate = workProcess.EndDate;
             existingWorkProcess.Program = workProcess.Program;
             existingWorkProcess.IsCurrent = workProcess.IsCurrent;
-            existingWorkProcess.Active = workProcess.Active;
             _context.WorkProcesses.Update(existingWorkProcess);
 
             _context.SaveChanges();
