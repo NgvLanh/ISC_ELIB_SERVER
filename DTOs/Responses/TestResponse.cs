@@ -9,6 +9,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? Name { get; set; }
         public int? Type { get; set; }
         public int? DurationTime { get; set; }
+        public int? Classify { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public string? File { get; set; }
