@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
@@ -94,7 +94,7 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<WorkProcess> UpdateWorkProcess(long id, WorkProcessRequest workProcessRequest)
         {
             var workProcess = _mapper.Map<WorkProcess>(workProcessRequest);
-            var updated = _repository.UpdateWorkProcess(id, workProcessRequest);
+            var updated = _repository.UpdateWorkProcess(id, workProcess);
             return updated != null
                 ? ApiResponse<WorkProcess>.Success(updated)
                 : ApiResponse<WorkProcess>.NotFound("Không tìm thấy trạng thái quá trình công tác để cập nhật");
