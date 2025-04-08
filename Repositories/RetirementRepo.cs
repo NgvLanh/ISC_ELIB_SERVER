@@ -27,6 +27,10 @@ namespace ISC_ELIB_SERVER.Repositories
                 .ToList();
         }
 
+        public Retirement GetRetirementByTeacherIdForPut(long id)
+        {
+            return _context.Retirements.FirstOrDefault(s => s.TeacherId == id && s.Active);
+        }
         public Retirement CreateRetirement(Retirement retirement)
         {
             bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId);
@@ -84,6 +88,38 @@ namespace ISC_ELIB_SERVER.Repositories
             return existingRetirement;
         }
 
+        public Retirement UpdateRetirementByTeacherId(long id, RetirementRequest Retirement)
+        {
+            var existingRetirement = GetRetirementByTeacherIdForPut(id);
+
+
+            if (existingRetirement == null)
+            {
+                return null;
+            }
+            if (!_context.TeacherInfos.Any(t => t.Id == Retirement.TeacherId))
+            {
+                return null;
+            }
+
+            if (Retirement.LeadershipId != 0 && !_context.Users.Any(u => u.Id == Retirement.LeadershipId))
+            {
+                return null;
+            }
+            existingRetirement.TeacherId = Retirement.TeacherId;
+            existingRetirement.Date = Retirement.Date;
+            existingRetirement.Note = Retirement.Note;
+            existingRetirement.Attachment = Retirement.Attachment;
+            existingRetirement.Status = Retirement.Status;
+            existingRetirement.Active = Retirement.Active;
+            existingRetirement.LeadershipId = Retirement.LeadershipId;
+
+            _context.Retirements.Update(existingRetirement);
+
+            _context.SaveChanges();
+
+            return existingRetirement;
+        }
 
         public bool DeleteRetirement(long id)
         {

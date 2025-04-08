@@ -62,12 +62,16 @@ namespace ISC_ELIB_SERVER.Services
             {
                 var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
                 var response = _mapper.Map<UserResponse>(user);
-                response.ProvinceName = provinceName;
-                response.DistrictName = districtName;
-                response.WardName = wardName;
+                //response.ProvinceName = provinceName;
+                //response.DistrictName = districtName;
+                //response.WardName = wardName;
                 // RoleName bằng cách lấy từ RoleRepo
                 var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
                 response.RoleName = role?.Name;
+                // Lấy thông tin khối từ ClassRepo
+                var classInfo = _classRepo.GetClassById(user.ClassId ?? 0);
+                response.ClassId = classInfo != null ? user.ClassId : null;
+                response.GradeLevelId = classInfo?.GradeLevelId;
                 responses.Add(response);
             }
 
@@ -83,12 +87,17 @@ namespace ISC_ELIB_SERVER.Services
 
             var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
             var response = _mapper.Map<UserResponse>(user);
-            response.ProvinceName = provinceName;
-            response.DistrictName = districtName;
-            response.WardName = wardName;
+            //response.ProvinceName = provinceName;
+            //response.DistrictName = districtName;
+            //response.WardName = wardName;
             // RoleName bằng cách lấy từ RoleRepo
             var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
             response.RoleName = role?.Name;
+            // Lấy thông tin khối từ ClassRepo
+            var classInfo = _classRepo.GetClassById(user.ClassId ?? 0);
+            response.ClassId = classInfo != null ? user.ClassId : null;
+            response.GradeLevelId = classInfo?.GradeLevelId;
+
             return ApiResponse<UserResponse>.Success(response);
         }
 
@@ -99,9 +108,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
             var response = _mapper.Map<UserResponse>(user);
-            response.ProvinceName = provinceName;
-            response.DistrictName = districtName;
-            response.WardName = wardName;
+            //response.ProvinceName = provinceName;
+            //response.DistrictName = districtName;
+            //response.WardName = wardName;
             // RoleName bằng cách lấy từ RoleRepo
             var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
             response.RoleName = role?.Name;
