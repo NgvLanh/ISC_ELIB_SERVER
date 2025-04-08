@@ -5,6 +5,8 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using AutoMapper;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -15,11 +17,17 @@ namespace ISC_ELIB_SERVER.Services
         private readonly IClassesRepo _classesRepo;
         private readonly UserRepo _userRepo;
         private readonly SemesterRepo _semesterRepo;
+        private readonly IScoreTypeRepo _scoreTypeRepo;
+        private readonly SubjectRepo _subjectRepo;
+        private readonly AuthService _authService;
         private readonly IMapper _mapper;
 
         public StudentScoreService(IStudentScoreRepo repository, TestRepo testRepo, IClassesRepo classesRepo,
         UserRepo userRepo,
         SemesterRepo semesterRepo,
+        IScoreTypeRepo scoreTypeRepo,
+        SubjectRepo subjectRepo,
+        AuthService authService,
         IMapper mapper)
         {
             _repository = repository;
@@ -27,16 +35,36 @@ namespace ISC_ELIB_SERVER.Services
             _classesRepo = classesRepo;
             _userRepo = userRepo;
             _semesterRepo = semesterRepo;
+            _scoreTypeRepo = scoreTypeRepo;
+            _subjectRepo = subjectRepo;
+            _authService = authService;
             _mapper = mapper;
         }
 
         public ApiResponse<StudentScoreResponse> GetStudentScoreById(int id)
         {
             var studentScore = _repository.GetStudentScoreById(id);
-            return studentScore != null
-                ? ApiResponse<StudentScoreResponse>.Success(_mapper.Map<StudentScoreResponse>(studentScore))
-                : ApiResponse<StudentScoreResponse>.NotFound($"Không có dữ liệu");
+            if (studentScore == null)
+                return ApiResponse<StudentScoreResponse>.NotFound("Không có dữ liệu");
+
+            var scoreType = _scoreTypeRepo.GetScoreTypeById((int)studentScore.ScoreTypeId);
+            var subject = _subjectRepo.GetSubjectById((int)studentScore.SubjectId);
+            var student = _userRepo.GetUserById((int)studentScore.UserId);
+            var semester = _semesterRepo.GetSemesterById((int)studentScore.SemesterId);
+
+            var response = new StudentScoreResponse
+            {
+                Id = studentScore.Id,
+                Score = studentScore.Score,
+                ScoreType = _mapper.Map<TypeScoreResponse>(scoreType),
+                Subject = _mapper.Map<SubjectScoreResponse>(subject),
+                Student = _mapper.Map<StudentResponse>(student),
+                Semester = _mapper.Map<SemesterScoreResponse>(semester)
+            };
+
+            return ApiResponse<StudentScoreResponse>.Success(response);
         }
+
 
         public ApiResponse<StudentScoreResponse> CreateStudentScore(StudentScoreRequest studentScoreRequest)
         {
@@ -49,8 +77,27 @@ namespace ISC_ELIB_SERVER.Services
                 SemesterId = studentScoreRequest.SemesterId
             });
 
-            return ApiResponse<StudentScoreResponse>.Success(_mapper.Map<StudentScoreResponse>(created));
+            if (created == null)
+                return ApiResponse<StudentScoreResponse>.Fail("Không thể tạo điểm số");
+
+            var scoreType = _scoreTypeRepo.GetScoreTypeById((int)created.ScoreTypeId);
+            var subject = _subjectRepo.GetSubjectById((int)created.SubjectId);
+            var student = _userRepo.GetUserById((int)created.UserId);
+            var semester = _semesterRepo.GetSemesterById((int)created.SemesterId);
+
+            var response = new StudentScoreResponse
+            {
+                Id = created.Id,
+                Score = created.Score,
+                ScoreType = _mapper.Map<TypeScoreResponse>(scoreType),
+                Subject = _mapper.Map<SubjectScoreResponse>(subject),
+                Student = _mapper.Map<StudentResponse>(student),
+                Semester = _mapper.Map<SemesterScoreResponse>(semester)
+            };
+
+            return ApiResponse<StudentScoreResponse>.Success(response);
         }
+
 
         public ApiResponse<StudentScoreResponse> UpdateStudentScore(int id, StudentScoreRequest studentScoreRequest)
         {
@@ -60,6 +107,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<StudentScoreResponse>.NotFound($"Không tìm thấy StudentScore với ID {id}");
             }
+
             existingStudentScore.Score = studentScoreRequest.Score;
             existingStudentScore.UserId = studentScoreRequest.UserId;
             existingStudentScore.ScoreTypeId = studentScoreRequest.ScoreTypeId;
@@ -68,8 +116,27 @@ namespace ISC_ELIB_SERVER.Services
 
             var updated = _repository.UpdateStudentScore(existingStudentScore);
 
-            return ApiResponse<StudentScoreResponse>.Success(_mapper.Map<StudentScoreResponse>(updated));
+            if (updated == null)
+                return ApiResponse<StudentScoreResponse>.Fail("Cập nhật thất bại");
+
+            var scoreType = _scoreTypeRepo.GetScoreTypeById((int)updated.ScoreTypeId);
+            var subject = _subjectRepo.GetSubjectById((int)updated.SubjectId);
+            var student = _userRepo.GetUserById((int)updated.UserId);
+            var semester = _semesterRepo.GetSemesterById((int)updated.SemesterId);
+
+            var response = new StudentScoreResponse
+            {
+                Id = updated.Id,
+                Score = updated.Score,
+                ScoreType = _mapper.Map<TypeScoreResponse>(scoreType),
+                Subject = _mapper.Map<SubjectScoreResponse>(subject),
+                Student = _mapper.Map<StudentResponse>(student),
+                Semester = _mapper.Map<SemesterScoreResponse>(semester)
+            };
+
+            return ApiResponse<StudentScoreResponse>.Success(response);
         }
+
 
         public ApiResponse<StudentScore> DeleteStudentScore(int id)
         {
@@ -78,32 +145,7 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<StudentScore>.Success()
                 : ApiResponse<StudentScore>.NotFound("Không tìm thấy để xóa");
         }
-
-        public ApiResponse<ICollection<StudentScoreResponse>> GetStudentScores(int? page, int? pageSize, string? sortColumn, string? sortOrder)
-        {
-            var query = _repository.GetStudentScores().AsQueryable();
-
-            query = sortColumn switch
-            {
-                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-                _ => query.OrderBy(ay => ay.Id)
-            };
-
-
-            if (page.HasValue && pageSize.HasValue)
-            {
-                query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-            }
-
-            var result = query.ToList();
-
-            var response = _mapper.Map<ICollection<StudentScoreResponse>>(result);
-
-            return result.Any() ? ApiResponse<ICollection<StudentScoreResponse>>
-            .Success(response, page, pageSize, _repository.GetStudentScores().Count)
-             : ApiResponse<ICollection<StudentScoreResponse>>.NotFound("Không có dữ liệu");
-        }
-
+        
         public ApiResponse<StudentScoreDashboardResponse> ViewStudentDashboardScores(int? academicYearId, int? classId, int? gradeLevelId, int? subjectId)
         {
             if (academicYearId == null)
@@ -167,6 +209,5 @@ namespace ISC_ELIB_SERVER.Services
 
             return ApiResponse<StudentScoreDashboardResponse>.Success(dashboardResponse);
         }
-
     }
 }
