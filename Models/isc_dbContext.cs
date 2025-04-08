@@ -1714,6 +1714,7 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
                 entity.Property(e => e.Type).HasColumnName("type");
+                entity.Property(e => e.Classify).HasColumnName("classify");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 

@@ -18,6 +18,7 @@ namespace ISC_ELIB_SERVER.Models
         public string? Name { get; set; }
         public int? Type { get; set; } // 0 trắc nghiệm, 1 tự luận
         public int? DurationTime { get; set; }
+        public int? Classify { get; set; } // 0 KT 15p, 1 giữa kỳ 1, 2 cuối kỳ 1, 3 giữa kỳ 2, 4 cuối kỳ 2
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public string? File { get; set; }
