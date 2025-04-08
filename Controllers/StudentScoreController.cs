@@ -15,12 +15,7 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public IActionResult GetStudentScore([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
-        {
-            var response = _service.GetStudentScores(page, pageSize, sortColumn, sortOrder);
-            return Ok(response);
-        }
+        
 
 
         [HttpGet("{id}")]

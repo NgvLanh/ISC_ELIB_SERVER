@@ -74,16 +74,25 @@ namespace ISC_ELIB_SERVER.Repositories
         public bool DeleteClassType(int id)
         {
             var classType = _context.ClassTypes.Find(id);
-
             if (classType == null)
             {
                 return false;
             }
 
-            classType.Status = false;
-            _context.ClassTypes.Update(classType);
+            bool hasForeignKeyReferences = _context.Classes.Any(c => c.ClassTypeId == id)
+                ||_context.Exams.Any(e => e.ClassTypeId == id)||_context.ClassTypes.Any(ct => ct.AcademicYearId == id);
+
+            if (hasForeignKeyReferences)
+            {
+                classType.Active = true;
+                _context.ClassTypes.Update(classType);
+            }
+            else
+            {
+                _context.ClassTypes.Remove(classType);
+            }
+
             return _context.SaveChanges() > 0;
         }
-
     }
 }

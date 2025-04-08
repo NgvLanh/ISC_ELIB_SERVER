@@ -18,6 +18,53 @@ namespace ISC_ELIB_SERVER.Repositories
                 .ToList();
         }
 
+        //public ICollection<object> GetScoreBySemesters(long userId, long academicYearId)
+        //{
+        //    var semesterScores = _context.Semesters
+        //        .Where(s => s.AcademicYearId == academicYearId)
+        //        .Select(s => new
+        //        {
+        //            Semester = s.Name,
+        //            Scores = _context.StudentScores
+        //                        .Where(ss => ss.SemesterId == s.Id && ss.UserId == userId)
+        //                        .Select(ss => (decimal?)ss.Score)
+        //                        .ToList()
+        //        })
+        //        .AsEnumerable()
+        //        .Select(g => new
+        //        {
+        //            Semester = g.Semester,
+        //            AverageScore = g.Scores.Any() ? Math.Round((decimal)g.Scores.Average()!, 1) : 0,
+        //            Ranking = g.Scores.Any()
+        //                ? ((decimal)g.Scores.Average()! >= (decimal)8 ? "Giỏi" :
+        //                   (decimal)g.Scores.Average()! >= (decimal)6.5 ? "Khá" :
+        //                   (decimal)g.Scores.Average()! >= (decimal)5 ? "Trung bình" : "Yếu")
+        //                : "Chưa có điểm"
+        //        })
+        //        .OrderBy(x => x.Semester) 
+        //        .ToList();
+
+        //    if (semesterScores.Any())
+        //    {
+        //        var allScores = semesterScores.Where(x => x.AverageScore > 0).Select(x => x.AverageScore).ToList();
+        //        decimal fullYearAverage = allScores.Any() ? Math.Round(allScores.Average(), 1) : 0;
+        //        string fullYearRanking = allScores.Any()
+        //            ? (fullYearAverage >= (decimal)8 ? "Giỏi" :
+        //               fullYearAverage >= (decimal)6.5 ? "Khá" :
+        //               fullYearAverage >= (decimal)5 ? "Trung bình" : "Yếu")
+        //            : "Chưa có điểm";
+
+        //        semesterScores.Add(new
+        //        {
+        //            Semester = "Cả năm",
+        //            AverageScore = fullYearAverage,
+        //            Ranking = fullYearRanking
+        //        });
+        //    }
+
+        //    return semesterScores.Cast<object>().ToList();
+        //}
+
         public ICollection<object> GetScoreBySemesters(long userId, long academicYearId)
         {
             var semesterScores = _context.Semesters
@@ -31,39 +78,58 @@ namespace ISC_ELIB_SERVER.Repositories
                                 .ToList()
                 })
                 .AsEnumerable()
-                .Select(g => new
+                .Select(g =>
                 {
-                    Semester = g.Semester,
-                    AverageScore = g.Scores.Any() ? Math.Round((decimal)g.Scores.Average()!, 1) : 0,
-                    Ranking = g.Scores.Any()
-                        ? ((decimal)g.Scores.Average()! >= (decimal)8 ? "Giỏi" :
-                           (decimal)g.Scores.Average()! >= (decimal)6.5 ? "Khá" :
-                           (decimal)g.Scores.Average()! >= (decimal)5 ? "Trung bình" : "Yếu")
-                        : "Chưa có điểm"
+                    decimal average = g.Scores.Any() ? Math.Round((decimal)g.Scores.Average()!, 1) : 0;
+                    string ranking = g.Scores.Any()
+                        ? (average >= 8 ? "Giỏi"
+                           : average >= (decimal)6.5 ? "Khá"
+                           : average >= 5 ? "Trung bình"
+                           : "Yếu")
+                        : "Chưa có điểm";
+
+                    string conduct = ranking; 
+
+                    return new
+                    {
+                        Semester = g.Semester,
+                        AverageScore = average,
+                        Ranking = ranking,
+                        Conduct = conduct
+                    };
                 })
-                .OrderBy(x => x.Semester) 
+                .OrderBy(x => x.Semester)
                 .ToList();
 
             if (semesterScores.Any())
             {
-                var allScores = semesterScores.Where(x => x.AverageScore > 0).Select(x => x.AverageScore).ToList();
+                var allScores = semesterScores
+                    .Where(x => x.AverageScore > 0)
+                    .Select(x => x.AverageScore)
+                    .ToList();
+
                 decimal fullYearAverage = allScores.Any() ? Math.Round(allScores.Average(), 1) : 0;
                 string fullYearRanking = allScores.Any()
-                    ? (fullYearAverage >= (decimal)8 ? "Giỏi" :
-                       fullYearAverage >= (decimal)6.5 ? "Khá" :
-                       fullYearAverage >= (decimal)5 ? "Trung bình" : "Yếu")
+                    ? (fullYearAverage >= 8 ? "Tốt"
+                       : fullYearAverage >= (decimal)6.5 ? "Khá"
+                       : fullYearAverage >= 5 ? "Trung bình"
+                       : "Yếu")
                     : "Chưa có điểm";
+
+                string fullYearConduct = fullYearRanking;
 
                 semesterScores.Add(new
                 {
                     Semester = "Cả năm",
                     AverageScore = fullYearAverage,
-                    Ranking = fullYearRanking
+                    Ranking = fullYearRanking,
+                    Conduct = fullYearConduct
                 });
             }
 
             return semesterScores.Cast<object>().ToList();
         }
+
 
 
         public ICollection<object> GetStudentScores(long userId, long academicYearId)

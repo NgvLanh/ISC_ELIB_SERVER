@@ -19,6 +19,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetSemesters([FromQuery] int? page = 1, [FromQuery] int? pageSize = 10, [FromQuery] string? sortColumn = "Id", [FromQuery] string? sortOrder = "asc")
         {
             var response = _service.GetSemesters(page, pageSize, sortColumn, sortOrder);
@@ -26,8 +27,8 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("ranking")]
-        //[Authorize]
-        public IActionResult GetScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
+        [Authorize]
+        public IActionResult GetScoreSemesters([FromQuery] int? academicYearId = 1, [FromQuery] int? userId = 1)
         {
             //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
 
@@ -36,8 +37,8 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("student-score")]
-        //[Authorize]
-        public IActionResult GetStudentScoreSemesters([FromQuery] int? academicYearId = 2, [FromQuery] int? userId = 3)
+        [Authorize]
+        public IActionResult GetStudentScoreSemesters([FromQuery] int? academicYearId = 1, [FromQuery] int? userId = 1)
         {
             //var userId = int.Parse(User.FindFirst("Id")?.Value ?? "0");
 
@@ -60,6 +61,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize]
         public IActionResult GetSemesterrById(long id)
         {
             var response = _service.GetSemesterById(id);
@@ -67,6 +69,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult CreateSemester([FromBody] SemesterRequest request)
         {
             var response = _service.CreateSemester(request);
@@ -74,6 +77,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateSemester(long id, [FromBody] SemesterRequest request)
         {
             var response = _service.UpdateSemester(id, request);
@@ -81,6 +85,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult DeleteSemester(long id)
         {
             var response = _service.DeleteSemester(id);
