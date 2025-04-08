@@ -102,6 +102,18 @@ namespace ISC_ELIB_SERVER.Controllers
             return StatusCode(response.Code == 0 ? 200 : 404, response);
         }
 
+        [HttpGet("calendar")]
+        public IActionResult GetForCalendar(
+    [FromQuery] int academicYearId,
+    [FromQuery] int? semesterId = null,
+    [FromQuery] int? gradeLevelsId = null,
+    [FromQuery] int? classId = null
+)
+        {
+            var response = _service.GetForCalendar(academicYearId, semesterId, gradeLevelsId, classId);
+            return StatusCode(response.Code == 0 ? 200 : 400, response);
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] ExamScheduleRequest request)
         {
