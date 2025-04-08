@@ -12,6 +12,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string Name { get; set; }
         public int HoursSemester1 { get; set; }
         public int HoursSemester2 { get; set; }
+        [Required(ErrorMessage = "SubjectGroupId không được để trống")]
+        public int SubjectGroupId { get; set; }
+        [Required(ErrorMessage = "SubjectTypeId không được để trống")]
         public int SubjectTypeId { get; set; }
     }
 }
