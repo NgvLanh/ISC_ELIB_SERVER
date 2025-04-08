@@ -15,6 +15,7 @@
         public string? SupervisoryTeacherName { get; set; }
 
         public int StudentQuantity { get; set; }
+        public int joined_student_quantity { get; set; }
         public string? ClassCode { get; set; }
 
         public ExamScheduleDetailResponse? ExamScheduleDetail { get; set; }

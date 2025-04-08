@@ -2,6 +2,7 @@
 using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
@@ -17,6 +18,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetEducationLevels([FromQuery] int? page = 1, 
                                                 [FromQuery] int? pageSize = 10, 
                                                 [FromQuery] string? sortColumn = "Id", 
@@ -27,6 +29,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public IActionResult GetEducationLevelById(long id)
         {
             var response = _service.GetEducationLevelById(id);
@@ -34,6 +37,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult CreateEducationLevel([FromBody] EducationLevelRequest request)
         {
             var response = _service.CreateEducationLevel(request);
@@ -41,6 +45,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateEducationLevel(long id, [FromBody] EducationLevelRequest request)
         {
             var response = _service.UpdateEducationLevel(id, request);
@@ -48,6 +53,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult DeleteEducationLevel(long id)
         {
             var response = _service.DeleteEducationLevel(id);

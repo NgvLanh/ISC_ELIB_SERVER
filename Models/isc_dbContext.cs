@@ -87,7 +87,6 @@ namespace ISC_ELIB_SERVER.Models
 
         public virtual DbSet<ClassSubject> ClassSubjects { get; set; } = null!;
         public virtual DbSet<TestUser> TestUsers { get; set; } = null!;
-        public virtual DbSet<SubjectSubjectGroup> SubjectSubjectGroups { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -1331,8 +1330,14 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasColumnName("name");
+                entity.Property(e => e.SubjectGroupId).HasColumnName("subject_group_id");
 
                 entity.Property(e => e.SubjectTypeId).HasColumnName("subject_type_id");
+
+                entity.HasOne(d => d.SubjectGroup)
+                    .WithMany(p => p.Subjects)
+                    .HasForeignKey(d => d.SubjectGroupId)
+                    .HasConstraintName("fk_subjects_subject_group_id");
 
                 entity.HasOne(d => d.SubjectType)
                     .WithMany(p => p.Subjects)
@@ -1709,6 +1714,7 @@ namespace ISC_ELIB_SERVER.Models
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
                 entity.Property(e => e.Type).HasColumnName("type");
+                entity.Property(e => e.Classify).HasColumnName("classify");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -2322,25 +2328,6 @@ namespace ISC_ELIB_SERVER.Models
                     .HasForeignKey(d => d.UserStatusId)
                     .HasConstraintName("fk_test_users_user_status_id");
             });
-
-            modelBuilder.Entity<SubjectSubjectGroup>(entity =>
-            {
-                entity.ToTable("subject_subject_groups");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-                entity.Property(e => e.SubjectGroupId).HasColumnName("subject_group_id");
-                entity.HasOne(d => d.Subject)
-                    .WithMany(p => p.SubjectSubjectGroups)
-                    .HasForeignKey(d => d.SubjectId)
-                    .HasConstraintName("fk_subject_subject_groups_subject_ids");
-
-                entity.HasOne(d => d.SubjectGroup)
-                    .WithMany(p => p.SubjectSubjectGroups)
-                    .HasForeignKey(d => d.SubjectGroupId)
-                    .HasConstraintName("fk_subject_subject_groups_subject_group_ids");
-            });
-
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -43,6 +43,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 return null;
             }
             existingWorkProcess.Organization = workProcess.Organization;
+            existingWorkProcess.SubjectGroupsId = workProcess.SubjectGroupsId;
             existingWorkProcess.Position = workProcess.Position;
             existingWorkProcess.StartDate = workProcess.StartDate;
             existingWorkProcess.EndDate = workProcess.EndDate;

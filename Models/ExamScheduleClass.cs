@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ISC_ELIB_SERVER.Models
 {
@@ -9,6 +10,7 @@ namespace ISC_ELIB_SERVER.Models
         public int? ClassId { get; set; }
         public int? ExampleSchedule { get; set; }
         public int? SupervisoryTeacherId { get; set; }
+        public int joined_student_quantity { get; set; }
         public bool Active { get; set; }
 
         public virtual Class? Class { get; set; }
