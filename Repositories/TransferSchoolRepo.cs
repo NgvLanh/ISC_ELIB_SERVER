@@ -23,7 +23,7 @@ namespace ISC_ELIB_SERVER.Repositories
         /// Lấy danh sách học sinh đã chuyển trường.
         /// </summary>
         /// 
-        public List<object> GetTransferSchoolList()
+        public List<object> GetTransferSchoolList(string? search)
         {
             return _context.TransferSchools
             .Where(ts => ts.Active)
@@ -271,6 +271,37 @@ namespace ISC_ELIB_SERVER.Repositories
             catch (DbUpdateException ex)
             {
                 throw new Exception($"Lỗi khi cập nhật dữ liệu: {ex.InnerException?.Message}");
+            }
+        }
+
+        public ApiResponse<TransferSchoolResponse> DeleteTransferSchool(int studentId)
+        {
+            try
+            {
+                var transferSchool = _context.TransferSchools
+                    .FirstOrDefault(ts => ts.StudentId == studentId && ts.Active);  // Kiểm tra Active nếu cần
+
+                if (transferSchool == null)
+                {
+                    return ApiResponse<TransferSchoolResponse>.Fail("Không tìm thấy học sinh để xóa.");
+                }
+
+                _context.TransferSchools.Remove(transferSchool);
+                _context.SaveChanges(); // Lưu thay đổi
+
+                var transferSchoolResponse = new TransferSchoolResponse
+                {
+                    // Mapping các dữ liệu từ transferSchool sang TransferSchoolResponse
+                    StudentId = transferSchool.StudentId,
+                   
+                    // Thêm các trường khác nếu cần
+                };
+
+                return ApiResponse<TransferSchoolResponse>.Success(transferSchoolResponse);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<TransferSchoolResponse>.Fail("Xóa thất bại: " + ex.Message);
             }
         }
 
