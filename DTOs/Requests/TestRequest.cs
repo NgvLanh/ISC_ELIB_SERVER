@@ -15,6 +15,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         //[Range(1, 360, ErrorMessage = "Thời gian phải trong khoảng 1 đến 360 phút.")]
         public int? DurationTime { get; set; }
+
         [Required(ErrorMessage = "{0} không được để trống.")]
         [Range(0,4,ErrorMessage = "{0} phải truyền từ 0 đến 4.")]
         public int? Classify { get; set; }

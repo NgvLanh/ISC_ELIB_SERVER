@@ -157,13 +157,13 @@ namespace ISC_ELIB_SERVER.Services
             catch (Exception ex)
             {
                 return new ApiResponse<TestSubmissionAnswerResponse>(
-                    1,
-                    "Lỗi hệ thống",
-                    null,
-                    new Dictionary<string, string[]>
-                    {
-                { "Exception", new[] { ex.Message } }
-                    });
+                1,
+                "Lỗi hệ thống",
+                null,
+                new Dictionary<string, string[]>
+                {
+                    { "Exception", new[] { "Không hợp lệ, vui lòng thử lại" } }
+                });
             }
         }
 
@@ -266,11 +266,45 @@ namespace ISC_ELIB_SERVER.Services
                 return new ApiResponse<TestSubmissionAnswerResponse>(
                     1, "Lỗi hệ thống", null, new Dictionary<string, string[]>
                     {
-                        { "Exception", new[] { ex.Message } }
+                        { "Exception", new[] { "Không hợp lệ, vui lòng thử lại" } }
                     });
             }
         }
 
+        public ApiResponse<ICollection<TestSubmissionAnswerResponse>> GetAnswersByTestId(long testId, int pageNumber, int pageSize)
+        {
+            var allAnswers = _repository.GetAnswersByTestId(testId);
+
+            if (!allAnswers.Any())
+            {
+                return ApiResponse<ICollection<TestSubmissionAnswerResponse>>.NotFound("Không có câu trả lời nào cho test này.");
+            }
+
+            var totalItems = allAnswers.Count();
+            var pagedAnswers = allAnswers
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var answerIds = pagedAnswers.Select(a => a.Id).ToList();
+            var attachments = _repository.GetAttachmentsBySubmissionAnswerIds(answerIds);
+
+            var response = pagedAnswers.Select(answer =>
+            {
+                var mapped = _mapper.Map<TestSubmissionAnswerResponse>(answer);
+                mapped.Attachments = _mapper.Map<List<TestSubmissionAnswerAttachmentResponse>>(
+                    attachments.Where(att => att.TestSubmissionAnswerId == answer.Id).ToList()
+                );
+                return mapped;
+            }).ToList();
+
+            return ApiResponse<ICollection<TestSubmissionAnswerResponse>>.Success(
+                response,
+                pageNumber,
+                pageSize,
+                totalItems
+            );
+        }
 
         public ApiResponse<TestSubmissionAnswerResponse> DeleteTestSubmissionAnswer(int id)
         {
