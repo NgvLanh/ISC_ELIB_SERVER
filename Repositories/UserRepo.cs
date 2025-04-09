@@ -75,5 +75,37 @@ namespace ISC_ELIB_SERVER.Repositories
             .Include(r => r.Role)
             .ToList();
         }
+
+        // Lấy danh sách User theo id, id lớp học và năm học
+        public User? GetUsersByClassIdAndAcademicYearId(int userId, int academicYearId, int classId, string roleName = "Student")
+        {
+            return _context.Users
+           .Where(u => u.Id == userId &&
+                       u.ClassId == classId &&
+                       u.AcademicYearId == academicYearId &&
+                       u.Active &&
+                       u.Role.Name == roleName)
+           .Include(u => u.Role)
+           .Include(u => u.AcademicYear)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.GradeLevel)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.ClassType)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.User)
+           .FirstOrDefault();
+        }
+
+        // Lấy danh sách User theo id lớp học và năm học
+        public ICollection<User> GetUsersByClassIdAndAcademicYearId(int classId, int academicYearId, string roleName = "Student")
+        {
+            return _context.Users
+           .Where(u => u.ClassId == classId &&
+                       u.AcademicYearId == academicYearId &&
+                       u.Active &&
+                       u.Role.Name == roleName)
+           .Include(r => r.Role)
+           .ToList();
+        }
     }
 }
