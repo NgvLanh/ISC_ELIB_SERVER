@@ -94,5 +94,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual ICollection<ClassUser> ClassUsers { get; set; }
         public virtual ICollection<SubjectGroup> SubjectGroups { get; set; }
 
+        public virtual ICollection<Session> Sessions { get; set; }
+
     }
 }

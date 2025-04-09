@@ -19,6 +19,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public bool? IsExam { get; set; }
         public int? TeachingAssignmentId { get; set; }
         public int? ExamId { get; set; }
-        public bool Active { get; set; }
+        public bool Active { get; set; } 
     }
 }

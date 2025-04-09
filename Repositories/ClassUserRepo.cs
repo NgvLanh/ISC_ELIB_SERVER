@@ -19,12 +19,12 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public async Task<List<ClassUser>> GetAll()
         {
-            return await _context.ClassUser.ToListAsync();
+            return await _context.ClassUsers.ToListAsync();
         }
 
         public async Task<ClassUser> GetById(int id)
         {
-            return await _context.ClassUser
+            return await _context.ClassUsers
                 .Include(cu => cu.User)
                 .Include(cu => cu.Class)
                 .Include(cu => cu.UserStatus)
@@ -33,7 +33,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public async Task<List<ClassUser>> GetByClassId(int classId)
         {
-            return await _context.ClassUser
+            return await _context.ClassUsers
                 .Where(cu => cu.ClassId == classId)
                 .Include(cu => cu.User)
                 .Include(cu => cu.UserStatus)
@@ -42,37 +42,37 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public async Task<bool> Add(ClassUser classUser)
         {
-            _context.ClassUser.Add(classUser);
+            _context.ClassUsers.Add(classUser);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> Update(ClassUser classUser)
         {
-            _context.ClassUser.Update(classUser);
+            _context.ClassUsers.Update(classUser);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> Delete(int id)
         {
-            var classUser = await _context.ClassUser.FindAsync(id);
+            var classUser = await _context.ClassUsers.FindAsync(id);
             if (classUser == null) return false;
 
-            _context.ClassUser.Remove(classUser);
+            _context.ClassUsers.Remove(classUser);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> RemoveByClassId(int classId)
         {
-            var classUsers = await _context.ClassUser.Where(cu => cu.ClassId == classId).ToListAsync();
+            var classUsers = await _context.ClassUsers.Where(cu => cu.ClassId == classId).ToListAsync();
             if (!classUsers.Any()) return false;
 
-            _context.ClassUser.RemoveRange(classUsers);
+            _context.ClassUsers.RemoveRange(classUsers);
             return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<IEnumerable<ClassUser>> GetByCondition(Expression<Func<ClassUser, bool>> predicate)
         {
-            return await _context.ClassUser.Where(predicate).ToListAsync();
+            return await _context.ClassUsers.Where(predicate).ToListAsync();
         }
 
     }
