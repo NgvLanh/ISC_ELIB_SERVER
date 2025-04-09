@@ -30,7 +30,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var classType = _repository.GetClassTypeById(id);
 
-            if (classType == null)
+            if (classType == null || classType.Active)
             {
                 return ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp");
             }
@@ -139,7 +139,7 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var query = _repository.GetClassTypes()
-                .Where(ct => ct.AcademicYearId == searchYear.Value);
+                .Where(ct => ct.AcademicYearId == searchYear.Value && ct.Active);
 
             if (!string.IsNullOrWhiteSpace(searchName))
             {
