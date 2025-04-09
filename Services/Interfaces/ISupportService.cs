@@ -7,9 +7,9 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ISupportService
     {
         ApiResponse<ICollection<SupportResponse>> GetSupports(int? page, int? pageSize, string? sortColumn, string? sortOrder);
-        ApiResponse<SupportResponse> GetSupportById(long id);
+        ApiResponse<SupportResponse> GetSupportById(int id);
         ApiResponse<SupportResponse> CreateSupport(SupportRequest SupportRequest);
-        ApiResponse<Support> UpdateSupport(Support Support);
-        ApiResponse<Support> DeleteSupport(long id);
+        ApiResponse<SupportResponse> UpdateSupport(int id, SupportRequest SupportRequest);
+        ApiResponse<bool> DeleteSupport(int id);
     }
 }

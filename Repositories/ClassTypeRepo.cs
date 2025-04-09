@@ -33,7 +33,8 @@ namespace ISC_ELIB_SERVER.Repositories
         public ClassType? GetClassTypeById(int id)
         {
             return _context.ClassTypes
-                .AsNoTracking() 
+                .AsNoTracking()
+                .Where(ct => ct.Active)
                 .Include(ct => ct.AcademicYear)
                 .FirstOrDefault(ct => ct.Id == id);
         }

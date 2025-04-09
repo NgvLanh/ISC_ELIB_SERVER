@@ -5,6 +5,7 @@ using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using ISC_ELIB_SERVER.DTOs.Responses.ISC_ELIB_SERVER.DTOs.Responses;
+using ISC_ELIB_SERVER.Enums;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -50,7 +51,7 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
-        public ApiResponse<SupportResponse> GetSupportById(long id)
+        public ApiResponse<SupportResponse> GetSupportById(int id)
         {
             var Support = _repository.GetSupportById(id);
             return Support != null ? ApiResponse<SupportResponse>.Success(_mapper.Map<SupportResponse>(Support)) : ApiResponse<SupportResponse>.NotFound($"Không tìm thấy thông báo #{id}");
@@ -66,25 +67,59 @@ namespace ISC_ELIB_SERVER.Services
             if (userId == null)
                 return ApiResponse<SupportResponse>.Unauthorized("Người dùng chưa đăng nhập.");
 
+            if (string.IsNullOrWhiteSpace(supportRequest.Title) || string.IsNullOrWhiteSpace(supportRequest.Content))
+            {
+                return ApiResponse<SupportResponse>.BadRequest("Tiêu đề và nội dung không được để trống.");
+            }
+
+            if (!Enum.IsDefined(typeof(SupportType), supportRequest.Type))
+            {
+                return ApiResponse<SupportResponse>.BadRequest("Loại hỗ trợ không hợp lệ.");
+            }
+
             var support = _mapper.Map<Support>(supportRequest);
             support.UserId = userId.Value;
             support.CreateAt = DateTime.Now;
+            support.Type = (int?)(SupportType)supportRequest.Type;
 
-            var created = _repository.CreateSupport(support);
-            return ApiResponse<SupportResponse>.Success(_mapper.Map<SupportResponse>(created));
+            _repository.CreateSupport(support);
+
+            var response = _mapper.Map<SupportResponse>(support);
+
+            return ApiResponse<SupportResponse>.Success(response);
         }
 
 
-        public ApiResponse<Support> UpdateSupport(Support Support)
+
+        public ApiResponse<SupportResponse> UpdateSupport(int id, SupportRequest supportRequest)
         {
-            var updated = _repository.UpdateSupport(Support);
-            return updated != null ? ApiResponse<Support>.Success(updated) : ApiResponse<Support>.NotFound("Không tìm thấy thông báo để cập nhật");
+            var support = _repository.GetSupportById(id);
+            if (support == null)
+            {
+                return ApiResponse<SupportResponse>.NotFound("Không tìm thấy yêu cầu hỗ trợ để cập nhật.");
+            }
+
+            support.Title = supportRequest.Title;
+            support.Content = supportRequest.Content;
+
+            if (!Enum.IsDefined(typeof(SupportType), supportRequest.Type))
+            {
+                return ApiResponse<SupportResponse>.BadRequest("Loại hỗ trợ không hợp lệ.");
+            }
+            support.Type = (int)supportRequest.Type;
+
+            var updatedSupport = _repository.UpdateSupport(support);
+
+            return ApiResponse<SupportResponse>.Success(_mapper.Map<SupportResponse>(updatedSupport));
         }
 
-        public ApiResponse<Support> DeleteSupport(long id)
+
+        public ApiResponse<bool> DeleteSupport(int id)
         {
             var success = _repository.DeleteSupport(id);
-            return success ? ApiResponse<Support>.Success() : ApiResponse<Support>.NotFound("Không tìm thấy thông báo để xóa");
+            return success
+                ? ApiResponse<bool>.Success(true)
+                : ApiResponse<bool>.NotFound("Không tìm thấy yêu cầu hỗ trợ để xóa.");
         }
     }
 }
