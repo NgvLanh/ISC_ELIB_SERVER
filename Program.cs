@@ -376,6 +376,8 @@ builder.Services.AddScoped<ClassUserRepo>();
 
 builder.Services.AddScoped<ClassSubjectRepo>();
 
+builder.Services.AddScoped<AuthService>();
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
