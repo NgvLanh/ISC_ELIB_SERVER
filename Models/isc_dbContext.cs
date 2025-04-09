@@ -600,6 +600,13 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.ExamGraders)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_exam_graders_user_id");
+
+                entity.Property(e => e.ExamScheduleClassId)
+            .HasColumnName("exam_schedule_class_id");
+
+                entity.HasOne(d => d.ExamScheduleClass)
+                      .WithMany(p => p.ExamGraders)
+                      .HasForeignKey(d => d.ExamScheduleClassId);
             });
 
             modelBuilder.Entity<ExamSchedule>(entity =>

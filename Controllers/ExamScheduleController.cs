@@ -94,7 +94,12 @@ namespace ISC_ELIB_SERVER.Controllers
             );
             return StatusCode(response.Code == 0 ? 200 : 400, response);
         }
-
+        [HttpGet("{examScheduleId}/details")]
+        public IActionResult GetScheduleWithClasses(long examScheduleId)
+        {
+            var response = _service.GetScheduleWithClasses(examScheduleId);
+            return StatusCode(response.Code == 0 ? 200 : 404, response);
+        }
         [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
