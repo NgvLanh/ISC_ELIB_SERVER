@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,6 +15,7 @@ namespace ISC_ELIB_SERVER.Services
     public class UserService : IUserService
     {
         private readonly UserRepo _userRepo;
+        private readonly ClassSubjectRepo _classSubjectRepo;
         private readonly RoleRepo _roleRepo;
         private readonly AcademicYearRepo _academicYearRepo;
         private readonly UserStatusRepo _userStatusRepo;
@@ -22,7 +24,8 @@ namespace ISC_ELIB_SERVER.Services
         private readonly GhnService _ghnService;
 
         public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
-            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
+            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService,
+            ClassSubjectRepo classSubjectRepo)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
@@ -31,6 +34,7 @@ namespace ISC_ELIB_SERVER.Services
             _classRepo = classRepo;
             _mapper = mapper;
             _ghnService = ghnService;
+            _classSubjectRepo = classSubjectRepo;
         }
 
         public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -201,7 +205,7 @@ namespace ISC_ELIB_SERVER.Services
                 WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl  
+                AvatarUrl = userRequest.AvatarUrl
             };
 
             try
@@ -352,6 +356,28 @@ namespace ISC_ELIB_SERVER.Services
                 builder.Append(b.ToString("x2"));
             }
             return builder.ToString();
+        }
+
+        // Lấy thông tin sinh viên theo ID
+        public async Task<ApiResponse<StudentProcessResponse>> GetUsersByClassIdAndAcademicYearId(int? userId, int? academicYearId, int? classId)
+        {
+            if (userId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không được để trống");
+            else if (academicYearId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã năm học không được để trống");
+            else if (classId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã lớp không được để trống");
+            else
+            {
+                var student = _userRepo.GetUsersByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
+                var studentQty = _userRepo.GetUsersByClassId((int)classId).Count();
+                var subjectQty = _classSubjectRepo.GetClassSubjectsByClassId((int)classId).Count();
+                var response = _mapper.Map<StudentProcessResponse>(student);
+                response.StudentQty = studentQty;
+                response.SubjectQty = subjectQty;
+                return ApiResponse<StudentProcessResponse>.Success(_mapper.Map<StudentProcessResponse>(response));
+            }
+
         }
     }
 }

@@ -77,7 +77,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost("GetQuantityUserByRoleId/{roleId}")]
-        
+
         public ActionResult<ApiResponse<int>> GetQuantityUserByRoleId(int roleId)
         {
             var response = _userService.GetQuantityUserByRoleId(roleId);
@@ -85,5 +85,16 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : BadRequest(response); ;
         }
 
+        //
+        [HttpGet("student/learning-process")]
+        public async Task<IActionResult> GetUsersByClassIdAndAcademicYearId(
+            [FromQuery] int? userId,
+            [FromQuery] int? academicYearId,
+            [FromQuery] int? classId
+        )
+        {
+            var response = await _userService.GetUsersByClassIdAndAcademicYearId(userId, academicYearId, classId);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
+        }
     }
 }
