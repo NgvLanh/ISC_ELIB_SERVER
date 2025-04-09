@@ -87,13 +87,9 @@ namespace ISC_ELIB_SERVER.Controllers
 
         //
         [HttpGet("student/learning-process")]
-        public async Task<IActionResult> GetUsersByClassIdAndAcademicYearId(
-            [FromQuery] int? userId,
-            [FromQuery] int? academicYearId,
-            [FromQuery] int? classId
-        )
+        public async Task<IActionResult> GetStudentById([FromQuery] int userId)
         {
-            var response = await _userService.GetUsersByClassIdAndAcademicYearId(userId, academicYearId, classId);
+            var response = await _userService.GetStudentById(userId);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
     }
