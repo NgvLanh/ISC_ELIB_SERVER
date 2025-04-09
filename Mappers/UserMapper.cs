@@ -15,6 +15,13 @@ namespace ISC_ELIB_SERVER.Mappers
 
             // user entity -> userResponse (dùng khi trả dữ liệu cho client)
             CreateMap<User, UserResponse>();
+            //
+            CreateMap<User, StudentProcessResponse>();
+            CreateMap<AcademicYear, AcademicYearProcessResponse>();
+            CreateMap<Class, ClassProcessResponse>();
+            CreateMap<GradeLevel, GradeLevelProcessResponse>();
+            CreateMap<ClassType, ClassTypeProcessResponse>();
+            CreateMap<User, UserProcessResponse>();
         }
     }
 }
