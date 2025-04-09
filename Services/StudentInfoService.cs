@@ -96,16 +96,16 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         // Thêm phương thức lấy danh sách học viên theo UserId
-        public ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId)
+        public ApiResponse<ICollection<StudentInfoResponses>> GetStudentsByUserId(int userId)
         {
             var studentInfos = _repository.GetStudentInfosByUserId(userId);
             if (studentInfos == null || !studentInfos.Any())
             {
-                return ApiResponse<ICollection<StudentInfoUserResponse>>.NotFound($"Không tìm thấy thông tin học viên với UserId #{userId}");
+                return ApiResponse<ICollection<StudentInfoResponses>>.NotFound($"Không tìm thấy thông tin học viên với UserId #{userId}");
             }
 
-            var response = _mapper.Map<ICollection<StudentInfoUserResponse>>(studentInfos);
-            return ApiResponse<ICollection<StudentInfoUserResponse>>.Success(response);
+            var response = _mapper.Map<ICollection<StudentInfoResponses>>(studentInfos);
+            return ApiResponse<ICollection<StudentInfoResponses>>.Success(response);
         }
 
         // Thêm phương thức lấy danh sách học viên theo lớp với thông tin đầy đủ
