@@ -54,14 +54,10 @@ namespace ISC_ELIB_SERVER.Repositories
             }
         }
 
-        // Lọc theo thông tin bảng UserId
+        // Lọc theo thông tin phụ huynh bảng StudentInfo tìm theo UserId
         public List<StudentInfo> GetStudentInfosByUserId(int userId)
         {
             return _context.StudentInfos
-                .Include(s => s.User)  // Load User liên kết với StudentInfo
-                    .ThenInclude(u => u.Class)  // Load Class từ User
-                .Include(s => s.User)
-                    .ThenInclude(u => u.UserStatus)  // Load UserStatus từ User
                 .Where(s => s.UserId == userId)
                 .ToList();
         }

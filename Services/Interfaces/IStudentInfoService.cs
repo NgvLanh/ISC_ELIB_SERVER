@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<StudentInfoResponses> DeleteStudentInfo(int id);
 
         // Thêm phương thức lấy danh sách học viên theo UserId
-        ApiResponse<ICollection<StudentInfoUserResponse>> GetStudentsByUserId(int userId);
+        ApiResponse<ICollection<StudentInfoResponses>> GetStudentsByUserId(int userId);
 
         // Thêm phương thức lấy danh sách học viên theo user figma
         ApiResponse<ICollection<StudentInfoUserResponse>> GetAllStudents();
