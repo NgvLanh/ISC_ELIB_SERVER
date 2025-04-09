@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,6 +15,7 @@ namespace ISC_ELIB_SERVER.Services
     public class UserService : IUserService
     {
         private readonly UserRepo _userRepo;
+        private readonly ClassSubjectRepo _classSubjectRepo;
         private readonly RoleRepo _roleRepo;
         private readonly AcademicYearRepo _academicYearRepo;
         private readonly UserStatusRepo _userStatusRepo;
@@ -22,7 +24,8 @@ namespace ISC_ELIB_SERVER.Services
         private readonly GhnService _ghnService;
 
         public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
-            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
+            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService,
+            ClassSubjectRepo classSubjectRepo)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
@@ -31,6 +34,7 @@ namespace ISC_ELIB_SERVER.Services
             _classRepo = classRepo;
             _mapper = mapper;
             _ghnService = ghnService;
+            _classSubjectRepo = classSubjectRepo;
         }
 
         public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -62,12 +66,16 @@ namespace ISC_ELIB_SERVER.Services
             {
                 var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
                 var response = _mapper.Map<UserResponse>(user);
-                response.ProvinceName = provinceName;
-                response.DistrictName = districtName;
-                response.WardName = wardName;
+                //response.ProvinceName = provinceName;
+                //response.DistrictName = districtName;
+                //response.WardName = wardName;
                 // RoleName bằng cách lấy từ RoleRepo
                 var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
                 response.RoleName = role?.Name;
+                // Lấy thông tin khối từ ClassRepo
+                var classInfo = _classRepo.GetClassById(user.ClassId ?? 0);
+                response.ClassId = classInfo != null ? user.ClassId : null;
+                response.GradeLevelId = classInfo?.GradeLevelId;
                 responses.Add(response);
             }
 
@@ -83,12 +91,17 @@ namespace ISC_ELIB_SERVER.Services
 
             var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
             var response = _mapper.Map<UserResponse>(user);
-            response.ProvinceName = provinceName;
-            response.DistrictName = districtName;
-            response.WardName = wardName;
+            //response.ProvinceName = provinceName;
+            //response.DistrictName = districtName;
+            //response.WardName = wardName;
             // RoleName bằng cách lấy từ RoleRepo
             var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
             response.RoleName = role?.Name;
+            // Lấy thông tin khối từ ClassRepo
+            var classInfo = _classRepo.GetClassById(user.ClassId ?? 0);
+            response.ClassId = classInfo != null ? user.ClassId : null;
+            response.GradeLevelId = classInfo?.GradeLevelId;
+
             return ApiResponse<UserResponse>.Success(response);
         }
 
@@ -99,9 +112,9 @@ namespace ISC_ELIB_SERVER.Services
 
             var (provinceName, districtName, wardName) = await _ghnService.GetLocationName(user.ProvinceCode ?? 0, user.DistrictCode ?? 0, user.WardCode?.ToString() ?? "");
             var response = _mapper.Map<UserResponse>(user);
-            response.ProvinceName = provinceName;
-            response.DistrictName = districtName;
-            response.WardName = wardName;
+            //response.ProvinceName = provinceName;
+            //response.DistrictName = districtName;
+            //response.WardName = wardName;
             // RoleName bằng cách lấy từ RoleRepo
             var role = _roleRepo.GetRoleById(user.RoleId ?? 0);
             response.RoleName = role?.Name;
@@ -171,7 +184,7 @@ namespace ISC_ELIB_SERVER.Services
             var newUser = new User
             {
                 Code = userRequest.Code,
-                Password = ComputeSha256("a"),
+                Password = ComputeSha256("123456"),
                 FullName = userRequest.FullName,
                 Dob = userRequest.Dob,
                 Gender = userRequest.Gender,
@@ -192,7 +205,7 @@ namespace ISC_ELIB_SERVER.Services
                 WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl  
+                AvatarUrl = userRequest.AvatarUrl
             };
 
             try
@@ -206,7 +219,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-        public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
+        public ApiResponse<UserResponse> UpdateUser(int id, UserUpdateRequest userUpdateRequest)
         {
             var user = _userRepo.GetUserById(id);
             if (user == null)
@@ -215,60 +228,56 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             // Kiểm tra RoleId có tồn tại không
-            if (_roleRepo.GetRoleById(userRequest.RoleId) == null)
+            if (_roleRepo.GetRoleById(userUpdateRequest.RoleId) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("RoleId không hợp lệ");
             }
 
             // Kiểm tra AcademicYearId có tồn tại không (nếu có nhập)
-            if (userRequest.AcademicYearId.HasValue &&
-                _academicYearRepo.GetAcademicYearById(userRequest.AcademicYearId.Value) == null)
+            if (userUpdateRequest.AcademicYearId.HasValue &&
+                _academicYearRepo.GetAcademicYearById(userUpdateRequest.AcademicYearId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("AcademicYearId không hợp lệ");
             }
 
             // Kiểm tra UserStatusId có tồn tại không (nếu có nhập)
-            if (userRequest.UserStatusId.HasValue &&
-                _userStatusRepo.GetUserStatusById(userRequest.UserStatusId.Value) == null)
+            if (userUpdateRequest.UserStatusId.HasValue &&
+                _userStatusRepo.GetUserStatusById(userUpdateRequest.UserStatusId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("UserStatusId không hợp lệ");
             }
 
             // Kiểm tra ClassId có tồn tại không (nếu có nhập)
-            if (userRequest.ClassId.HasValue &&
-                _classRepo.GetClassById(userRequest.ClassId.Value) == null)
+            if (userUpdateRequest.ClassId.HasValue &&
+                _classRepo.GetClassById(userUpdateRequest.ClassId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
-            // Kiểm tra mã người dùng đã tồn tại chưa
-            if (_userRepo.GetUserByCode(userRequest.Code) != null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
-            }
 
             // Cập nhật thông tin người dùng
-            user.FullName = userRequest.FullName;
-            user.Email = userRequest.Email;
-            user.Password = ComputeSha256(userRequest.Password);
-            user.PhoneNumber = userRequest.PhoneNumber;
-            user.Dob = userRequest.Dob;
-            user.Gender = userRequest.Gender;
-            user.AddressFull = userRequest.AddressFull;
-            user.Street = userRequest.Street;
-            user.RoleId = userRequest.RoleId;
-            user.AcademicYearId = userRequest.AcademicYearId;
-            user.ProvinceCode = userRequest.ProvinceCode;
-            user.DistrictCode = userRequest.DistrictCode;
-            user.WardCode = userRequest.WardCode;
-            user.UserStatusId = userRequest.UserStatusId;
-            user.ClassId = userRequest.ClassId;
-            user.EntryType = userRequest.EntryType;
-            user.Active = userRequest.Active;
+            user.FullName = userUpdateRequest.FullName;
+            user.Email = userUpdateRequest.Email;
+            user.Password = ComputeSha256(userUpdateRequest.Password);
+            user.PhoneNumber = userUpdateRequest.PhoneNumber;
+            user.Dob = userUpdateRequest.Dob;
+            user.Gender = userUpdateRequest.Gender;
+            user.AddressFull = userUpdateRequest.AddressFull;
+            user.Street = userUpdateRequest.Street;
+            user.RoleId = userUpdateRequest.RoleId;
+            user.AcademicYearId = userUpdateRequest.AcademicYearId;
+            user.ProvinceCode = userUpdateRequest.ProvinceCode;
+            user.DistrictCode = userUpdateRequest.DistrictCode;
+            user.WardCode = userUpdateRequest.WardCode;
+            user.UserStatusId = userUpdateRequest.UserStatusId;
+            user.ClassId = userUpdateRequest.ClassId;
+            user.EntryType = userUpdateRequest.EntryType;
+            user.Active = userUpdateRequest.Active;
+            user.AvatarUrl = userUpdateRequest.AvatarUrl;
 
             // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userRequest.Password))
+            if (!string.IsNullOrEmpty(userUpdateRequest.Password))
             {
-                user.Password = ComputeSha256(userRequest.Password);
+                user.Password = ComputeSha256(userUpdateRequest.Password);
             }
 
             try
@@ -332,13 +341,8 @@ namespace ISC_ELIB_SERVER.Services
         }
 
 
-        public static string ComputeSha256(string? input)
+        public static string ComputeSha256(string input)
         {
-            if (String.IsNullOrEmpty(input))
-            {
-                return null;
-            }
-
             using SHA256 sha256 = SHA256.Create();
             byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input + "ledang"));
             StringBuilder builder = new();
@@ -349,6 +353,26 @@ namespace ISC_ELIB_SERVER.Services
             return builder.ToString();
         }
 
+        // Lấy thông tin sinh viên theo ID
+        public async Task<ApiResponse<StudentProcessResponse>> GetUsersByClassIdAndAcademicYearId(int? userId, int? academicYearId, int? classId)
+        {
+            if (userId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không được để trống");
+            else if (academicYearId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã năm học không được để trống");
+            else if (classId == null)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã lớp không được để trống");
+            else
+            {
+                var student = _userRepo.GetUsersByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
+                var studentQty = _userRepo.GetUsersByClassId((int)classId).Count();
+                var subjectQty = _classSubjectRepo.GetClassSubjectsByClassId((int)classId).Count();
+                var response = _mapper.Map<StudentProcessResponse>(student);
+                response.StudentQty = studentQty;
+                response.SubjectQty = subjectQty;
+                return ApiResponse<StudentProcessResponse>.Success(_mapper.Map<StudentProcessResponse>(response));
+            }
 
+        }
     }
 }

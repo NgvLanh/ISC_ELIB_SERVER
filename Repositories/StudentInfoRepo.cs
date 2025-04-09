@@ -29,9 +29,11 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Read: Lấy StudentInfo theo Id
-        public StudentInfo GetStudentInfoById(int id)
+        public StudentInfo GetStudentInfoById(int userId)
         {
-            return _context.StudentInfos.FirstOrDefault(s => s.Id == id);
+            return _context.StudentInfos.
+                Include(s => s.User)  // Load User liên kết với StudentInfo
+                    .FirstOrDefault(s => s.UserId == userId);
         }
 
         // Update: Cập nhật thông tin StudentInfo
@@ -52,14 +54,10 @@ namespace ISC_ELIB_SERVER.Repositories
             }
         }
 
-        // Lọc theo thông tin bảng UserId
+        // Lọc theo thông tin phụ huynh bảng StudentInfo tìm theo UserId
         public List<StudentInfo> GetStudentInfosByUserId(int userId)
         {
             return _context.StudentInfos
-                .Include(s => s.User)  // Load User liên kết với StudentInfo
-                    .ThenInclude(u => u.Class)  // Load Class từ User
-                .Include(s => s.User)
-                    .ThenInclude(u => u.UserStatus)  // Load UserStatus từ User
                 .Where(s => s.UserId == userId)
                 .ToList();
         }
@@ -79,15 +77,21 @@ namespace ISC_ELIB_SERVER.Repositories
         // Lấy danh sách học viên theo user figma
         public List<StudentInfo> GetAllStudents()
         {
-            return _context.StudentInfos
+            var students = _context.StudentInfos
                 .Include(s => s.User)
                     .ThenInclude(u => u.Class)
                 .Include(s => s.User)
                     .ThenInclude(u => u.UserStatus)
-                .Include(s => s.User) // Nạp User
-                    .ThenInclude(u => u.AcademicYear) // Nạp AcademicYear
-                    .ThenInclude(a => a.Semesters) // Nạp Semesters
-                .ToList(); // Chuyển thành danh sách sau khi đã nạp hết dữ liệu
+                .Include(s => s.User)
+                    .ThenInclude(u => u.AcademicYear)
+                        .ThenInclude(a => a.Semesters)
+                .AsNoTracking()
+                .ToList()
+                .GroupBy(s => s.UserId)
+                .Select(g => g.First()) // loại bỏ trùng
+                .ToList();
+
+            return students;
         }
 
     }

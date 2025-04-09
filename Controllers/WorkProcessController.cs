@@ -50,6 +50,13 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+        [HttpGet("getbyteacherid/{id}")]
+        public IActionResult GetWorkProcessByTeacherId(long id)
+        {
+            var response = _service.GetWorkProcessByTeacherId(id);
+            return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
         [HttpPut("{id}")]
         public IActionResult UpdateWorkProcess(long id, [FromBody] WorkProcessRequest workProcess_UpdateRequest)
         {

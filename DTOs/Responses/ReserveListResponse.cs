@@ -1,4 +1,6 @@
-﻿namespace ISC_ELIB_SERVER.DTOs.Responses
+﻿using ISC_ELIB_SERVER.Models;
+
+namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class ReserveListResponse
     {
@@ -11,5 +13,8 @@
         public DateTime? ReserveDate { get; set; }  // Ngày bảo lưu
         public string? RetentionPeriod { get; set; }  // Thời gian bảo lưu
         public string? Reason { get; set; }  // Lý do
+        public UserResponse? Student { get; set; }
+        public ClassesResponse? Class { get; set; }
+        public SemesterResponse? Semester { get; set; }
     }
 }

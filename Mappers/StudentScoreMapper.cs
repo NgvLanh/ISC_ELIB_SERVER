@@ -9,9 +9,17 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public StudentScoreMapper()
         {
-            CreateMap<StudentScore, StudentScoreResponse>();
 
+            CreateMap<StudentScore, StudentScoreResponse>();
             CreateMap<StudentScoreRequest, StudentScore>();
+            CreateMap<Test, StudentScoreByTestResponse>();
+            CreateMap<Subject, SubjectScoreResponse>();
+            CreateMap<Subject, SubjectScoreResponse>();
+            CreateMap<Class, ClassScoreResponse>();
+            CreateMap<User, StudentResponse>();
+            CreateMap<Semester, SemesterScoreResponse>();
+            CreateMap<StudentScore, ScoreResponse>();
+            CreateMap<ScoreType, TypeScoreResponse>();
         }
     }
 }

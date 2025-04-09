@@ -19,7 +19,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public SubjectType GetSubjectTypeById(long id)
         {
-            return _context.SubjectTypes.FirstOrDefault(x => x.Id == id);
+            return _context.SubjectTypes.Include(st => st.AcademicYear).FirstOrDefault(x => x.Id == id);
         }
 
         public SubjectType CreateSubjectType(SubjectType subjectType)

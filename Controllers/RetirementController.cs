@@ -71,6 +71,21 @@ namespace ISC_ELIB_SERVER.Controllers
             }
         }
 
+        [HttpPut("putByTeacherId/{id}")]
+        public IActionResult UpdateRetirementByTeacherId(long id, [FromBody] RetirementRequest Retirement_UpdateRequest)
+        {
+            var response = _service.UpdateRetirementByTeacherId(id, Retirement_UpdateRequest);
+
+            if (response.Code == 0)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return NotFound(response);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteRetirement(long id)
         {

@@ -18,14 +18,13 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public IQueryable<Test> GetTests()
         {
-                return _context.Tests
-                    .Include(t => t.Subject)
-                        .ThenInclude(s => s.SubjectSubjectGroups)
-                            .ThenInclude(ssg => ssg.SubjectGroup)
-                    .Include(t => t.Subject)
-                        .ThenInclude(s => s.SubjectType)
-                    .Include(t => t.User)
-                    .Include(t => t.GradeLevel);
+            return _context.Tests
+                .Include(t => t.Subject)
+                    .ThenInclude(s => s.SubjectGroup)
+                .Include(t => t.Subject)
+                    .ThenInclude(s => s.SubjectType)
+                .Include(t => t.User)
+                .Include(t => t.GradeLevel);
         }
 
         public IEnumerable<TestByStudentResponse> GetTestsByStudent(int userId)
@@ -34,7 +33,7 @@ namespace ISC_ELIB_SERVER.Repositories
                         .Where(tu => tu.UserId == userId && tu.Test.Active == true)
                         .Include(tu => tu.Test)
                             .ThenInclude(t => t.Subject)
-                                .ThenInclude(s => s.SubjectSubjectGroups)
+                                 .ThenInclude(t => t.SubjectGroup)
                         .Include(tu => tu.Test)
                             .ThenInclude(t => t.Subject)
                                 .ThenInclude(t => t.SubjectType)
@@ -47,7 +46,7 @@ namespace ISC_ELIB_SERVER.Repositories
                         {
                             Test = _mapper.Map<TestResponse>(su.Test),
                             User = _mapper.Map<UserResponse>(su.User),
-                            Status = su.Status 
+                            Status = su.Status
                         });
         }
         public Test GetTestById(long id)
@@ -80,6 +79,15 @@ namespace ISC_ELIB_SERVER.Repositories
                 return _context.SaveChanges() > 0;
             }
             return false;
+        }
+
+        // Thêm cho chức năng lấy bài kiểm tra them môn học
+        public Test GetTestsBySubjectId(int subjectId)
+        {
+            return _context.Tests
+                .Include(t => t.Subject)
+                .Where(t => t.SubjectId == subjectId)
+                .FirstOrDefault();
         }
     }
 }

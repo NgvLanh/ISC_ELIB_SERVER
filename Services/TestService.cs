@@ -88,23 +88,7 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<ICollection<TestByStudentResponse>>.Fail("ID trong token không hợp lệ");
             }
 
-            //var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
-
-            var query = _context.TestUsers
-                        .Where(tu => tu.UserId == userId && tu.Test.Active == true)
-                        .Include(tu => tu.Test)
-                            .ThenInclude(t => t.Subject)
-                                .ThenInclude(s => s.SubjectSubjectGroups)
-                                    .ThenInclude(ssg => ssg.SubjectGroup)
-                        .Include(tu => tu.Test)
-                            .ThenInclude(t => t.Subject)
-                                .ThenInclude(t => t.SubjectType)
-                        .Include(tu => tu.Test)
-                            .ThenInclude(t => t.User)
-                        .Include(tu => tu.User)
-                        .Include(tu => tu.Test)
-                            .ThenInclude(t => t.GradeLevel)
-                        .AsEnumerable();
+            var query = _testRepo.GetTestsByStudent(userId).AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -138,7 +122,7 @@ namespace ISC_ELIB_SERVER.Services
                 }
                 else
                 {
-                    query = query.Where(qr => qr.Test.Subject.SubjectSubjectGroups.Any(ssg => ssg.SubjectGroup.Id == subjectGroupId.Value));
+                    query = query.Where(qr => qr.Test.Subject.SubjectGroup.Id == subjectGroupId.Value);
                 }
             }
 
@@ -175,12 +159,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
             }
-            var result = query.Select(su => new TestByStudentResponse
-            {
-                Test = _mapper.Map<TestResponse>(su.Test),
-                User = _mapper.Map<UserResponse>(su.User),
-                Status = su.Status
-            }).ToList();
+            var result = query.ToList();
 
             var response = _mapper.Map<ICollection<TestByStudentResponse>>(result);
 

@@ -374,6 +374,9 @@ builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
 builder.Services.AddScoped<ClassUserRepo>();
 
+builder.Services.AddScoped<ClassSubjectRepo>();
+
+builder.Services.AddScoped<AuthService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

@@ -13,6 +13,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<ICollection<RetirementResponse>> GetRetirementByTeacherId(long id);
         ApiResponse<RetirementResponse> CreateRetirement(RetirementRequest Retirement_AddRequest);
         ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest Retirement_UpdateRequest);
+        ApiResponse<Retirement> UpdateRetirementByTeacherId(long id, RetirementRequest Retirement_UpdateRequest);
         ApiResponse<Retirement> DeleteRetirement(long id);
     }
 

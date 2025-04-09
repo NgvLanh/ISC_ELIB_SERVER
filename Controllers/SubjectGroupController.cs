@@ -1,10 +1,12 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/subject-groups")]
     public class SubjectGroupController: ControllerBase
@@ -51,12 +53,5 @@ namespace ISC_ELIB_SERVER.Controllers
             var response = _service.DeleteSubjectGroup(id);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
-        [HttpDelete("delete-subject")]
-        public IActionResult DeleteSubject([FromQuery]long? subjectGroupId = null, [FromQuery]long? subjectId = null)
-        {
-            var response = _service.DeleteSubject(subjectGroupId, subjectId);
-            return response.Code == 0 ? Ok(response) : BadRequest(response);
-        }
-
     }
 }

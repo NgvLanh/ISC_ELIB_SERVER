@@ -10,7 +10,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int HoursSemester1 { get; set; }
         public int HoursSemester2 { get; set; }
 
-        public List<SubjectGroupResponse>? SubjectGroup { get; set; }
+        public SubjectGroupResponse? SubjectGroup { get; set; }
         public SubjectTypeResponse? SubjectType { get; set; }
     }
 }

@@ -19,9 +19,8 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.TeacherInfos
                 .Include(t => t.User)
                 .ThenInclude(t => t.SubjectGroups)
-                .Include(t => t.WorkProcesses)
                 .Include(t => t.Retirements)
-                .Where(t => t.Active == true);
+                .Where(t => t.Active == true && t.User.Active == true);
         }
 
         // Lấy TeacherInfo theo Id
@@ -30,9 +29,8 @@ namespace ISC_ELIB_SERVER.Repositories
             return _context.TeacherInfos
                 .Include(t => t.User)
                 .ThenInclude(t => t.SubjectGroups)
-                .Include(t => t.WorkProcesses)
                 .Include(t => t.Retirements)
-                .Where(t => t.Active == true)
+                .Where(t => t.Active == true && t.User.Active == true)
                 .FirstOrDefault(t => t.Id == id);
         }
     }
