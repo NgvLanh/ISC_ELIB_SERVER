@@ -355,24 +355,24 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         // Lấy thông tin sinh viên theo ID
-        public async Task<ApiResponse<StudentProcessResponse>> GetUsersByClassIdAndAcademicYearId(int? userId, int? academicYearId, int? classId)
+        public async Task<ApiResponse<StudentProcessResponse>> GetStudentById(int userId)
         {
-            if (userId == null)
+            if (userId <= 0)
                 return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không được để trống");
-            else if (academicYearId == null)
-                return ApiResponse<StudentProcessResponse>.Fail("Mã năm học không được để trống");
-            else if (classId == null)
-                return ApiResponse<StudentProcessResponse>.Fail("Mã lớp không được để trống");
             else
             {
-                var student = _userRepo.GetUserByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
+                var student = await _userRepo.GetStudentById(userId);
                 if (student == null)
-                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy sinh viên với mã lớp và năm học đã cho");
-                var studentQty = _userRepo.GetUsersByClassId((int)classId).Count();
-                var subjectQty = _classSubjectRepo.GetClassSubjectsByClassId((int)classId).Count();
+                    return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không phải là học viên");
+                var students = await _userRepo.GetUsersByClassId(student.ClassId ?? 0);
+                if (students == null || students.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin lớp học của học viên");
+                var subjects = await _classSubjectRepo.GetClassSubjectsByClassId(student.ClassId ?? 0);
+                if (subjects == null || subjects.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin môn học của lớp học");
                 var response = _mapper.Map<StudentProcessResponse>(student);
-                response.StudentQty = studentQty;
-                response.SubjectQty = subjectQty;
+                response.StudentQty = students.Count;
+                response.SubjectQty = subjects.Count;
                 return ApiResponse<StudentProcessResponse>.Success(_mapper.Map<StudentProcessResponse>(response));
             }
 
