@@ -44,7 +44,8 @@ public class GhnService
         {
             var provinceJson = await _httpClient.GetStringAsync($"{_baseUrl}/master-data/province");
             var provinces = JsonSerializer.Deserialize<GhnResponse<Province[]>>(provinceJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return ApiResponse<Province[]>.Success(provinces?.Data);
+            // province id = 286 Không dùng - filter bỏ đi
+            return ApiResponse<Province[]>.Success(provinces?.Data.Where(p => p.ProvinceId != 286).ToArray() ?? Array.Empty<Province>());
         }
         catch (Exception ex)
         {
