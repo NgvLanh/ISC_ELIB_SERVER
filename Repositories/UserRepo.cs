@@ -68,21 +68,19 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Lấy danh sách User theo id lớp học
-        public ICollection<User> GetUsersByClassId(int classId, string roleName = "Student")
+        public async Task<ICollection<User>> GetUsersByClassId(int classId, string roleName = "Student")
         {
-            return _context.Users
+            return await _context.Users
             .Where(u => u.ClassId == classId && u.Active && u.Role.Name == roleName)
             .Include(r => r.Role)
-            .ToList();
+            .ToListAsync();
         }
 
         // Lấy danh sách User theo id, id lớp học và năm học
-        public User? GetUserByClassIdAndAcademicYearId(int userId, int academicYearId, int classId, string roleName = "Student")
+        public async Task<User> GetStudentById(int userId, string roleName = "Student")
         {
-            return _context.Users
+            return await _context.Users
            .Where(u => u.Id == userId &&
-                       u.ClassId == classId &&
-                       u.AcademicYearId == academicYearId &&
                        u.Active &&
                        u.Role.Name == roleName)
            .Include(u => u.Role)
@@ -93,19 +91,19 @@ namespace ISC_ELIB_SERVER.Repositories
                .ThenInclude(c => c.ClassType)
            .Include(u => u.Class)
                .ThenInclude(c => c.User)
-           .FirstOrDefault();
+           .FirstOrDefaultAsync();
         }
 
         // Lấy danh sách User theo id lớp học và năm học
-        public ICollection<User> GetUsersByClassIdAndAcademicYearId(int classId, int academicYearId, string roleName = "Student")
+        public async Task<ICollection<User>> GetUsersByClassIdAndAcademicYearId(int classId, int academicYearId, string roleName = "Student")
         {
-            return _context.Users
+            return await _context.Users
            .Where(u => u.ClassId == classId &&
                        u.AcademicYearId == academicYearId &&
                        u.Active &&
                        u.Role.Name == roleName)
            .Include(r => r.Role)
-           .ToList();
+           .ToListAsync();
         }
     }
 }
