@@ -219,7 +219,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-        public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
+        public ApiResponse<UserResponse> UpdateUser(int id, UserUpdateRequest userUpdateRequest)
         {
             var user = _userRepo.GetUserById(id);
             if (user == null)
@@ -228,61 +228,56 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             // Kiểm tra RoleId có tồn tại không
-            if (_roleRepo.GetRoleById(userRequest.RoleId) == null)
+            if (_roleRepo.GetRoleById(userUpdateRequest.RoleId) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("RoleId không hợp lệ");
             }
 
             // Kiểm tra AcademicYearId có tồn tại không (nếu có nhập)
-            if (userRequest.AcademicYearId.HasValue &&
-                _academicYearRepo.GetAcademicYearById(userRequest.AcademicYearId.Value) == null)
+            if (userUpdateRequest.AcademicYearId.HasValue &&
+                _academicYearRepo.GetAcademicYearById(userUpdateRequest.AcademicYearId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("AcademicYearId không hợp lệ");
             }
 
             // Kiểm tra UserStatusId có tồn tại không (nếu có nhập)
-            if (userRequest.UserStatusId.HasValue &&
-                _userStatusRepo.GetUserStatusById(userRequest.UserStatusId.Value) == null)
+            if (userUpdateRequest.UserStatusId.HasValue &&
+                _userStatusRepo.GetUserStatusById(userUpdateRequest.UserStatusId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("UserStatusId không hợp lệ");
             }
 
             // Kiểm tra ClassId có tồn tại không (nếu có nhập)
-            if (userRequest.ClassId.HasValue &&
-                _classRepo.GetClassById(userRequest.ClassId.Value) == null)
+            if (userUpdateRequest.ClassId.HasValue &&
+                _classRepo.GetClassById(userUpdateRequest.ClassId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
-            // Kiểm tra mã người dùng đã tồn tại chưa
-            if (_userRepo.GetUserByCode(userRequest.Code) != null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
-            }
 
             // Cập nhật thông tin người dùng
-            user.FullName = userRequest.FullName;
-            user.Email = userRequest.Email;
-            user.Password = ComputeSha256(userRequest.Password);
-            user.PhoneNumber = userRequest.PhoneNumber;
-            user.Dob = userRequest.Dob;
-            user.Gender = userRequest.Gender;
-            user.AddressFull = userRequest.AddressFull;
-            user.Street = userRequest.Street;
-            user.RoleId = userRequest.RoleId;
-            user.AcademicYearId = userRequest.AcademicYearId;
-            user.ProvinceCode = userRequest.ProvinceCode;
-            user.DistrictCode = userRequest.DistrictCode;
-            user.WardCode = userRequest.WardCode;
-            user.UserStatusId = userRequest.UserStatusId;
-            user.ClassId = userRequest.ClassId;
-            user.EntryType = userRequest.EntryType;
-            user.Active = userRequest.Active;
-            user.AvatarUrl = userRequest.AvatarUrl;
+            user.FullName = userUpdateRequest.FullName;
+            user.Email = userUpdateRequest.Email;
+            user.Password = ComputeSha256(userUpdateRequest.Password);
+            user.PhoneNumber = userUpdateRequest.PhoneNumber;
+            user.Dob = userUpdateRequest.Dob;
+            user.Gender = userUpdateRequest.Gender;
+            user.AddressFull = userUpdateRequest.AddressFull;
+            user.Street = userUpdateRequest.Street;
+            user.RoleId = userUpdateRequest.RoleId;
+            user.AcademicYearId = userUpdateRequest.AcademicYearId;
+            user.ProvinceCode = userUpdateRequest.ProvinceCode;
+            user.DistrictCode = userUpdateRequest.DistrictCode;
+            user.WardCode = userUpdateRequest.WardCode;
+            user.UserStatusId = userUpdateRequest.UserStatusId;
+            user.ClassId = userUpdateRequest.ClassId;
+            user.EntryType = userUpdateRequest.EntryType;
+            user.Active = userUpdateRequest.Active;
+            user.AvatarUrl = userUpdateRequest.AvatarUrl;
 
             // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userRequest.Password))
+            if (!string.IsNullOrEmpty(userUpdateRequest.Password))
             {
-                user.Password = ComputeSha256(userRequest.Password);
+                user.Password = ComputeSha256(userUpdateRequest.Password);
             }
 
             try
