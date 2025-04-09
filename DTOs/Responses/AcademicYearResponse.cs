@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Models;
+using Newtonsoft.Json;
 
 namespace ISC_ELIB_SERVER.DTOs.Responses
 {
