@@ -48,19 +48,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-        public ApiResponse<ICollection<TransferSchoolResponse>> GetTransferSchoolList()
-        {
-            try
-            {
-                var transferSchools = _repo.GetTransferSchoolList();
-                var response = _mapper.Map<ICollection<TransferSchoolResponse>>(transferSchools);
-                return ApiResponse<ICollection<TransferSchoolResponse>>.Success(response);
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<ICollection<TransferSchoolResponse>>.Fail(ex.Message);
-            }
-        }
+        
 
         public ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request)
         {
@@ -182,6 +170,20 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TransferSchoolResponse>.Fail(ex.Message);
             }
+        }
+
+
+
+
+        public ApiResponse<ICollection<TeacherInfoResponses>> GetTransferSchoolList(int page, int pageSize, string search, string sortColumn, string sortOrder)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ApiResponse<TransferSchoolResponse> DeleteTransferSchool(int studentId)
+        {
+            // Gọi repository để thực hiện xóa và nhận kết quả trả về
+            return _repo.DeleteTransferSchool(studentId);
         }
     }
 }

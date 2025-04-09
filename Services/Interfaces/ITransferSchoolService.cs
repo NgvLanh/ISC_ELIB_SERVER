@@ -8,8 +8,11 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
 {
     public interface ITransferSchoolService
     {
-        ApiResponse<ICollection<TransferSchoolResponse>> GetTransferSchoolList();
+        ApiResponse<ICollection<TeacherInfoResponses>> GetTransferSchoolList(int page, int pageSize, string search, string sortColumn, string sortOrder);
+
         ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentId(int studentId);
+
+        ApiResponse<TransferSchoolResponse> DeleteTransferSchool(int studentId);
         ApiResponse<TransferSchoolResponse> CreateTransferSchool(TransferSchoolRequest request);
         ApiResponse<TransferSchoolResponse> UpdateTransferSchool(string studentCode, TransferSchoolRequest request);
         ApiResponse<TransferSchoolResponse> GetTransferSchoolByStudentCode(string studentCode);

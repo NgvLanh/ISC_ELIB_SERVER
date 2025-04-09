@@ -30,16 +30,45 @@ public class TransferSchoolController : ControllerBase
     /// <summary>
     /// 1️⃣ Lấy danh sách học sinh đã chuyển trường
     /// </summary>
-    [HttpGet("list")]
-    public IActionResult GetTransferSchoolList()
+   
+    // GET: api/transferschool
+    [HttpGet]
+    public IActionResult GetTransferSchoolList(
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 10,
+     [FromQuery] string? search = "",
+     [FromQuery] string sortColumn = "id",
+     [FromQuery] string sortOrder = "asc")
     {
-        var result = _transferSchoolRepo.GetTransferSchoolList();
-        if (result == null)
+        // Lấy danh sách chuyển trường (có thể có điều kiện tìm kiếm nếu cần)
+        var result = _transferSchoolRepo.GetTransferSchoolList(search);
+
+        // Kiểm tra nếu không có dữ liệu
+        if (result == null || !result.Any())
         {
             return NotFound(new { code = 1, message = "Không có dữ liệu chuyển trường" });
         }
-        return Ok(new { code = 0, message = "Lấy danh sách học sinh chuyển trường thành công", data = result });
+
+        // Tính toán số lượng bản ghi cần phân trang
+        var totalItems = result.Count();
+        var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+        // Áp dụng phân trang
+        var pagedResult = result.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        // Trả về kết quả phân trang
+        return Ok(new
+        {
+            code = 0,
+            message = "Lấy danh sách học sinh chuyển trường thành công",
+            data = pagedResult,
+            totalItems,
+            totalPages,
+            page,
+            pageSize
+        });
     }
+
 
     /// <summary>
     /// 2️⃣ Lấy thông tin chuyển trường của một học sinh theo ID
@@ -128,6 +157,24 @@ public class TransferSchoolController : ControllerBase
 
         return Ok(response);
     }
+
+    // Xóa thông tin chuyển trường theo studentId
+    [HttpDelete("byStudentId/{studentId}")]
+    public IActionResult DeleteTransferSchoolByStudentId(int studentId)
+    {
+        // Gọi service để xóa thông tin chuyển trường
+        var transferSchool = _service.DeleteTransferSchool(studentId);
+
+        // Nếu không tìm thấy bản ghi
+        if (transferSchool == null)
+        {
+            return NotFound(new { code = 1, message = "Mã học sinh không tồn tại hoặc không có thông tin chuyển trường." });
+        }
+
+        // Nếu xóa thành công, trả về thông báo thành công
+        return Ok(new { code = 0, message = "Xóa thông tin chuyển trường thành công", data = transferSchool });
+    }
+
 
 
     // Lấy userId từ token JWT
