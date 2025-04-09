@@ -48,12 +48,12 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<StudentInfoResponses>>.NotFound("Không có dữ liệu StudentInfo");
         }
 
-        public ApiResponse<StudentInfoResponses> GetStudentInfoById(int id)
+        public ApiResponse<StudentInfoResponses> GetStudentInfoById(int userId)
         {
-            var studentInfo = _repository.GetStudentInfoById(id);
+            var studentInfo = _repository.GetStudentInfoById(userId);
             return studentInfo != null
                 ? ApiResponse<StudentInfoResponses>.Success(_mapper.Map<StudentInfoResponses>(studentInfo))
-                : ApiResponse<StudentInfoResponses>.NotFound($"Không tìm thấy StudentInfo với ID #{id}");
+                : ApiResponse<StudentInfoResponses>.NotFound($"Không tìm thấy StudentInfo với ID #{userId}");
         }
 
         public ApiResponse<StudentInfoResponses> CreateStudentInfo(StudentInfoRequest studentInfoRequest)

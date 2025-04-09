@@ -29,9 +29,11 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Read: Lấy StudentInfo theo Id
-        public StudentInfo GetStudentInfoById(int id)
+        public StudentInfo GetStudentInfoById(int userId)
         {
-            return _context.StudentInfos.FirstOrDefault(s => s.Id == id);
+            return _context.StudentInfos.
+                Include(s => s.User)  // Load User liên kết với StudentInfo
+                    .FirstOrDefault(s => s.UserId == userId);
         }
 
         // Update: Cập nhật thông tin StudentInfo
