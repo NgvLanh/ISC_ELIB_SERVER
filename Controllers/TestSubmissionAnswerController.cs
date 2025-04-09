@@ -2,12 +2,14 @@
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Services;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
 {
     [Route("api/test-submission-answer")]
     [ApiController]
+    [Authorize]
     public class TestSubmissionAnswerController : Controller
     {
         private readonly ITestSubmissionAnswerService _service;
@@ -38,6 +40,13 @@ namespace ISC_ELIB_SERVER.Controllers
         {
             var response = _service.GetTestSubmissionAnswerById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
+        }
+
+        [HttpGet("by-test/{testId}")]
+        public IActionResult GetByTest(long testId, int pageNumber = 1, int pageSize = 10)
+        {
+            var result = _service.GetAnswersByTestId(testId, pageNumber, pageSize);
+            return Ok(result);
         }
 
         [HttpPost]

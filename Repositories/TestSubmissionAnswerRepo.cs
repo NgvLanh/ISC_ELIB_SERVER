@@ -71,5 +71,14 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.SaveChanges();
         }
 
+        //Lấy test_submission_answer theo test_id
+        public ICollection<TestSubmissionsAnswer> GetAnswersByTestId(long testId)
+        {
+            return _context.TestSubmissionsAnswers
+                           .Where(ans => _context.TestsSubmissions
+                           .Any(sub => sub.Id == ans.SubmissionId && sub.TestId == testId))
+                           .ToList();
+        }
+
     }
 }

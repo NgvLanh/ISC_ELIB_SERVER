@@ -10,9 +10,7 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<TestSubmissionAnswerResponse> GetTestSubmissionAnswerById(int id);
         Task<ApiResponse<TestSubmissionAnswerResponse>> CreateTestSubmissionAnswer(TestSubmissionAnswerRequest request, List<IFormFile> attachments);
         Task<ApiResponse<TestSubmissionAnswerResponse>> UpdateTestSubmissionAnswer(int id, TestSubmissionAnswerRequest request, List<IFormFile> attachments);
-
         ApiResponse<TestSubmissionAnswerResponse> DeleteTestSubmissionAnswer(int id);
-        //ApiResponse<ICollection<TestSubmissionAnswerAttachment>> GetAttachmentsBySubmissionAnswerId(int id);
-        //ApiResponse<bool> RemoveAttachments(List<TestSubmissionAnswerAttachment> attachments);
+        ApiResponse<ICollection<TestSubmissionAnswerResponse>> GetAnswersByTestId(long testId, int pageNumber, int pageSize);
     }
 }
