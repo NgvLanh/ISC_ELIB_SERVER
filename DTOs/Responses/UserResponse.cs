@@ -65,6 +65,8 @@
         public GradeLevelProcessResponse? GradeLevel { get; set; }
         public ClassTypeProcessResponse? ClassType { get; set; }
         public UserProcessResponse? User { get; set; }
+        public string? Description { get; set; }
+
     }
     public class GradeLevelProcessResponse
     {
@@ -76,7 +78,6 @@
     {
         public int? Id { get; set; }
         public string? Name { get; set; }
-        public string? Description { get; set; }
 
     }
     public class UserProcessResponse
