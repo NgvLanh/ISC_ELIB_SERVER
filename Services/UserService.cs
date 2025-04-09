@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ISC_ELIB_SERVER.Services
@@ -369,7 +370,9 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<StudentProcessResponse>.Fail("Mã lớp không được để trống");
             else
             {
-                var student = _userRepo.GetUsersByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
+                var student = _userRepo.GetUserByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
+                if (student == null)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy sinh viên với mã lớp và năm học đã cho");
                 var studentQty = _userRepo.GetUsersByClassId((int)classId).Count();
                 var subjectQty = _classSubjectRepo.GetClassSubjectsByClassId((int)classId).Count();
                 var response = _mapper.Map<StudentProcessResponse>(student);

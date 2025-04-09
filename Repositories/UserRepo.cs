@@ -77,7 +77,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Lấy danh sách User theo id, id lớp học và năm học
-        public User? GetUsersByClassIdAndAcademicYearId(int userId, int academicYearId, int classId, string roleName = "Student")
+        public User? GetUserByClassIdAndAcademicYearId(int userId, int academicYearId, int classId, string roleName = "Student")
         {
             return _context.Users
            .Where(u => u.Id == userId &&
