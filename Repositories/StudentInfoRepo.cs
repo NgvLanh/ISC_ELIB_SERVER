@@ -81,15 +81,21 @@ namespace ISC_ELIB_SERVER.Repositories
         // Lấy danh sách học viên theo user figma
         public List<StudentInfo> GetAllStudents()
         {
-            return _context.StudentInfos
+            var students = _context.StudentInfos
                 .Include(s => s.User)
                     .ThenInclude(u => u.Class)
                 .Include(s => s.User)
                     .ThenInclude(u => u.UserStatus)
-                .Include(s => s.User) // Nạp User
-                    .ThenInclude(u => u.AcademicYear) // Nạp AcademicYear
-                    .ThenInclude(a => a.Semesters) // Nạp Semesters
-                .ToList(); // Chuyển thành danh sách sau khi đã nạp hết dữ liệu
+                .Include(s => s.User)
+                    .ThenInclude(u => u.AcademicYear)
+                        .ThenInclude(a => a.Semesters)
+                .AsNoTracking()
+                .ToList()
+                .GroupBy(s => s.UserId)
+                .Select(g => g.First()) // loại bỏ trùng
+                .ToList();
+
+            return students;
         }
 
     }
