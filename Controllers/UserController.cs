@@ -56,7 +56,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserRequest userRequest)
+        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserUpdateRequest userRequest)
         {
             if (userRequest == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
