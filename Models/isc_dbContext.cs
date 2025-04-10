@@ -51,7 +51,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<Session> Sessions { get; set; } = null!;
         public virtual DbSet<StudentInfo> StudentInfos { get; set; } = null!;
         public virtual DbSet<StudentScore> StudentScores { get; set; } = null!;
-        public virtual DbSet<Subject> Subjects { get; set; } = null!;
+    public virtual DbSet<Subject> Subjects { get; set; } = null!;
         public virtual DbSet<SubjectGroup> SubjectGroups { get; set; } = null!;
         public virtual DbSet<SubjectType> SubjectTypes { get; set; } = null!;
         public virtual DbSet<Support> Supports { get; set; } = null!;
@@ -81,7 +81,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
 
-        public virtual DbSet<ClassUser> ClassUser { get; set; } = null!;
+        public virtual DbSet<ClassUser> ClassUsers { get; set; } = null!;
         public virtual DbSet<TestSubmissionAnswerAttachment> TestSubmissionAnswerAttachments { get; set; } = null!;
 
 

@@ -34,6 +34,8 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public Session CreateSession(Session session)
         {
+
+
             _context.Sessions.Add(session);
             _context.SaveChanges();
             return session;
@@ -205,5 +207,199 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.TeachingAssignments.Any(ta => ta.Id == teachingAssignmentId);
         }
+
+
+        public ICollection<TeacherDto> GetTeachersBySubjectGroup(int UserId)
+        {
+            // Lấy danh sách giáo viên theo môn học và lớp học của người dùng
+            var subject_groups = _context.Subjects
+               .Where(s => s.Active && s.SubjectGroup.TeacherId == UserId)
+               .Select(s => s.SubjectGroup);
+            Console.WriteLine($"Subject Groups: {String.Join(",", subject_groups.Select(sg => sg.Name + " id subject_groups (" + sg.Id + ")" + " -teacher ID " + sg.TeacherId))}");
+            Console.WriteLine($"UserId: {UserId}");
+            var subject_groups_id = subject_groups.Select(sg => sg.Id).ToList();
+            var tearcher = _context.SubjectGroups
+                .Where(sg => subject_groups_id.Contains(sg.Id) && sg.Active)
+                .SelectMany(sg => sg.Subjects.SelectMany(s => s.TeachingAssignments.Select(t => new
+                {
+                    Teacher = t.User,
+                    Subject = s,
+                    Class = t.Class
+                })))
+                .Distinct()
+                .ToList();
+            return tearcher.Select(t => new TeacherDto
+            {
+                Id = t.Teacher.Id,
+                Name = t.Teacher.FullName,
+                // SubjectId = t.Subject.Id,
+                // SubjectName = t.Subject.Name,
+                // ClassId = t.Class.Id,
+                // ClassCode = t.Class.Code
+            }).ToList();
+            // var query = _context.Users
+            //      .Where(u => u.Id == UserId && u.Active && u.TeachingAssignments.Any())
+            //      .SelectMany(u => u.TeachingAssignments.Select(ta => new TeacherDto
+            //      {
+            //          Id = ta.User.Id,
+            //          Name = ta.User.FullName,
+            //          // SubjectId = ta.Subject.Id,
+            //          // SubjectName = ta.Subject.Name,
+            //          // ClassId = ta.Class.Id,
+            //          // ClassCode = ta.Class.Code
+            //      }))
+            //      .ToList();
+
+            // return query;
+        }
+
+        //   teacher_ID, class_ID,
+
+        public List<TeachingAssignment>? GetTeachingAssignments(int teacherId, int? classId = null)
+        {
+            var teachingAssignments = _context.TeachingAssignments
+            .Where(ta => ta.UserId == teacherId && (!classId.HasValue || ta.ClassId == classId))
+            .ToList();
+
+            return teachingAssignments.Any() ? teachingAssignments : null;
+        }
+
+        // public Session CreateSessionTeacher(int teacher_ID, SessionRequestTeacher request)
+        // {
+        //     if (request.ClassId != null)
+        //     {
+        //         var teaching_assignments1 = _context.TeachingAssignments
+        //             .Where(ta => ta.UserId == teacher_ID && ta.ClassId == request.ClassId)
+        //             .ToList();
+
+        //         if (teaching_assignments1 == null || !teaching_assignments1.Any())
+        //         {
+        //             throw new Exception("No teaching assignments found for the given teacher and class.");
+        //         }
+
+        //         // Map all fields from SessionRequestTeacher to Session
+        //         var session = new Session
+        //         {
+        //             Name = request.Name,
+        //             StartDate = request.StartDate,
+        //             EndDate = request.EndDate,
+        //             Description = request.Description,
+        //             TeachingAssignmentId = teaching_assignments1.First().Id,
+        //             ShareCodeUrl = request.ShareCodeUrl,
+        //             Password = request.Password,
+        //             Status = request.Status
+        //         };
+
+        //         _context.Sessions.Add(session);
+        //         _context.SaveChanges();
+        //         return session;
+        //     }
+
+        //     var teaching_assignments = _context.TeachingAssignments
+        //     .Where(ta => ta.UserId == teacher_ID)
+        //     .ToList();
+
+        //     if (teaching_assignments == null || !teaching_assignments.Any())
+        //     {
+        //         throw new Exception("No teaching assignments found for the given teacher.");
+        //     }
+
+        //     // Map all fields from SessionRequestTeacher to Session
+        //     var sessionFallback = new Session
+        //     {
+        //         Name = request.Name,
+        //         StartDate = request.StartDate,
+        //         EndDate = request.EndDate,
+        //         Description = request.Description,
+        //         TeachingAssignmentId = teaching_assignments.First().Id,
+        //         ShareCodeUrl = request.ShareCodeUrl,
+        //         Password = request.Password,
+        //         Status = request.Status
+        //     };
+
+        //     _context.Sessions.Add(sessionFallback);
+        //     _context.SaveChanges();
+        //     return sessionFallback;
+        // }
+
+        public ICollection<ClassDto> GetClassByTeacher(int teacherId)
+        {
+            var classDto = _context.Classes
+            .Where(c => c.TeachingAssignments.Any(ta => ta.UserId == teacherId) && c.Active)
+            .Select(c => new ClassDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Code = c.Code,
+                Active = c.Active
+            })
+            .ToList();
+
+            return classDto;
+        }
+
+        public bool CheckSessionTimeConflict(DateTime startTime, DateTime endTime, int? ignoreSessionId = null)
+        {
+            // Ensure DateTime.Kind is Unspecified
+            startTime = DateTime.SpecifyKind(startTime, DateTimeKind.Unspecified);
+            endTime = DateTime.SpecifyKind(endTime, DateTimeKind.Unspecified);
+
+            var sessions = _context.Sessions.AsQueryable();
+
+            // Nếu đang cập nhật, loại trừ session hiện tại
+            if (ignoreSessionId.HasValue)
+            {
+                sessions = sessions.Where(s => s.Id != ignoreSessionId.Value);
+            }
+            // 
+            foreach (var session in sessions)
+            {
+                if (startTime <= session.EndDate)
+                {
+                    return false; //
+                }
+            }
+            return true;
+
+            // return sessions.Any(s =>
+            //     s.StartDate.HasValue && s.EndDate.HasValue &&
+            //     (
+            //         // Bắt đầu mới nằm trong session cũ
+            //         (s.StartDate.Value <= startTime && s.EndDate.Value > startTime) ||
+            //         // Kết thúc mới nằm trong session cũ
+            //         (s.StartDate.Value < endTime && s.EndDate.Value >= endTime) ||
+            //         // Session mới bao trùm session cũ
+            //         (s.StartDate.Value >= startTime && s.EndDate.Value <= endTime) ||
+            //         // Session cũ bao trùm session mới
+            //         (s.StartDate.Value <= startTime && s.EndDate.Value >= endTime)
+            //     )
+            // );
+        }
+
+        //   if (session.TeachingAssistantId.HasValue)
+        // {
+        //     var taExists = _context.Users.Any(u => u.Id == session.TeachingAssistantId.Value);
+        //     if (!taExists)
+        //     {
+        //         return ApiResponse<SessionResponse>.BadRequest($"TeachingAssistantId } không hợp lệ.");
+        //     }
+        // }
+
+        public bool TeacherAssistant(int TeachetAssistantId)
+        {
+            var teachAssistant = _context.Users.Where(u => u.Id == TeachetAssistantId).ToList();
+            Console.WriteLine($"Teaching Assistant: {String.Join(",", teachAssistant.Select(ta => ta.FullName + " id " + ta.Id))}");
+            if (teachAssistant.Count() == 0)
+            {
+                return false; // Không tìm thấy Teaching Assistant
+            }
+            return true;
+        }
+
+
+
+
+
+
     }
 }

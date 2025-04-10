@@ -81,6 +81,9 @@ namespace ISC_ELIB_SERVER.Controllers
             return result.Code == 0 ? Ok(result) : BadRequest(result);
         }
 
+        /// <summary>
+        ///  lấy buổi học theo học viên.
+        /// </summary>
         [HttpGet("getSession-by-students")]
         public ActionResult<ICollection<SessionStudentResponse>> GetFilteredSessions(
             [FromQuery] SessionStudentFilterRequest request,
@@ -97,5 +100,50 @@ namespace ISC_ELIB_SERVER.Controllers
             var sessions = _service.GetFilteredSessions(int.Parse(userId), page, pageSize, request);
             return Ok(sessions);
         }
+
+        /// <summary>   
+
+        [HttpGet("getSession-by-teacher")]
+        public ActionResult<ICollection<TeacherDto>> GetTeachersBySubjectGroup()
+        {
+            var userId = User.FindFirst("Id")?.Value;
+            if (userId == null)
+            {
+                return BadRequest(ApiResponse<ICollection<TeacherDto>>.NotFound("No userId found"));
+            }
+            // request.studentId = int.Parse(userId);
+            var teacher = _service.GetTeachersBySubjectGroup(int.Parse(userId));
+            return Ok(teacher);
+
+        }
+
+
+        [HttpGet("getClass-by-teacher")]
+        public ActionResult<ICollection<TeacherDto>> GetClassByTeacherID()
+        {
+            var userId = User.FindFirst("Id")?.Value;
+            if (userId == null)
+            {
+                return BadRequest(ApiResponse<ICollection<TeacherDto>>.NotFound("No teacherId found"));
+            }
+            // request.studentId = int.Parse(userId);
+            var teacher = _service.GetClassByTeacher(int.Parse(userId));
+            return Ok(teacher);
+
+        }
+
+        [HttpPost("create-session-teacher")]
+        public IActionResult Create_teacher([FromBody] SessionRequestTeacher request)
+        {
+            var userId = User.FindFirst("Id")?.Value;
+            if (userId == null)
+            {
+                return BadRequest(ApiResponse<ICollection<TeacherDto>>.NotFound("No teacherId found"));
+            }
+            var response = _service.CreateSession(int.Parse(userId), request);
+            return response.Code == 0 ? Ok(response) : Conflict(response);
+        }
+
+
     }
 }
