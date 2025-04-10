@@ -4,6 +4,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 {
     public class SupportResponse
     {
+        public int? Id { get; set; }
         public string? Title { get; set; }
         public string? Content { get; set; }
         public SupportTypeResponse? Type { get; set; }
