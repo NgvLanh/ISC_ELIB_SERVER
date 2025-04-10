@@ -48,7 +48,17 @@ namespace ISC_ELIB_SERVER.Services
             var entities = _repository.GetAll(page, pageSize, search, sortBy, isDescending, academicYearId, semesterId,   gradeLevelsId, 
     classId );
             var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities.Items);
-
+            foreach (var response in responses)
+            {
+                var entity = entities.Items.FirstOrDefault(e => e.Id == response.Id);
+                if (entity != null)
+                {
+                    response.ClassNames = entity.ExamScheduleClasses?
+                        .Select(esc => esc.Class?.Name)
+                        .Where(name => name != null)
+                        .ToList();
+                }
+            }
             var result = new PagedResult<ExamScheduleResponse>(responses, entities.TotalItems, page, pageSize);
             return ApiResponse<PagedResult<ExamScheduleResponse>>.Success(result);
         }
