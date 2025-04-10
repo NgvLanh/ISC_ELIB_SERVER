@@ -27,6 +27,12 @@ namespace ISC_ELIB_SERVER.Models
 
         public virtual Exam? Exam { get; set; }
         public virtual TeachingAssignment? TeachingAssignment { get; set; }
+
         public virtual ICollection<Chat> Chats { get; set; }
+
+        public int? TeachingAssistantId { get; set; }
+
+        public virtual User?  TeachingAssistant{ get; set; }
+
     }
 }

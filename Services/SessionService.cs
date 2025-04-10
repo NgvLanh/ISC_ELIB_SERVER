@@ -64,11 +64,26 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu và ngày kết thúc không được để trống.");
             }
+            if (request.StartDate.Value.Date < DateTime.Now.Date)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.");
+            }            // Validate foreign key relationships
+            if (!_sessionRepo.IsValidExamId(request.ExamId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"ExamId {request.ExamId} không hợp lệ.");
+            }
+
+            if (!_sessionRepo.IsValidTeachingAssignmentId(request.TeachingAssignmentId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"TeachingAssignmentId {request.TeachingAssignmentId} không hợp lệ.");
+            }
 
             if (request.StartDate.Value.Date >= request.EndDate.Value.Date)
             {
                 return ApiResponse<SessionResponse>.BadRequest("Ngày kết thúc phải sau ngày bắt đầu ít nhất một ngày.");
             }
+
+
 
             //if (request.ExamId == null || request.TeachingAssignmentId == null)
             //{
@@ -156,10 +171,10 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<SessionResponse>.Success();
         }
 
-        public ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(int page, int pageSize, SessionStudentFilterRequest request)
+        public ApiResponse<ICollection<SessionStudentResponse>> GetFilteredSessions(int userId, int page, int pageSize, SessionStudentFilterRequest request)
         {
-            var query = _sessionRepo.GetFilteredSessions(request);
-            
+            var query = _sessionRepo.GetFilteredSessions(userId, request);
+
             int totalItems = query.Count(); // Đếm số lượng bản ghi thực tế sau khi lọc
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize); // Tính số trang đúng
 
@@ -179,6 +194,89 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<SessionStudentResponse>>.NotFound("Không có dữ liệu");
             // return ApiResponse<ICollection<SessionStudentResponse>>.Success(response);
         }
+
+        public ApiResponse<ICollection<TeacherDto>> GetTeachersBySubjectGroup(int UserId)
+        {
+            var teachers = _sessionRepo.GetTeachersBySubjectGroup(UserId);
+            if (teachers == null || !teachers.Any())
+            {
+                return ApiResponse<ICollection<TeacherDto>>.NotFound("Không tìm thấy giáo viên nào.");
+            }
+            // return ApiResponse<ICollection<TeacherDto>>.Success(teachers, 1, teachers.Count(), teachers.Count());
+            return ApiResponse<ICollection<TeacherDto>>.Success(teachers);
+
+        }
+
+        public ApiResponse<ICollection<ClassDto>> GetClassByTeacher(int UserId)
+        {
+            var classes = _sessionRepo.GetClassByTeacher(UserId);
+            if (classes == null || !classes.Any())
+            {
+                return ApiResponse<ICollection<ClassDto>>.NotFound("Không tìm thấy giáo viên nào.");
+            }
+            return ApiResponse<ICollection<ClassDto>>.Success(classes);
+
+        }
+
+
+        public ApiResponse<SessionResponse> CreateSession(int teacher_ID, SessionRequestTeacher request)
+        {
+            if (request.StartDate == null || request.EndDate == null)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu và ngày kết thúc không được để trống.");
+            }
+            if (request.StartDate.Value.Date < DateTime.Now.Date)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.");
+            }
+            // Validate foreign key relationships
+            if (!_sessionRepo.IsValidExamId(request.ExamId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"ExamId {request.ExamId} không hợp lệ.");
+            }
+            // if (request.teachingAssistantId == null)
+            // {
+            //     return ApiResponse<SessionResponse>.BadRequest($"teachingAssistantId {request.teachingAssistantId} không hợp lệ.");
+            // }
+
+            if (request.StartDate.Value.Date >= request.EndDate.Value.Date)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Ngày kết thúc phải sau ngày bắt đầu ít nhất một ngày.");
+            }
+
+            // // Check if a session already exists within the given time range
+            // if (_sessionRepo.CheckSessionTimeConflict(request.StartDate.Value, request.EndDate.Value))
+            // {
+            //     return ApiResponse<SessionResponse>.BadRequest("Đã tồn tại một session trong khoảng thời gian này.");
+            // }
+            if (!_sessionRepo.TeacherAssistant(request.teachingAssistantId.Value))
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"teachingAssistantId {request.teachingAssistantId} không hợp lệ.");
+            }
+
+            var teacherAssignment = _sessionRepo.GetTeachingAssignments(teacher_ID, request.ClassId.Value);
+            if (teacherAssignment == null)
+            {
+                return ApiResponse<SessionResponse>.BadRequest($"Không tìm thấy giáo viên với ID {teacher_ID} trong lớp học với ID {request.ClassId}.");
+            }
+            var TeachingAssignmentId = teacherAssignment.First().Id;
+
+            var session = _mapper.Map<Session>(request);
+            session.Password = PasswordHasher.HashPassword(request.Password);
+            // Chuyển đổi DateTime về Unspecified để tránh lỗi với PostgreSQL
+            session.StartDate = DateTime.SpecifyKind(request.StartDate.Value, DateTimeKind.Unspecified);
+            session.EndDate = DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Unspecified);
+            session.TeachingAssignmentId = TeachingAssignmentId;
+            session.Active = true; // Đặt Active thành true khi tạo mới
+
+            var created = _sessionRepo.CreateSession(session);
+            if (created == null)
+            {
+                return ApiResponse<SessionResponse>.BadRequest("Không thể tạo session.");
+            }
+            return ApiResponse<SessionResponse>.Success(_mapper.Map<SessionResponse>(created));
+        }
+
     }
 
 }
