@@ -103,7 +103,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         /// <summary>   
 
-        [HttpGet("getSession-by-teacher")]
+        [HttpGet("getTeacher-by-SubjectGroup")]
         public ActionResult<ICollection<TeacherDto>> GetTeachersBySubjectGroup()
         {
             var userId = User.FindFirst("Id")?.Value;
