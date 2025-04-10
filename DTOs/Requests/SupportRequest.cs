@@ -13,7 +13,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public string? Content { get; set; }
 
         [Required(ErrorMessage = "Chọn loại hỗ trợ")]
-        public SupportType Type { get; set; }
+        public int Type { get; set; }
 
     }
 }

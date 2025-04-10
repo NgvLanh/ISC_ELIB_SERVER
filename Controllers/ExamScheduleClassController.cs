@@ -49,13 +49,18 @@ namespace ISC_ELIB_SERVER.Controllers
             if (response.Code == 1) return NotFound(response);
             return Ok(response);
         }
-
-        [HttpDelete("{id}")]
-        public ActionResult<ApiResponse<object>> Delete(long id)
+        [HttpPut("{examScheduleId}/class/{classId}/student-count")]
+        public IActionResult UpdateStudentCount(int examScheduleId, int classId, [FromBody] int studentCount)
         {
-            var response = _service.Delete(id);
-            if (response.Code == 1) return NotFound(response);
-            return Ok(response);
+            var result = _service.UpdateStudentCount(examScheduleId, classId, studentCount);
+            return Ok(result);
+        }
+
+        [HttpDelete("{examScheduleId}/class/{classId}")]
+        public IActionResult RemoveClassFromSchedule(int examScheduleId, int classId)
+        {
+            var result = _service.RemoveClassFromSchedule(examScheduleId, classId);
+            return Ok(result);
         }
     }
 }

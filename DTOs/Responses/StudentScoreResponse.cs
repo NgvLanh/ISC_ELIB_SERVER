@@ -16,17 +16,8 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
 
     public class StudentScoreDashboardResponse
     {
-        public StudentScoreByTestResponse Test { get; set; }
-        public ICollection<StudentResponse> Students { get; set; }
-    }
-
-    public class StudentScoreByTestResponse
-    {
-        public int Id { get; set; }
         public ClassScoreResponse Class { get; set; }
-        public SubjectScoreResponse Subject { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public ICollection<StudentResponse> Students { get; set; }
     }
 
     public class SubjectScoreResponse
@@ -40,6 +31,10 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public SubjectScoreResponse Subject { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
     }
 
     public class StudentResponse
