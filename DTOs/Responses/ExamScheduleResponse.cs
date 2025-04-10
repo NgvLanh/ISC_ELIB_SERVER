@@ -21,6 +21,7 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? SubjectName { get; set; }
         public List<string> SemesterNames { get; set; } = new List<string>();
         public string? GradeLevel { get; set; }
+        public List<string>? ClassNames { get; set; }
         public List<string>? TeacherNames { get; set; }
     }
 
