@@ -21,8 +21,8 @@ namespace ISC_ELIB_SERVER.Services
             int? gradeLevelsId,  
         int? classId
     );
-        ApiResponse<List<ExamScheduleResponse>> GetForCalendar(
-   int academicYearId, int? semesterId, int? gradeLevelsId, int? classId);
+        ApiResponse<List<CalendarExamResponse>> GetForCalendarStructured(
+        int academicYearId, int? semesterId, int? gradeLevelsId, int? classId);
         ApiResponse<ExamScheduleDetailResponse> GetScheduleWithClasses(long id);
 
         ApiResponse<ExamScheduleResponse> GetById(long id);
@@ -53,12 +53,49 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<PagedResult<ExamScheduleResponse>>.Success(result);
         }
 
-        public ApiResponse<List<ExamScheduleResponse>> GetForCalendar(
-    int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
+
+        public ApiResponse<List<CalendarExamResponse>> GetForCalendarStructured(
+            int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
         {
+            // 1. Lấy entities
             var entities = _repository.GetForCalendar(academicYearId, semesterId, gradeLevelsId, classId);
-            var responses = _mapper.Map<List<ExamScheduleResponse>>(entities);
-            return ApiResponse<List<ExamScheduleResponse>>.Success(responses);
+
+            // 2. Map sang DTO cơ bản
+            var exams = _mapper.Map<List<ExamScheduleResponse>>(entities);
+
+            // 3. Lọc bỏ record không có ngày thi
+            var withDate = exams.Where(e => e.ExamDay.HasValue).ToList();
+
+            // 4. Nhóm: Year → Month → Day
+            var calendar = withDate
+                .GroupBy(e => e.ExamDay.Value.Year)
+                .Select(yearG => new CalendarExamResponse
+                {
+                    Year = yearG.Key,
+                    Months = yearG
+                        .GroupBy(e => e.ExamDay.Value.Month)
+                        .Select(monthG => new CalendarMonth
+                        {
+                            Month = monthG.Key,
+                            Days = monthG
+                                .GroupBy(e => e.ExamDay.Value.Day)
+                                .Select(dayG => new CalendarDay
+                                {
+                                    Day = dayG.Key,
+                                    Exams = dayG
+                                        .OrderBy(e => e.ExamDay)
+                                        .ToList()
+                                })
+                                .OrderBy(d => d.Day)
+                                .ToList()
+                        })
+                        .OrderBy(m => m.Month)
+                        .ToList()
+                })
+                .OrderBy(c => c.Year)
+                .ToList();
+
+            return ApiResponse<List<CalendarExamResponse>>.Success(calendar);
         }
 
         public ApiResponse<ExamScheduleDetailResponse> GetScheduleWithClasses(long id)
