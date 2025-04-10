@@ -33,7 +33,7 @@ namespace ISC_ELIB_SERVER.Repositories
         }
         public Retirement CreateRetirement(Retirement retirement)
         {
-            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId);
+            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId && t.Active == false);
             if (!teacherExists)
             {
                 return null;
@@ -41,7 +41,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
             if (retirement.LeadershipId != 0)
             {
-                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId);
+                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId && u.Active == false);
                 if (!leadershipExists)
                 {
                     return null;
