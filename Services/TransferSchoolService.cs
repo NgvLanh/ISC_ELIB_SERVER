@@ -136,6 +136,7 @@ namespace ISC_ELIB_SERVER.Services
 
                 //Cập nhật thông tin chuyển trường**
                 existingTransfer.TransferSchoolDate = DateTime.SpecifyKind(request.TransferSchoolDate, DateTimeKind.Unspecified);
+                existingTransfer.TransferToSchool = request.TransferToSchool;
                 existingTransfer.SchoolAddress = request.SchoolAddress;
                 existingTransfer.Reason = request.Reason;
                 existingTransfer.AttachmentName = request.AttachmentName;
