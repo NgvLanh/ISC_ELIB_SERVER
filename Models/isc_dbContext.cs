@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -51,7 +51,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<Session> Sessions { get; set; } = null!;
         public virtual DbSet<StudentInfo> StudentInfos { get; set; } = null!;
         public virtual DbSet<StudentScore> StudentScores { get; set; } = null!;
-        public virtual DbSet<Subject> Subjects { get; set; } = null!;
+    public virtual DbSet<Subject> Subjects { get; set; } = null!;
         public virtual DbSet<SubjectGroup> SubjectGroups { get; set; } = null!;
         public virtual DbSet<SubjectType> SubjectTypes { get; set; } = null!;
         public virtual DbSet<Support> Supports { get; set; } = null!;
@@ -80,8 +80,10 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
-        public virtual DbSet<ClassUser> ClassUser { get; set; } = null!;
+
+        public virtual DbSet<ClassUser> ClassUsers { get; set; } = null!;
         public virtual DbSet<TestSubmissionAnswerAttachment> TestSubmissionAnswerAttachments { get; set; } = null!;
+
 
 
 
@@ -312,6 +314,7 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Chats)
                     .HasForeignKey(d => d.SessionId)
                     .HasConstraintName("fk_chats_session_id");
+
             });
 
             modelBuilder.Entity<Class>(entity =>
@@ -1231,6 +1234,13 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Sessions)
                     .HasForeignKey(d => d.TeachingAssignmentId)
                     .HasConstraintName("fk_sessions_teaching_assignment_id");
+
+
+                entity.Property(e => e.TeachingAssistantId).HasColumnName("teaching_assistant_id");
+                entity.HasOne(d => d.TeachingAssistant)
+              .WithMany(p => p.Sessions)
+              .HasForeignKey(d => d.TeachingAssistantId)
+              .HasConstraintName("fk_sessions_teaching_assistant_id_user");
             });
 
             modelBuilder.Entity<StudentInfo>(entity =>
