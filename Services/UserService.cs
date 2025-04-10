@@ -258,7 +258,6 @@ namespace ISC_ELIB_SERVER.Services
             // Cập nhật thông tin người dùng
             user.FullName = userUpdateRequest.FullName;
             user.Email = userUpdateRequest.Email;
-            user.Password = ComputeSha256(userUpdateRequest.Password);
             user.PhoneNumber = userUpdateRequest.PhoneNumber;
             user.Dob = userUpdateRequest.Dob;
             user.Gender = userUpdateRequest.Gender;
@@ -274,12 +273,6 @@ namespace ISC_ELIB_SERVER.Services
             user.EntryType = userUpdateRequest.EntryType;
             user.Active = userUpdateRequest.Active;
             user.AvatarUrl = userUpdateRequest.AvatarUrl;
-
-            // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userUpdateRequest.Password))
-            {
-                user.Password = ComputeSha256(userUpdateRequest.Password);
-            }
 
             try
             {
