@@ -56,7 +56,7 @@ namespace ISC_ELIB_SERVER.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
-        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserRequest userRequest)
+        public ActionResult<ApiResponse<UserResponse>> UpdateUser(int id, [FromBody] UserUpdateRequest userRequest)
         {
             if (userRequest == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
@@ -87,13 +87,9 @@ namespace ISC_ELIB_SERVER.Controllers
 
         //
         [HttpGet("student/learning-process")]
-        public async Task<IActionResult> GetUsersByClassIdAndAcademicYearId(
-            [FromQuery] int? userId,
-            [FromQuery] int? academicYearId,
-            [FromQuery] int? classId
-        )
+        public async Task<IActionResult> GetStudentById([FromQuery] int userId)
         {
-            var response = await _userService.GetUsersByClassIdAndAcademicYearId(userId, academicYearId, classId);
+            var response = await _userService.GetStudentById(userId);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
     }

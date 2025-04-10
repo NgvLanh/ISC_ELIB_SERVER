@@ -11,10 +11,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         Task<ApiResponse<UserResponse>> GetUserByCode(string code);
         ApiResponse<int> GetQuantityUserByRoleId(int roleId);
         ApiResponse<UserResponse> CreateUser(UserRequest userRequest);
-        ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest);
+        ApiResponse<UserResponse> UpdateUser(int id, UserUpdateRequest userUpdateRequest);
         ApiResponse<User> DeleteUser(int id);
         ApiResponse<UserResponse> UpdateUserPassword(int userId, string newPassword);
         ApiResponse<UserResponse> ChangePassword(int userId, string currentPassword, string newPassword);
-        Task<ApiResponse<StudentProcessResponse>> GetUsersByClassIdAndAcademicYearId(int? userId, int? academicYearId, int? classId);
+        Task<ApiResponse<StudentProcessResponse>> GetStudentById(int userId);
     }
 }
