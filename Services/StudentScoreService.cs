@@ -145,17 +145,14 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<StudentScore>.Success()
                 : ApiResponse<StudentScore>.NotFound("Không tìm thấy để xóa");
         }
-        
-        public ApiResponse<StudentScoreDashboardResponse> ViewStudentDashboardScores(int? academicYearId, int? classId, int? gradeLevelId, int? subjectId)
+
+        public async Task<ApiResponse<StudentScoreDashboardResponse>> ViewStudentDashboardScores(int? academicYearId, int? classId, int? subjectId)
         {
             if (academicYearId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu năm học");
 
             if (classId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu lớp");
-
-            if (gradeLevelId == null)
-                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu khối");
 
             if (subjectId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu môn học");
@@ -168,12 +165,13 @@ namespace ISC_ELIB_SERVER.Services
             if (classTest == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy lớp học");
 
-            var studentsOfClass = _mapper.Map<ICollection<StudentResponse>>(_userRepo.GetUsersByClassId((int)classId));
+            var users = await _userRepo.GetUsersByClassId((int)classId);
+            var studentsOfClass = _mapper.Map<ICollection<StudentResponse>>(users);
+
             if (studentsOfClass == null || !studentsOfClass.Any())
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy sinh viên trong lớp");
 
             var semesterOfAcademicYear = _mapper.Map<ICollection<SemesterScoreResponse>>(_semesterRepo.GetSemestersByAcademicYearId(academicYearId ?? 0));
-            // Console.WriteLine(JsonConvert.SerializeObject(semesterOfAcademicYear, Formatting.Indented));
             foreach (var student in studentsOfClass)
             {
                 student.Semesters = semesterOfAcademicYear.Select(semester => new SemesterScoreResponse
