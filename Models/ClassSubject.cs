@@ -13,5 +13,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual Subject? Subject { get; set; }
         public int? HoursSemester1 { get; set; }
         public int? HoursSemester2 { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }
