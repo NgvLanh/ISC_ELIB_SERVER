@@ -19,6 +19,7 @@ namespace ISC_ELIB_SERVER.Services
         private readonly SemesterRepo _semesterRepo;
         private readonly IScoreTypeRepo _scoreTypeRepo;
         private readonly SubjectRepo _subjectRepo;
+        private readonly ClassSubjectRepo _classSubjectRepo;
         private readonly AuthService _authService;
         private readonly IMapper _mapper;
 
@@ -27,6 +28,7 @@ namespace ISC_ELIB_SERVER.Services
         SemesterRepo semesterRepo,
         IScoreTypeRepo scoreTypeRepo,
         SubjectRepo subjectRepo,
+        ClassSubjectRepo classSubjectRepo,
         AuthService authService,
         IMapper mapper)
         {
@@ -37,6 +39,7 @@ namespace ISC_ELIB_SERVER.Services
             _semesterRepo = semesterRepo;
             _scoreTypeRepo = scoreTypeRepo;
             _subjectRepo = subjectRepo;
+            _classSubjectRepo = classSubjectRepo;
             _authService = authService;
             _mapper = mapper;
         }
@@ -157,9 +160,10 @@ namespace ISC_ELIB_SERVER.Services
             if (subjectId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu môn học");
 
-            var testOfSubject = _mapper.Map<StudentScoreByTestResponse>(_testRepo.GetTestsBySubjectId((int)subjectId));
-            if (testOfSubject == null)
-                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không có bài kiểm tra cho môn học này");
+            var classSubject = await _classSubjectRepo.GetClassSubjectByClassIdAndSubjectId((int)classId, (int)subjectId);
+            var subject = _mapper.Map<SubjectScoreResponse>(classSubject.Subject);
+            if (subject == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Mã môn học này không tồn tại");
 
             var classTest = _mapper.Map<ClassScoreResponse>(_classesRepo.GetClassById(classId ?? 0));
             if (classTest == null)
@@ -197,11 +201,12 @@ namespace ISC_ELIB_SERVER.Services
             }
 
 
-            testOfSubject.Class = classTest;
-
+            classTest.Subject = subject;
+            classTest.StartDate = classSubject.StartDate;
+            classTest.EndDate = classSubject.EndDate;
             var dashboardResponse = new StudentScoreDashboardResponse
             {
-                Test = testOfSubject,
+                Class = classTest,
                 Students = studentsOfClass
             };
 
