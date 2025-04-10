@@ -85,6 +85,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(s => s.User)
                     .ThenInclude(u => u.AcademicYear)
                         .ThenInclude(a => a.Semesters)
+                .Where(s => s.User != null && s.User.RoleId == 3)
                 .AsNoTracking()
                 .ToList()
                 .GroupBy(s => s.UserId)
