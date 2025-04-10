@@ -94,7 +94,25 @@ namespace ISC_ELIB_SERVER.Repositories
                 .FirstOrDefault(e => e.Id == id && e.Active); 
             return examSchedule;
         }
-
+        public ExamSchedule? GetDetailWithClasses(long id)
+        {
+            return _context.ExamSchedules
+                .Include(es => es.AcademicYear)
+                .Include(es => es.SubjectNavigation)
+                .Include(es => es.Semester)
+                .Include(es => es.GradeLevels)
+                .Include(es => es.Exam)
+                    .ThenInclude(e => e.ExamGraders)
+                        .ThenInclude(eg => eg.User)                       // graders chung (nếu cần)
+                .Include(es => es.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.Class)
+                        .ThenInclude(c => c.User)                        // ← giáo viên chủ nhiệm (Class.User)
+                .Include(es => es.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.ExamGraders)
+                        .ThenInclude(eg => eg.User)                       // ← graders riêng theo lớp
+                .AsNoTracking()
+                .FirstOrDefault(es => es.Id == id && es.Active);
+        }
         public List<ExamSchedule> GetForCalendar(
     int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
         {
@@ -124,28 +142,44 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.ExamSchedules.Add(examSchedule);
             _context.SaveChanges();
         }
-        public void AddGraders(int examId, List<int> graderIds)
+        public void AddGraders(int examId, int examScheduleClassId, List<int> graderIds)
         {
             foreach (var graderId in graderIds)
             {
-                var examGrader = new ExamGrader
+                _context.ExamGraders.Add(new ExamGrader
                 {
                     ExamId = examId,
+                    ExamScheduleClassId = examScheduleClassId,
                     UserId = graderId,
                     Active = true
-                };
-                _context.ExamGraders.Add(examGrader);
+                });
             }
-
             _context.SaveChanges();
         }
-
         public void Update(ExamSchedule examSchedule)
         {
             _context.ExamSchedules.Update(examSchedule);
             _context.SaveChanges();
         }
 
+        public void RemoveAllClassesAndGraders(long examScheduleId)
+        {
+            var examSchedule = _context.ExamSchedules
+                .Include(x => x.ExamScheduleClasses)
+                .ThenInclude(c => c.ExamGraders)
+                .FirstOrDefault(x => x.Id == examScheduleId);
+
+            if (examSchedule != null)
+            {
+                foreach (var examClass in examSchedule.ExamScheduleClasses)
+                {
+                    _context.ExamGraders.RemoveRange(examClass.ExamGraders);
+                }
+
+                _context.ExamScheduleClasses.RemoveRange(examSchedule.ExamScheduleClasses);
+                _context.SaveChanges();
+            }
+        }
         public bool Delete(int id)
         {
             var entity = _context.ExamSchedules.Find(id);

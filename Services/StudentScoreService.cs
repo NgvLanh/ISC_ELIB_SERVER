@@ -19,6 +19,7 @@ namespace ISC_ELIB_SERVER.Services
         private readonly SemesterRepo _semesterRepo;
         private readonly IScoreTypeRepo _scoreTypeRepo;
         private readonly SubjectRepo _subjectRepo;
+        private readonly ClassSubjectRepo _classSubjectRepo;
         private readonly AuthService _authService;
         private readonly IMapper _mapper;
 
@@ -27,6 +28,7 @@ namespace ISC_ELIB_SERVER.Services
         SemesterRepo semesterRepo,
         IScoreTypeRepo scoreTypeRepo,
         SubjectRepo subjectRepo,
+        ClassSubjectRepo classSubjectRepo,
         AuthService authService,
         IMapper mapper)
         {
@@ -37,6 +39,7 @@ namespace ISC_ELIB_SERVER.Services
             _semesterRepo = semesterRepo;
             _scoreTypeRepo = scoreTypeRepo;
             _subjectRepo = subjectRepo;
+            _classSubjectRepo = classSubjectRepo;
             _authService = authService;
             _mapper = mapper;
         }
@@ -145,8 +148,8 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<StudentScore>.Success()
                 : ApiResponse<StudentScore>.NotFound("Không tìm thấy để xóa");
         }
-        
-        public ApiResponse<StudentScoreDashboardResponse> ViewStudentDashboardScores(int? academicYearId, int? classId, int? gradeLevelId, int? subjectId)
+
+        public async Task<ApiResponse<StudentScoreDashboardResponse>> ViewStudentDashboardScores(int? academicYearId, int? classId, int? subjectId)
         {
             if (academicYearId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu năm học");
@@ -154,26 +157,25 @@ namespace ISC_ELIB_SERVER.Services
             if (classId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu lớp");
 
-            if (gradeLevelId == null)
-                return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu khối");
-
             if (subjectId == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu môn học");
 
-            var testOfSubject = _mapper.Map<StudentScoreByTestResponse>(_testRepo.GetTestsBySubjectId((int)subjectId));
-            if (testOfSubject == null)
-                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không có bài kiểm tra cho môn học này");
+            var classSubject = await _classSubjectRepo.GetClassSubjectByClassIdAndSubjectId((int)classId, (int)subjectId);
+            if (classSubject == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy môn học hoặc lớp học tương ứng");
+            var subject = _mapper.Map<SubjectScoreResponse>(classSubject.Subject);
 
             var classTest = _mapper.Map<ClassScoreResponse>(_classesRepo.GetClassById(classId ?? 0));
             if (classTest == null)
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy lớp học");
 
-            var studentsOfClass = _mapper.Map<ICollection<StudentResponse>>(_userRepo.GetUsersByClassId((int)classId));
+            var users = await _userRepo.GetUsersByClassId((int)classId);
+            var studentsOfClass = _mapper.Map<ICollection<StudentResponse>>(users);
+
             if (studentsOfClass == null || !studentsOfClass.Any())
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy sinh viên trong lớp");
 
             var semesterOfAcademicYear = _mapper.Map<ICollection<SemesterScoreResponse>>(_semesterRepo.GetSemestersByAcademicYearId(academicYearId ?? 0));
-            // Console.WriteLine(JsonConvert.SerializeObject(semesterOfAcademicYear, Formatting.Indented));
             foreach (var student in studentsOfClass)
             {
                 student.Semesters = semesterOfAcademicYear.Select(semester => new SemesterScoreResponse
@@ -199,11 +201,12 @@ namespace ISC_ELIB_SERVER.Services
             }
 
 
-            testOfSubject.Class = classTest;
-
+            classTest.Subject = subject;
+            classTest.StartDate = classSubject.StartDate;
+            classTest.EndDate = classSubject.EndDate;
             var dashboardResponse = new StudentScoreDashboardResponse
             {
-                Test = testOfSubject,
+                Class = classTest,
                 Students = studentsOfClass
             };
 

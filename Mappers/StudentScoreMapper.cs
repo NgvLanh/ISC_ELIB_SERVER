@@ -12,7 +12,6 @@ namespace ISC_ELIB_SERVER.Mappers
 
             CreateMap<StudentScore, StudentScoreResponse>();
             CreateMap<StudentScoreRequest, StudentScore>();
-            CreateMap<Test, StudentScoreByTestResponse>();
             CreateMap<Subject, SubjectScoreResponse>();
             CreateMap<Subject, SubjectScoreResponse>();
             CreateMap<Class, ClassScoreResponse>();

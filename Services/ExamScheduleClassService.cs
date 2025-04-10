@@ -12,7 +12,8 @@ namespace ISC_ELIB_SERVER.Services
         ApiResponse<ExamScheduleClassResponse> GetById(long id);
         ApiResponse<ExamScheduleClassResponse> Create(ExamScheduleClassRequest request);
         ApiResponse<ExamScheduleClassResponse> Update(long id, ExamScheduleClassRequest request);
-        ApiResponse<object> Delete(long id);
+        ApiResponse<string> UpdateStudentCount(int examScheduleId, int classId, int studentCount);
+        ApiResponse<string> RemoveClassFromSchedule(int examScheduleId, int classId);
 
     }
     public class ExamScheduleClassService: IExamScheduleClassService
@@ -65,13 +66,36 @@ namespace ISC_ELIB_SERVER.Services
             var response = _mapper.Map<ExamScheduleClassResponse>(entity);
             return ApiResponse<ExamScheduleClassResponse>.Success(response);
         }
-
-        public ApiResponse<object> Delete(long id)
+        public ApiResponse<string> UpdateStudentCount(int examScheduleId, int classId, int studentCount)
         {
-            var result = _repository.Delete(id);
-            return result
-                ? ApiResponse<object>.Success("Xóa thành công")
-                : ApiResponse<object>.NotFound("ExamScheduleClass không tồn tại");
+            try
+            {
+                _repository.UpdateStudentCount(examScheduleId, classId, studentCount);
+                return ApiResponse<string>.Success("Cập nhật thành công");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<string>.Error(new Dictionary<string, string[]>
+        {
+            { "Exception", new[] { ex.Message } }
+        });
+            }
+        }
+
+        public ApiResponse<string> RemoveClassFromSchedule(int examScheduleId, int classId)
+        {
+            try
+            {
+                _repository.RemoveClassFromSchedule(examScheduleId, classId);
+                return ApiResponse<string>.Success("Xóa lớp khỏi lịch thi thành công");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<string>.Error(new Dictionary<string, string[]>
+        {
+            { "Exception", new[] { ex.Message } }
+        });
+            }
         }
     }
 }

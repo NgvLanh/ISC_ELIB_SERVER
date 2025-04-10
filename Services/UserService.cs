@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ISC_ELIB_SERVER.Services
@@ -257,7 +258,6 @@ namespace ISC_ELIB_SERVER.Services
             // Cập nhật thông tin người dùng
             user.FullName = userUpdateRequest.FullName;
             user.Email = userUpdateRequest.Email;
-            user.Password = ComputeSha256(userUpdateRequest.Password);
             user.PhoneNumber = userUpdateRequest.PhoneNumber;
             user.Dob = userUpdateRequest.Dob;
             user.Gender = userUpdateRequest.Gender;
@@ -273,12 +273,6 @@ namespace ISC_ELIB_SERVER.Services
             user.EntryType = userUpdateRequest.EntryType;
             user.Active = userUpdateRequest.Active;
             user.AvatarUrl = userUpdateRequest.AvatarUrl;
-
-            // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userUpdateRequest.Password))
-            {
-                user.Password = ComputeSha256(userUpdateRequest.Password);
-            }
 
             try
             {
@@ -354,22 +348,24 @@ namespace ISC_ELIB_SERVER.Services
         }
 
         // Lấy thông tin sinh viên theo ID
-        public async Task<ApiResponse<StudentProcessResponse>> GetUsersByClassIdAndAcademicYearId(int? userId, int? academicYearId, int? classId)
+        public async Task<ApiResponse<StudentProcessResponse>> GetStudentById(int userId)
         {
-            if (userId == null)
+            if (userId <= 0)
                 return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không được để trống");
-            else if (academicYearId == null)
-                return ApiResponse<StudentProcessResponse>.Fail("Mã năm học không được để trống");
-            else if (classId == null)
-                return ApiResponse<StudentProcessResponse>.Fail("Mã lớp không được để trống");
             else
             {
-                var student = _userRepo.GetUsersByClassIdAndAcademicYearId((int)userId, (int)academicYearId, (int)classId);
-                var studentQty = _userRepo.GetUsersByClassId((int)classId).Count();
-                var subjectQty = _classSubjectRepo.GetClassSubjectsByClassId((int)classId).Count();
+                var student = await _userRepo.GetStudentById(userId);
+                if (student == null)
+                    return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không phải là học viên");
+                var students = await _userRepo.GetUsersByClassId(student.ClassId ?? 0);
+                if (students == null || students.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin lớp học của học viên");
+                var subjects = await _classSubjectRepo.GetClassSubjectsByClassId(student.ClassId ?? 0);
+                if (subjects == null || subjects.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin môn học của lớp học");
                 var response = _mapper.Map<StudentProcessResponse>(student);
-                response.StudentQty = studentQty;
-                response.SubjectQty = subjectQty;
+                response.StudentQty = students.Count;
+                response.SubjectQty = subjects.Count;
                 return ApiResponse<StudentProcessResponse>.Success(_mapper.Map<StudentProcessResponse>(response));
             }
 

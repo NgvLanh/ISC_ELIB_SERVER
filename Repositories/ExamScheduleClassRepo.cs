@@ -49,6 +49,23 @@ namespace ISC_ELIB_SERVER.Repositories
 
             return new PagedResult<ExamScheduleClass>(items, totalItems, page, pageSize);
         }
+
+        //public ExamSchedule? GetDetailWithClasses(long id)
+        //{
+        //    return _context.ExamSchedules
+        //        .Include(e => e.AcademicYear)
+        //        .Include(e => e.SubjectNavigation)
+        //        .Include(e => e.Semester)
+        //        .Include(e => e.GradeLevels)
+        //        .Include(e => e.GradeLevels)
+        //        .Include(e => e.Exam)
+        //            .ThenInclude(ex => ex.ExamGraders)
+        //                .ThenInclude(eg => eg.User)
+        //        .Include(e => e.ExamScheduleClasses)
+        //            .ThenInclude(esc => esc.Class)
+        //                .ThenInclude(c => c.ClassUsers)
+        //        .FirstOrDefault(e => e.Id == id && e.Active);
+        //}
         public ExamScheduleClass? GetById(long id)
         {
             return _context.ExamScheduleClasses.Find(id);
@@ -65,15 +82,42 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.ExamScheduleClasses.Update(entity);
             _context.SaveChanges();
         }
-
-        public bool Delete(long id)
+        public void UpdateStudentCount(int examScheduleId, int classId, int studentCount)
         {
-            var entity = _context.ExamScheduleClasses.Find(id);
-            if (entity == null) return false;
+            // Sử dụng thuộc tính phù hợp để lọc đối tượng, ví dụ:
+            var examClass = _context.ExamScheduleClasses
+                            .FirstOrDefault(x => x.ExampleSchedule == examScheduleId && x.ClassId == classId);
+            if (examClass != null)
+            {
+                // Cập nhật số lượng học sinh tham gia
+                examClass.joined_student_quantity = studentCount;
+                _context.SaveChanges();
+            }
+            else
+            {
+                // Bạn có thể ném exception hoặc xử lý không tìm thấy đối tượng tại đây
+                throw new Exception("Không tìm thấy đối tượng ExamScheduleClass với các tham số đã cho");
+            }
+        }
+        public void RemoveClassFromSchedule(int examScheduleId, int classId)
+        {
+            // Sử dụng thuộc tính phù hợp; nếu model của bạn đang dùng "ExampleSchedule" làm khóa liên kết lịch thi:
+            var examClass = _context.ExamScheduleClasses
+                            .Include(x => x.ExamGraders)
+                            .FirstOrDefault(x => x.ExampleSchedule == examScheduleId && x.ClassId == classId);
 
-            _context.ExamScheduleClasses.Remove(entity);
-            _context.SaveChanges();
-            return true;
+            if (examClass != null)
+            {
+                // Xóa các đối tượng liên quan nếu cần
+                _context.ExamGraders.RemoveRange(examClass.ExamGraders);
+                // Xóa đối tượng lớp khỏi lịch thi
+                _context.ExamScheduleClasses.Remove(examClass);
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new Exception("Không tìm thấy đối tượng ExamScheduleClass với các tham số đã cho");
+            }
         }
     }
 }

@@ -36,10 +36,9 @@
 
     public class StudentProcessResponse
     {
-        public string? Id { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? FullName { get; set; }
-        public string? ClassName { get; set; }
         public AcademicYearProcessResponse? AcademicYear { get; set; }
         public ClassProcessResponse? Class { get; set; }
         public int StudentQty { get; set; }

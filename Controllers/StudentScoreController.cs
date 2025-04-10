@@ -15,7 +15,7 @@ namespace ISC_ELIB_SERVER.Controllers
             _service = service;
         }
 
-        
+
 
 
         [HttpGet("{id}")]
@@ -50,13 +50,12 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("view-dashboard-scores")]
-        public IActionResult ViewStudentDashboardScores(
+        public async Task<IActionResult> ViewStudentDashboardScores(
             [FromQuery] int? academicYearId = null,
-            [FromQuery] int? classId = 10,
-            [FromQuery] int? gradeLevelId = 10,
+            [FromQuery] int? classId = null,
             [FromQuery] int? subjectId = null)
         {
-            var response = _service.ViewStudentDashboardScores(academicYearId, classId, gradeLevelId, subjectId);
+            var response = await _service.ViewStudentDashboardScores(academicYearId, classId, subjectId);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
     }

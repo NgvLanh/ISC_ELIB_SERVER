@@ -2,10 +2,9 @@
 {
     public enum SupportType
     {
-        Training,     // Đào tạo
-        Academic,     // Học vụ
-        Account,      // Hỗ trợ tài khoản
-        Other         // Khác
+        Training = 1,   // Đào tạo
+        Academic = 2,   // Học vụ
+        Account = 3,    // Hỗ trợ tài khoản
+        Other = 4       // Khác
     }
-
 }

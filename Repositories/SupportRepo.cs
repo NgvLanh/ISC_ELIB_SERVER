@@ -1,4 +1,5 @@
 using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,26 +16,34 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public ICollection<Support> GetSupports()
         {
-            return _context.Supports.ToList();
+            return _context.Supports
+                .Include(s => s.User)
+                .ToList();
         }
 
         public Support GetSupportById(long id)
         {
-            return _context.Supports.FirstOrDefault(n => n.Id == id);
+            return _context.Supports
+                .Include(s => s.User)
+                .FirstOrDefault(n => n.Id == id);
         }
 
-        public Support CreateSupport(Support Support)
+        public Support CreateSupport(Support support)
         {
-            _context.Supports.Add(Support);
+            _context.Supports.Add(support);
             _context.SaveChanges();
-            return Support;
+            return _context.Supports
+                .Include(s => s.User)
+                .FirstOrDefault(s => s.Id == support.Id);
         }
 
-        public Support UpdateSupport(Support Support)
+        public Support UpdateSupport(Support support)
         {
-            _context.Supports.Update(Support);
+            _context.Supports.Update(support);
             _context.SaveChanges();
-            return Support;
+            return _context.Supports
+                .Include(s => s.User)
+                .FirstOrDefault(s => s.Id == support.Id);
         }
 
         public bool DeleteSupport(long id)
