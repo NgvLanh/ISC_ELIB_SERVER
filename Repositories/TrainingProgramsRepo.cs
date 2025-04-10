@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -8,6 +9,16 @@ namespace ISC_ELIB_SERVER.Repositories
         public TrainingProgramsRepo(isc_dbContext context)
         {
             _context = context;
+        }
+
+        public IQueryable<TeacherTrainingProgram> GetTeacherTrainingPrograms()
+        {
+            return _context.TeacherTrainingPrograms;
+        }
+
+        public IQueryable<TeacherInfo> GetTeacherInfo()
+        {
+            return _context.TeacherInfos;
         }
 
         public ICollection<TrainingProgram> GetTrainingProgram()
