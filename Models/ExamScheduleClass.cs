@@ -13,6 +13,8 @@ namespace ISC_ELIB_SERVER.Models
         public int joined_student_quantity { get; set; }
         public bool Active { get; set; }
 
+
+        public virtual ICollection<ExamGrader> ExamGraders { get; set; } = new HashSet<ExamGrader>();
         public virtual Class? Class { get; set; }
         public virtual ExamSchedule? ExampleScheduleNavigation { get; set; }
         public virtual TeacherInfo? SupervisoryTeacher { get; set; }
