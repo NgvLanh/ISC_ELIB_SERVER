@@ -251,6 +251,7 @@ builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<TeacherTrainingProgramRepo>();
 
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
