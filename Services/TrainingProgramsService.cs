@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System;
 using ISC_ELIB_SERVER.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using CloudinaryDotNet;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -113,6 +114,40 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có dữ liệu");
         }
 
+ 
+
+        public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingProgramsByTeacherId(long teacherId, string? search)
+        {
+            var trainingProgramIds = _repository.GetTeacherTrainingPrograms()
+                .Where(tt => tt.TeacherId == teacherId)
+                .Select(tt => tt.TrainingProgramId)
+                .ToList();
+
+            var trainingPrograms = _repository.GetTrainingProgram()
+                .ToList() 
+                .Where(tp => trainingProgramIds.Contains(tp.Id) && tp.Active == true)
+            .ToList();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                trainingPrograms = trainingPrograms
+                    .Where(tp => tp.Name != null && tp.Name.ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            if (!trainingPrograms.Any())
+            {
+                return ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có chương trình đào tạo nào.");
+            }
+
+            var response = _mapper.Map<ICollection<TrainingProgramsResponse>>(trainingPrograms);
+            return ApiResponse<ICollection<TrainingProgramsResponse>>.Success(response);
+        }
+
+
+
+
+
 
         //public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
         //{
@@ -122,21 +157,8 @@ namespace ISC_ELIB_SERVER.Services
         //        : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
         //}
 
-        public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id)
+        public ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id, long teacherId)
         {
-            var senderIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
-
-            if (!int.TryParse(senderIdClaim, out int userId))
-            {
-                return ApiResponse<TrainingProgramsResponse>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
-            }
-
-            var teacherId = _repository.GetTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
-            if (teacherId == null)
-            {
-                return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy thông tin giảng viên.");
-            }
-
             // Kiểm tra xem chương trình có thuộc giảng viên này không
             var isAssigned = _repository.GetTeacherTrainingPrograms()
                 .Any(tt => tt.TeacherId == teacherId && tt.TrainingProgramId == id);
@@ -146,13 +168,13 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TrainingProgramsResponse>.NotFound($"Chương trình đào tạo #{id} không thuộc giảng viên này.");
             }
 
-            // Lấy chương trình nếu đã xác nhận liên kết
             var trainingProgram = _repository.GetTrainingProgramById(id);
 
             return (trainingProgram != null && trainingProgram.Active == true)
                 ? ApiResponse<TrainingProgramsResponse>.Success(_mapper.Map<TrainingProgramsResponse>(trainingProgram))
                 : ApiResponse<TrainingProgramsResponse>.NotFound($"Không tìm thấy chương trình đào tạo #{id}");
         }
+
 
 
         //public ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest)
@@ -217,21 +239,14 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TrainingProgramsResponse>.Conflict("Chủ đề không tồn tại");
             }
 
-            var userID = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
-
-            if (!int.TryParse(userID, out int userId))
-            {
-                return ApiResponse<TrainingProgramsResponse>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
-            }
-
-
-            var teacherId = _repository.GetTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
-            if (teacherId == null)
+            // Kiểm tra teacherId truyền vào có tồn tại không
+            var teacherExists = _repository.GetTeacherInfo()
+                .Any(t => t.Id == trainingProgramsRequest.TeacherId);
+            if (!teacherExists)
             {
                 return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy thông tin giảng viên.");
             }
 
-            // Tạo mới chương trình đào tạo
             var created = _repository.CreateTrainingProgram(new TrainingProgram()
             {
                 Name = trainingProgramsRequest.Name,
@@ -246,10 +261,9 @@ namespace ISC_ELIB_SERVER.Services
                 Degree = trainingProgramsRequest.Degree
             });
 
-            // Liên kết vào bảng teacher_training_program
             _teacherTrainingProgram.CreateTeacherTrainingPrograms(new TeacherTrainingProgram()
             {
-                TeacherId = teacherId.Value,
+                TeacherId = trainingProgramsRequest.TeacherId,
                 TrainingProgramId = created.Id
             });
 
@@ -295,23 +309,8 @@ namespace ISC_ELIB_SERVER.Services
 
         public ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest)
         {
-            var userID = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
-
-            if (!int.TryParse(userID, out int userId))
-            {
-                return ApiResponse<TrainingProgramsResponse>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
-            }
-
-            var teacherId = _teacherTrainingProgram.GetTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
-
-            if (teacherId == null)
-            {
-                return ApiResponse<TrainingProgramsResponse>.NotFound("Không tìm thấy thông tin giảng viên.");
-            }
-
-            // Kiểm tra chương trình này có thuộc teacher không
             var isTeacherAssigned = _teacherTrainingProgram.GetTeacherTrainingPrograms()
-                .Any(tt => tt.TeacherId == teacherId && tt.TrainingProgramId == id);
+            .Any(tt => tt.TeacherId == trainingProgramsRequest.TeacherId && tt.TrainingProgramId == id);
 
             if (!isTeacherAssigned)
             {
@@ -371,25 +370,14 @@ namespace ISC_ELIB_SERVER.Services
         //    return ApiResponse<TrainingProgram>.Success();
         //}
 
-        public ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id)
+        public ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id, long teacherId)
         {
-            var userID = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
-
-            if (!int.TryParse(userID, out int userId))
-            {
-                return ApiResponse<TrainingProgram>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
-            }
-            var teacherId = _teacherInfoRepo.GetAllTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
-
-            if (teacherId == null)
-                return ApiResponse<TrainingProgram>.NotFound("Bạn không phải giảng viên.");
-
-            // Kiểm tra xem chương trình này có thuộc giảng viên không
             var isOwned = _teacherTrainingProgram.GetTeacherTrainingPrograms()
-                .Any(x => x.TeacherId == teacherId && x.TrainingProgramId == id);
+           .Any(x => x.TeacherId == teacherId && x.TrainingProgramId == id);
 
             if (!isOwned)
                 return ApiResponse<TrainingProgram>.NotFound("Bạn không có quyền xóa chương trình này.");
+
 
             var trainingProgram = _repository.GetTrainingProgramById(id);
             if (trainingProgram == null || trainingProgram.Active == false)
@@ -401,5 +389,6 @@ namespace ISC_ELIB_SERVER.Services
             return ApiResponse<TrainingProgram>.Success();
         }
 
+       
     }
 }

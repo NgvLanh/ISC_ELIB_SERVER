@@ -25,12 +25,20 @@ namespace ISC_ELIB_SERVER.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetTrainingProgramsById(long id)
+        [HttpGet("by-teacher/{teacherId}")]
+        public IActionResult GetTrainingProgramsByTeacherId(int teacherId, [FromQuery] string? search = "")
         {
-            var response = _service.GetTrainingProgramsById(id);
+            var result = _service.GetTrainingProgramsByTeacherId(teacherId, search);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/teacher/{teacherId}")]
+        public IActionResult GetTrainingProgramsById(long id, long teacherId)
+        {
+            var response = _service.GetTrainingProgramsById(id, teacherId);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
+
 
         [HttpPost]
         public IActionResult CreateTrainingProgram([FromBody] TrainingProgramsRequest trainingProgramsRequest)
@@ -48,9 +56,9 @@ namespace ISC_ELIB_SERVER.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTrainingPrograms(long id)
+        public IActionResult DeleteTrainingPrograms(long id, long teacherId)
         {
-            var response = _service.DeleteTrainingPrograms(id);
+            var response = _service.DeleteTrainingPrograms(id, teacherId);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
