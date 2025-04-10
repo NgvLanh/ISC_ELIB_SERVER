@@ -4,7 +4,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class UserUpdateRequest
     {
-        public string? Password { get; set; }
 
         [Required(ErrorMessage = "Tên đầy đủ không được để trống")]
         public string? FullName { get; set; }
