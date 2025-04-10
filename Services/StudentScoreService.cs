@@ -161,9 +161,9 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<StudentScoreDashboardResponse>.Fail("Thiếu môn học");
 
             var classSubject = await _classSubjectRepo.GetClassSubjectByClassIdAndSubjectId((int)classId, (int)subjectId);
+            if (classSubject == null)
+                return ApiResponse<StudentScoreDashboardResponse>.Fail("Không tìm thấy môn học hoặc lớp học tương ứng");
             var subject = _mapper.Map<SubjectScoreResponse>(classSubject.Subject);
-            if (subject == null)
-                return ApiResponse<StudentScoreDashboardResponse>.Fail("Mã môn học này không tồn tại");
 
             var classTest = _mapper.Map<ClassScoreResponse>(_classesRepo.GetClassById(classId ?? 0));
             if (classTest == null)
