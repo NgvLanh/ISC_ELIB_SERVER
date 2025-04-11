@@ -1,6 +1,7 @@
 ﻿using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -10,6 +11,11 @@ namespace ISC_ELIB_SERVER.Repositories
         public AcademicYearRepo(isc_dbContext context)
         {
             _context = context;
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
 
         public ICollection<AcademicYear> GetAcademicYears()
