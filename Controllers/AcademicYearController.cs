@@ -1,4 +1,5 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+﻿using System.Threading.Tasks;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISC_ELIB_SERVER.Controllers
@@ -34,9 +35,9 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAcademicYear([FromBody] AcademicYearRequest request)
+        public async Task<IActionResult> CreateAcademicYear([FromBody] AcademicYearRequest request)
         {
-            var response = _service.CreateAcademicYear(request);
+            var response = await _service.CreateAcademicYear(request);
             return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
