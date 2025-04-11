@@ -22,9 +22,10 @@ namespace ISC_ELIB_SERVER.Services
             private readonly UserRepo _userRepo;
             private readonly SubjectGroupRepo _subjectGroupRepo;
             private readonly isc_dbContext _context; 
+            private readonly CloudinaryService _cloudinaryService;
             private readonly IMapper _mapper;
 
-            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo, isc_dbContext context)
+            public TestService(TestRepo testRepo, IMapper mapper, SemesterRepo semesterRepo, UserRepo userRepo, SubjectRepo subjectRepo, GradeLevelRepo gradeLevelRepo, SubjectGroupRepo subjectGroupRepo, isc_dbContext context, CloudinaryService cloudinaryService)
             {
                 _testRepo = testRepo;
                 _userRepo = userRepo;
@@ -34,6 +35,7 @@ namespace ISC_ELIB_SERVER.Services
                 _gradeLevelRepo = gradeLevelRepo;
                 _subjectGroupRepo = subjectGroupRepo;
                 _context = context;
+            _cloudinaryService = cloudinaryService;
             }
 
             public ApiResponse<ICollection<TestResponse>> GetTestes(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
@@ -214,14 +216,22 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.NotFound($"Môn học có id {testRequest.SubjectId} không tồn tạ!!!");
             }
 
-            var user = _userRepo.GetUserById(userId);
-            if (user == null)
+            //var user = _userRepo.GetUserById(userId);
+            //if (user == null)
+            //{
+            //    return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
+            //}
+
+            var teacher = _userRepo.GetUserById(testRequest.TeacherId.Value);
+            if (teacher == null)
             {
-                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
+                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {teacher.Id} không tồn tạ!!!");
             }
 
+            var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
+            testRequest.File = cloudinaryUrl;
             var testEntity = _mapper.Map<Test>(testRequest);
-          
+            testEntity.UserId = teacher.Id;
             testEntity.StartTime = testEntity.StartTime.HasValue?DateTime.SpecifyKind(testEntity.StartTime.Value, DateTimeKind.Unspecified):null;
             testEntity.EndTime = testEntity.EndTime.HasValue ? DateTime.SpecifyKind(testEntity.EndTime.Value, DateTimeKind.Unspecified) : null;
             // Tạo mới bài kiểm tra
@@ -262,14 +272,22 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.NotFound($"Môn học có id {testRequest.SubjectId} không tồn tạ!!!");
             }
 
-            var user = _userRepo.GetUserById(userId);
-            if (user == null)
-            {
-                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
-            }
+            //var user = _userRepo.GetUserById(userId);
+            //if (user == null)
+            //{
+            //    return ApiResponse<TestResponse>.NotFound($"Người dùng có id {userId} không tồn tạ!!!");
+            //}
 
+            var teacher = _userRepo.GetUserById(testRequest.TeacherId.Value);
+            if (teacher == null)
+            {
+                return ApiResponse<TestResponse>.NotFound($"Người dùng có id {teacher.Id} không tồn tạ!!!");
+            }
+            var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
+            testRequest.File = cloudinaryUrl;
             // Ánh xạ dữ liệu từ request sang entity, chỉ cập nhật các trường cần thiết
             _mapper.Map(testRequest, existingTest);
+            existingTest.UserId = teacher.Id;
             existingTest.StartTime = existingTest.StartTime.HasValue ? DateTime.SpecifyKind(existingTest.StartTime.Value, DateTimeKind.Unspecified) : null;
             existingTest.EndTime = existingTest.EndTime.HasValue ? DateTime.SpecifyKind(existingTest.EndTime.Value, DateTimeKind.Unspecified) : null;
 
