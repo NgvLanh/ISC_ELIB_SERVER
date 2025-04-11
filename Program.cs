@@ -9,11 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System.Reflection;
-using AutoMapper;
 using System.Text.Json.Serialization;
 using ISC_ELIB_SERVER.Services.Interfaces;
-using Autofac.Core;
-using CloudinaryDotNet;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -379,6 +376,8 @@ builder.Services.AddScoped<ClassSubjectRepo>();
 
 builder.Services.AddScoped<AuthService>();
 
+builder.Services.AddScoped<CloudinaryService>();
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
@@ -410,8 +409,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     containerBuilder.RegisterType<TemporaryPasswordService>()
     .As<ITemporaryPasswordService>()
     .SingleInstance();
-
-
 });
 
 builder.Services.AddSwaggerGen(c =>

@@ -4,6 +4,8 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -51,7 +53,6 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<ICollection<AcademicYearResponse>>.NotFound("Không có dữ liệu");
         }
 
-
         public ApiResponse<AcademicYearResponse> GetAcademicYearById(long id)
         {
             var academicYear = _academicYearRepo.GetAcademicYearById(id);
@@ -59,8 +60,7 @@ namespace ISC_ELIB_SERVER.Services
                 ? ApiResponse<AcademicYearResponse>.Success(_mapper.Map<AcademicYearResponse>(academicYear))
                 : ApiResponse<AcademicYearResponse>.NotFound($"Không tìm thấy năm học #{id}");
         }
-
-        public ApiResponse<AcademicYearResponse> CreateAcademicYear(AcademicYearRequest academicYearRequest)
+        public async Task<ApiResponse<AcademicYearResponse>> CreateAcademicYear(AcademicYearRequest academicYearRequest)
         {
             if (academicYearRequest.StartTime >= academicYearRequest.EndTime)
             {
@@ -73,26 +73,23 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa phải kéo dài ít nhất 1 năm và nhiều nhất 5 năm");
             }
 
-            var school = _schoolRepo.GetSchoolById((long)academicYearRequest.SchoolId);
+            var school = _schoolRepo.GetSchoolById(1);
             if (school == null)
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Mã trường không chính xác");
             }
 
-            var existingAcademicYears = _academicYearRepo.GetAcademicYearsBySchoolId((long)academicYearRequest.SchoolId);
+            var existingAcademicYears = _academicYearRepo.GetAcademicYearsBySchoolId(1);
 
-            bool isDuplicate = existingAcademicYears.Any(x =>
-                x.StartTime == academicYearRequest.StartTime &&
-                x.EndTime == academicYearRequest.EndTime);
-
-            if (isDuplicate)
+            if (existingAcademicYears.Any(x =>
+            x.StartTime == academicYearRequest.StartTime &&
+            x.EndTime == academicYearRequest.EndTime))
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này đã tồn tại trong trường");
             }
 
-            bool isOverlapping = existingAcademicYears.Any(x => academicYearRequest.EndTime > x.StartTime);
-
-            if (isOverlapping)
+            if (existingAcademicYears.Any(x =>
+            academicYearRequest.StartTime < x.EndTime && academicYearRequest.EndTime < x.StartTime))
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này chồng lấn với niên khóa đã tồn tại");
             }
@@ -101,17 +98,51 @@ namespace ISC_ELIB_SERVER.Services
             {
                 StartTime = DateTime.SpecifyKind(academicYearRequest.StartTime, DateTimeKind.Unspecified),
                 EndTime = DateTime.SpecifyKind(academicYearRequest.EndTime, DateTimeKind.Unspecified),
-                SchoolId = academicYearRequest.SchoolId
+                SchoolId = 1,
             };
 
-            try
+            using (var transaction = await _academicYearRepo.BeginTransactionAsync())
             {
-                var created = _academicYearRepo.CreateAcademicYear(newAcademicYear);
-                return ApiResponse<AcademicYearResponse>.Success(_mapper.Map<AcademicYearResponse>(created));
-            }
-            catch (Exception ex)
-            {
-                return ApiResponse<AcademicYearResponse>.BadRequest(ex.Message);
+                try
+                {
+                    var created = _academicYearRepo.CreateAcademicYear(newAcademicYear);
+
+                    if (academicYearRequest.Semesters != null && academicYearRequest.Semesters.Count > 0)
+                    {
+                        foreach (var semesterRequest in academicYearRequest.Semesters)
+                        {
+                            if (semesterRequest.StartTime < newAcademicYear.StartTime || semesterRequest.EndTime > newAcademicYear.EndTime)
+                            {
+                                transaction.Rollback();
+                                return ApiResponse<AcademicYearResponse>.BadRequest("Học kỳ phải nằm trong khoảng thời gian của niên khóa");
+                            }
+
+                            var durationSemester = (semesterRequest.EndTime - semesterRequest.StartTime).TotalDays / 30;
+                            if (durationSemester < 1)
+                            {
+                                transaction.Rollback();
+                                return ApiResponse<AcademicYearResponse>.BadRequest("Thời gian của học kỳ phải kéo dài ít nhất 1 tháng");
+                            }
+
+                            var newSemester = new Semester
+                            {
+                                AcademicYearId = created.Id,
+                                Name = semesterRequest.Name,
+                                StartTime = DateTime.SpecifyKind(semesterRequest.StartTime, DateTimeKind.Unspecified),
+                                EndTime = DateTime.SpecifyKind(semesterRequest.EndTime, DateTimeKind.Unspecified)
+                            };
+                            _semesterRepo.CreateSemester(newSemester);
+                        }
+                    }
+
+                    transaction.Commit();
+                    return ApiResponse<AcademicYearResponse>.Success(_mapper.Map<AcademicYearResponse>(created));
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return ApiResponse<AcademicYearResponse>.BadRequest(ex.Message);
+                }
             }
         }
 
