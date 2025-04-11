@@ -30,7 +30,7 @@ namespace ISC_ELIB_SERVER.Services
         {
             var classType = _repository.GetClassTypeById(id);
 
-            if (classType == null || classType.Active)
+            if (classType == null || !classType.Active)
             {
                 return ApiResponse<ClassTypeResponse>.NotFound("Không tìm thấy loại lớp");
             }
@@ -65,7 +65,7 @@ namespace ISC_ELIB_SERVER.Services
 
             var classType = _mapper.Map<ClassType>(classTypeRequest);
             classType.AcademicYearId = (int)classTypeRequest.AcademicYearId; 
-
+            classType.Active = false;
             _repository.CreateClassType(classType);
 
             return ApiResponse<ClassTypeResponse>.Success(_mapper.Map<ClassTypeResponse>(classType));
