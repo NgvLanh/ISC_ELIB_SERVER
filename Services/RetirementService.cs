@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
@@ -28,14 +28,6 @@ namespace ISC_ELIB_SERVER.Services
             {
                 // Chuyển sang DateTime có Kind Unspecified
                 Retirement_AddRequest.Date = DateTime.SpecifyKind(Retirement_AddRequest.Date.Value, DateTimeKind.Unspecified);
-            }
-            if (!_context.TeacherInfos.Any(t => t.Id == Retirement_AddRequest.TeacherId))
-            {
-                return ApiResponse<RetirementResponse>.NotFound("TeacherId không tồn tại");
-            }
-            if (!_context.Users.Any(u => u.Id == Retirement_AddRequest.LeadershipId))
-            {
-                return ApiResponse<RetirementResponse>.NotFound("LeadershipId không tồn tại");
             }
             var existingRetirement = _repository.GetRetirementByTeacherId(Retirement_AddRequest.TeacherId);
             if (existingRetirement != null && existingRetirement.Any())
@@ -126,12 +118,12 @@ namespace ISC_ELIB_SERVER.Services
                 }
 
                 // Kiểm tra sự tồn tại của TeacherId và LeadershipId
-                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId))
+                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId && t.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Giảng viên không tồn tại");
                 }
 
-                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId))
+                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId && u.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Người dùng không tồn tại");
                 }
@@ -161,12 +153,12 @@ namespace ISC_ELIB_SERVER.Services
                 }
 
                 // Kiểm tra sự tồn tại của TeacherId và LeadershipId
-                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId))
+                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId && t.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Giảng viên không tồn tại");
                 }
 
-                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId))
+                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId && u.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Người dùng không tồn tại");
                 }
