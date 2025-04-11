@@ -31,6 +31,13 @@ namespace ISC_ELIB_SERVER.Controllers
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
 
+        [HttpGet("by-test/{testId}")]
+        public async Task<IActionResult> GetSubmissionsByTestId(int testId)
+        {
+            var result = await _service.GetByTestIdAsync(testId);
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult CreateTest([FromBody] TestsSubmissionRequest TestRequest)
         {

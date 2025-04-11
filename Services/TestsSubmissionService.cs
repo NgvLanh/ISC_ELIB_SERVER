@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -45,6 +46,17 @@ namespace ISC_ELIB_SERVER.Services
                 : ApiResponse<TestsSubmissionResponse>.NotFound($"Không tìm thấy thông tin #{id}");
         }
 
+        public async Task<ApiResponse<List<TestsSubmissionResponse>>> GetByTestIdAsync(int testId)
+        {
+            var submissions = await _repository.GetByTestIdAsync(testId);
+            if (submissions == null || !submissions.Any())
+            {
+                return ApiResponse<List<TestsSubmissionResponse>>.NotFound("Không tìm thấy bài nộp cho bài kiểm tra này.");
+            }
+
+            var responseData = _mapper.Map<List<TestsSubmissionResponse>>(submissions);
+            return ApiResponse<List<TestsSubmissionResponse>>.Success(responseData);
+        }
 
         public ApiResponse<TestsSubmissionResponse> CreateTestsSubmission(TestsSubmissionRequest TestsSubmissionRequest)
         {

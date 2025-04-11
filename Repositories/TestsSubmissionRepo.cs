@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -34,6 +35,16 @@ namespace ISC_ELIB_SERVER.Repositories
             return TestsSubmission;
         }
 
+        public async Task<List<TestsSubmission>> GetByTestIdAsync(int testId)
+        {
+            return await _context.TestsSubmissions
+                .Where(x => x.TestId == testId && x.Active == true)
+                .Include(x => x.Student)
+                .Include(x => x.Test)
+                .Include(t => t.TestSubmissionsAnswers)
+                    .ThenInclude(a => a.Attachments)
+                .ToListAsync();
+        }
 
         public bool DeleteTestsSubmission(long id)
         {

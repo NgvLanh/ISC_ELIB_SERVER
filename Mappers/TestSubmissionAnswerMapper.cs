@@ -10,6 +10,9 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public TestSubmissionAnswerMapper()
         {
+            CreateMap<TestsSubmission, TestsSubmissionResponse>()
+                .ForMember(dest => dest.TestSubmissionAnswer,
+                    opt => opt.MapFrom(src => src.TestSubmissionsAnswers));
             CreateMap<TestSubmissionAnswerRequest, TestSubmissionsAnswer>();
             CreateMap<TestSubmissionsAnswer, TestSubmissionAnswerResponse>();
         }
