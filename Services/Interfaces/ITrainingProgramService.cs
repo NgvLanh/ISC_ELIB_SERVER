@@ -7,9 +7,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
     public interface ITrainingProgramService
     {
         ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder);
-        ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id);
+        ApiResponse<TrainingProgramsResponse> GetTrainingProgramsById(long id, long teacherId);
+        ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingProgramsByTeacherId(long teacherID, string? search);
         ApiResponse<TrainingProgramsResponse> CreateTrainingPrograms(TrainingProgramsRequest trainingProgramsRequest);
         ApiResponse<TrainingProgramsResponse> UpdateTrainingPrograms(long id, TrainingProgramsRequest trainingProgramsRequest);
-        ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id);
+        ApiResponse<TrainingProgram> DeleteTrainingPrograms(long id, long teacherId);
     }
 }
