@@ -182,6 +182,20 @@ namespace ISC_ELIB_SERVER.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public bool Exists(int academicYearId, int semesterId, int gradeLevelsId, DateTime examDay, int classId)
+        {
+            return _context.ExamSchedules
+                .Include(e => e.ExamScheduleClasses)
+                .Any(e =>
+                    e.Active
+                    && e.AcademicYearId == academicYearId
+                    && e.SemesterId == semesterId
+                    && e.GradeLevelsId == gradeLevelsId
+                    && e.ExamDay.HasValue && e.ExamDay.Value.Date == examDay.Date
+                    && e.ExamScheduleClasses.Any(c => c.ClassId == classId && c.Active)
+                );
+        }
         public void Update(ExamSchedule examSchedule)
         {
             _context.ExamSchedules.Update(examSchedule);
@@ -230,6 +244,5 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.SaveChanges();
             return true;
         }
-
     }
 }

@@ -6,7 +6,7 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
     {
         public string? Name { get; set; }
 
-        public int ExamId { get; set; }
+        public int? ExamId { get; set; }
         public DateTime? ExamDay { get; set; }
         public string? Type { get; set; }
         public bool? Form { get; set; }

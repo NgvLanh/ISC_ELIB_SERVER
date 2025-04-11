@@ -26,29 +26,27 @@ namespace ISC_ELIB_SERVER.Repositories
         public List<object> GetTransferSchoolList(string? search)
         {
             return _context.TransferSchools
-            .Where(ts => ts.Active)
-            .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
-            .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
-            .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
-            .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c })
-            .Join(_context.GradeLevels, tsucg => tsucg.c.GradeLevelId, gl => gl.Id, (tsucg, gl) => new { tsucg, gl }) // JOIN với bảng GradeLevels
-
-            .Select(res => new
-            {
-                StudentId = res.tsucg.tsuc.tsu.tsi.si.Id,
-                FullName = res.tsucg.tsuc.tsu.u.FullName,
-                Code = res.tsucg.tsuc.tsu.u.Code,
-                DateOfBirth = res.tsucg.tsuc.tsu.u.Dob,
-                Gender = res.tsucg.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
-                TransferDate = res.tsucg.tsuc.tsu.tsi.ts.TransferSchoolDate,
-                TransferSemester = res.tsucg.tsuc.s.Name,
-                TransferToSchool = res.tsucg.tsuc.tsu.tsi.ts.TransferToSchool,
-                GradeLevel = res.gl.Name,   // Lấy tên của cấp lớp thay vì Id
-                SemesterStart = res.tsucg.tsuc.s.StartTime,
-                SemesterEnd = res.tsucg.tsuc.s.EndTime
-            })
-            .Distinct()
-            .ToList<object>();
+                .Where(ts => ts.Active)
+                .Join(_context.Users, ts => ts.StudentId, u => u.Id, (ts, u) => new { ts, u }) // Join trực tiếp UserId
+                .Join(_context.Semesters, tsu => tsu.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
+                .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c })
+                .Join(_context.GradeLevels, tsucg => tsucg.c.GradeLevelId, gl => gl.Id, (tsucg, gl) => new { tsucg, gl })
+                .Select(res => new
+                {
+                    StudentId = res.tsucg.tsuc.tsu.ts.StudentId,
+                    FullName = res.tsucg.tsuc.tsu.u.FullName,
+                    Code = res.tsucg.tsuc.tsu.u.Code,
+                    DateOfBirth = res.tsucg.tsuc.tsu.u.Dob,
+                    Gender = res.tsucg.tsuc.tsu.u.Gender == true ? "Nam" : "Nữ",
+                    TransferDate = res.tsucg.tsuc.tsu.ts.TransferSchoolDate,
+                    TransferSemester = res.tsucg.tsuc.s.Name,
+                    TransferToSchool = res.tsucg.tsuc.tsu.ts.TransferToSchool,
+                    GradeLevel = res.gl.Name,
+                    SemesterStart = res.tsucg.tsuc.s.StartTime,
+                    SemesterEnd = res.tsucg.tsuc.s.EndTime
+                })
+                .Distinct()
+                .ToList<object>();
         }
 
 
@@ -62,22 +60,21 @@ namespace ISC_ELIB_SERVER.Repositories
             {
                 var transferSchool = _context.TransferSchools
                     .Where(ts => ts.StudentId == studentId && ts.Active)
-                    .Join(_context.StudentInfos, ts => ts.StudentId, si => si.Id, (ts, si) => new { ts, si })
-                    .Join(_context.Users, tsi => tsi.si.UserId, u => u.Id, (tsi, u) => new { tsi, u })
-                    .Join(_context.Semesters, tsu => tsu.tsi.ts.SemesterId, s => s.Id, (tsu, s) => new
+                    .Join(_context.Users, ts => ts.StudentId, u => u.Id, (ts, u) => new { ts, u })
+                    .Join(_context.Semesters, tsu => tsu.ts.SemesterId, s => s.Id, (tsu, s) => new
                     {
-                        StudentId = tsu.tsi.ts.StudentId,
+                        StudentId = tsu.ts.StudentId,
                         SemesterId = s.Id,
                         StudentCode = tsu.u.Code ?? "Không có mã học viên",
                         FullName = tsu.u.FullName ?? "Không có tên",
                         TransferSemester = s.Name ?? "Không có học kỳ",
-                        TransferSchoolDate = tsu.tsi.ts.TransferSchoolDate ?? DateTime.MinValue,
-                        TransferToSchool = tsu.tsi.ts.TransferToSchool ?? "Không có thông tin trường chuyển đến",
+                        TransferSchoolDate = tsu.ts.TransferSchoolDate ?? DateTime.MinValue,
+                        TransferToSchool = tsu.ts.TransferToSchool ?? "Không có thông tin trường chuyển đến",
                         ProvinceCode = tsu.u.ProvinceCode ?? 0,
                         DistrictCode = tsu.u.DistrictCode ?? 0,
-                        Reason = tsu.tsi.ts.Reason ?? "Không có lý do",
-                        AttachmentName = tsu.tsi.ts.AttachmentName ?? "Không có tệp đính kèm",
-                        AttachmentPath = tsu.tsi.ts.AttachmentPath ?? string.Empty
+                        Reason = tsu.ts.Reason ?? "Không có lý do",
+                        AttachmentName = tsu.ts.AttachmentName ?? "Không có tệp đính kèm",
+                        AttachmentPath = tsu.ts.AttachmentPath ?? string.Empty
                     })
                     .FirstOrDefault();
 
@@ -106,6 +103,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 return null;
             }
         }
+
 
         public TransferSchoolResponse? GetTransferSchoolByStudentCode(string studentCode)
         {
@@ -136,12 +134,8 @@ namespace ISC_ELIB_SERVER.Repositories
                 if (user == null)
                     return null;
 
-                var studentInfo = _context.StudentInfos.FirstOrDefault(si => si.UserId == userId);
-                if (studentInfo == null)
-                    return null;
-
                 var transferSchool = _context.TransferSchools
-                    .Where(ts => ts.StudentId == studentInfo.Id && ts.Active)
+                    .Where(ts => ts.StudentId == userId && ts.Active) // studentId = userId
                     .Join(_context.Semesters,
                           ts => ts.SemesterId,
                           s => s.Id,
@@ -153,13 +147,13 @@ namespace ISC_ELIB_SERVER.Repositories
                         StudentCode = user.Code ?? "Không có mã học viên",
                         FullName = user.FullName ?? "Không có tên",
                         TransferSchoolDate = res.ts.TransferSchoolDate ?? DateTime.MinValue,
-                        TransferToSchool = res.ts.TransferToSchool,
+                        TransferToSchool = res.ts.TransferToSchool ?? "Không có thông tin trường chuyển đến",
                         TransferSemester = res.s.Name ?? "Không có học kỳ",
-                        Reason = res.ts.Reason,
+                        Reason = res.ts.Reason ?? "Không có lý do",
                         ProvinceCode = user.ProvinceCode ?? 0,
                         DistrictCode = user.DistrictCode ?? 0,
-                        AttachmentName = res.ts.AttachmentName,
-                        AttachmentPath = res.ts.AttachmentPath
+                        AttachmentName = res.ts.AttachmentName ?? "Không có tệp đính kèm",
+                        AttachmentPath = res.ts.AttachmentPath ?? string.Empty
                     })
                     .FirstOrDefault();
 
@@ -173,13 +167,13 @@ namespace ISC_ELIB_SERVER.Repositories
                     FullName = transferSchool.FullName,
                     StudentCode = transferSchool.StudentCode,
                     TransferSchoolDate = transferSchool.TransferSchoolDate,
-                    TransferToSchool = transferSchool.TransferToSchool ?? "Không có thông tin trường chuyển đến",
+                    TransferToSchool = transferSchool.TransferToSchool,
                     TransferSemester = transferSchool.TransferSemester,
-                    Reason = transferSchool.Reason ?? "Không có lý do",
+                    Reason = transferSchool.Reason,
                     ProvinceCode = transferSchool.ProvinceCode,
                     DistrictCode = transferSchool.DistrictCode,
-                    AttachmentName = transferSchool.AttachmentName ?? "Không có tệp đính kèm",
-                    AttachmentPath = transferSchool.AttachmentPath ?? string.Empty,
+                    AttachmentName = transferSchool.AttachmentName,
+                    AttachmentPath = transferSchool.AttachmentPath,
                     StatusCode = 200
                 };
             }
@@ -188,6 +182,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 return null;
             }
         }
+
 
         public TransferSchool CreateTransferSchool(TransferSchool entity)
         {

@@ -47,6 +47,8 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         //         yield return new ValidationResult("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.", new[] { nameof(StartDate) });
         //     }
         // }
+        public int TeacherId { get; set; }
+
 
     }
 }
