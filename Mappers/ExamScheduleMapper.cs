@@ -30,15 +30,14 @@ namespace ISC_ELIB_SERVER.Mappers
                             : new List<string>()))
                 .ForMember(dest => dest.GradeLevel,
                     opt => opt.MapFrom(src => src.GradeLevels != null ? src.GradeLevels.Name : null))
-           .ForMember(dest => dest.TeacherNames,
+          .ForMember(dest => dest.TeacherNames,
     opt => opt.MapFrom(src =>
-        src.Exam != null
-            ? src.Exam.ExamGraders
-                .Where(eg => eg.User != null)
-                .Select(eg => eg.User.FullName)
-                .Distinct()
-                .ToList()
-            : new List<string>()
+        src.ExamScheduleClasses
+            .SelectMany(esc => esc.ExamGraders)
+            .Where(eg => eg.User != null)
+            .Select(eg => eg.User.FullName)
+            .Distinct()
+            .ToList()
     ))
               .ForMember(dest => dest.ClassNames,
     opt => opt.MapFrom(src =>

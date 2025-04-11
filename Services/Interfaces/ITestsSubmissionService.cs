@@ -9,8 +9,10 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         ApiResponse<ICollection<TestsSubmissionResponse>> GetTestsSubmissiones(int page, int pageSize, string search, string sortColumn, string sortOrder);
         ApiResponse<TestsSubmissionResponse> GetTestsSubmissionById(long id);
         //ApiResponse<TestsSubmissionResponse> GetTestsSubmissionByName(string name);
-        ApiResponse<TestsSubmissionResponse> CreateTestsSubmission(TestsSubmissionRequest TestsSubmissionRequest);
-        ApiResponse<TestsSubmissionResponse> UpdateTestsSubmission(long id, TestsSubmissionRequest TestsSubmission);
+        //ApiResponse<TestsSubmissionResponse> GetTestsSubmissionByTestId(long testId);
+        Task<ApiResponse<List<TestsSubmissionResponse>>> GetByTestIdAsync(int testId);
+        Task<ApiResponse<TestsSubmissionResponse>> CreateTestsSubmission(TestsSubmissionRequest request, List<TestSubmissionAnswerRequest> answerRequests);
+        Task<ApiResponse<TestsSubmissionResponse>> UpdateTestsSubmission(int submissionId, TestsSubmissionRequest request, List<TestSubmissionAnswerRequest>? answerRequests);
         ApiResponse<TestsSubmission> DeleteTestsSubmission(long id);
     }
 }

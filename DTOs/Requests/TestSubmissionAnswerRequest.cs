@@ -4,9 +4,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 {
     public class TestSubmissionAnswerRequest
     {
-        [Required(ErrorMessage = "Mã số nộp bài không được bỏ trống")]
-        [Range(1, int.MaxValue, ErrorMessage = "Mã số nộp bài phải lớn hơn 0")]
-        public int SubmissionId { get; set; }
+        //[Required(ErrorMessage = "Mã số nộp bài không được bỏ trống")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Mã số nộp bài phải lớn hơn 0")]
+        public int? SubmissionId { get; set; }
 
         [Required(ErrorMessage = "Mã câu hỏi không được bỏ trống")]
         [Range(1, int.MaxValue, ErrorMessage = "Mã câu hỏi phải lớn hơn 0")]
@@ -30,5 +30,6 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
 
         // Nếu cần file đính kèm:
         // public List<TestSubmissionAnswerAttachmentRequest>? Attachments { get; set; }
+        public List<IFormFile>? Attachments { get; set; }
     }
 }

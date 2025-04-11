@@ -9,6 +9,10 @@ namespace ISC_ELIB_SERVER.Mappers
     {
         public TestSubmissionAnswerAttachmentMapper()
         {
+            CreateMap<TestSubmissionsAnswer, TestSubmissionAnswerResponse>()
+                        .ForMember(dest => dest.Attachments,
+                                   opt => opt.MapFrom(src => src.Attachments));
+
             // Mapping từ TestSubmissionAnswerAttachmentRequest sang TestSubmissionAnswerAttachment
             CreateMap<TestSubmissionAnswerAttachmentRequest, TestSubmissionAnswerAttachment>();
 
