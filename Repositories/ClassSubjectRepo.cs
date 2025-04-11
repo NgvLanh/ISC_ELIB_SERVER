@@ -14,6 +14,8 @@ namespace ISC_ELIB_SERVER.Repositories
         Task<bool> RemoveClassSubjectsByClassIdAsync(int classId, List<int> subjectIds);
         Task<bool> RemoveClassSubjectsByClassIdAsync(int classId); // Sửa trả về Task<bool>
         Task AddClassSubjectsAsync(List<ClassSubject> classSubjects);
+        Task<ICollection<ClassSubject>> GetClassSubjectsByClassId(int classId);
+        Task<ClassSubject> GetClassSubjectByClassIdAndSubjectId(int classId, int subjectId);
     }
 
     public class ClassSubjectRepo : IClassSubjectRepo
@@ -107,5 +109,20 @@ namespace ISC_ELIB_SERVER.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<ICollection<ClassSubject>> GetClassSubjectsByClassId(int classId)
+        {
+            return await _context.ClassSubjects
+                .Where(cs => cs.ClassId == classId)
+                .Include(cs => cs.Subject)
+                .ToListAsync();
+        }
+
+        public async Task<ClassSubject> GetClassSubjectByClassIdAndSubjectId(int classId, int subjectId)
+        {
+            return await _context.ClassSubjects
+                .Where(cs => cs.ClassId == classId && cs.SubjectId == subjectId)
+                .Include(cs => cs.Subject)
+                .FirstOrDefaultAsync();
+        }
     }
 }

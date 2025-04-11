@@ -68,12 +68,42 @@ namespace ISC_ELIB_SERVER.Repositories
         }
 
         // Lấy danh sách User theo id lớp học
-        public ICollection<User> GetUsersByClassId(int classId, string roleName = "Student")
+        public async Task<ICollection<User>> GetUsersByClassId(int classId, string roleName = "Student")
         {
-            return _context.Users
+            return await _context.Users
             .Where(u => u.ClassId == classId && u.Active && u.Role.Name == roleName)
             .Include(r => r.Role)
-            .ToList();
+            .ToListAsync();
+        }
+
+        // Lấy danh sách User theo id, id lớp học và năm học
+        public async Task<User> GetStudentById(int userId, string roleName = "Student")
+        {
+            return await _context.Users
+           .Where(u => u.Id == userId &&
+                       u.Active &&
+                       u.Role.Name == roleName)
+           .Include(u => u.Role)
+           .Include(u => u.AcademicYear)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.GradeLevel)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.ClassType)
+           .Include(u => u.Class)
+               .ThenInclude(c => c.User)
+           .FirstOrDefaultAsync();
+        }
+
+        // Lấy danh sách User theo id lớp học và năm học
+        public async Task<ICollection<User>> GetUsersByClassIdAndAcademicYearId(int classId, int academicYearId, string roleName = "Student")
+        {
+            return await _context.Users
+           .Where(u => u.ClassId == classId &&
+                       u.AcademicYearId == academicYearId &&
+                       u.Active &&
+                       u.Role.Name == roleName)
+           .Include(r => r.Role)
+           .ToListAsync();
         }
     }
 }

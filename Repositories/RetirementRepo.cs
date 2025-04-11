@@ -1,4 +1,4 @@
-﻿using ISC_ELIB_SERVER.DTOs.Requests;
+using ISC_ELIB_SERVER.DTOs.Requests;
 using ISC_ELIB_SERVER.Models;
 
 namespace ISC_ELIB_SERVER.Repositories
@@ -23,7 +23,7 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<Retirement> GetRetirementByTeacherId(long id)
         {
             return _context.Retirements
-                .Where(s => s.TeacherId == id)
+                .Where(s => s.TeacherId == id && s.Active)
                 .ToList();
         }
 
@@ -33,21 +33,6 @@ namespace ISC_ELIB_SERVER.Repositories
         }
         public Retirement CreateRetirement(Retirement retirement)
         {
-            bool teacherExists = _context.TeacherInfos.Any(t => t.Id == retirement.TeacherId);
-            if (!teacherExists)
-            {
-                return null;
-            }
-
-            if (retirement.LeadershipId != 0)
-            {
-                bool leadershipExists = _context.Users.Any(u => u.Id == retirement.LeadershipId);
-                if (!leadershipExists)
-                {
-                    return null;
-                }
-            }
-
             _context.Retirements.Add(retirement);
             _context.SaveChanges();
 
@@ -59,20 +44,6 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             var existingRetirement = GetRetirementById(id);
 
-
-            if (existingRetirement == null)
-            {
-                return null;
-            }
-            if (!_context.TeacherInfos.Any(t => t.Id == Retirement.TeacherId))
-            {
-                return null;
-            }
-
-            if (Retirement.LeadershipId != 0 && !_context.Users.Any(u => u.Id == Retirement.LeadershipId))
-            {
-                return null;
-            }
             existingRetirement.TeacherId = Retirement.TeacherId;
             existingRetirement.Date = Retirement.Date;
             existingRetirement.Note = Retirement.Note;
@@ -92,20 +63,6 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             var existingRetirement = GetRetirementByTeacherIdForPut(id);
 
-
-            if (existingRetirement == null)
-            {
-                return null;
-            }
-            if (!_context.TeacherInfos.Any(t => t.Id == Retirement.TeacherId))
-            {
-                return null;
-            }
-
-            if (Retirement.LeadershipId != 0 && !_context.Users.Any(u => u.Id == Retirement.LeadershipId))
-            {
-                return null;
-            }
             existingRetirement.TeacherId = Retirement.TeacherId;
             existingRetirement.Date = Retirement.Date;
             existingRetirement.Note = Retirement.Note;

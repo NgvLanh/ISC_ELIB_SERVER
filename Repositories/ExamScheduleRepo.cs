@@ -90,11 +90,39 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(e => e.Exam)
                     .ThenInclude(ex => ex.ExamGraders)
                         .ThenInclude(eg => eg.User)
+                // Thêm include ExamScheduleClasses để lấy thông tin lớp và liên quan
+                .Include(e => e.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.Class)
+                        .ThenInclude(c => c.User)
+                          .Include(e => e.ExamScheduleClasses)
+            .ThenInclude(esc => esc.Class)
+                // Nếu cần include ExamGraders cho từng lớp
+                .Include(e => e.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.ExamGraders)
+                        .ThenInclude(eg => eg.User)
                 .AsNoTracking()
-                .FirstOrDefault(e => e.Id == id && e.Active); 
+                .FirstOrDefault(e => e.Id == id && e.Active);
             return examSchedule;
         }
-
+        public ExamSchedule? GetDetailWithClasses(long id)
+        {
+            return _context.ExamSchedules
+                .Include(es => es.AcademicYear)
+                .Include(es => es.SubjectNavigation)
+                .Include(es => es.Semester)
+                .Include(es => es.GradeLevels)
+                .Include(es => es.Exam)
+                    .ThenInclude(e => e.ExamGraders)
+                        .ThenInclude(eg => eg.User)                       // graders chung (nếu cần)
+                .Include(es => es.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.Class)
+                        .ThenInclude(c => c.User)                        // ← giáo viên chủ nhiệm (Class.User)
+                .Include(es => es.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.ExamGraders)
+                        .ThenInclude(eg => eg.User)                       // ← graders riêng theo lớp
+                .AsNoTracking()
+                .FirstOrDefault(es => es.Id == id && es.Active);
+        }
         public List<ExamSchedule> GetForCalendar(
     int academicYearId, int? semesterId, int? gradeLevelsId, int? classId)
         {
@@ -103,9 +131,12 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(e => e.SubjectNavigation)
                 .Include(e => e.Semester)
                 .Include(e => e.GradeLevels)
-                .Include(e => e.Exam)
+                 .Include(e => e.Exam)
                     .ThenInclude(ex => ex.ExamGraders)
                         .ThenInclude(eg => eg.User)
+                         .Include(e => e.ExamScheduleClasses)
+                    .ThenInclude(esc => esc.Class)
+                        .ThenInclude(c => c.User)
                 .Include(e => e.ExamScheduleClasses)
                     .ThenInclude(esc => esc.Class)
                 .Where(e => e.Active && e.AcademicYear.Id == academicYearId);
@@ -124,28 +155,85 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.ExamSchedules.Add(examSchedule);
             _context.SaveChanges();
         }
-        public void AddGraders(int examId, List<int> graderIds)
+        public void AddGraders(int examId, int examScheduleClassId, List<int> graderIds)
         {
-            foreach (var graderId in graderIds)
-            {
-                var examGrader = new ExamGrader
+            if (graderIds == null || !graderIds.Any()) return;
+
+            var existingGraderIds = _context.ExamGraders
+                .Where(g => g.ExamId == examId && g.ExamScheduleClassId == examScheduleClassId)
+                .Select(g => g.UserId)
+                .ToHashSet();
+
+            var newGraders = graderIds
+                .Distinct()
+                .Where(id => !existingGraderIds.Contains(id))
+                .Select(id => new ExamGrader
                 {
                     ExamId = examId,
-                    UserId = graderId,
+                    ExamScheduleClassId = examScheduleClassId,
+                    UserId = id,
                     Active = true
-                };
-                _context.ExamGraders.Add(examGrader);
-            }
+                })
+                .ToList();
 
-            _context.SaveChanges();
+            if (newGraders.Any())
+            {
+                _context.ExamGraders.AddRange(newGraders);
+                _context.SaveChanges();
+            }
         }
 
+        public bool Exists(int academicYearId, int semesterId, int gradeLevelsId, DateTime examDay, int classId)
+        {
+            return _context.ExamSchedules
+                .Include(e => e.ExamScheduleClasses)
+                .Any(e =>
+                    e.Active
+                    && e.AcademicYearId == academicYearId
+                    && e.SemesterId == semesterId
+                    && e.GradeLevelsId == gradeLevelsId
+                    && e.ExamDay.HasValue && e.ExamDay.Value.Date == examDay.Date
+                    && e.ExamScheduleClasses.Any(c => c.ClassId == classId && c.Active)
+                );
+        }
         public void Update(ExamSchedule examSchedule)
         {
             _context.ExamSchedules.Update(examSchedule);
             _context.SaveChanges();
         }
 
+        public ExamSchedule? GetByIdForUpdate(long id)
+        {
+            // Không sử dụng AsNoTracking để EF tự động theo dõi các thay đổi của entity
+            return _context.ExamSchedules
+                .Include(e => e.AcademicYear)
+                .Include(e => e.SubjectNavigation)
+                .Include(e => e.Semester)
+                .Include(e => e.GradeLevels)
+                .Include(e => e.Exam)
+                    .ThenInclude(ex => ex.ExamGraders)
+                        .ThenInclude(eg => eg.User)
+                .FirstOrDefault(e => e.Id == id && e.Active);
+        }
+
+        public void RemoveAllClassesAndGraders(long examScheduleId)
+        {
+            var examSchedule = _context.ExamSchedules
+                .Include(x => x.ExamScheduleClasses)
+                .ThenInclude(c => c.ExamGraders)
+                .FirstOrDefault(x => x.Id == examScheduleId);
+
+            if (examSchedule != null)
+            {
+                foreach (var examClass in examSchedule.ExamScheduleClasses)
+                {
+                    _context.ExamGraders.RemoveRange(examClass.ExamGraders);
+                }
+
+                _context.ExamScheduleClasses.RemoveRange(examSchedule.ExamScheduleClasses);
+                _context.SaveChanges();
+            }
+        }
         public bool Delete(int id)
         {
             var entity = _context.ExamSchedules.Find(id);
@@ -156,6 +244,5 @@ namespace ISC_ELIB_SERVER.Repositories
             _context.SaveChanges();
             return true;
         }
-
     }
 }

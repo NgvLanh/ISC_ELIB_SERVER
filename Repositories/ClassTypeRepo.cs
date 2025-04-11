@@ -1,4 +1,5 @@
-﻿using ISC_ELIB_SERVER.Models;
+﻿using System.Linq.Dynamic.Core;
+using ISC_ELIB_SERVER.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
@@ -25,6 +26,7 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.ClassTypes
                 .AsNoTracking()
+                .Where(ct => ct.Active)
                 .Include(ct => ct.AcademicYear)
                 .ToList();
         }
@@ -33,7 +35,8 @@ namespace ISC_ELIB_SERVER.Repositories
         public ClassType? GetClassTypeById(int id)
         {
             return _context.ClassTypes
-                .AsNoTracking() 
+                .AsNoTracking()
+                .Where(ct => ct.Active)
                 .Include(ct => ct.AcademicYear)
                 .FirstOrDefault(ct => ct.Id == id);
         }

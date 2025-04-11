@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -51,7 +51,7 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<Session> Sessions { get; set; } = null!;
         public virtual DbSet<StudentInfo> StudentInfos { get; set; } = null!;
         public virtual DbSet<StudentScore> StudentScores { get; set; } = null!;
-        public virtual DbSet<Subject> Subjects { get; set; } = null!;
+    public virtual DbSet<Subject> Subjects { get; set; } = null!;
         public virtual DbSet<SubjectGroup> SubjectGroups { get; set; } = null!;
         public virtual DbSet<SubjectType> SubjectTypes { get; set; } = null!;
         public virtual DbSet<Support> Supports { get; set; } = null!;
@@ -80,8 +80,10 @@ namespace ISC_ELIB_SERVER.Models
         public virtual DbSet<QuestionView> QuestionViews { get; set; } = null!;
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
-        public virtual DbSet<ClassUser> ClassUser { get; set; } = null!;
+
+        public virtual DbSet<ClassUser> ClassUsers { get; set; } = null!;
         public virtual DbSet<TestSubmissionAnswerAttachment> TestSubmissionAnswerAttachments { get; set; } = null!;
+
 
 
 
@@ -312,6 +314,7 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Chats)
                     .HasForeignKey(d => d.SessionId)
                     .HasConstraintName("fk_chats_session_id");
+
             });
 
             modelBuilder.Entity<Class>(entity =>
@@ -371,33 +374,33 @@ namespace ISC_ELIB_SERVER.Models
                     .IsRequired(false); ;
             });
 
-                    modelBuilder.Entity<ClassType>(entity =>
-                    {
-                        entity.ToTable("class_types");
+            modelBuilder.Entity<ClassType>(entity =>
+            {
+                entity.ToTable("class_types");
 
-                        entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                        entity.Property(e => e.Active)
-                            .HasColumnName("active")
-                            .HasDefaultValueSql("true");
+                entity.Property(e => e.Active)
+                    .HasColumnName("active")
+                    .HasDefaultValueSql("true");
 
-                        entity.Property(e => e.Description)
-                            .HasMaxLength(255)
-                            .HasColumnName("description");
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .HasColumnName("description");
 
-                        entity.Property(e => e.Name)
-                            .HasMaxLength(100)
-                            .HasColumnName("name");
+                entity.Property(e => e.Name)
+                    .HasMaxLength(100)
+                    .HasColumnName("name");
 
-                        entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
 
-                        entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
+                entity.Property(e => e.AcademicYearId).HasColumnName("academic_year_id");
 
-                        entity.HasOne(d => d.AcademicYear)
-                            .WithMany(p => p.ClassTypes) 
-                            .HasForeignKey(d => d.AcademicYearId) 
-                            .HasConstraintName("fk_class_types_academic_year_id");
-                    });
+                entity.HasOne(d => d.AcademicYear)
+                    .WithMany(p => p.ClassTypes)
+                    .HasForeignKey(d => d.AcademicYearId)
+                    .HasConstraintName("fk_class_types_academic_year_id");
+            });
 
             modelBuilder.Entity<Discussion>(entity =>
             {
@@ -599,6 +602,13 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.ExamGraders)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("fk_exam_graders_user_id");
+
+                entity.Property(e => e.ExamScheduleClassId)
+            .HasColumnName("exam_schedule_class_id");
+
+                entity.HasOne(d => d.ExamScheduleClass)
+                      .WithMany(p => p.ExamGraders)
+                      .HasForeignKey(d => d.ExamScheduleClassId);
             });
 
             modelBuilder.Entity<ExamSchedule>(entity =>
@@ -1224,6 +1234,13 @@ namespace ISC_ELIB_SERVER.Models
                     .WithMany(p => p.Sessions)
                     .HasForeignKey(d => d.TeachingAssignmentId)
                     .HasConstraintName("fk_sessions_teaching_assignment_id");
+
+
+                entity.Property(e => e.TeachingAssistantId).HasColumnName("teaching_assistant_id");
+                entity.HasOne(d => d.TeachingAssistant)
+              .WithMany(p => p.Sessions)
+              .HasForeignKey(d => d.TeachingAssistantId)
+              .HasConstraintName("fk_sessions_teaching_assistant_id_user");
             });
 
             modelBuilder.Entity<StudentInfo>(entity =>
@@ -1546,7 +1563,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.WardCode).HasColumnName("ward_code");
 
-                entity.Property(e =>e.SubjectId).HasColumnName("subject_id");
+                entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
                 entity.Property(e => e.Position).HasMaxLength(100).HasColumnName("position");
 
@@ -2155,7 +2172,7 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-                entity.Property(e => e.Street)  
+                entity.Property(e => e.Street)
                     .HasMaxLength(255)
                     .HasColumnName("street");
 
@@ -2276,6 +2293,8 @@ namespace ISC_ELIB_SERVER.Models
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
             entity.Property(e => e.HoursSemester1).HasColumnName("hours_semester_1");
             entity.Property(e => e.HoursSemester2).HasColumnName("hours_semester_2");
+            entity.Property(e => e.StartDate).HasColumnName("start_date");
+            entity.Property(e => e.EndDate).HasColumnName("end_date");
             entity.HasOne(d => d.Class)
                 .WithMany(p => p.ClassSubjects)
                 .HasForeignKey(d => d.ClassId)

@@ -251,6 +251,7 @@ builder.Services.AddScoped<INotificationService, INotificationService>();
 builder.Services.AddScoped<MajorRepo>();
 builder.Services.AddScoped<IMajorService, MajorService>();
 builder.Services.AddScoped<TrainingProgramsRepo>();
+builder.Services.AddScoped<TeacherTrainingProgramRepo>();
 
 builder.Services.AddScoped<ITrainingProgramService, ITrainingProgramService>();
 
@@ -374,6 +375,9 @@ builder.Services.AddScoped<ITransferSchoolService, TransferSchoolService>();
 
 builder.Services.AddScoped<ClassUserRepo>();
 
+builder.Services.AddScoped<ClassSubjectRepo>();
+
+builder.Services.AddScoped<AuthService>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 

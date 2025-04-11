@@ -68,16 +68,33 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             var duration = (academicYearRequest.EndTime - academicYearRequest.StartTime).TotalDays / 365;
-
             if (duration < 1 || duration > 5)
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa phải kéo dài ít nhất 1 năm và nhiều nhất 5 năm");
             }
-            var school = _schoolRepo.GetSchoolById((long)academicYearRequest.SchoolId);
 
+            var school = _schoolRepo.GetSchoolById((long)academicYearRequest.SchoolId);
             if (school == null)
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Mã trường không chính xác");
+            }
+
+            var existingAcademicYears = _academicYearRepo.GetAcademicYearsBySchoolId((long)academicYearRequest.SchoolId);
+
+            bool isDuplicate = existingAcademicYears.Any(x =>
+                x.StartTime == academicYearRequest.StartTime &&
+                x.EndTime == academicYearRequest.EndTime);
+
+            if (isDuplicate)
+            {
+                return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này đã tồn tại trong trường");
+            }
+
+            bool isOverlapping = existingAcademicYears.Any(x => academicYearRequest.EndTime > x.StartTime);
+
+            if (isOverlapping)
+            {
+                return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này chồng lấn với niên khóa đã tồn tại");
             }
 
             var newAcademicYear = new AcademicYear
@@ -86,6 +103,7 @@ namespace ISC_ELIB_SERVER.Services
                 EndTime = DateTime.SpecifyKind(academicYearRequest.EndTime, DateTimeKind.Unspecified),
                 SchoolId = academicYearRequest.SchoolId
             };
+
             try
             {
                 var created = _academicYearRepo.CreateAcademicYear(newAcademicYear);

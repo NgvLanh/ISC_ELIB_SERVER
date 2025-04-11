@@ -26,7 +26,7 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSupportById(long id)
+        public IActionResult GetSupportById(int id)
         {
             var response = _service.GetSupportById(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
@@ -41,17 +41,18 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateSupport(long id, [FromBody] Support Support)
+        public IActionResult UpdateSupport(int id, [FromBody] SupportRequest supportRequest)
         {
-            var response = _service.UpdateSupport(Support);
-            return response.Code == 0 ? Ok(response) : NotFound(response);
+            var response = _service.UpdateSupport(id, supportRequest);
+            return response.Code == 0 ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSupport(long id)
+        public IActionResult DeleteSupport(int id)
         {
             var response = _service.DeleteSupport(id);
             return response.Code == 0 ? Ok(response) : NotFound(response);
         }
+
     }
 }

@@ -11,6 +11,7 @@ namespace ISC_ELIB_SERVER.Mappers
         {
             CreateMap<Session, SessionResponse>();
             CreateMap<SessionRequest, Session>();
+            CreateMap<SessionRequestTeacher, Session>();
         }
     }
 }

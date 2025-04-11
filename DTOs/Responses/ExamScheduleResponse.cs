@@ -14,14 +14,24 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string StatusName => Status.ToString();
         public int AcademicYearId { get; set; }
         public int Subject { get; set; }
-        public int SemesterId { get; set; }
+        public List<int> SemesterIds { get; set; } = new List<int>();
         public int GradeLevelsId { get; set; }
 
         public string? AcademicYear { get; set; }
         public string? SubjectName { get; set; }
-        public string? Semester { get; set; }
+        public List<string> SemesterNames { get; set; } = new List<string>();
         public string? GradeLevel { get; set; }
+        public List<string>? ClassNames { get; set; }
         public List<string>? TeacherNames { get; set; }
+
+        public List<int>? ClassIds { get; set; }
+        public List<GradersForClassResponse>? GradersForClasses { get; set; }
+    }
+
+    public class GradersForClassResponse
+    {
+        public int ClassId { get; set; }
+        public List<int> GraderIds { get; set; } = new List<int>();
     }
 
 }

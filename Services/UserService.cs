@@ -4,9 +4,11 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.Models;
 using ISC_ELIB_SERVER.Repositories;
 using ISC_ELIB_SERVER.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ISC_ELIB_SERVER.Services
@@ -14,6 +16,7 @@ namespace ISC_ELIB_SERVER.Services
     public class UserService : IUserService
     {
         private readonly UserRepo _userRepo;
+        private readonly ClassSubjectRepo _classSubjectRepo;
         private readonly RoleRepo _roleRepo;
         private readonly AcademicYearRepo _academicYearRepo;
         private readonly UserStatusRepo _userStatusRepo;
@@ -22,7 +25,8 @@ namespace ISC_ELIB_SERVER.Services
         private readonly GhnService _ghnService;
 
         public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
-            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService)
+            UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService,
+            ClassSubjectRepo classSubjectRepo)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
@@ -31,6 +35,7 @@ namespace ISC_ELIB_SERVER.Services
             _classRepo = classRepo;
             _mapper = mapper;
             _ghnService = ghnService;
+            _classSubjectRepo = classSubjectRepo;
         }
 
         public async Task<ApiResponse<ICollection<UserResponse>>> GetUsers(int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -201,7 +206,7 @@ namespace ISC_ELIB_SERVER.Services
                 WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl  
+                AvatarUrl = userRequest.AvatarUrl
             };
 
             try
@@ -215,7 +220,7 @@ namespace ISC_ELIB_SERVER.Services
             }
         }
 
-        public ApiResponse<UserResponse> UpdateUser(int id, UserRequest userRequest)
+        public ApiResponse<UserResponse> UpdateUser(int id, UserUpdateRequest userUpdateRequest)
         {
             var user = _userRepo.GetUserById(id);
             if (user == null)
@@ -224,62 +229,50 @@ namespace ISC_ELIB_SERVER.Services
             }
 
             // Kiểm tra RoleId có tồn tại không
-            if (_roleRepo.GetRoleById(userRequest.RoleId) == null)
+            if (_roleRepo.GetRoleById(userUpdateRequest.RoleId) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("RoleId không hợp lệ");
             }
 
             // Kiểm tra AcademicYearId có tồn tại không (nếu có nhập)
-            if (userRequest.AcademicYearId.HasValue &&
-                _academicYearRepo.GetAcademicYearById(userRequest.AcademicYearId.Value) == null)
+            if (userUpdateRequest.AcademicYearId.HasValue &&
+                _academicYearRepo.GetAcademicYearById(userUpdateRequest.AcademicYearId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("AcademicYearId không hợp lệ");
             }
 
             // Kiểm tra UserStatusId có tồn tại không (nếu có nhập)
-            if (userRequest.UserStatusId.HasValue &&
-                _userStatusRepo.GetUserStatusById(userRequest.UserStatusId.Value) == null)
+            if (userUpdateRequest.UserStatusId.HasValue &&
+                _userStatusRepo.GetUserStatusById(userUpdateRequest.UserStatusId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("UserStatusId không hợp lệ");
             }
 
             // Kiểm tra ClassId có tồn tại không (nếu có nhập)
-            if (userRequest.ClassId.HasValue &&
-                _classRepo.GetClassById(userRequest.ClassId.Value) == null)
+            if (userUpdateRequest.ClassId.HasValue &&
+                _classRepo.GetClassById(userUpdateRequest.ClassId.Value) == null)
             {
                 return ApiResponse<UserResponse>.BadRequest("ClassId không hợp lệ");
             }
-            // Kiểm tra mã người dùng đã tồn tại chưa
-            if (_userRepo.GetUserByCode(userRequest.Code) != null)
-            {
-                return ApiResponse<UserResponse>.BadRequest("Mã người dùng đã tồn tại");
-            }
 
             // Cập nhật thông tin người dùng
-            user.FullName = userRequest.FullName;
-            user.Email = userRequest.Email;
-            user.Password = ComputeSha256(userRequest.Password);
-            user.PhoneNumber = userRequest.PhoneNumber;
-            user.Dob = userRequest.Dob;
-            user.Gender = userRequest.Gender;
-            user.AddressFull = userRequest.AddressFull;
-            user.Street = userRequest.Street;
-            user.RoleId = userRequest.RoleId;
-            user.AcademicYearId = userRequest.AcademicYearId;
-            user.ProvinceCode = userRequest.ProvinceCode;
-            user.DistrictCode = userRequest.DistrictCode;
-            user.WardCode = userRequest.WardCode;
-            user.UserStatusId = userRequest.UserStatusId;
-            user.ClassId = userRequest.ClassId;
-            user.EntryType = userRequest.EntryType;
-            user.Active = userRequest.Active;
-            user.AvatarUrl = userRequest.AvatarUrl;
-
-            // Chỉ cập nhật mật khẩu nếu có nhập mới
-            if (!string.IsNullOrEmpty(userRequest.Password))
-            {
-                user.Password = ComputeSha256(userRequest.Password);
-            }
+            user.FullName = userUpdateRequest.FullName;
+            user.Email = userUpdateRequest.Email;
+            user.PhoneNumber = userUpdateRequest.PhoneNumber;
+            user.Dob = userUpdateRequest.Dob;
+            user.Gender = userUpdateRequest.Gender;
+            user.AddressFull = userUpdateRequest.AddressFull;
+            user.Street = userUpdateRequest.Street;
+            user.RoleId = userUpdateRequest.RoleId;
+            user.AcademicYearId = userUpdateRequest.AcademicYearId;
+            user.ProvinceCode = userUpdateRequest.ProvinceCode;
+            user.DistrictCode = userUpdateRequest.DistrictCode;
+            user.WardCode = userUpdateRequest.WardCode;
+            user.UserStatusId = userUpdateRequest.UserStatusId;
+            user.ClassId = userUpdateRequest.ClassId;
+            user.EntryType = userUpdateRequest.EntryType;
+            user.Active = userUpdateRequest.Active;
+            user.AvatarUrl = userUpdateRequest.AvatarUrl;
 
             try
             {
@@ -352,6 +345,30 @@ namespace ISC_ELIB_SERVER.Services
                 builder.Append(b.ToString("x2"));
             }
             return builder.ToString();
+        }
+
+        // Lấy thông tin sinh viên theo ID
+        public async Task<ApiResponse<StudentProcessResponse>> GetStudentById(int userId)
+        {
+            if (userId <= 0)
+                return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không được để trống");
+            else
+            {
+                var student = await _userRepo.GetStudentById(userId);
+                if (student == null)
+                    return ApiResponse<StudentProcessResponse>.Fail("Mã người dùng không phải là học viên");
+                var students = await _userRepo.GetUsersByClassId(student.ClassId ?? 0);
+                if (students == null || students.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin lớp học của học viên");
+                var subjects = await _classSubjectRepo.GetClassSubjectsByClassId(student.ClassId ?? 0);
+                if (subjects == null || subjects.Count == 0)
+                    return ApiResponse<StudentProcessResponse>.Fail("Không tìm thấy thông tin môn học của lớp học");
+                var response = _mapper.Map<StudentProcessResponse>(student);
+                response.StudentQty = students.Count;
+                response.SubjectQty = subjects.Count;
+                return ApiResponse<StudentProcessResponse>.Success(_mapper.Map<StudentProcessResponse>(response));
+            }
+
         }
     }
 }

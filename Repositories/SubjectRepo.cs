@@ -12,7 +12,7 @@ namespace ISC_ELIB_SERVER.Repositories
             _context = context;
         }
 
-        public  IQueryable<Subject> GetAllSubject()
+        public IQueryable<Subject> GetAllSubject()
         {
             return _context.Subjects
                             .Include(s => s.SubjectGroup)
@@ -21,7 +21,7 @@ namespace ISC_ELIB_SERVER.Repositories
 
         public Subject GetSubjectById(long id)
         {
-            return  _context.Subjects
+            return _context.Subjects
                             .Include(s => s.SubjectGroup)
                             .Include(s => s.SubjectType)
                             .FirstOrDefault(x => x.Id == id);

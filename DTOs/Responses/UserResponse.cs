@@ -30,7 +30,60 @@
         //public string? ProvinceName { get; set; }
         //public string? DistrictName { get; set; }
         //public string? WardName { get; set; }
-        public string? RoleName { get; set; }     
+        public string? RoleName { get; set; }
 
+    }
+
+    public class StudentProcessResponse
+    {
+        public int Id { get; set; }
+        public string? Code { get; set; }
+        public string? FullName { get; set; }
+        public AcademicYearProcessResponse? AcademicYear { get; set; }
+        public ClassProcessResponse? Class { get; set; }
+        public int StudentQty { get; set; }
+        public int SubjectQty { get; set; }
+
+    }
+
+    public class AcademicYearProcessResponse
+    {
+        public int? Id { get; set; }
+        public string Name => $"{StartTime.Year} - {EndTime.Year}";
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+    }
+
+    public class ClassProcessResponse
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public string? Code { get; set; }
+
+        public GradeLevelProcessResponse? GradeLevel { get; set; }
+        public ClassTypeProcessResponse? ClassType { get; set; }
+        public UserProcessResponse? User { get; set; }
+        public string? Description { get; set; }
+
+    }
+    public class GradeLevelProcessResponse
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+
+    }
+    public class ClassTypeProcessResponse
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+
+    }
+    public class UserProcessResponse
+    {
+        public int Id { get; set; }
+        public string? Code { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
     }
 }
