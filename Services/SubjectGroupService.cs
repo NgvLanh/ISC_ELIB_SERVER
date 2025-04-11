@@ -99,6 +99,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<SubjectGroupResponse>.NotFound($"Teacher có id {request.TeacherId} không tồn tại");
             }
+            _mapper.Map(request, subjectGroup);
             var update = _subjectGroupRepo.UpdateSubjectGroup(subjectGroup);
 
             return ApiResponse<SubjectGroupResponse>.Success(_mapper.Map<SubjectGroupResponse>(update));
