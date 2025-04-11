@@ -25,13 +25,15 @@ namespace ISC_ELIB_SERVER.Repositories
         // Read: Lấy tất cả StudentInfos từ database
         public List<StudentInfo> GetAllStudentInfo()
         {
-            return _context.StudentInfos.ToList();
+            return _context.StudentInfos.Where(t => t.Active).ToList();
         }
 
         // Read: Lấy StudentInfo theo Id
         public StudentInfo? GetStudentInfoById(int userId)
         {
-            return _context.StudentInfos.Include(s => s.User).FirstOrDefault(s => s.UserId == userId);
+            return _context.StudentInfos
+                .Include(s => s.User)
+                .FirstOrDefault(s => s.UserId == userId && s.Active && s.User.Active);
         }
 
         // Update: Cập nhật thông tin StudentInfo
@@ -56,19 +58,22 @@ namespace ISC_ELIB_SERVER.Repositories
         public List<StudentInfo> GetStudentInfosByUserId(int userId)
         {
             return _context.StudentInfos
-                .Where(s => s.UserId == userId)
+                .Where(s => s.UserId == userId && s.Active)
                 .ToList();
         }
 
-        // Lấy danh sách học viên theo lớp với thông tin đầy đủ
+        // Lấy danh sách học viên theo lớp với thông tin đầy đủ (chỉ lấy học viên active)
         public List<StudentInfo> GetStudentsByClass(int classId)
         {
             return _context.StudentInfos
                 .Include(s => s.User)
-                    .ThenInclude(u => u.AcademicYear) // Load AcademicYear từ User
+                    .ThenInclude(u => u.AcademicYear)
                 .Include(s => s.User)
-                    .ThenInclude(u => u.UserStatus) // Load UserStatus từ User
-                .Where(s => s.User != null && s.User.ClassId == classId)
+                    .ThenInclude(u => u.UserStatus)
+                .Where(s => s.User != null
+                            && s.User.ClassId == classId
+                            && s.Active
+                            && s.User.Active)
                 .ToList();
         }
 
@@ -83,7 +88,10 @@ namespace ISC_ELIB_SERVER.Repositories
                 .Include(s => s.User)
                     .ThenInclude(u => u.AcademicYear)
                         .ThenInclude(a => a.Semesters)
-                .Where(s => s.User != null && s.User.RoleId == 3)
+               .Where(s => s.User != null
+                    && s.User.RoleId == 3
+                    && s.Active
+                    && s.User.Active) // lọc theo Active của cả StudentInfo và User
                 .AsNoTracking()
                 .ToList()
                 .GroupBy(s => s.UserId)
