@@ -53,14 +53,43 @@ namespace ISC_ELIB_SERVER.Services
             var responses = _mapper.Map<ICollection<ExamScheduleResponse>>(entities.Items);
             foreach (var response in responses)
             {
-                var entity = entities.Items.FirstOrDefault(e => e.Id == response.Id);
-                if (entity != null)
-                {
-                    response.ClassNames = entity.ExamScheduleClasses?
-                        .Select(esc => esc.Class?.Name)
-                        .Where(name => name != null)
-                        .ToList();
-                }
+                // 1. Lấy entity gốc
+                var entity = entities.Items.First(e => e.Id == response.Id);
+
+                // 2. ClassNames (nếu cần)
+                response.ClassNames = entity.ExamScheduleClasses
+                    .Where(esc => esc.Active && esc.Class != null)
+                    .Select(esc => esc.Class.Name)
+                    .Distinct()
+                    .ToList();
+
+                response.TeacherNames = entity.ExamScheduleClasses
+      .Where(esc => esc.Active)
+      .SelectMany(esc => esc.ExamGraders)
+      .Where(eg => eg.Active && eg.User != null)
+      .Select(eg => eg.User.FullName)
+      .Distinct()
+      .ToList();
+                // 4. ClassIds: ID các lớp tham gia
+                response.ClassIds = entity.ExamScheduleClasses
+                    .Where(esc => esc.Active)
+                    .Select(esc => esc.ClassId!.Value)
+                    .Distinct()
+                    .ToList();
+
+                // 5. GradersForClasses: phân graders theo lớp
+                response.GradersForClasses = entity.ExamScheduleClasses
+                    .Where(esc => esc.Active)
+                    .Select(esc => new GradersForClassResponse
+                    {
+                        ClassId = esc.ClassId!.Value,
+                        GraderIds = esc.ExamGraders
+                                        .Where(g => g.Active && g.UserId.HasValue)
+                                        .Select(g => g.UserId!.Value)
+                                        .Distinct()
+                                        .ToList()
+                    })
+                    .ToList();
             }
             var result = new PagedResult<ExamScheduleResponse>(responses, entities.TotalItems, page, pageSize);
             return ApiResponse<PagedResult<ExamScheduleResponse>>.Success(result);
@@ -75,7 +104,40 @@ namespace ISC_ELIB_SERVER.Services
 
             // 2. Map sang DTO cơ bản
             var exams = _mapper.Map<List<ExamScheduleResponse>>(entities);
+            foreach (var response in exams)
+            {
+                var entity = entities.First(e => e.Id == response.Id);
 
+                // ClassIds
+                response.ClassIds = entity.ExamScheduleClasses
+                    .Where(esc => esc.Active)
+                    .Select(esc => esc.ClassId!.Value)
+                    .Distinct()
+                    .ToList();
+
+                // GradersForClasses
+                response.GradersForClasses = entity.ExamScheduleClasses
+                    .Where(esc => esc.Active)
+                    .Select(esc => new GradersForClassResponse
+                    {
+                        ClassId = esc.ClassId!.Value,
+                        GraderIds = esc.ExamGraders
+                                        .Where(g => g.Active && g.UserId.HasValue)
+                                        .Select(g => g.UserId!.Value)
+                                        .Distinct()
+                                        .ToList()
+                    })
+                    .ToList();
+
+                // TeacherNames (nếu bạn muốn override mapper)
+                response.TeacherNames = entity.ExamScheduleClasses
+         .Where(esc => esc.Active)
+         .SelectMany(esc => esc.ExamGraders)
+         .Where(eg => eg.Active && eg.User != null)
+         .Select(eg => eg.User.FullName)
+         .Distinct()
+         .ToList();
+            }
             // 3. Lọc bỏ record không có ngày thi
             var withDate = exams.Where(e => e.ExamDay.HasValue).ToList();
 
@@ -210,7 +272,13 @@ namespace ISC_ELIB_SERVER.Services
                                 ?? new List<int>()
                 })
                 .ToList();
-
+            // Thêm TeacherNames:
+            response.TeacherNames = entity.ExamScheduleClasses
+                .SelectMany(esc => esc.ExamGraders)
+                .Where(eg => eg.User != null)
+                .Select(eg => eg.User.FullName)
+                .Distinct()
+                .ToList();
             // 4) Trả về
             return ApiResponse<ExamScheduleResponse>.Success(response);
         }
