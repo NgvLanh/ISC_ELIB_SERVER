@@ -11,8 +11,8 @@ namespace ISC_ELIB_SERVER.Services.Interfaces
         //ApiResponse<TestsSubmissionResponse> GetTestsSubmissionByName(string name);
         //ApiResponse<TestsSubmissionResponse> GetTestsSubmissionByTestId(long testId);
         Task<ApiResponse<List<TestsSubmissionResponse>>> GetByTestIdAsync(int testId);
-        ApiResponse<TestsSubmissionResponse> CreateTestsSubmission(TestsSubmissionRequest request, List<TestSubmissionAnswerRequest> answerRequests);
-        ApiResponse<TestsSubmissionResponse> UpdateTestsSubmission(int submissionId, TestsSubmissionRequest request, List<TestSubmissionAnswerRequest>? answerRequests);
+        Task<ApiResponse<TestsSubmissionResponse>> CreateTestsSubmission(TestsSubmissionRequest request, List<TestSubmissionAnswerRequest> answerRequests);
+        Task<ApiResponse<TestsSubmissionResponse>> UpdateTestsSubmission(int submissionId, TestsSubmissionRequest request, List<TestSubmissionAnswerRequest>? answerRequests);
         ApiResponse<TestsSubmission> DeleteTestsSubmission(long id);
     }
 }

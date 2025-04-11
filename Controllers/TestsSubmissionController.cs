@@ -41,19 +41,19 @@ namespace ISC_ELIB_SERVER.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTestsSubmission(
+        public async Task<IActionResult> CreateTestsSubmission(
             [FromForm] TestsSubmissionRequest request,
             [FromForm] List<TestSubmissionAnswerRequest>? answerRequests)
         {
-            var result = _service.CreateTestsSubmission(request, answerRequests);
+            var result = await _service.CreateTestsSubmission(request, answerRequests);
             return Ok(result);
         }
 
         [HttpPut("{submissionId}")]
-        public IActionResult UpdateTest(
+        public async Task<IActionResult> UpdateTest(
                 int submissionId, [FromForm] TestsSubmissionRequest request, [FromForm] List<TestSubmissionAnswerRequest>? answerRequests)
         {
-            var result = _service.UpdateTestsSubmission(submissionId, request, answerRequests);
+            var result = await _service.UpdateTestsSubmission(submissionId, request, answerRequests);
             return Ok(result);
         }
 

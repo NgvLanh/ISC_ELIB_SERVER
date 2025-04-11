@@ -13,6 +13,7 @@ namespace ISC_ELIB_SERVER.Services
         private readonly TestsSubmissionRepo _repository;
         private readonly TestAnswerRepo _testAnswerRepo;
         private readonly TestQuestionRepo _testQuestionRepo;
+        private readonly CloudinaryService _cloudinaryService;
         private readonly TestSubmissionAnswerRepo _testSubmissionAnswerRepo;
         private readonly IMapper _mapper;
 
@@ -21,13 +22,15 @@ namespace ISC_ELIB_SERVER.Services
             IMapper mapper,
             TestAnswerRepo testAnswerRepo,
             TestQuestionRepo testQuestionRepo,
-            TestSubmissionAnswerRepo testSubmissionAnswerRepo)
+            TestSubmissionAnswerRepo testSubmissionAnswerRepo,
+            CloudinaryService cloudinaryService)
         {
             _repository = repository;
             _testAnswerRepo = testAnswerRepo;
             _testQuestionRepo = testQuestionRepo;
             _testSubmissionAnswerRepo = testSubmissionAnswerRepo;
             _mapper = mapper;
+            _cloudinaryService = cloudinaryService;
         }
 
         public ApiResponse<ICollection<TestsSubmissionResponse>> GetTestsSubmissiones(int page, int pageSize, string search, string sortColumn, string sortOrder)
@@ -79,7 +82,7 @@ namespace ISC_ELIB_SERVER.Services
         //    return ApiResponse<TestsSubmissionResponse>.Success(_mapper.Map<TestsSubmissionResponse>(created));
         //}
 
-        public ApiResponse<TestsSubmissionResponse> CreateTestsSubmission(
+        public async Task<ApiResponse<TestsSubmissionResponse>> CreateTestsSubmission(
             TestsSubmissionRequest request, 
             List<TestSubmissionAnswerRequest> answerRequests)
         {
@@ -168,12 +171,13 @@ namespace ISC_ELIB_SERVER.Services
                                 file.CopyTo(memoryStream);
                                 var base64 = Convert.ToBase64String(memoryStream.ToArray());
                                 var newFileName = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{file.FileName}";
+                                var cloudinaryUrl = await _cloudinaryService.UploadBase64Async(base64, newFileName);
 
                                 var attachment = new TestSubmissionAnswerAttachment
                                 {
                                     TestSubmissionAnswerId = createdAnswer.Id,
                                     Filename = newFileName,
-                                    FileBase64 = base64,
+                                    FileBase64 = cloudinaryUrl,
                                     CreatedAt = DateTime.UtcNow
                                 };
 
@@ -238,7 +242,7 @@ namespace ISC_ELIB_SERVER.Services
             return Math.Round((tongDiem / diemToiDa) * 10, 2); // Trả về điểm thang 10, làm tròn 2 chữ số thập phân
         }
 
-        public ApiResponse<TestsSubmissionResponse> UpdateTestsSubmission(
+        public async Task<ApiResponse<TestsSubmissionResponse>> UpdateTestsSubmission(
             int submissionId,
             TestsSubmissionRequest request,
             List<TestSubmissionAnswerRequest>? answerRequests)
@@ -344,12 +348,13 @@ namespace ISC_ELIB_SERVER.Services
                                     file.CopyTo(memoryStream);
                                     var base64 = Convert.ToBase64String(memoryStream.ToArray());
                                     var newFileName = $"{DateTime.UtcNow:yyyyMMddHHmmssfff}_{file.FileName}";
+                                    var cloudinaryUrl = await _cloudinaryService.UploadBase64Async(base64, newFileName);
 
                                     fileAttachments.Add(new TestSubmissionAnswerAttachment
                                     {
                                         TestSubmissionAnswerId = existingAnswer.Id,
                                         Filename = newFileName,
-                                        FileBase64 = base64,
+                                        FileBase64 = cloudinaryUrl,
                                         CreatedAt = DateTime.UtcNow
                                     });
                                 }
