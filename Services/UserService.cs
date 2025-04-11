@@ -20,17 +20,19 @@ namespace ISC_ELIB_SERVER.Services
         private readonly RoleRepo _roleRepo;
         private readonly AcademicYearRepo _academicYearRepo;
         private readonly UserStatusRepo _userStatusRepo;
+        private readonly CloudinaryService _cloudinaryService;
         private readonly ClassRepo _classRepo;
         private readonly IMapper _mapper;
         private readonly GhnService _ghnService;
 
-        public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo,
+        public UserService(UserRepo userRepo, RoleRepo roleRepo, AcademicYearRepo academicYearRepo, CloudinaryService cloudinaryService,
             UserStatusRepo userStatusRepo, ClassRepo classRepo, IMapper mapper, GhnService ghnService,
             ClassSubjectRepo classSubjectRepo)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
             _academicYearRepo = academicYearRepo;
+            _cloudinaryService = cloudinaryService;
             _userStatusRepo = userStatusRepo;
             _classRepo = classRepo;
             _mapper = mapper;
@@ -206,7 +208,7 @@ namespace ISC_ELIB_SERVER.Services
                 WardCode = userRequest.WardCode,
                 Street = userRequest.Street,
                 Active = userRequest.Active,
-                AvatarUrl = userRequest.AvatarUrl
+                AvatarUrl = _cloudinaryService.UploadBase64Async(userRequest.AvatarUrl).Result,
             };
 
             try
@@ -272,7 +274,7 @@ namespace ISC_ELIB_SERVER.Services
             user.ClassId = userUpdateRequest.ClassId;
             user.EntryType = userUpdateRequest.EntryType;
             user.Active = userUpdateRequest.Active;
-            user.AvatarUrl = userUpdateRequest.AvatarUrl;
+            user.AvatarUrl = _cloudinaryService.UploadBase64Async(userUpdateRequest.AvatarUrl).Result;
 
             try
             {
