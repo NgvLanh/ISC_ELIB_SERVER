@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ISC_ELIB_SERVER.DTOs.Responses;
 
 namespace ISC_ELIB_SERVER.DTOs.Requests
 {
@@ -31,6 +32,9 @@ namespace ISC_ELIB_SERVER.DTOs.Requests
         public double? Score { get; set; }
 
         public bool? Graded { get; set; } = false;
-        public bool? Active { get; set; } = true;  
+        public bool? Active { get; set; } = true;
+        public int? UserId { get; set; }
+
+        //public List<TestAnswerResponse> Answers { get; set; } = new List<TestAnswerResponse>();
     }
 }

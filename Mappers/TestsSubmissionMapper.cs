@@ -8,7 +8,8 @@ namespace ISC_ELIB_SERVER.Mappers
     public class TestsSubmissionMapper : Profile
     {
         public TestsSubmissionMapper() {
-            CreateMap<TestsSubmission, TestsSubmissionResponse>();
+            CreateMap<TestsSubmission, TestsSubmissionResponse>()
+                .ForMember(dest => dest.TestName, opt => opt.MapFrom(src => src.Test.Name));
             CreateMap<TestsSubmissionRequest, TestsSubmission>();
         }
 

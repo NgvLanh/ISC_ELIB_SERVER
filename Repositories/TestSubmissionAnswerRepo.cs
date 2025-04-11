@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -78,6 +79,37 @@ namespace ISC_ELIB_SERVER.Repositories
                            .Where(ans => _context.TestsSubmissions
                            .Any(sub => sub.Id == ans.SubmissionId && sub.TestId == testId))
                            .ToList();
+        }
+        public void DeleteAnswersBySubmissionId(int submissionId)
+        {
+            var answers = _context.TestSubmissionsAnswers
+                .Where(a => a.SubmissionId == submissionId && a.Active)
+                .ToList();
+
+            if (answers.Any())
+            {
+                foreach (var answer in answers)
+                {
+                    answer.Active = false;
+
+                    // Xoá luôn file đính kèm nếu có
+                    var attachments = _context.TestSubmissionAnswerAttachments
+                        .Where(att => att.TestSubmissionAnswerId == answer.Id)
+                        .ToList();
+
+                    _context.TestSubmissionAnswerAttachments.RemoveRange(attachments);
+                }
+
+                _context.SaveChanges(); // Ghi thay đổi
+            }
+        }
+
+        public IEnumerable<TestSubmissionsAnswer> GetAnswersBySubmissionId(int submissionId)
+        {
+            return _context.TestSubmissionsAnswers
+                .Include(a => a.Attachments) // nếu bạn có navigation property `Attachments`
+                .Where(a => a.SubmissionId == submissionId && a.Active)
+                .ToList();
         }
 
     }

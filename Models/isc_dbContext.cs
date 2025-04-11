@@ -1923,6 +1923,8 @@ namespace ISC_ELIB_SERVER.Models
 
                 entity.Property(e => e.StudentId).HasColumnName("student_id");
 
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
                 entity.Property(e => e.SubmittedAt)
                     .HasColumnType("timestamp without time zone")
                     .HasColumnName("submitted_at");

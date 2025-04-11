@@ -1,4 +1,5 @@
 ﻿using ISC_ELIB_SERVER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ISC_ELIB_SERVER.Repositories
 {
@@ -34,6 +35,16 @@ namespace ISC_ELIB_SERVER.Repositories
             return TestsSubmission;
         }
 
+        public async Task<List<TestsSubmission>> GetByTestIdAsync(int testId)
+        {
+            return await _context.TestsSubmissions
+                .Where(x => x.TestId == testId && x.Active == true)
+                .Include(x => x.Student)
+                .Include(x => x.Test)
+                .Include(t => t.TestSubmissionsAnswers)
+                    .ThenInclude(a => a.Attachments)
+                .ToListAsync();
+        }
 
         public bool DeleteTestsSubmission(long id)
         {
@@ -45,5 +56,40 @@ namespace ISC_ELIB_SERVER.Repositories
             }
             return false;
         }
+
+        public void AddAttachments(List<TestSubmissionAnswerAttachment> attachments)
+        {
+            _context.TestSubmissionAnswerAttachments.AddRange(attachments);
+            _context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
+
+        public TestsSubmission GetTestSubmissionWithDetails(int submissionId)
+        {
+            // For Entity Framework Core
+            return _context.TestsSubmissions
+                .Include(x => x.Test)
+                .Include(ts => ts.TestSubmissionsAnswers)
+                    .ThenInclude(tsa => tsa.Attachments)
+                .Where(ts => ts.Id == submissionId)
+                .Where(ts => ts.Active == true)  // or ts.Active == 1 if it's an int
+                .FirstOrDefault();
+        }
+
+        public List<TestsSubmission> GetSubmissionsByTestId(int testId)
+        {
+            return _context.TestsSubmissions
+                .Include(x => x.Student) // nếu bạn muốn lấy thêm thông tin học sinh
+                .Include(x => x.Test)    // nếu cần thông tin đề thi
+                .Include(x => x.TestSubmissionsAnswers) // nếu cần danh sách câu trả lời
+                .Where(x => x.TestId == testId)
+                .Where(x => x.Active == true)
+                .ToList();
+        }
+
     }
 }
