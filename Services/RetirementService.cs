@@ -14,12 +14,15 @@ namespace ISC_ELIB_SERVER.Services
         private readonly RetirementRepo _repository;
         private readonly IMapper _mapper;
         private readonly isc_dbContext _context;
+        private readonly CloudinaryService _cloudinaryService;
 
-        public RetirementService(RetirementRepo repository, IMapper mapper, isc_dbContext context)
+        public RetirementService(RetirementRepo repository, IMapper mapper, isc_dbContext context, CloudinaryService cloudinaryService)
         {
             _repository = repository;
             _mapper = mapper;
             _context = context;
+            _cloudinaryService = cloudinaryService;
+
         }
 
         public ApiResponse<RetirementResponse> CreateRetirement(RetirementRequest Retirement_AddRequest)
@@ -34,6 +37,7 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<RetirementResponse>.BadRequest("Giáo viên đã có trong danh sách");
             }
+            Retirement_AddRequest.Attachment = _cloudinaryService.UploadBase64Async(Retirement_AddRequest.Attachment).Result;
             var retirement = _mapper.Map<Retirement>(Retirement_AddRequest);
             var created = _repository.CreateRetirement(retirement);
             return ApiResponse<RetirementResponse>.Success(_mapper.Map<RetirementResponse>(created));
@@ -107,28 +111,28 @@ namespace ISC_ELIB_SERVER.Services
 
             return ApiResponse<ICollection<RetirementResponse>>.Success(response);
         }
-        public ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest RetirementRequest)
+        public ApiResponse<Retirement> UpdateRetirement(long id, RetirementRequest retirementRequest)
         {
             try
             {
-                if (RetirementRequest.Date.HasValue)
+                if (retirementRequest.Date.HasValue)
                 {
                     // Chuyển sang DateTime có Kind Unspecified
-                    RetirementRequest.Date = DateTime.SpecifyKind(RetirementRequest.Date.Value, DateTimeKind.Unspecified);
+                    retirementRequest.Date = DateTime.SpecifyKind(retirementRequest.Date.Value, DateTimeKind.Unspecified);
                 }
 
                 // Kiểm tra sự tồn tại của TeacherId và LeadershipId
-                if (!_context.TeacherInfos.Any(t => t.Id == RetirementRequest.TeacherId && t.Active))
+                if (!_context.TeacherInfos.Any(t => t.Id == retirementRequest.TeacherId && t.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Giảng viên không tồn tại");
                 }
 
-                if (!_context.Users.Any(u => u.Id == RetirementRequest.LeadershipId && u.Active))
+                if (!_context.Users.Any(u => u.Id == retirementRequest.LeadershipId && u.Active))
                 {
                     return ApiResponse<Retirement>.NotFound("Người dùng không tồn tại");
                 }
-
-                var updated = _repository.UpdateRetirement(id, RetirementRequest);
+                retirementRequest.Attachment = _cloudinaryService.UploadBase64Async(retirementRequest.Attachment).Result;
+                var updated = _repository.UpdateRetirement(id, retirementRequest);
                 return updated != null
                     ? ApiResponse<Retirement>.Success(updated)
                     : ApiResponse<Retirement>.NotFound("Không tìm thấy trạng thái nghỉ hưu để cập nhật");
@@ -162,7 +166,7 @@ namespace ISC_ELIB_SERVER.Services
                 {
                     return ApiResponse<Retirement>.NotFound("Người dùng không tồn tại");
                 }
-
+                RetirementRequest.Attachment = _cloudinaryService.UploadBase64Async(RetirementRequest.Attachment).Result;
                 var updated = _repository.UpdateRetirementByTeacherId(id, RetirementRequest);
                 return updated != null
                     ? ApiResponse<Retirement>.Success(updated)
