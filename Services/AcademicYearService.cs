@@ -4,6 +4,7 @@ using ISC_ELIB_SERVER.DTOs.Responses;
 using ISC_ELIB_SERVER.DTOs.Requests;
 using AutoMapper;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace ISC_ELIB_SERVER.Services
 {
@@ -73,14 +74,17 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa phải kéo dài ít nhất 1 năm và nhiều nhất 5 năm");
             }
 
-            var school = _schoolRepo.GetSchoolById((long)academicYearRequest.SchoolId);
+            var school = _schoolRepo.GetSchoolById(1);
             if (school == null)
             {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Mã trường không chính xác");
             }
 
-            var existingAcademicYears = _academicYearRepo.GetAcademicYearsBySchoolId((long)academicYearRequest.SchoolId);
-
+            var existingAcademicYears = _academicYearRepo.GetAcademicYearsBySchoolId(1);
+            System.Console.WriteLine("ExistingAcademicYears: " + JsonSerializer.Serialize(
+                _mapper.Map<ICollection<AcademicYearResponse>>(existingAcademicYears),
+                new JsonSerializerOptions { WriteIndented = true }
+            ));
             bool isDuplicate = existingAcademicYears.Any(x =>
                 x.StartTime == academicYearRequest.StartTime &&
                 x.EndTime == academicYearRequest.EndTime);
@@ -90,23 +94,35 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này đã tồn tại trong trường");
             }
 
-            bool isOverlapping = existingAcademicYears.Any(x => academicYearRequest.EndTime > x.StartTime);
+            bool isOverlapping = existingAcademicYears.Any(x => academicYearRequest.EndTime < x.StartTime);
 
             if (isOverlapping)
-            {
                 return ApiResponse<AcademicYearResponse>.BadRequest("Niên khóa này chồng lấn với niên khóa đã tồn tại");
-            }
 
             var newAcademicYear = new AcademicYear
             {
                 StartTime = DateTime.SpecifyKind(academicYearRequest.StartTime, DateTimeKind.Unspecified),
                 EndTime = DateTime.SpecifyKind(academicYearRequest.EndTime, DateTimeKind.Unspecified),
-                SchoolId = academicYearRequest.SchoolId
+                SchoolId = 1,
             };
 
             try
             {
                 var created = _academicYearRepo.CreateAcademicYear(newAcademicYear);
+                if (academicYearRequest.Semesters != null && academicYearRequest.Semesters.Count > 0)
+                {
+                    foreach (var semesterRequest in academicYearRequest.Semesters)
+                    {
+                        var newSemester = new Semester
+                        {
+                            AcademicYearId = created.Id,
+                            Name = semesterRequest.Name,
+                            StartTime = DateTime.SpecifyKind(semesterRequest.StartTime, DateTimeKind.Unspecified),
+                            EndTime = DateTime.SpecifyKind(semesterRequest.EndTime, DateTimeKind.Unspecified)
+                        };
+                        _semesterRepo.CreateSemester(newSemester);
+                    }
+                }
                 return ApiResponse<AcademicYearResponse>.Success(_mapper.Map<AcademicYearResponse>(created));
             }
             catch (Exception ex)

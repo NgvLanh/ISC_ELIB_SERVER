@@ -96,15 +96,6 @@ namespace ISC_ELIB_SERVER.Repositories
         {
             return _context.AcademicYears
                 .Where(a => a.SchoolId == schoolId && a.Active)
-                .Include(a => a.Semesters)
-                .ToList()
-                .Select(a => new AcademicYear
-                {
-                    Id = a.Id,
-                    StartTime = a.StartTime,
-                    EndTime = a.EndTime,
-                    Semesters = a.Semesters.Where(s => s.Active).ToList()
-                })
                 .ToList();
         }
     }
