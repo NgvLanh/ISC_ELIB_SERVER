@@ -63,7 +63,7 @@ namespace ISC_ELIB_SERVER.Mappers
 
     // ← Map ExamId từ request vào entity
     .ForMember(dest => dest.ExamId,
-        opt => opt.MapFrom(src => src.ExamId))
+        opt => opt.MapFrom(src => src.ExamId.HasValue ? src.ExamId.Value : (int?)null))
 
     // ← Map Status (nếu bạn dùng enum)
     .ForMember(dest => dest.Status,

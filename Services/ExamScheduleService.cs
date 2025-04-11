@@ -35,11 +35,13 @@ namespace ISC_ELIB_SERVER.Services
     public class ExamScheduleService: IExamScheduleService
     {
         private readonly ExamScheduleRepo _repository;
+        private readonly ExamRepo _examRepo;
         private readonly IMapper _mapper;
 
-        public ExamScheduleService(ExamScheduleRepo repository, IMapper mapper)
+        public ExamScheduleService(ExamScheduleRepo repository, ExamRepo examRepo, IMapper mapper)
         {
             _repository = repository;
+            _examRepo = examRepo;
             _mapper = mapper;
         }
 
@@ -181,61 +183,125 @@ namespace ISC_ELIB_SERVER.Services
         public ApiResponse<ExamScheduleResponse> GetById(long id)
         {
             var entity = _repository.GetById(id);
-            if (entity == null) return ApiResponse<ExamScheduleResponse>.NotFound("ExamSchedule không tồn tại");
+            if (entity == null)
+                return ApiResponse<ExamScheduleResponse>.NotFound("ExamSchedule không tồn tại");
 
+            // 1) Map các trường cơ bản
             var response = _mapper.Map<ExamScheduleResponse>(entity);
+
+            // 2) Gán ClassIds
+            response.ClassIds = entity.ExamScheduleClasses?
+                .Where(esc => esc.Active)
+                .Select(esc => esc.ClassId ?? 0)
+                .Distinct()
+                .ToList();
+
+            // 3) Gán GradersForClasses
+            response.GradersForClasses = entity.ExamScheduleClasses?
+                .Where(esc => esc.Active)
+                .Select(esc => new GradersForClassResponse
+                {
+                    ClassId = esc.ClassId ?? 0,
+                    GraderIds = esc.ExamGraders?
+                                    .Where(g => g.Active)
+                                    .Select(g => g.UserId ?? 0)
+                                    .Distinct()
+                                    .ToList()
+                                ?? new List<int>()
+                })
+                .ToList();
+
+            // 4) Trả về
             return ApiResponse<ExamScheduleResponse>.Success(response);
         }
         public ApiResponse<List<ExamScheduleResponse>> Create(ExamScheduleRequest request)
         {
-            var responses = new List<ExamScheduleResponse>();
+            // 0. Nếu request.ExamDay không có giá trị thì không thể kiểm tra trùng
+            if (!request.ExamDay.HasValue)
+            {
+                return ApiResponse<List<ExamScheduleResponse>>.Error(new Dictionary<string, string[]>
+        {
+            { "ExamDay", new[] { "ExamDay là bắt buộc để kiểm tra trùng lịch." } }
+        });
+            }
 
+            // 1. Kiểm tra trùng: với mỗi học kỳ và mỗi lớp
+            var duplicateErrors = new List<string>();
+            foreach (var semId in request.SemesterIds)
+            {
+                foreach (var clsId in request.ClassIds)
+                {
+                    if (_repository.Exists(
+                            request.AcademicYearId,
+                            semId,
+                            request.GradeLevelsId,
+                            request.ExamDay.Value,
+                            clsId))
+                    {
+                        duplicateErrors.Add(
+                            $"Lịch thi cho lớp {clsId} ở học kỳ {semId} ngày {request.ExamDay:yyyy-MM-dd} đã tồn tại.");
+                    }
+                }
+            }
+
+            if (duplicateErrors.Any())
+            {
+                return ApiResponse<List<ExamScheduleResponse>>.Error(new Dictionary<string, string[]>
+        {
+            { "Duplicate", duplicateErrors.ToArray() }
+        });
+            }
+
+            // 2. Nếu không có trùng thì tiếp tục như cũ
+            var responses = new List<ExamScheduleResponse>();
             try
             {
+                int examId;
+                if (request.ExamId.HasValue && request.ExamId.Value > 0)
+                {
+                    examId = request.ExamId.Value;
+                }
+                else
+                {
+                    var newExam = new Exam { Name = request.Name, Active = true };
+                    newExam = _examRepo.CreateExam(newExam);
+                    examId = (int)newExam.Id;
+                }
+
                 foreach (var semesterId in request.SemesterIds)
                 {
-                    // 1. Map request → entity
-                    var entity = _mapper.Map<ExamSchedule>(request);
+                    var schedule = _mapper.Map<ExamSchedule>(request);
+                    schedule.ExamId = examId;
+                    schedule.SemesterId = semesterId;
 
-                    // 2. Gán thêm semester và examId
-                    entity.SemesterId = semesterId;
-                    entity.ExamId = request.ExamId;    // ← quan trọng
-
-                    // 3. Tạo các ExamScheduleClass
                     foreach (var classId in request.ClassIds)
                     {
-                        entity.ExamScheduleClasses.Add(new ExamScheduleClass
+                        schedule.ExamScheduleClasses.Add(new ExamScheduleClass
                         {
                             ClassId = classId,
                             Active = true
                         });
                     }
 
-                    // 4. Lưu ExamSchedule (để entity.Id và entity.ExamId tồn tại)
-                    _repository.Create(entity);
+                    _repository.Create(schedule);
 
-                    // 5. Gán giám thị (ExamGrader) sử dụng đúng ExamId
                     foreach (var gf in request.GradersForClasses)
                     {
-                        var esc = entity.ExamScheduleClasses
-                                        .FirstOrDefault(x => x.ClassId == gf.ClassId);
+                        var esc = schedule.ExamScheduleClasses
+                                          .FirstOrDefault(x => x.ClassId == gf.ClassId);
                         if (esc != null && gf.GraderIds.Any())
                         {
-                            // ← truyền entity.ExamId, không phải entity.Id
-                            _repository.AddGraders(entity.ExamId.Value, esc.Id, gf.GraderIds);
+                            _repository.AddGraders(examId, esc.Id, gf.GraderIds);
                         }
                     }
 
-                    // 6. Map lại response
-                    var resp = _mapper.Map<ExamScheduleResponse>(entity);
-                    responses.Add(resp);
+                    responses.Add(_mapper.Map<ExamScheduleResponse>(schedule));
                 }
 
                 return ApiResponse<List<ExamScheduleResponse>>.Success(responses);
             }
             catch (DbUpdateException dbEx)
             {
-                // Bắt lỗi DB để xem chi tiết
                 var msg = dbEx.InnerException?.Message ?? dbEx.Message;
                 return ApiResponse<List<ExamScheduleResponse>>.Error(new Dictionary<string, string[]>
         {

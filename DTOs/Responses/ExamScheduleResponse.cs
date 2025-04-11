@@ -23,6 +23,15 @@ namespace ISC_ELIB_SERVER.DTOs.Responses
         public string? GradeLevel { get; set; }
         public List<string>? ClassNames { get; set; }
         public List<string>? TeacherNames { get; set; }
+
+        public List<int>? ClassIds { get; set; }
+        public List<GradersForClassResponse>? GradersForClasses { get; set; }
+    }
+
+    public class GradersForClassResponse
+    {
+        public int ClassId { get; set; }
+        public List<int> GraderIds { get; set; } = new List<int>();
     }
 
 }
