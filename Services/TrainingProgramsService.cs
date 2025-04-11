@@ -30,62 +30,11 @@ namespace ISC_ELIB_SERVER.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
-        //{
-        //    var query = _repository.GetTrainingProgram().AsQueryable();
-
-        //    query = query.Where(us => us.Active == true);
-
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-        //        query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
-        //    }
-
-        //    query = sortColumn switch
-        //    {
-        //        "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-        //        "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
-        //        _ => query.OrderBy(us => us.Id)
-        //    };
-
-        //    int totalItems = query.Count();
-
-        //    if (page.HasValue && pageSize.HasValue)
-        //    {
-        //        query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
-        //    }
-
-        //    var result = query.ToList();
-        //    var response = _mapper.Map<ICollection<TrainingProgramsResponse>>(result);
-
-        //    return result.Any() ? ApiResponse<ICollection<TrainingProgramsResponse>>
-        //    .Success(response, page, pageSize, totalItems)
-        //    : ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có dữ liệu");
-        //}
-
         public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
         {
-            var userID = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
+            var query = _repository.GetTrainingProgram().AsQueryable();
 
-            if (!int.TryParse(userID, out int userId))
-            {
-                return ApiResponse<ICollection<TrainingProgramsResponse>>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
-            }
-
-            var teacherId = _repository.GetTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
-
-            if (teacherId == null)
-            {
-                return ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không tìm thấy thông tin giảng viên.");
-            }
-
-            var trainingProgramIds = _repository.GetTeacherTrainingPrograms()
-                .Where(tt => tt.TeacherId == teacherId)
-                .Select(tt => tt.TrainingProgramId);
-
-            var query = _repository.GetTrainingProgram()
-                .Where(tp => trainingProgramIds.Contains(tp.Id) && tp.Active == true)
-                .AsQueryable();
+            query = query.Where(us => us.Active == true);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -94,8 +43,8 @@ namespace ISC_ELIB_SERVER.Services
 
             query = sortColumn switch
             {
-                "Name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
-                "Id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+                "Name" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+                "Id" => sortOrder.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
                 _ => query.OrderBy(us => us.Id)
             };
 
@@ -109,12 +58,63 @@ namespace ISC_ELIB_SERVER.Services
             var result = query.ToList();
             var response = _mapper.Map<ICollection<TrainingProgramsResponse>>(result);
 
-            return result.Any()
-                ? ApiResponse<ICollection<TrainingProgramsResponse>>.Success(response, page, pageSize, totalItems)
-                : ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có dữ liệu");
+            return result.Any() ? ApiResponse<ICollection<TrainingProgramsResponse>>
+            .Success(response, page, pageSize, totalItems)
+            : ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có dữ liệu");
         }
 
- 
+        //public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingPrograms(int? page, int? pageSize, string? search, string? sortColumn, string? sortOrder)
+        //{
+        //    var userID = _httpContextAccessor.HttpContext?.User?.FindFirst("Id")?.Value;
+
+        //    if (!int.TryParse(userID, out int userId))
+        //    {
+        //        return ApiResponse<ICollection<TrainingProgramsResponse>>.Fail("ID trong token không hợp lệ hoặc không tồn tại.");
+        //    }
+
+        //    var teacherId = _repository.GetTeacherInfo().FirstOrDefault(t => t.UserId == userId)?.Id;
+
+        //    if (teacherId == null)
+        //    {
+        //        return ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không tìm thấy thông tin giảng viên.");
+        //    }
+
+        //    var trainingProgramIds = _repository.GetTeacherTrainingPrograms()
+        //        .Where(tt => tt.TeacherId == teacherId)
+        //        .Select(tt => tt.TrainingProgramId);
+
+        //    var query = _repository.GetTrainingProgram()
+        //        .Where(tp => trainingProgramIds.Contains(tp.Id) && tp.Active == true)
+        //        .AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(search))
+        //    {
+        //        query = query.Where(us => us.Name.ToLower().Contains(search.ToLower()));
+        //    }
+
+        //    query = sortColumn switch
+        //    {
+        //        "Name" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Name) : query.OrderBy(us => us.Name),
+        //        "Id" => sortOrder?.ToLower() == "desc" ? query.OrderByDescending(us => us.Id) : query.OrderBy(us => us.Id),
+        //        _ => query.OrderBy(us => us.Id)
+        //    };
+
+        //    int totalItems = query.Count();
+
+        //    if (page.HasValue && pageSize.HasValue)
+        //    {
+        //        query = query.Skip((page.Value - 1) * pageSize.Value).Take(pageSize.Value);
+        //    }
+
+        //    var result = query.ToList();
+        //    var response = _mapper.Map<ICollection<TrainingProgramsResponse>>(result);
+
+        //    return result.Any()
+        //        ? ApiResponse<ICollection<TrainingProgramsResponse>>.Success(response, page, pageSize, totalItems)
+        //        : ApiResponse<ICollection<TrainingProgramsResponse>>.NotFound("Không có dữ liệu");
+        //}
+
+
 
         public ApiResponse<ICollection<TrainingProgramsResponse>> GetTrainingProgramsByTeacherId(long teacherId, string? search)
         {
