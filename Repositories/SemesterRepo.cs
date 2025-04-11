@@ -68,7 +68,7 @@ namespace ISC_ELIB_SERVER.Repositories
         public ICollection<object> GetScoreBySemesters(long userId, long academicYearId)
         {
             var semesterScores = _context.Semesters
-                .Where(s => s.AcademicYearId == academicYearId)
+                .Where(s => s.AcademicYearId == academicYearId && s.Active)
                 .Select(s => new
                 {
                     Semester = s.Name,
@@ -165,7 +165,7 @@ namespace ISC_ELIB_SERVER.Repositories
                 }).ToList<object>();
 
             var allSemesters = _context.Semesters
-                .Where(s => s.AcademicYearId == academicYearId)
+                .Where(s => s.AcademicYearId == academicYearId && s.Active)
                 .Select(s => new
                 {
                     SemesterId = s.Id,

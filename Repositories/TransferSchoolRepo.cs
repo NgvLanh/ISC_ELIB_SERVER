@@ -25,9 +25,17 @@ namespace ISC_ELIB_SERVER.Repositories
         /// 
         public List<object> GetTransferSchoolList(string? search)
         {
-            return _context.TransferSchools
+            var query = _context.TransferSchools
                 .Where(ts => ts.Active)
-                .Join(_context.Users, ts => ts.StudentId, u => u.Id, (ts, u) => new { ts, u }) // Join trực tiếp UserId
+                .Join(_context.Users, ts => ts.StudentId, u => u.Id, (ts, u) => new { ts, u });
+
+            // Nếu có từ khóa search thì lọc theo tên
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(x => x.u.FullName.Contains(search));
+            }
+
+            return query
                 .Join(_context.Semesters, tsu => tsu.ts.SemesterId, s => s.Id, (tsu, s) => new { tsu, s })
                 .Join(_context.Classes, tsuc => tsuc.tsu.u.ClassId, c => c.Id, (tsuc, c) => new { tsuc, c })
                 .Join(_context.GradeLevels, tsucg => tsucg.c.GradeLevelId, gl => gl.Id, (tsucg, gl) => new { tsucg, gl })
