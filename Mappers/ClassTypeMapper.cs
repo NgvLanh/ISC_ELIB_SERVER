@@ -13,7 +13,7 @@ namespace ISC_ELIB_SERVER.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) 
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name)) 
                 .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(src => src.AcademicYear))
-                .ForMember(dest => dest.IsDelete, opt => opt.MapFrom(src => src.Active));
+                .ForMember(dest => dest.IsDelete, opt => opt.MapFrom(src => !src.Active));
 
             CreateMap<ClassTypeRequest, ClassType>()
                 .ForMember(dest => dest.AcademicYear, opt => opt.Ignore()); 
