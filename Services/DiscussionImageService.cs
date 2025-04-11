@@ -17,11 +17,13 @@ namespace ISC_ELIB_SERVER.Services
     public class DiscussionImageService : IDiscussionImageService
     {
         private readonly DiscussionImageRepo _repository;
+        private readonly CloudinaryService _cloudinaryService;
         private readonly IMapper _mapper;
 
-        public DiscussionImageService(DiscussionImageRepo repository, IMapper mapper)
+        public DiscussionImageService(DiscussionImageRepo repository, CloudinaryService cloudinaryService, IMapper mapper)
         {
             _repository = repository;
+            _cloudinaryService = cloudinaryService;
             _mapper = mapper;
         }
 
@@ -51,7 +53,7 @@ namespace ISC_ELIB_SERVER.Services
             var newImage = _repository.CreateDiscussionImage(new DiscussionImage
             {
                 DiscussionId = request.DiscussionId,
-                ImageUrl = request.ImageUrl
+                ImageUrl = _cloudinaryService.UploadBase64Async(request.ImageUrl).Result,
             });
 
             return ApiResponse<DiscussionImageResponse>.Success(_mapper.Map<DiscussionImageResponse>(newImage));
