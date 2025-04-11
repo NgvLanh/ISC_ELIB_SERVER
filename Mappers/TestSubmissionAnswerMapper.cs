@@ -15,6 +15,8 @@ namespace ISC_ELIB_SERVER.Mappers
                     opt => opt.MapFrom(src => src.TestSubmissionsAnswers));
             CreateMap<TestSubmissionAnswerRequest, TestSubmissionsAnswer>();
             CreateMap<TestSubmissionsAnswer, TestSubmissionAnswerResponse>();
+            CreateMap<TestSubmissionAnswerRequest, TestSubmissionsAnswer>()
+    .ForMember(dest => dest.Attachments, opt => opt.Ignore());
         }
     }
 }
