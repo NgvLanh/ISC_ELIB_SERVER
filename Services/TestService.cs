@@ -228,8 +228,8 @@ namespace ISC_ELIB_SERVER.Services
                 return ApiResponse<TestResponse>.NotFound($"Người dùng có id {teacher.Id} không tồn tạ!!!");
             }
 
-            var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
-            testRequest.File = cloudinaryUrl;
+            //var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
+            //testRequest.File = cloudinaryUrl;
             var testEntity = _mapper.Map<Test>(testRequest);
             testEntity.UserId = teacher.Id;
             testEntity.StartTime = testEntity.StartTime.HasValue?DateTime.SpecifyKind(testEntity.StartTime.Value, DateTimeKind.Unspecified):null;
@@ -283,8 +283,8 @@ namespace ISC_ELIB_SERVER.Services
             {
                 return ApiResponse<TestResponse>.NotFound($"Người dùng có id {teacher.Id} không tồn tạ!!!");
             }
-            var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
-            testRequest.File = cloudinaryUrl;
+            //var cloudinaryUrl = _cloudinaryService.UploadBase64Async(testRequest.File).Result;
+            //testRequest.File = cloudinaryUrl;
             // Ánh xạ dữ liệu từ request sang entity, chỉ cập nhật các trường cần thiết
             _mapper.Map(testRequest, existingTest);
             existingTest.UserId = teacher.Id;
