@@ -18,11 +18,13 @@ namespace ISC_ELIB_SERVER.Services
     public class TopicService : ITopicService
     {
         private readonly TopicRepo _topicRepo;
+        private readonly CloudinaryService _cloudinaryService;
         private readonly IMapper _mapper;
 
-        public TopicService(TopicRepo topicRepo, IMapper mapper)
+        public TopicService(TopicRepo topicRepo, CloudinaryService cloudinaryService, IMapper mapper)
         {
             _topicRepo = topicRepo;
+            _cloudinaryService = cloudinaryService;
             _mapper = mapper;
         }
 
@@ -71,7 +73,7 @@ namespace ISC_ELIB_SERVER.Services
 
             // Fix lỗi DateTime bằng cách chuyển đổi EndDate
             topic.EndDate = DateTimeUtils.ConvertToUnspecified(topic.EndDate);
-
+            topic.File = _cloudinaryService.UploadBase64Async(request.File).Result;
             var create = _topicRepo.CreateTopic(topic);
             return ApiResponse<TopicResponse>.Success(_mapper.Map<TopicResponse>(create));
         }
